@@ -1,0 +1,1 @@
+const r=/\p{Diacritic}/gu,a=/[^a-z0-9\s-]/g,c=/\s+/g,n=/-+/g;function t(e=""){return String(e).trim().toLowerCase().replace(/\s+/g,"-")}function o(e=""){return String(e).normalize("NFKD").replace(r,"").toLowerCase().replace(a," ").replace(c,"-").replace(n,"-").replace(/^-+/,"").replace(/-+$/,"")||"emoji"}export{t as n,o as s};
