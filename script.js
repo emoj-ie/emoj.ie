@@ -17,7 +17,7 @@ function renderEmojis(emojis) {
       (emoji) => `
       <div class="emoji" role="button" tabindex="0" title="${emoji.annotation}">
         <img 
-          src="https://cdn.jsdelivr.net/npm/@openmoji/svg@14.0.0/color/${formatHexcode(
+          src="https://cdn.jsdelivr.net/npm/@openmoji/svg@14.0.0/color/svg/${formatHexcode(
             emoji.hexcode
           )}.svg" 
           alt="${emoji.annotation}" 
