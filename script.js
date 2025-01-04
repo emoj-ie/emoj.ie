@@ -15,14 +15,14 @@ function renderEmojis(emojis) {
   emojiList.innerHTML = emojis
     .map(
       (emoji) => `
-      <div class="emoji" role="button" tabindex="0" title="${emoji.name}">
+      <div class="emoji" role="button" tabindex="0" title="${emoji.annotation}">
         <img 
-          src="https://cdn.jsdelivr.net/npm/@openmoji/svg@14.0.0/color/${emoji.char}.svg" 
-          alt="${emoji.name}" 
+          src="https://cdn.jsdelivr.net/npm/@openmoji/svg@14.0.0/color/${emoji.hexcode}.svg" 
+          alt="${emoji.annotation}" 
           loading="lazy"
           style="width: 48px; height: 48px;"
         >
-        <small>${emoji.name}</small>
+        <small>${emoji.annotation}</small>
       </div>
     `
     )
