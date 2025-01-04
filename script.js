@@ -37,7 +37,6 @@ function renderEmojis(emojis) {
               loading="lazy" 
               style="width: 48px; height: 48px;"
             >
-            <small>${emoji.annotation}</small>
           </div>
         `;
     })
