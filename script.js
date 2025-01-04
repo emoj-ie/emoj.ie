@@ -45,11 +45,23 @@ function copyToClipboard(emoji) {
   navigator.clipboard
     .writeText(emoji)
     .then(() => {
-      alert(`Copied: ${emoji}`);
+      showToast(`Copied: ${emoji}`);
     })
     .catch((err) => {
       console.error('Failed to copy emoji:', err);
     });
+}
+
+function showToast(message) {
+  const toast = document.createElement('div');
+  toast.textContent = message;
+  toast.className = 'toast';
+  document.body.appendChild(toast);
+
+  setTimeout(() => {
+    toast.classList.add('hide');
+    toast.addEventListener('transitionend', () => toast.remove());
+  }, 2000);
 }
 
 function formatHexcode(hexcode) {
