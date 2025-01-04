@@ -1,6 +1,6 @@
 const emojiList = document.getElementById('emoji-list');
 
-fetch('openmoji.json')
+fetch('emoji-data.json')
   .then((res) => res.json())
   .then((data) => {
     const emojis = data.map((emoji) => ({
