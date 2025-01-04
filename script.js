@@ -26,7 +26,9 @@ function renderEmojis(emojis) {
             onclick="copyToClipboard('${emoji.emoji}')"
           >
             <img 
-              src="https://cdn.jsdelivr.net/npm/@openmoji/svg@14.0.0/svg/${emoji.hexcode}.svg" 
+              src="https://cdn.jsdelivr.net/npm/openmoji@15.1.0/color/svg/${formatHexcode(
+                emoji.hexcode
+              )}.svg" 
               alt="${emoji.annotation}" 
               loading="lazy" 
               style="width: 48px; height: 48px;"
