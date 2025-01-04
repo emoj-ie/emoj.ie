@@ -1,10 +1,14 @@
 const emojiList = document.getElementById('emoji-list');
+const searchInput = document.getElementById('search');
 
-// Fetch emoji data and render it
+let emojiData = []; // Store fetched emoji data
+
+// Fetch emoji data and render initially
 fetch('openmoji.json')
   .then((res) => res.json())
   .then((data) => {
-    renderEmojis(data);
+    emojiData = data; // Store the data for filtering
+    renderEmojis(emojiData); // Render all emojis initially
   })
   .catch((err) => console.error('Error loading emoji data:', err));
 
@@ -67,3 +71,17 @@ function showToast(message) {
 function formatHexcode(hexcode) {
   return hexcode.toUpperCase().replace(/\s/g, '-');
 }
+
+// Add event listener to the search input
+searchInput.addEventListener('input', (e) => {
+  const query = e.target.value.toLowerCase();
+  const filteredEmojis = emojiData.filter((emoji) => {
+    // Check if the query matches the annotation, tags, or hexcode
+    return (
+      emoji.annotation.toLowerCase().includes(query) ||
+      (emoji.tags && emoji.tags.toLowerCase().includes(query)) ||
+      emoji.hexcode.toLowerCase().includes(query)
+    );
+  });
+  renderEmojis(filteredEmojis);
+});
