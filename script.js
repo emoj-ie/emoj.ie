@@ -1,19 +1,14 @@
-const searchInput = document.getElementById('search');
 const emojiList = document.getElementById('emoji-list');
 
-fetch('emoji-data.json')
+fetch('openmoji.json')
   .then((res) => res.json())
   .then((data) => {
-    const emojis = data;
+    const emojis = data.map((emoji) => ({
+      char: emoji.hexcode, // Use hexcode for SVG
+      name: emoji.annotation,
+      category: emoji.group,
+    }));
     renderEmojis(emojis);
-
-    searchInput.addEventListener('input', () => {
-      const query = searchInput.value.toLowerCase();
-      const filtered = emojis.filter(({ name, category }) =>
-        `${name} ${category}`.toLowerCase().includes(query)
-      );
-      renderEmojis(filtered);
-    });
   });
 
 function renderEmojis(emojis) {
@@ -21,7 +16,12 @@ function renderEmojis(emojis) {
     .map(
       (emoji) => `
       <div class="emoji" role="button" tabindex="0" title="${emoji.name}">
-        <div style="font-size: 2rem;">${emoji.char}</div>
+        <img 
+          src="https://cdn.jsdelivr.net/npm/@openmoji/svg@14.0.0/color/${emoji.char}.svg" 
+          alt="${emoji.name}" 
+          loading="lazy"
+          style="width: 48px; height: 48px;"
+        >
         <small>${emoji.name}</small>
       </div>
     `
