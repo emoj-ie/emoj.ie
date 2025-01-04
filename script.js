@@ -17,9 +17,7 @@ function renderEmojis(emojis) {
       (emoji) => `
       <div class="emoji" role="button" tabindex="0" title="${emoji.annotation}">
         <img 
-          src="https://cdn.jsdelivr.net/npm/@openmoji/svg@14.0.0/color/svg/${formatHexcode(
-            emoji.hexcode
-          )}.svg" 
+          src="https://cdn.jsdelivr.net/npm/@openmoji/svg@14.0.0/color/${emoji.hexcode}.svg" 
           alt="${emoji.annotation}" 
           loading="lazy"
           style="width: 48px; height: 48px;"
@@ -29,8 +27,4 @@ function renderEmojis(emojis) {
     `
     )
     .join('');
-}
-
-function formatHexcode(hexcode) {
-  return hexcode.toUpperCase().replace(/ /g, '-');
 }
