@@ -23,7 +23,7 @@ function renderEmojis(emojis) {
           emoji.annotation
         }">
           <img 
-            src="https://cdn.jsdelivr.net/npm/@openmoji@14.0.0/color/svg/${formatHexcode(
+            src="https://cdn.jsdelivr.net/npm/openmoji@15.1.0/color/svg/${formatHexcode(
               emoji.hexcode
             )}.svg" 
             alt="${emoji.annotation}" 
