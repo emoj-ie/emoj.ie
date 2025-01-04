@@ -12,28 +12,42 @@ fetch('openmoji.json')
 function renderEmojis(emojis) {
   emojiList.innerHTML = emojis
     .map((emoji) => {
-      // Check if hexcode exists; log and skip invalid data
       if (!emoji.hexcode) {
         console.warn('Missing hexcode for emoji:', emoji);
         return '';
       }
 
       return `
-        <div class="emoji" role="button" tabindex="0" title="${
-          emoji.annotation
-        }">
-          <img 
-            src="https://cdn.jsdelivr.net/npm/openmoji@15.1.0/color/svg/${formatHexcode(
-              emoji.hexcode
-            )}.svg" 
-            alt="${emoji.annotation}" 
-            loading="lazy" 
-            style="width: 48px; height: 48px;"
+          <div 
+            class="emoji" 
+            role="button" 
+            tabindex="0" 
+            title="${emoji.annotation}" 
+            onclick="copyToClipboard('${emoji.emoji}')"
           >
-        </div>
-      `;
+            <img 
+              src="https://cdn.jsdelivr.net/npm/@openmoji/svg@14.0.0/svg/${emoji.hexcode}.svg" 
+              alt="${emoji.annotation}" 
+              loading="lazy" 
+              style="width: 48px; height: 48px;"
+            >
+            <small>${emoji.annotation}</small>
+          </div>
+        `;
     })
     .join('');
+}
+
+// Copy emoji to clipboard
+function copyToClipboard(emoji) {
+  navigator.clipboard
+    .writeText(emoji)
+    .then(() => {
+      alert(`Copied: ${emoji}`);
+    })
+    .catch((err) => {
+      console.error('Failed to copy emoji:', err);
+    });
 }
 
 function formatHexcode(hexcode) {
