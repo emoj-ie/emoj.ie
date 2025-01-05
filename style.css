@@ -5,7 +5,6 @@ body {
   flex-direction: column;
   justify-content: center;
   align-items: center;
-  min-height: 100vh;
   text-align: center;
   color: #333;
   background: #fafafa;
