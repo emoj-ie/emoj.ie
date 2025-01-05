@@ -1,6 +1,6 @@
 const emojiList = document.getElementById('emoji-list');
 const searchInput = document.getElementById('search');
-
+let firstLoad = true;
 let emojiData = []; // Store fetched emoji data
 const batchSize = 2; // Number of groups to load per batch
 let currentBatch = 0;
@@ -82,9 +82,13 @@ function renderBatch(groupedEmojis) {
       `;
     })
     .join('');
-
-  // Append the batch to the existing content
-  emojiList.insertAdjacentHTML('beforeend', batchHTML);
+  if (firstLoad) {
+    emojiList.innerHTML = batchHTML;
+    firstLoad = false;
+  } else {
+    // Append the batch to the existing content
+    emojiList.insertAdjacentHTML('beforeend', batchHTML);
+  }
 
   currentBatch++;
 
