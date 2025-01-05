@@ -89,17 +89,6 @@ main {
 main h2 {
   margin-bottom: 1rem;
 }
-#emoji-list {
-  display: grid;
-  grid-template-columns: repeat(
-    auto-fit,
-    minmax(50px, 1fr)
-  ); /* Adjusts to smaller screen widths */
-  gap: 8px;
-  padding: 1rem;
-  width: 100%; /* Ensure the grid takes full width of the viewport */
-  box-sizing: border-box; /* Prevent overflow caused by padding */
-}
 .emoji {
   display: flex;
   flex-direction: column;
