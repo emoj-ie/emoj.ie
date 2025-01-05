@@ -1,7 +1,7 @@
 <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 200 50" role="img" aria-labelledby="title">
     <title>Emoj.ie Logo</title>
-    <rect width="200" height="50" fill="#4caf50" rx="8"/>
-    <text x="20" y="32" font-family="Arial, sans-serif" font-size="24" fill="#ffffff" font-weight="bold">Emoj<span style="fill: #ffeb3b;">.</span>ie</text>
+    <rect width="120" height="50" fill="#4caf50" rx="8"/>
+    <text x="20" y="32" font-family="Arial, sans-serif" font-size="24" fill="#ffffff" font-weight="bold">emoj<span style="fill: #ffeb3b;">.</span>ie</text>
     <circle cx="170" cy="25" r="10" fill="#ffeb3b" stroke="#ffffff" stroke-width="2"/>
     <circle cx="167" cy="22" r="2" fill="#333"/>
     <circle cx="173" cy="22" r="2" fill="#333"/>
