@@ -1,4 +1,4 @@
-const emojiList = document.getElementById('emoji-grid');
+const emojiList = document.getElementById('emoji-list');
 const searchInput = document.getElementById('search');
 
 let emojiData = []; // Store fetched emoji data
@@ -84,9 +84,7 @@ function renderBatch(groupedEmojis) {
     .join('');
 
   // Append the batch to the existing content
-  document
-    .getElementById('emoji-grid')
-    .insertAdjacentHTML('beforeend', batchHTML);
+  emojiList.insertAdjacentHTML('beforeend', batchHTML);
 
   currentBatch++;
 
