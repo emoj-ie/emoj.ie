@@ -85,7 +85,7 @@ function renderBatch(groupedEmojis) {
 
   // Append the batch to the existing content
   document
-    .getElementById('emoji-list')
+    .getElementById('emoji-grid')
     .insertAdjacentHTML('beforeend', batchHTML);
 
   currentBatch++;
