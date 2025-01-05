@@ -91,7 +91,7 @@ main h2 {
 /* Loading grid container */
 .loading-grid {
   display: grid;
-  grid-template-columns: repeat(auto-fit, minmax(60px, 1fr));
+  grid-template-rows: repeat(auto-fit, minmax(60px, 1fr));
   gap: 10px;
   padding: 1rem;
 }
