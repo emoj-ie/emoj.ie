@@ -119,10 +119,18 @@ function setupLazyLoading(groupedEmojis) {
   observer.observe(placeholder);
 }
 
-function renderEmojis(emojis) {
+function renderEmojis(emojis, isSearch = false) {
   const groupedEmojis = groupEmojis(emojis); // Group emojis
-  renderBatch(groupedEmojis); // Render initial batch
-  setupLazyLoading(groupedEmojis); // Setup lazy loading
+  currentBatch = 0; // Reset batch index when rendering fresh data
+  firstLoad = true; // Ensure we overwrite existing content during a search
+
+  if (isSearch) {
+    emojiList.innerHTML = ''; // Clear existing content for search results
+    renderBatch(groupedEmojis); // Render all batches for search results
+  } else {
+    renderBatch(groupedEmojis); // Render initial batch for normal flow
+    setupLazyLoading(groupedEmojis); // Setup lazy loading for normal flow
+  }
 }
 
 // Copy emoji to clipboard
@@ -156,6 +164,7 @@ function formatHexcode(hexcode) {
 // Add event listener to the search input
 searchInput.addEventListener('input', (e) => {
   const query = e.target.value.toLowerCase();
+
   const filteredEmojis = emojiData.filter((emoji) => {
     // Check if the query matches the annotation, tags, or hexcode
     return (
@@ -164,7 +173,8 @@ searchInput.addEventListener('input', (e) => {
       emoji.hexcode.toLowerCase().includes(query)
     );
   });
-  renderEmojis(filteredEmojis);
+
+  renderEmojis(filteredEmojis, true); // Pass `true` to indicate search rendering
 });
 
 const backToTopButton = document.getElementById('back-to-top');
