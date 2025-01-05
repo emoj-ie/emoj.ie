@@ -119,3 +119,25 @@ searchInput.addEventListener('input', (e) => {
   });
   renderEmojis(filteredEmojis);
 });
+
+const backToTopButton = document.getElementById('back-to-top');
+
+// Show or hide the button based on scroll position
+window.addEventListener('scroll', () => {
+  if (window.scrollY > 300) { // Show button after scrolling 300px
+    backToTopButton.classList.add('show');
+    backToTopButton.classList.remove('hide');
+  } else {
+    backToTopButton.classList.add('hide');
+    backToTopButton.classList.remove('show');
+  }
+});
+
+// Scroll back to top when button is clicked
+backToTopButton.addEventListener('click', () => {
+  window.scrollTo({
+    top: 0,
+    behavior: 'smooth',
+  });
+});
+
