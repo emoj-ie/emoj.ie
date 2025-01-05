@@ -3,14 +3,14 @@
   <head>
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>Emoj.ie - Emoji Search</title>
+    <title>emoj.ie - Emoji Search</title>
     <link rel="icon" href="favicon.ico" type="image/x-icon" />
     <link rel="stylesheet" href="style.css" />
   </head>
   <body>
     <header class="header">
       <div class="header-container">
-        <h1 class="logo"><a href="/">Emoj.ie</a></h1>
+        <h1 class="logo"><a href="/">emoj.ie</a></h1>
         <div class="search-container">
           <input
             type="text"
@@ -22,15 +22,20 @@
       </div>
     </header>
     <main id="emoji-list">
-      <div class="loading-grid">
-        <div class="loading-item"></div>
-        <div class="loading-item"></div>
-        <div class="loading-item"></div>
-        <div class="loading-item"></div>
-        <div class="loading-item"></div>
-        <div class="loading-item"></div>
-        <div class="loading-item"></div>
-        <div class="loading-item"></div>
+      <div class="group">
+        <div class="subgroup">
+          <div class="loading-item"></div>
+          <div class="loading-item"></div>
+          <div class="loading-item"></div>
+          <div class="loading-item"></div>
+        </div>
+        <hr class="group-divider" />
+        <div class="subgroup">
+          <div class="loading-item"></div>
+          <div class="loading-item"></div>
+          <div class="loading-item"></div>
+          <div class="loading-item"></div>
+        </div>
       </div>
     </main>
     <button id="back-to-top" class="back-to-top" aria-label="Back to top">
