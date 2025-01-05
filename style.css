@@ -32,6 +32,15 @@ body {
   font-weight: bold;
   margin: 0;
 }
+.logo a {
+  text-decoration: none; /* Remove underline */
+  color: inherit; /* Inherit the current color of the h1 */
+}
+.logo a:hover,
+.logo a:focus {
+  text-decoration: none; /* Ensure no underline on hover or focus */
+  color: inherit; /* Prevent hover styles from changing the color */
+}
 .search-container {
   flex: 1;
   margin-left: 1rem;
