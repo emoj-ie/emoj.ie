@@ -31,10 +31,10 @@ function groupEmojis(emojis) {
   return grouped;
 }
 
-function renderBatch(groupedEmojis) {
+function renderBatch(groupedEmojis, renderAll = false) {
   const groupEntries = Object.entries(groupedEmojis); // Array of [group, subgroups]
   const start = currentBatch * batchSize;
-  const end = start + batchSize;
+  const end = renderAll ? groupEntries.length : start + batchSize;
 
   const batch = groupEntries.slice(start, end);
 
@@ -82,19 +82,19 @@ function renderBatch(groupedEmojis) {
       `;
     })
     .join('');
-  if (firstLoad) {
+  if (firstLoad || renderAll) {
     emojiList.innerHTML = batchHTML;
     firstLoad = false;
   } else {
-    // Append the batch to the existing content
-    emojiList.insertAdjacentHTML('beforeend', batchHTML);
+    emojiList.insertAdjacentHTML('beforeend', batchHTML); // Append new batch
   }
 
   currentBatch++;
 
   // Remove loading placeholder if all groups are rendered
   if (currentBatch * batchSize >= groupEntries.length) {
-    document.getElementById('loading-placeholder').remove();
+    const placeholder = document.getElementById('loading-placeholder');
+    if (placeholder) placeholder.remove();
   }
 }
 
@@ -109,12 +109,16 @@ function setupLazyLoading(groupedEmojis) {
     }
   });
 
-  // Add a loading placeholder
+  // Remove existing placeholder if any
+  const existingPlaceholder = document.getElementById('loading-placeholder');
+  if (existingPlaceholder) existingPlaceholder.remove();
+
+  // Add a new loading placeholder
   const placeholder = document.createElement('div');
   placeholder.id = 'loading-placeholder';
   placeholder.className = 'loading-placeholder';
   placeholder.textContent = 'Loading more groups...';
-  document.getElementById('emoji-list').appendChild(placeholder);
+  emojiList.appendChild(placeholder);
 
   observer.observe(placeholder);
 }
@@ -122,14 +126,16 @@ function setupLazyLoading(groupedEmojis) {
 function renderEmojis(emojis, isSearch = false) {
   const groupedEmojis = groupEmojis(emojis); // Group emojis
   currentBatch = 0; // Reset batch index when rendering fresh data
-  firstLoad = true; // Ensure we overwrite existing content during a search
 
   if (isSearch) {
-    emojiList.innerHTML = ''; // Clear existing content for search results
-    renderBatch(groupedEmojis); // Render all batches for search results
+    emojiList.innerHTML = ''; // Clear all current content
+    firstLoad = false; // Avoid reinitializing first load behavior
+    renderBatch(groupedEmojis, true); // Render everything for search results
   } else {
+    emojiList.innerHTML = ''; // Clear existing content for a fresh render
+    firstLoad = true;
     renderBatch(groupedEmojis); // Render initial batch for normal flow
-    setupLazyLoading(groupedEmojis); // Setup lazy loading for normal flow
+    setupLazyLoading(groupedEmojis); // Reinitialize lazy loading
   }
 }
 
@@ -165,16 +171,20 @@ function formatHexcode(hexcode) {
 searchInput.addEventListener('input', (e) => {
   const query = e.target.value.toLowerCase();
 
-  const filteredEmojis = emojiData.filter((emoji) => {
-    // Check if the query matches the annotation, tags, or hexcode
-    return (
-      emoji.annotation.toLowerCase().includes(query) ||
-      (emoji.tags && emoji.tags.toLowerCase().includes(query)) ||
-      emoji.hexcode.toLowerCase().includes(query)
-    );
-  });
+  if (query) {
+    const filteredEmojis = emojiData.filter((emoji) => {
+      return (
+        emoji.annotation.toLowerCase().includes(query) ||
+        (emoji.tags && emoji.tags.toLowerCase().includes(query)) ||
+        emoji.hexcode.toLowerCase().includes(query)
+      );
+    });
 
-  renderEmojis(filteredEmojis, true); // Pass `true` to indicate search rendering
+    renderEmojis(filteredEmojis, true); // Pass true to indicate a search render
+  } else {
+    // Reset to the full emoji list with lazy loading
+    renderEmojis(emojiData, false);
+  }
 });
 
 const backToTopButton = document.getElementById('back-to-top');
