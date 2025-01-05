@@ -12,33 +12,66 @@ fetch('openmoji.json')
   })
   .catch((err) => console.error('Error loading emoji data:', err));
 
-// Function to render emojis
-function renderEmojis(emojis) {
-  emojiList.innerHTML = emojis
-    .map((emoji) => {
-      if (!emoji.hexcode) {
-        console.warn('Missing hexcode for emoji:', emoji);
-        return '';
-      }
+// Function to group emojis by group and subgroup
+function groupEmojis(emojis) {
+  const grouped = {};
 
+  emojis.forEach((emoji) => {
+    if (!grouped[emoji.group]) {
+      grouped[emoji.group] = {};
+    }
+    if (!grouped[emoji.group][emoji.subgroups]) {
+      grouped[emoji.group][emoji.subgroups] = [];
+    }
+    grouped[emoji.group][emoji.subgroups].push(emoji);
+  });
+
+  return grouped;
+}
+
+// Function to render emojis by groups and subgroups
+function renderEmojis(emojis) {
+  const groupedEmojis = groupEmojis(emojis);
+  emojiList.innerHTML = Object.entries(groupedEmojis)
+    .map(([group, subgroups]) => {
       return `
-          <div 
-            class="emoji" 
-            role="button" 
-            tabindex="0" 
-            title="${emoji.annotation}" 
-            onclick="copyToClipboard('${emoji.emoji}')"
-          >
-            <img 
-              src="https://cdn.jsdelivr.net/npm/openmoji@15.1.0/color/svg/${formatHexcode(
-                emoji.hexcode
-              )}.svg" 
-              alt="${emoji.annotation}" 
-              loading="lazy" 
-              style="width: 48px; height: 48px;"
-            >
-          </div>
-        `;
+        <div class="group">
+          <h2>${group}</h2>
+          ${Object.entries(subgroups)
+            .map(([subgroup, emojis]) => {
+              return `
+                <div class="subgroup">
+                  <h3>${subgroup}</h3>
+                  <div class="emoji-grid">
+                    ${emojis
+                      .map((emoji) => {
+                        return `
+                          <div 
+                            class="emoji" 
+                            role="button" 
+                            tabindex="0" 
+                            title="${emoji.annotation}" 
+                            onclick="copyToClipboard('${emoji.emoji}')"
+                          >
+                            <img 
+                              src="https://cdn.jsdelivr.net/npm/openmoji@15.1.0/color/svg/${formatHexcode(
+                                emoji.hexcode
+                              )}.svg" 
+                              alt="${emoji.annotation}" 
+                              loading="lazy" 
+                              style="width: 48px; height: 48px;"
+                            >
+                          </div>
+                        `;
+                      })
+                      .join('')}
+                  </div>
+                </div>
+              `;
+            })
+            .join('')}
+        </div>
+      `;
     })
     .join('');
 }
