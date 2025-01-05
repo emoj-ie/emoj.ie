@@ -37,18 +37,18 @@ function renderEmojis(emojis) {
       return `
           <div class="group">
             <h2>${group}</h2>
-            <hr class="group-divider"> <!-- Divider for group -->
+            <hr class="group-divider">
             ${Object.entries(subgroups)
               .map(([subgroup, emojis]) => {
                 return `
                   <div class="subgroup">
                     <h3>${subgroup}</h3>
-                    <hr class="subgroup-divider"> <!-- Divider for subgroup -->
-                    <div class="emoji-grid">
+                    <hr class="subgroup-divider">
+                    <ul class="emoji-list">
                       ${emojis
                         .map((emoji) => {
                           return `
-                            <div 
+                            <li 
                               class="emoji" 
                               role="button" 
                               tabindex="0" 
@@ -60,14 +60,14 @@ function renderEmojis(emojis) {
                                   emoji.hexcode
                                 )}.svg" 
                                 alt="${emoji.annotation}" 
-                                loading="lazy" 
-                                style="width: 48px; height: 48px;"
+                                loading="lazy"
                               >
-                            </div>
+                              <small>${emoji.annotation}</small>
+                            </li>
                           `;
                         })
                         .join('')}
-                    </div>
+                    </ul>
                   </div>
                 `;
               })
@@ -124,7 +124,8 @@ const backToTopButton = document.getElementById('back-to-top');
 
 // Show or hide the button based on scroll position
 window.addEventListener('scroll', () => {
-  if (window.scrollY > 300) { // Show button after scrolling 300px
+  if (window.scrollY > 300) {
+    // Show button after scrolling 300px
     backToTopButton.classList.add('show');
     backToTopButton.classList.remove('hide');
   } else {
@@ -140,4 +141,3 @@ backToTopButton.addEventListener('click', () => {
     behavior: 'smooth',
   });
 });
-

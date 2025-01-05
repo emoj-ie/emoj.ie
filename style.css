@@ -122,29 +122,31 @@ main h2 {
   font-size: 0.8rem;
   text-align: center;
 }
+/* Group container: full width */
 .group {
-  width: 100%;
-  margin: 2rem 0; /* Space between groups */
+  width: 100%; /* Ensure it spans the full viewport width */
+  margin: 2rem 0;
 }
 .group h2 {
   font-size: 1.5rem;
   text-align: center;
   margin-bottom: 1rem;
 }
-/* Divider for groups */
+/* Full-width divider for groups */
 .group-divider {
   width: 100%;
   border: none;
-  border-top: 2px solid #ccc; /* Full-width line */
+  border-top: 2px solid #ccc;
   margin: 1rem 0;
 }
-/* Add spacing between subgroups */
+/* Subgroup container: full width */
 .subgroup {
+  width: 100%; /* Ensure it spans the full viewport width */
   margin: 1.5rem 0;
-  text-align: center;
 }
 .subgroup h3 {
   font-size: 1.2rem;
+  text-align: center;
   margin-bottom: 1rem;
 }
 /* Full-width divider for subgroups */
@@ -154,17 +156,42 @@ main h2 {
   border-top: 1px solid #ddd;
   margin: 0.5rem 0;
 }
-.subgroup h3 {
-  font-size: 1.2rem;
-  margin-bottom: 0.5rem;
+/* Emoji list container: inline-block emojis */
+.emoji-list {
+  display: flex;
+  flex-wrap: wrap; /* Wrap emojis to the next row */
+  justify-content: center; /* Center emojis within the subgroup */
+  gap: 8px; /* Spacing between emojis */
+  padding: 0;
+  margin: 0;
+  list-style: none; /* Remove list styling */
 }
-/* Emoji grid: centered and responsive */
-.emoji-grid {
-  display: grid;
-  grid-template-columns: repeat(auto-fit, minmax(48px, 1fr));
-  gap: 8px;
-  max-width: 800px; /* Limit grid width */
-  margin: 0 auto; /* Center grid */
+/* Individual emoji container */
+.emoji {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  width: 60px;
+  margin: 0;
+  padding: 5px;
+  background: white;
+  border: 1px solid #ddd;
+  border-radius: 4px;
+  cursor: pointer;
+  box-shadow: 0 1px 3px rgba(0, 0, 0, 0.1);
+  transition: transform 0.1s;
+}
+.emoji:hover {
+  transform: scale(1.1);
+}
+.emoji img {
+  max-width: 100%;
+  height: auto;
+}
+.emoji small {
+  font-size: 0.8rem;
+  text-align: center;
+  margin-top: 5px;
 }
 footer {
   text-align: center;
