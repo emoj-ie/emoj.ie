@@ -33,6 +33,9 @@ header h1 {
   justify-content: space-between;
   max-width: 1200px;
 }
+.logo {
+  margin: auto;
+}
 .logo img {
   height: 40px;
   display: block;
