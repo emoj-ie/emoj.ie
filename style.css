@@ -123,11 +123,31 @@ main h2 {
   text-align: center;
 }
 .group {
-  margin: 1rem 0;
+  margin: 2rem 0;
 }
 .group h2 {
   font-size: 1.5rem;
   margin-bottom: 0.5rem;
+}
+/* Divider for groups */
+.group-divider {
+  border: none;
+  border-top: 2px solid #ccc;
+  margin: 1rem 0;
+}
+/* Add spacing between subgroups */
+.subgroup {
+  margin: 1.5rem 0; /* Space between subgroups */
+}
+.subgroup h3 {
+  font-size: 1.2rem;
+  margin-bottom: 0.5rem;
+}
+/* Divider for subgroups */
+.subgroup-divider {
+  border: none;
+  border-top: 1px solid #ddd;
+  margin: 0.5rem 0;
 }
 .subgroup h3 {
   font-size: 1.2rem;
