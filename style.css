@@ -115,6 +115,20 @@ main h2 {
     background-color: #e0e0e0;
   }
 }
+/* Emoji grid */
+#emoji-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(60px, 1fr));
+  gap: 10px;
+  padding: 1rem;
+}
+/* Placeholder for lazy loading */
+.loading-placeholder {
+  text-align: center;
+  margin: 1rem 0;
+  font-size: 1rem;
+  color: #888;
+}
 .emoji {
   display: flex;
   flex-direction: column;

@@ -1,7 +1,9 @@
-const emojiList = document.getElementById('emoji-list');
+const emojiList = document.getElementById('emoji-grid');
 const searchInput = document.getElementById('search');
 
 let emojiData = []; // Store fetched emoji data
+const batchSize = 2; // Number of groups to load per batch
+let currentBatch = 0;
 
 // Fetch emoji data and render initially
 fetch('openmoji.json')
@@ -29,53 +31,96 @@ function groupEmojis(emojis) {
   return grouped;
 }
 
-// Function to render emojis by groups and subgroups
-function renderEmojis(emojis) {
-  const groupedEmojis = groupEmojis(emojis);
-  emojiList.innerHTML = Object.entries(groupedEmojis)
+function renderBatch(groupedEmojis) {
+  const groupEntries = Object.entries(groupedEmojis); // Array of [group, subgroups]
+  const start = currentBatch * batchSize;
+  const end = start + batchSize;
+
+  const batch = groupEntries.slice(start, end);
+
+  const batchHTML = batch
     .map(([group, subgroups]) => {
       return `
-          <div class="group">
-            <h2>${group}</h2>
-            <hr class="group-divider">
-            ${Object.entries(subgroups)
-              .map(([subgroup, emojis]) => {
-                return `
-                  <div class="subgroup">
-                    <h3>${subgroup}</h3>
-                    <hr class="subgroup-divider">
-                    <ul class="emoji-list">
-                      ${emojis
-                        .map((emoji) => {
-                          return `
-                            <li 
-                              class="emoji" 
-                              role="button" 
-                              tabindex="0" 
-                              title="${emoji.annotation}" 
-                              onclick="copyToClipboard('${emoji.emoji}')"
+        <div class="group">
+          <h2>${group}</h2>
+          <hr class="group-divider">
+          ${Object.entries(subgroups)
+            .map(([subgroup, emojis]) => {
+              return `
+                <div class="subgroup">
+                  <h3>${subgroup}</h3>
+                  <hr class="subgroup-divider">
+                  <ul class="emoji-list">
+                    ${emojis
+                      .map((emoji) => {
+                        return `
+                          <li 
+                            class="emoji" 
+                            role="button" 
+                            tabindex="0" 
+                            title="${emoji.annotation}" 
+                            onclick="copyToClipboard('${emoji.emoji}')"
+                          >
+                            <img 
+                              src="https://cdn.jsdelivr.net/npm/openmoji@15.1.0/color/svg/${formatHexcode(
+                                emoji.hexcode
+                              )}.svg" 
+                              alt="${emoji.annotation}" 
+                              loading="lazy"
                             >
-                              <img 
-                                src="https://cdn.jsdelivr.net/npm/openmoji@15.1.0/color/svg/${formatHexcode(
-                                  emoji.hexcode
-                                )}.svg" 
-                                alt="${emoji.annotation}" 
-                                loading="lazy"
-                              >
-                              <small>${emoji.annotation}</small>
-                            </li>
-                          `;
-                        })
-                        .join('')}
-                    </ul>
-                  </div>
-                `;
-              })
-              .join('')}
-          </div>
-        `;
+                            <small>${emoji.annotation}</small>
+                          </li>
+                        `;
+                      })
+                      .join('')}
+                  </ul>
+                </div>
+              `;
+            })
+            .join('')}
+        </div>
+      `;
     })
     .join('');
+
+  // Append the batch to the existing content
+  document
+    .getElementById('emoji-list')
+    .insertAdjacentHTML('beforeend', batchHTML);
+
+  currentBatch++;
+
+  // Remove loading placeholder if all groups are rendered
+  if (currentBatch * batchSize >= groupEntries.length) {
+    document.getElementById('loading-placeholder').remove();
+  }
+}
+
+function setupLazyLoading(groupedEmojis) {
+  const observer = new IntersectionObserver((entries) => {
+    const lastEntry = entries[0];
+    if (lastEntry.isIntersecting) {
+      renderBatch(groupedEmojis);
+      if (currentBatch * batchSize >= Object.keys(groupedEmojis).length) {
+        observer.disconnect(); // Stop observing if all groups are loaded
+      }
+    }
+  });
+
+  // Add a loading placeholder
+  const placeholder = document.createElement('div');
+  placeholder.id = 'loading-placeholder';
+  placeholder.className = 'loading-placeholder';
+  placeholder.textContent = 'Loading more groups...';
+  document.getElementById('emoji-list').appendChild(placeholder);
+
+  observer.observe(placeholder);
+}
+
+function renderEmojis(emojis) {
+  const groupedEmojis = groupEmojis(emojis); // Group emojis
+  renderBatch(groupedEmojis); // Render initial batch
+  setupLazyLoading(groupedEmojis); // Setup lazy loading
 }
 
 // Copy emoji to clipboard
