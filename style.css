@@ -62,15 +62,14 @@ body {
   .search-container {
     margin-left: 0;
     margin-top: 0.5rem;
-    width: 100%;
+    width: 80%;
   }
 
   .search-container input {
-    max-width: 100%;
+    max-width: 80%;
   }
 }
 main {
-  max-width: 600px;
   margin: 0 auto;
   padding: 1rem;
 }
