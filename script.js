@@ -404,8 +404,10 @@ searchInput.addEventListener('input', (e) => {
     const filteredEmojis = {};
     Object.entries(emojiData).forEach(([group, subgroups]) => {
       Object.entries(subgroups).forEach(([subgroup, emojis]) => {
-        const filtered = emojis.filter((emoji) =>
-          emoji.toLowerCase().includes(query)
+        const filtered = emojis.filter(
+          (emoji) =>
+            emoji.annotation.toLowerCase().includes(query) || // Search in annotation
+            (emoji.tags && emoji.tags.toLowerCase().includes(query)) // Search in tags if available
         );
         if (filtered.length > 0) {
           if (!filteredEmojis[group]) filteredEmojis[group] = {};
