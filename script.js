@@ -38,7 +38,7 @@ fetch(jsonPath)
 // Helper function to sanitize annotation for folder names
 function sanitizeAnnotation(annotation) {
   return annotation
-    .replaceAll(/[<>:"/\\|?*\s]/g, '-')
+    .replaceAll(/[,<>:"/\\|?*\s]/g, '-')
     .toLowerCase()
     .replaceAll('--', '-');
 }
