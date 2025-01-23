@@ -32,7 +32,8 @@
           <div>
             <h1>👩‍🦲</h1>
             <p>woman-bald</p>
-            <img src="https://cdn.jsdelivr.net/npm/openmoji@15.1.0/color/svg/1F469-200D-1F9B2.svg" alt="woman-bald">
+            <img src="https://cdn.jsdelivr.net/npm/openmoji@15.1.0/color/svg/1F469-200D-1F9B2.svg" alt="woman-bald"
+            onclick="copyToClipboard('👩‍🦲')">
           </div>
         
     </main>
@@ -40,7 +41,7 @@
         ↑
     </button>
     <footer>
-        <p>© 2025 Emoj.ie | <a href="../../../about.html">About</a></p>
+        <p>© 2025 Emoj.ie | <a href="../../../about">About</a></p>
     </footer>
     <script>
           // Show a toast message
@@ -62,7 +63,7 @@
               navigator.clipboard
                 .writeText(emoji)
                 .then(() => {
-                  showToast("Copied: emoji");
+                  showToast("Copied: " + emoji);
                 })
                 .catch((err) => {
                   console.error('Failed to copy emoji:', err);
@@ -75,7 +76,7 @@
               tempInput.select();
               try {
                 document.execCommand('copy');
-                showToast("Copied: emoji");
+                showToast("Copied: " + emoji);
               } catch (err) {
                 console.error('Fallback copy failed:', err);
               }

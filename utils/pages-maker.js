@@ -262,7 +262,7 @@ function generateHTML(title, content, depth = 0, breadcrumbs = '') {
         ↑
     </button>
     <footer>
-        <p>© 2025 Emoj.ie | <a href="${relativePath}about.html">About</a></p>
+        <p>© 2025 Emoj.ie | <a href="${relativePath}about">About</a></p>
     </footer>
     ${
       depth === 0
@@ -287,7 +287,7 @@ function generateHTML(title, content, depth = 0, breadcrumbs = '') {
               navigator.clipboard
                 .writeText(emoji)
                 .then(() => {
-                  showToast("Copied: emoji");
+                  showToast("Copied: " + emoji);
                 })
                 .catch((err) => {
                   console.error('Failed to copy emoji:', err);
@@ -300,7 +300,7 @@ function generateHTML(title, content, depth = 0, breadcrumbs = '') {
               tempInput.select();
               try {
                 document.execCommand('copy');
-                showToast("Copied: emoji");
+                showToast("Copied: " + emoji);
               } catch (err) {
                 console.error('Fallback copy failed:', err);
               }
@@ -371,7 +371,9 @@ function generatePages(outputDir) {
                           onclick="copyToClipboard('${emoji.emoji}')"
                         >
                         <hr/>
-                        <a href="./${subgroup}/${sanitizeAnnotation(emoji.annotation)}">
+                        <a href="./${subgroup}/${sanitizeAnnotation(
+                      emoji.annotation
+                    )}">
                           <small>${sanitizeAnnotation(emoji.annotation)}</small>
                         </a>
                       </li>
@@ -460,7 +462,8 @@ function generatePages(outputDir) {
             <p>${sanitizeAnnotation(emoji.annotation)}</p>
             <img src="https://cdn.jsdelivr.net/npm/openmoji@15.1.0/color/svg/${
               emoji.hexcode
-            }.svg" alt="${sanitizeAnnotation(emoji.annotation)}">
+            }.svg" alt="${sanitizeAnnotation(emoji.annotation)}"
+            onclick="copyToClipboard('${emoji.emoji}')">
           </div>
         `;
         const emojiBreadcrumbs = `<a href="../../../">Home</a> / <a href="../../">${group.replaceAll(
