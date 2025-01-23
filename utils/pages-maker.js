@@ -262,7 +262,7 @@ function generateHTML(title, content, depth = 0, breadcrumbs = '') {
         ↑
     </button>
     <footer>
-        <p>© 2025 Emoj.ie | <a href="about.html">About</a></p>
+        <p>© 2025 Emoj.ie | <a href="${relativePath}about.html">About</a></p>
     </footer>
     ${
       depth === 0
