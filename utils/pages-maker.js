@@ -371,7 +371,7 @@ function generatePages(outputDir) {
                           onclick="copyToClipboard('${emoji.emoji}')"
                         >
                         <hr/>
-                        <a href="./${sanitizeAnnotation(emoji.annotation)}}">
+                        <a href="./${subgroup}/${sanitizeAnnotation(emoji.annotation)}">
                           <small>${sanitizeAnnotation(emoji.annotation)}</small>
                         </a>
                       </li>
