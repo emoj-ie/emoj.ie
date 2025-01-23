@@ -47,7 +47,7 @@ function renderBatch(groupedEmojis, renderAll = false) {
       return `
         <div class="group">
           <a href="./${group}">
-            <h2>${group.replace('-', ' ')}</h2>
+            <h2>${group.replaceAll('-', ' ')}</h2>
           </a>
           <p>${generateGroupContent(group)}</p>
           <hr class="group-divider">
@@ -56,7 +56,7 @@ function renderBatch(groupedEmojis, renderAll = false) {
               return `
                 <div class="subgroup">
                   <a href="./${group}/${subgroup}">
-                    <h3>${subgroup.replace('-', ' ')}</h3>
+                    <h3>${subgroup.replaceAll('-', ' ')}</h3>
                   </a>
                   <p>${generateSubgroupContent(subgroup)}</p>
                   <hr class="subgroup-divider">
@@ -69,7 +69,6 @@ function renderBatch(groupedEmojis, renderAll = false) {
                             role="button" 
                             tabindex="0" 
                             title="${emoji.annotation}" 
-                            onclick="copyToClipboard('${emoji.emoji}')"
                           >
                             <img 
                               src="https://cdn.jsdelivr.net/npm/openmoji@15.1.0/color/svg/${formatHexcode(
@@ -77,8 +76,15 @@ function renderBatch(groupedEmojis, renderAll = false) {
                               )}.svg" 
                               alt="${emoji.annotation}" 
                               loading="lazy"
+                              onclick="copyToClipboard('${emoji.emoji}')"
                             >
-                            <small>${emoji.annotation}</small>
+                            <hr/>
+                            <a href="/${group}/${subgroup}/${emoji.annotation.replaceAll(
+                          ' ',
+                          '-'
+                        )}">
+                              <small>${emoji.annotation}</small>
+                            </a>
                           </li>
                         `;
                       })
@@ -188,7 +194,7 @@ function showToast(message) {
 }
 
 function formatHexcode(hexcode) {
-  return hexcode.toUpperCase().replace(/\s/g, '-');
+  return hexcode.toUpperCase().replaceAll(/\s/g, '-');
 }
 
 function generateGroupContent(group) {

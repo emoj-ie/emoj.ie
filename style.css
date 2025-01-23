@@ -18,6 +18,9 @@ h2,
 h3 {
   text-transform: capitalize;
 }
+hr {
+  width: 100%;
+}
 /* Header Styling */
 .header {
   background: #4caf50;
@@ -128,6 +131,24 @@ main h2 {
   margin: 1rem 0;
   font-size: 1rem;
   color: #888;
+}
+.breadcrumbs {
+  font-size: 0.9rem;
+  margin: 10px 0;
+  padding: 0 1rem;
+}
+
+.breadcrumbs a {
+  text-decoration: none;
+  color: #4caf50;
+}
+
+.breadcrumbs a:hover {
+  text-decoration: underline;
+}
+
+.breadcrumbs span {
+  color: #555;
 }
 .emoji {
   display: flex;

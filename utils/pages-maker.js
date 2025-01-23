@@ -16,11 +16,11 @@ function ensureDir(dirPath) {
 
 // Helper function to sanitize annotation for folder names
 function sanitizeAnnotation(annotation) {
-  return annotation.replace(/[<>:"/\\|?*\s]/g, '-').toLowerCase();
+  return annotation.replaceAll(/[<>:"/\\|?*\s]/g, '-').toLowerCase();
 }
 
 function formatHexcode(hexcode) {
-  return hexcode.toUpperCase().replace(/\s/g, '-');
+  return hexcode.toUpperCase().replaceAll(/\s/g, '-');
 }
 
 function generateGroupContent(group) {
@@ -214,7 +214,7 @@ function generateSubgroupContent(subgroup) {
 }
 
 // Helper function to generate HTML
-function generateHTML(title, content, depth = 0) {
+function generateHTML(title, content, depth = 0, breadcrumbs = '') {
   const relativePath = '../'.repeat(depth); // Adjust path based on depth
   return `
   <!DOCTYPE html>
@@ -251,6 +251,7 @@ function generateHTML(title, content, depth = 0) {
         }
       </div>
     </header>
+    <nav class="breadcrumbs">${breadcrumbs}</nav> <!-- Breadcrumbs Section -->
     <main id="emoji-list">
         ${content}
     </main>
@@ -336,7 +337,7 @@ function generatePages(outputDir) {
     // Generate group index.html
     const groupContent = `
     <div class="group">
-      <h2>${group.replace('-', ' ')}</h2>
+      <h2>${group.replaceAll('-', ' ')}</h2>
       <p>${generateGroupContent(group)}</p>
       <hr class="group-divider">
       ${Object.entries(subgroups)
@@ -344,7 +345,7 @@ function generatePages(outputDir) {
           return `
             <div class="subgroup">
               <a href="./${subgroup}">
-                <h3>${subgroup.replace('-', ' ')}</h3>
+                <h3>${subgroup.replaceAll('-', ' ')}</h3>
               </a>
               <p>${generateSubgroupContent(subgroup)}</p>
               <hr class="subgroup-divider">
@@ -357,7 +358,6 @@ function generatePages(outputDir) {
                         role="button" 
                         tabindex="0" 
                         title="${emoji.annotation}" 
-                        onclick="copyToClipboard('${emoji.emoji}')"
                       >
                         <img 
                           src="https://cdn.jsdelivr.net/npm/openmoji@15.1.0/color/svg/${formatHexcode(
@@ -365,8 +365,12 @@ function generatePages(outputDir) {
                           )}.svg" 
                           alt="${emoji.annotation}" 
                           loading="lazy"
+                          onclick="copyToClipboard('${emoji.emoji}')"
                         >
-                        <small>${emoji.annotation}</small>
+                        <hr/>
+                        <a href="./${emoji.annotation.replaceAll(' ', '-')}">
+                          <small>${emoji.annotation}</small>
+                        </a>
                       </li>
                     `;
                   })
@@ -378,9 +382,13 @@ function generatePages(outputDir) {
         .join('')}
     </div>
   `;
+    const groupBreadcrumbs = `<a href="../">Home</a> / <span>${group.replaceAll(
+      '-',
+      ' '
+    )}</span>`;
     fs.writeFileSync(
       path.join(groupPath, 'index.html'),
-      generateHTML(group, groupContent, 1) // Depth = 1 (group level)
+      generateHTML(group, groupContent, 1, groupBreadcrumbs) // Depth = 1 (group level)
     );
 
     Object.entries(subgroups).forEach(([subgroup, emojis]) => {
@@ -393,7 +401,7 @@ function generatePages(outputDir) {
       // Generate subgroup index.html
       const subgroupContent = `
       <div class="subgroup">
-        <h3>${subgroup.replace('-', ' ')}</h3>
+        <h3>${subgroup.replaceAll('-', ' ')}</h3>
         <p>${generateSubgroupContent(subgroup)}</p>
         <hr class="subgroup-divider">
         <ul class="emoji-list">
@@ -405,7 +413,6 @@ function generatePages(outputDir) {
                   role="button" 
                   tabindex="0" 
                   title="${emoji.annotation}" 
-                  onclick="copyToClipboard('${emoji.emoji}')"
                 >
                   <img 
                     src="https://cdn.jsdelivr.net/npm/openmoji@15.1.0/color/svg/${formatHexcode(
@@ -413,8 +420,12 @@ function generatePages(outputDir) {
                     )}.svg" 
                     alt="${emoji.annotation}" 
                     loading="lazy"
+                    onclick="copyToClipboard('${emoji.emoji}')"
                   >
-                  <small>${emoji.annotation}</small>
+                  <hr/>
+                  <a href="./${emoji.annotation.replaceAll(' ', '-')}">
+                    <small>${emoji.annotation}</small>
+                  </a>
                 </li>
               `;
             })
@@ -422,9 +433,13 @@ function generatePages(outputDir) {
         </ul>
       </div>
     `;
+      const subgroupBreadcrumbs = `<a href="../../">Home</a> / <a href="../">${group.replaceAll(
+        '-',
+        ' '
+      )}</a> / <span>${subgroup.replaceAll('-', ' ')}</span>`;
       fs.writeFileSync(
         path.join(subgroupPath, 'index.html'),
-        generateHTML(subgroup, subgroupContent, 2) // Depth = 2 (subgroup level)
+        generateHTML(subgroup, subgroupContent, 2, subgroupBreadcrumbs) // Depth = 2 (subgroup level)
       );
 
       emojis.forEach((emoji) => {
@@ -443,9 +458,15 @@ function generatePages(outputDir) {
             <img src="https://cdn.jsdelivr.net/npm/openmoji@15.1.0/color/svg/${emoji.hexcode}.svg" alt="${emoji.annotation}">
           </div>
         `;
+        const emojiBreadcrumbs = `<a href="../../../">Home</a> / <a href="../../">${group.replaceAll(
+          '-',
+          ' '
+        )}</a> / <a href="../">${subgroup.replaceAll('-', ' ')}</a> / <span>${
+          emoji.annotation
+        }</span>`;
         fs.writeFileSync(
           path.join(emojiPath, 'index.html'),
-          generateHTML(emoji.annotation, emojiContent, 3) // Depth = 3 (emoji level)
+          generateHTML(emoji.annotation, emojiContent, 3, emojiBreadcrumbs) // Depth = 3 (emoji level)
         );
       });
     });
