@@ -1,0 +1,100 @@
+
+  <!DOCTYPE html>
+  <html lang="en">
+  <head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta
+      property="og:title"
+      content="emoj.ie - foot: medium skin tone"
+    />
+    <meta
+      property="og:description"
+      content="Find and copy emojis quickly from categories like smileys, animals, and flags. Perfect for fun or professional use."
+    />
+    <meta property="og:image" content="https://emoj.ie/logo.png" />
+    <meta property="og:url" content="https://emoj.ie" />
+    <meta property="og:type" content="website" />
+    <title>emoj.ie - foot: medium skin tone</title>
+    <link rel="icon" href="../../../favicon.ico" type="image/x-icon" />
+    <link rel="stylesheet" href="../../../style.css">
+  </head>
+  <body>
+    <header class="header">
+      <div class="header-container">
+        <a href="/" class="logo"><img src="../../../logo.svg" alt="Emoj.ie Logo" /></a>
+        
+      </div>
+    </header>
+    <nav class="breadcrumbs"><a href="../../../">Home</a> / <a href="../../">people body</a> / <a href="../">body parts</a> / <span>foot-medium-skin-tone</span></nav> <!-- Breadcrumbs Section -->
+    <main id="emoji-list">
+        
+          <div>
+            <h1>🦶🏽</h1>
+            <p>foot-medium-skin-tone</p>
+            <img src="https://cdn.jsdelivr.net/npm/openmoji@15.1.0/color/svg/1F9B6-1F3FD.svg" alt="foot-medium-skin-tone">
+          </div>
+        
+    </main>
+    <button id="back-to-top" class="back-to-top" aria-label="Back to top">
+        ↑
+    </button>
+    <footer>
+        <p>© 2025 Emoj.ie | <a href="about.html">About</a></p>
+    </footer>
+    <script>
+          // Show a toast message
+          function showToast(message) {
+            const toast = document.createElement('div');
+            toast.textContent = message;
+            toast.className = 'toast';
+            document.body.appendChild(toast);
+    
+            setTimeout(() => {
+              toast.classList.add('hide');
+              toast.addEventListener('transitionend', () => toast.remove());
+            }, 2000);
+          }
+    
+          // Copy emoji to clipboard
+          function copyToClipboard(emoji) {
+            if (navigator.clipboard && navigator.clipboard.writeText) {
+              navigator.clipboard
+                .writeText(emoji)
+                .then(() => {
+                  showToast("Copied: emoji");
+                })
+                .catch((err) => {
+                  console.error('Failed to copy emoji:', err);
+                });
+            } else {
+              // Fallback for older browsers or insecure contexts
+              const tempInput = document.createElement('input');
+              tempInput.value = emoji;
+              document.body.appendChild(tempInput);
+              tempInput.select();
+              try {
+                document.execCommand('copy');
+                showToast("Copied: emoji");
+              } catch (err) {
+                console.error('Fallback copy failed:', err);
+              }
+              document.body.removeChild(tempInput);
+            }
+          }
+
+          function showToast(message) {
+            const toast = document.createElement('div');
+            toast.textContent = message;
+            toast.className = 'toast';
+            document.body.appendChild(toast);
+
+            setTimeout(() => {
+              toast.classList.add('hide');
+              toast.addEventListener('transitionend', () => toast.remove());
+            }, 2000);
+          }
+        </script>
+  </body>
+  </html>
+    

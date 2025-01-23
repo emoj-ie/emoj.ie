@@ -35,6 +35,14 @@ fetch(jsonPath)
 //   return grouped;
 // }
 
+// Helper function to sanitize annotation for folder names
+function sanitizeAnnotation(annotation) {
+  return annotation
+    .replaceAll(/[<>:"/\\|?*\s]/g, '-')
+    .toLowerCase()
+    .replaceAll('--', '-');
+}
+
 function renderBatch(groupedEmojis, renderAll = false) {
   const groupEntries = Object.entries(groupedEmojis); // Array of [group, subgroups]
   const start = currentBatch * batchSize;
@@ -79,11 +87,12 @@ function renderBatch(groupedEmojis, renderAll = false) {
                               onclick="copyToClipboard('${emoji.emoji}')"
                             >
                             <hr/>
-                            <a href="/${group}/${subgroup}/${emoji.annotation.replaceAll(
-                          ' ',
-                          '-'
+                            <a href="/${group}/${subgroup}/${sanitizeAnnotation(
+                          emoji.annotation
                         )}">
-                              <small>${emoji.annotation}</small>
+                              <small>${sanitizeAnnotation(
+                                emoji.annotation
+                              )}</small>
                             </a>
                           </li>
                         `;

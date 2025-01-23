@@ -16,7 +16,10 @@ function ensureDir(dirPath) {
 
 // Helper function to sanitize annotation for folder names
 function sanitizeAnnotation(annotation) {
-  return annotation.replaceAll(/[<>:"/\\|?*\s]/g, '-').toLowerCase();
+  return annotation
+    .replaceAll(/[<>:"/\\|?*\s]/g, '-')
+    .toLowerCase()
+    .replaceAll('--', '-');
 }
 
 function formatHexcode(hexcode) {
@@ -357,19 +360,19 @@ function generatePages(outputDir) {
                         class="emoji" 
                         role="button" 
                         tabindex="0" 
-                        title="${emoji.annotation}" 
+                        title="${sanitizeAnnotation(emoji.annotation)}" 
                       >
                         <img 
                           src="https://cdn.jsdelivr.net/npm/openmoji@15.1.0/color/svg/${formatHexcode(
                             emoji.hexcode
                           )}.svg" 
-                          alt="${emoji.annotation}" 
+                          alt="${sanitizeAnnotation(emoji.annotation)}" 
                           loading="lazy"
                           onclick="copyToClipboard('${emoji.emoji}')"
                         >
                         <hr/>
-                        <a href="./${emoji.annotation.replaceAll(' ', '-')}">
-                          <small>${emoji.annotation}</small>
+                        <a href="./${sanitizeAnnotation(emoji.annotation)}}">
+                          <small>${sanitizeAnnotation(emoji.annotation)}</small>
                         </a>
                       </li>
                     `;
@@ -412,19 +415,19 @@ function generatePages(outputDir) {
                   class="emoji" 
                   role="button" 
                   tabindex="0" 
-                  title="${emoji.annotation}" 
+                  title="${sanitizeAnnotation(emoji.annotation)}" 
                 >
                   <img 
                     src="https://cdn.jsdelivr.net/npm/openmoji@15.1.0/color/svg/${formatHexcode(
                       emoji.hexcode
                     )}.svg" 
-                    alt="${emoji.annotation}" 
+                    alt="${sanitizeAnnotation(emoji.annotation)}" 
                     loading="lazy"
                     onclick="copyToClipboard('${emoji.emoji}')"
                   >
                   <hr/>
-                  <a href="./${emoji.annotation.replaceAll(' ', '-')}">
-                    <small>${emoji.annotation}</small>
+                  <a href="./${sanitizeAnnotation(emoji.annotation)}">
+                    <small>${sanitizeAnnotation(emoji.annotation)}</small>
                   </a>
                 </li>
               `;
@@ -454,16 +457,19 @@ function generatePages(outputDir) {
         const emojiContent = `
           <div>
             <h1>${emoji.emoji}</h1>
-            <p>${emoji.annotation}</p>
-            <img src="https://cdn.jsdelivr.net/npm/openmoji@15.1.0/color/svg/${emoji.hexcode}.svg" alt="${emoji.annotation}">
+            <p>${sanitizeAnnotation(emoji.annotation)}</p>
+            <img src="https://cdn.jsdelivr.net/npm/openmoji@15.1.0/color/svg/${
+              emoji.hexcode
+            }.svg" alt="${sanitizeAnnotation(emoji.annotation)}">
           </div>
         `;
         const emojiBreadcrumbs = `<a href="../../../">Home</a> / <a href="../../">${group.replaceAll(
           '-',
           ' '
-        )}</a> / <a href="../">${subgroup.replaceAll('-', ' ')}</a> / <span>${
-          emoji.annotation
-        }</span>`;
+        )}</a> / <a href="../">${subgroup.replaceAll(
+          '-',
+          ' '
+        )}</a> / <span>${sanitizeAnnotation(emoji.annotation)}</span>`;
         fs.writeFileSync(
           path.join(emojiPath, 'index.html'),
           generateHTML(emoji.annotation, emojiContent, 3, emojiBreadcrumbs) // Depth = 3 (emoji level)
