@@ -5,8 +5,11 @@ let emojiData = []; // Store fetched emoji data
 const batchSize = 2; // Number of groups to load per batch
 let currentBatch = 0;
 
+// Adjust the relative path based on the current location
+const jsonPath = new URL('grouped-openmoji.json', window.location.origin).href;
+
 // Fetch emoji data and render initially
-fetch('grouped-openmoji.json')
+fetch(jsonPath)
   .then((res) => res.json())
   .then((data) => {
     emojiData = data; // Store the grouped data directly
@@ -43,14 +46,18 @@ function renderBatch(groupedEmojis, renderAll = false) {
     .map(([group, subgroups]) => {
       return `
         <div class="group">
-          <h2>${group.replace('-', ' ')}</h2>
+          <a href="./${group}">
+            <h2>${group.replace('-', ' ')}</h2>
+          </a>
           <p>${generateGroupContent(group)}</p>
           <hr class="group-divider">
           ${Object.entries(subgroups)
             .map(([subgroup, emojis]) => {
               return `
                 <div class="subgroup">
-                  <h3>${subgroup.replace('-', ' ')}</h3>
+                  <a href="./${group}/${subgroup}">
+                    <h3>${subgroup.replace('-', ' ')}</h3>
+                  </a>
                   <p>${generateSubgroupContent(subgroup)}</p>
                   <hr class="subgroup-divider">
                   <ul class="emoji-list">
@@ -143,14 +150,29 @@ function renderEmojis(emojis, isSearch = false) {
 
 // Copy emoji to clipboard
 function copyToClipboard(emoji) {
-  navigator.clipboard
-    .writeText(emoji)
-    .then(() => {
+  if (navigator.clipboard && navigator.clipboard.writeText) {
+    navigator.clipboard
+      .writeText(emoji)
+      .then(() => {
+        showToast(`Copied: ${emoji}`);
+      })
+      .catch((err) => {
+        console.error('Failed to copy emoji:', err);
+      });
+  } else {
+    // Fallback for older browsers or insecure contexts
+    const tempInput = document.createElement('input');
+    tempInput.value = emoji;
+    document.body.appendChild(tempInput);
+    tempInput.select();
+    try {
+      document.execCommand('copy');
       showToast(`Copied: ${emoji}`);
-    })
-    .catch((err) => {
-      console.error('Failed to copy emoji:', err);
-    });
+    } catch (err) {
+      console.error('Fallback copy failed:', err);
+    }
+    document.body.removeChild(tempInput);
+  }
 }
 
 function showToast(message) {
@@ -242,7 +264,8 @@ function generateSubgroupContent(subgroup) {
     'person-sport': 'Sport-themed people, including athletes and coaches.',
     'person-resting':
       'People in relaxed positions, like sitting or lying down.',
-    family: 'Family units of various compositions, from parents to siblings.',
+    family:
+      'Couples, hand-holding, kissing & family units of various compositions.',
     'person-symbol':
       'Symbolic people icons, including gender symbols and restroom signs.',
     'skin-tone':

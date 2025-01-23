@@ -1,0 +1,222 @@
+
+  <!DOCTYPE html>
+  <html lang="en">
+  <head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta
+      property="og:title"
+      content="emoj.ie - flag"
+    />
+    <meta
+      property="og:description"
+      content="Find and copy emojis quickly from categories like smileys, animals, and flags. Perfect for fun or professional use."
+    />
+    <meta property="og:image" content="https://emoj.ie/logo.png" />
+    <meta property="og:url" content="https://emoj.ie" />
+    <meta property="og:type" content="website" />
+    <title>emoj.ie - flag</title>
+    <link rel="icon" href="../../favicon.ico" type="image/x-icon" />
+    <link rel="stylesheet" href="../../style.css">
+  </head>
+  <body>
+    <header class="header">
+      <div class="header-container">
+        <a href="/" class="logo"><img src="../../logo.svg" alt="Emoj.ie Logo" /></a>
+        
+      </div>
+    </header>
+    <main id="emoji-list">
+        
+      <div class="subgroup">
+        <h3>flag</h3>
+        <p>General flag emojis representing symbolic flags.</p>
+        <hr class="subgroup-divider">
+        <ul class="emoji-list">
+          
+                <li 
+                  class="emoji" 
+                  role="button" 
+                  tabindex="0" 
+                  title="chequered flag" 
+                  onclick="copyToClipboard('🏁')"
+                >
+                  <img 
+                    src="https://cdn.jsdelivr.net/npm/openmoji@15.1.0/color/svg/1F3C1.svg" 
+                    alt="chequered flag" 
+                    loading="lazy"
+                  >
+                  <small>chequered flag</small>
+                </li>
+              
+                <li 
+                  class="emoji" 
+                  role="button" 
+                  tabindex="0" 
+                  title="triangular flag" 
+                  onclick="copyToClipboard('🚩')"
+                >
+                  <img 
+                    src="https://cdn.jsdelivr.net/npm/openmoji@15.1.0/color/svg/1F6A9.svg" 
+                    alt="triangular flag" 
+                    loading="lazy"
+                  >
+                  <small>triangular flag</small>
+                </li>
+              
+                <li 
+                  class="emoji" 
+                  role="button" 
+                  tabindex="0" 
+                  title="crossed flags" 
+                  onclick="copyToClipboard('🎌')"
+                >
+                  <img 
+                    src="https://cdn.jsdelivr.net/npm/openmoji@15.1.0/color/svg/1F38C.svg" 
+                    alt="crossed flags" 
+                    loading="lazy"
+                  >
+                  <small>crossed flags</small>
+                </li>
+              
+                <li 
+                  class="emoji" 
+                  role="button" 
+                  tabindex="0" 
+                  title="black flag" 
+                  onclick="copyToClipboard('🏴')"
+                >
+                  <img 
+                    src="https://cdn.jsdelivr.net/npm/openmoji@15.1.0/color/svg/1F3F4.svg" 
+                    alt="black flag" 
+                    loading="lazy"
+                  >
+                  <small>black flag</small>
+                </li>
+              
+                <li 
+                  class="emoji" 
+                  role="button" 
+                  tabindex="0" 
+                  title="white flag" 
+                  onclick="copyToClipboard('🏳️')"
+                >
+                  <img 
+                    src="https://cdn.jsdelivr.net/npm/openmoji@15.1.0/color/svg/1F3F3.svg" 
+                    alt="white flag" 
+                    loading="lazy"
+                  >
+                  <small>white flag</small>
+                </li>
+              
+                <li 
+                  class="emoji" 
+                  role="button" 
+                  tabindex="0" 
+                  title="rainbow flag" 
+                  onclick="copyToClipboard('🏳️‍🌈')"
+                >
+                  <img 
+                    src="https://cdn.jsdelivr.net/npm/openmoji@15.1.0/color/svg/1F3F3-FE0F-200D-1F308.svg" 
+                    alt="rainbow flag" 
+                    loading="lazy"
+                  >
+                  <small>rainbow flag</small>
+                </li>
+              
+                <li 
+                  class="emoji" 
+                  role="button" 
+                  tabindex="0" 
+                  title="transgender flag" 
+                  onclick="copyToClipboard('🏳️‍⚧️')"
+                >
+                  <img 
+                    src="https://cdn.jsdelivr.net/npm/openmoji@15.1.0/color/svg/1F3F3-FE0F-200D-26A7-FE0F.svg" 
+                    alt="transgender flag" 
+                    loading="lazy"
+                  >
+                  <small>transgender flag</small>
+                </li>
+              
+                <li 
+                  class="emoji" 
+                  role="button" 
+                  tabindex="0" 
+                  title="pirate flag" 
+                  onclick="copyToClipboard('🏴‍☠️')"
+                >
+                  <img 
+                    src="https://cdn.jsdelivr.net/npm/openmoji@15.1.0/color/svg/1F3F4-200D-2620-FE0F.svg" 
+                    alt="pirate flag" 
+                    loading="lazy"
+                  >
+                  <small>pirate flag</small>
+                </li>
+              
+        </ul>
+      </div>
+    
+    </main>
+    <button id="back-to-top" class="back-to-top" aria-label="Back to top">
+        ↑
+    </button>
+    <footer>
+        <p>© 2025 Emoj.ie | <a href="about.html">About</a></p>
+    </footer>
+    <script>
+          // Show a toast message
+          function showToast(message) {
+            const toast = document.createElement('div');
+            toast.textContent = message;
+            toast.className = 'toast';
+            document.body.appendChild(toast);
+    
+            setTimeout(() => {
+              toast.classList.add('hide');
+              toast.addEventListener('transitionend', () => toast.remove());
+            }, 2000);
+          }
+    
+          // Copy emoji to clipboard
+          function copyToClipboard(emoji) {
+            if (navigator.clipboard && navigator.clipboard.writeText) {
+              navigator.clipboard
+                .writeText(emoji)
+                .then(() => {
+                  showToast("Copied: emoji");
+                })
+                .catch((err) => {
+                  console.error('Failed to copy emoji:', err);
+                });
+            } else {
+              // Fallback for older browsers or insecure contexts
+              const tempInput = document.createElement('input');
+              tempInput.value = emoji;
+              document.body.appendChild(tempInput);
+              tempInput.select();
+              try {
+                document.execCommand('copy');
+                showToast("Copied: emoji");
+              } catch (err) {
+                console.error('Fallback copy failed:', err);
+              }
+              document.body.removeChild(tempInput);
+            }
+          }
+
+          function showToast(message) {
+            const toast = document.createElement('div');
+            toast.textContent = message;
+            toast.className = 'toast';
+            document.body.appendChild(toast);
+
+            setTimeout(() => {
+              toast.classList.add('hide');
+              toast.addEventListener('transitionend', () => toast.remove());
+            }, 2000);
+          }
+        </script>
+  </body>
+  </html>
+    
