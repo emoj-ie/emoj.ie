@@ -87,9 +87,7 @@ function renderBatch(groupedEmojis, renderAll = false) {
                               onclick="copyToClipboard('${emoji.emoji}')"
                             >
                             <hr/>
-                            <a href="/${group}/${subgroup}/${sanitizeAnnotation(
-                          emoji.annotation
-                        )}">
+                            <a href="/${group}/${subgroup}/${sanitizeAnnotation(emoji.annotation).replaceAll('--', '-')}">
                               <small>${sanitizeAnnotation(
                                 emoji.annotation
                               ).replaceAll('-', ' ')}</small>

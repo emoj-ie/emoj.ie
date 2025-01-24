@@ -377,7 +377,7 @@ function generatePages(outputDir) {
                         <hr/>
                         <a href="./${subgroup}/${sanitizeAnnotation(
                       emoji.annotation
-                    )}">
+                    ).replaceAll('--', '-')}">
                           <small>${sanitizeAnnotation(
                             emoji.annotation
                           ).replaceAll('-', ' ')}</small>
@@ -440,7 +440,7 @@ function generatePages(outputDir) {
                     onclick="copyToClipboard('${emoji.emoji}')"
                   >
                   <hr/>
-                  <a href="./${sanitizeAnnotation(emoji.annotation)}">
+                  <a href="./${sanitizeAnnotation(emoji.annotation).replaceAll('--', '-')}">
                     <small>${sanitizeAnnotation(emoji.annotation).replaceAll(
                       '-',
                       ' '
@@ -463,7 +463,10 @@ function generatePages(outputDir) {
       );
 
       emojis.forEach((emoji) => {
-        const emojiFolder = sanitizeAnnotation(emoji.annotation).replaceAll('--', '-');
+        const emojiFolder = sanitizeAnnotation(emoji.annotation).replaceAll(
+          '--',
+          '-'
+        );
         const emojiPath = path.join(subgroupPath, emojiFolder);
         ensureDir(emojiPath);
 
@@ -474,7 +477,10 @@ function generatePages(outputDir) {
         const emojiContent = `
           <div>
             <h1>${emoji.emoji}</h1>
-            <h3>${sanitizeAnnotation(emoji.annotation).replaceAll('-', ' ')}</h3>
+            <h3>${sanitizeAnnotation(emoji.annotation).replaceAll(
+              '-',
+              ' '
+            )}</h3>
             <img src="https://cdn.jsdelivr.net/npm/openmoji@15.1.0/color/svg/${
               emoji.hexcode
             }.svg" alt="${sanitizeAnnotation(emoji.annotation)}"
