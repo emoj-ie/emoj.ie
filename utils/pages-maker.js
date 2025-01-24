@@ -17,7 +17,7 @@ function ensureDir(dirPath) {
 // Helper function to sanitize annotation for folder names
 function sanitizeAnnotation(annotation) {
   return annotation
-    .replaceAll(/[,<>:"/\\|?*\s]/g, '-')
+    .replaceAll(/[&,<>:"/\\|?*\s]/g, '-')
     .toLowerCase()
     .replaceAll('--', '-');
 }
@@ -463,7 +463,7 @@ function generatePages(outputDir) {
       );
 
       emojis.forEach((emoji) => {
-        const emojiFolder = sanitizeAnnotation(emoji.annotation);
+        const emojiFolder = sanitizeAnnotation(emoji.annotation).replaceAll('--', '-');
         const emojiPath = path.join(subgroupPath, emojiFolder);
         ensureDir(emojiPath);
 
