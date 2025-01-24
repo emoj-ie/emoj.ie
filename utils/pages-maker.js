@@ -243,7 +243,7 @@ function generateHTML(title, content, depth = 0, breadcrumbs = '') {
   <body>
     <header class="header">
       <div class="header-container">
-        <a href="/" class="logo"><img src="${relativePath}logo.svg" alt="Emoj.ie Logo" /></a>
+        <a href="/" class="logo"><img src="${relativePath}logo.svg" alt="emoj.ie Logo" /></a>
         ${
           depth === 0
             ? `
@@ -262,7 +262,7 @@ function generateHTML(title, content, depth = 0, breadcrumbs = '') {
         ↑
     </button>
     <footer>
-        <p>© 2025 Emoj.ie | <a href="${relativePath}about">About</a></p>
+        <p>© 2025 emoj.ie | <a href="${relativePath}about">About</a></p>
     </footer>
     ${
       depth === 0
