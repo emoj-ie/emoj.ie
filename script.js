@@ -92,7 +92,7 @@ function renderBatch(groupedEmojis, renderAll = false) {
                         )}">
                               <small>${sanitizeAnnotation(
                                 emoji.annotation
-                              )}</small>
+                              ).replaceAll('-', ' ')}</small>
                             </a>
                           </li>
                         `;

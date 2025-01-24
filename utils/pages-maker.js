@@ -360,13 +360,17 @@ function generatePages(outputDir) {
                         class="emoji" 
                         role="button" 
                         tabindex="0" 
-                        title="${sanitizeAnnotation(emoji.annotation)}" 
+                        title="${sanitizeAnnotation(
+                          emoji.annotation
+                        ).replaceAll('-', ' ')}" 
                       >
                         <img 
                           src="https://cdn.jsdelivr.net/npm/openmoji@15.1.0/color/svg/${formatHexcode(
                             emoji.hexcode
                           )}.svg" 
-                          alt="${sanitizeAnnotation(emoji.annotation)}" 
+                          alt="${sanitizeAnnotation(
+                            emoji.annotation
+                          ).replaceAll('-', ' ')}" 
                           loading="lazy"
                           onclick="copyToClipboard('${emoji.emoji}')"
                         >
@@ -374,7 +378,9 @@ function generatePages(outputDir) {
                         <a href="./${subgroup}/${sanitizeAnnotation(
                       emoji.annotation
                     )}">
-                          <small>${sanitizeAnnotation(emoji.annotation)}</small>
+                          <small>${sanitizeAnnotation(
+                            emoji.annotation
+                          ).replaceAll('-', ' ')}</small>
                         </a>
                       </li>
                     `;
@@ -417,19 +423,28 @@ function generatePages(outputDir) {
                   class="emoji" 
                   role="button" 
                   tabindex="0" 
-                  title="${sanitizeAnnotation(emoji.annotation)}" 
+                  title="${sanitizeAnnotation(emoji.annotation).replaceAll(
+                    '-',
+                    ' '
+                  )}" 
                 >
                   <img 
                     src="https://cdn.jsdelivr.net/npm/openmoji@15.1.0/color/svg/${formatHexcode(
                       emoji.hexcode
                     )}.svg" 
-                    alt="${sanitizeAnnotation(emoji.annotation)}" 
+                    alt="${sanitizeAnnotation(emoji.annotation).replaceAll(
+                      '-',
+                      ' '
+                    )}" 
                     loading="lazy"
                     onclick="copyToClipboard('${emoji.emoji}')"
                   >
                   <hr/>
                   <a href="./${sanitizeAnnotation(emoji.annotation)}">
-                    <small>${sanitizeAnnotation(emoji.annotation)}</small>
+                    <small>${sanitizeAnnotation(emoji.annotation).replaceAll(
+                      '-',
+                      ' '
+                    )}</small>
                   </a>
                 </li>
               `;
@@ -459,7 +474,7 @@ function generatePages(outputDir) {
         const emojiContent = `
           <div>
             <h1>${emoji.emoji}</h1>
-            <p>${sanitizeAnnotation(emoji.annotation)}</p>
+            <h3>${sanitizeAnnotation(emoji.annotation).replaceAll('-', ' ')}</h3>
             <img src="https://cdn.jsdelivr.net/npm/openmoji@15.1.0/color/svg/${
               emoji.hexcode
             }.svg" alt="${sanitizeAnnotation(emoji.annotation)}"
@@ -472,7 +487,10 @@ function generatePages(outputDir) {
         )}</a> / <a href="../">${subgroup.replaceAll(
           '-',
           ' '
-        )}</a> / <span>${sanitizeAnnotation(emoji.annotation)}</span>`;
+        )}</a> / <span>${sanitizeAnnotation(emoji.annotation).replaceAll(
+          '-',
+          ' '
+        )}</span>`;
         fs.writeFileSync(
           path.join(emojiPath, 'index.html'),
           generateHTML(emoji.annotation, emojiContent, 3, emojiBreadcrumbs) // Depth = 3 (emoji level)
@@ -485,6 +503,11 @@ function generatePages(outputDir) {
   const sitemapContent = `
 <?xml version="1.0" encoding="UTF-8"?>
 <urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">
+  <url>
+    <loc>https://emoj.ie/about</loc>
+    <lastmod>${new Date().toISOString()}</lastmod>
+    <priority>0.8</priority>
+  </url>
   ${sitemapUrls
     .map(
       (url) => `
