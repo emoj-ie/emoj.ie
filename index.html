@@ -32,9 +32,24 @@
             placeholder="Search emojis..."
             aria-label="Search emojis"
           />
+          <div class="filter-controls">
+            <select id="group-filter" aria-label="Filter by group">
+              <option value="">All Groups</option>
+            </select>
+            <select id="subgroup-filter" aria-label="Filter by subgroup" disabled>
+              <option value="">All Subgroups</option>
+            </select>
+            <button id="clear-filters" class="clear-filters-btn" aria-label="Clear all filters">Clear</button>
+          </div>
         </div>
       </div>
     </header>
+    <section id="recent-emojis" class="recent-emojis" style="display: none;">
+      <h3>Recently Used</h3>
+      <div class="recent-emojis-grid">
+        <!-- Recently used emojis will be populated here -->
+      </div>
+    </section>
     <main id="emoji-list">
       <div id="emoji-loading-grid">
         <div class="loading-grid">

@@ -4,6 +4,8 @@ Website for emoj.ie
 ## Features
 
 - Search and browse emojis by category
+- **Advanced filtering**: Filter by emoji groups and subgroups
+- **Recently used emojis**: Quick access to your most recently copied emojis
 - Click any emoji to view detailed information in a modal
 - Copy emojis or Unicode codes to clipboard
 - Responsive design for mobile and desktop

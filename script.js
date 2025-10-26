@@ -8,6 +8,16 @@ let currentBatch = 0;
 // Adjust the relative path based on the current location
 const jsonPath = new URL('grouped-openmoji.json', window.location.origin).href;
 
+// Filter elements
+const groupFilter = document.getElementById('group-filter');
+const subgroupFilter = document.getElementById('subgroup-filter');
+const clearFiltersBtn = document.getElementById('clear-filters');
+
+// Recently used emojis
+const recentEmojisSection = document.getElementById('recent-emojis');
+const recentEmojisGrid = document.querySelector('.recent-emojis-grid');
+let recentEmojis = JSON.parse(localStorage.getItem('recentEmojis')) || [];
+
 // Modal elements
 const modal = document.getElementById('emoji-modal');
 const modalClose = document.getElementById('modal-close');
@@ -77,12 +87,130 @@ document.addEventListener('keydown', (e) => {
 // Modal copy buttons
 modalCopyBtn.addEventListener('click', function() {
   copyToClipboard(this.emojiData);
+  addToRecent(this.emojiData);
   hideEmojiModal(); // Close modal after copying
 });
 
 modalCopyUnicodeBtn.addEventListener('click', function() {
   copyToClipboard(this.emojiData);
+  addToRecent(this.emojiData);
   hideEmojiModal(); // Close modal after copying
+});
+
+// Recently used emojis functions
+function addToRecent(emojiData) {
+  // Remove if already exists
+  recentEmojis = recentEmojis.filter(item => item.emoji !== emojiData.emoji);
+  
+  // Add to beginning
+  recentEmojis.unshift(emojiData);
+  
+  // Keep only last 20
+  recentEmojis = recentEmojis.slice(0, 20);
+  
+  // Save to localStorage
+  localStorage.setItem('recentEmojis', JSON.stringify(recentEmojis));
+  
+  // Update display
+  updateRecentEmojis();
+}
+
+function updateRecentEmojis() {
+  if (recentEmojis.length === 0) {
+    recentEmojisSection.style.display = 'none';
+    return;
+  }
+  
+  recentEmojisSection.style.display = 'block';
+  recentEmojisGrid.innerHTML = '';
+  
+  recentEmojis.forEach(emojiData => {
+    const emojiElement = document.createElement('li');
+    emojiElement.className = 'emoji';
+    emojiElement.innerHTML = `
+      <img 
+        src="https://cdn.jsdelivr.net/npm/openmoji@15.1.0/color/svg/${formatHexcode(emojiData.hexcode)}.svg" 
+        alt="${emojiData.annotation}" 
+        loading="lazy"
+        onclick="showEmojiModal({emoji: '${emojiData.emoji}', hexcode: '${emojiData.hexcode}', annotation: '${emojiData.annotation.replace(/'/g, "\\'")}', group: '${emojiData.group}', subgroups: '${emojiData.subgroups}', tags: '${emojiData.tags || ''}'})"
+      >
+      <hr/>
+      <a href="/${emojiData.group}/${emojiData.subgroups}/${sanitizeAnnotation(emojiData.annotation).replaceAll('--', '-')}">
+        <small>${sanitizeAnnotation(emojiData.annotation).replaceAll('-', ' ')}</small>
+      </a>
+    `;
+    recentEmojisGrid.appendChild(emojiElement);
+  });
+}
+
+// Filter functions
+function populateGroupFilter() {
+  const groups = Object.keys(emojiData).sort();
+  groups.forEach(group => {
+    const option = document.createElement('option');
+    option.value = group;
+    option.textContent = group.replace(/-/g, ' ');
+    groupFilter.appendChild(option);
+  });
+}
+
+function populateSubgroupFilter(group) {
+  subgroupFilter.innerHTML = '<option value="">All Subgroups</option>';
+  
+  if (group && emojiData[group]) {
+    const subgroups = Object.keys(emojiData[group]).sort();
+    subgroups.forEach(subgroup => {
+      const option = document.createElement('option');
+      option.value = subgroup;
+      option.textContent = subgroup.replace(/-/g, ' ');
+      subgroupFilter.appendChild(option);
+    });
+    subgroupFilter.disabled = false;
+  } else {
+    subgroupFilter.disabled = true;
+  }
+}
+
+function applyFilters() {
+  const selectedGroup = groupFilter.value;
+  const selectedSubgroup = subgroupFilter.value;
+  
+  if (!selectedGroup) {
+    // No filters - show all
+    renderEmojis(emojiData, false);
+    return;
+  }
+  
+  const filteredData = {};
+  
+  if (selectedSubgroup) {
+    // Filter by both group and subgroup
+    if (emojiData[selectedGroup] && emojiData[selectedGroup][selectedSubgroup]) {
+      filteredData[selectedGroup] = {};
+      filteredData[selectedGroup][selectedSubgroup] = emojiData[selectedGroup][selectedSubgroup];
+    }
+  } else {
+    // Filter by group only
+    filteredData[selectedGroup] = emojiData[selectedGroup];
+  }
+  
+  renderEmojis(filteredData, false);
+}
+
+// Filter event listeners
+groupFilter.addEventListener('change', function() {
+  populateSubgroupFilter(this.value);
+  applyFilters();
+});
+
+subgroupFilter.addEventListener('change', applyFilters);
+
+clearFiltersBtn.addEventListener('click', function() {
+  groupFilter.value = '';
+  subgroupFilter.value = '';
+  subgroupFilter.disabled = true;
+  searchInput.value = '';
+  applyFilters();
 });
 
 // Fetch emoji data and render initially
@@ -90,8 +218,10 @@ fetch(jsonPath)
   .then((res) => res.json())
   .then((data) => {
     emojiData = data; // Store the grouped data directly
+    populateGroupFilter(); // Populate group filter dropdown
     renderBatch(emojiData); // Render initial emojis in batches
     setupLazyLoading(emojiData); // Setup lazy loading
+    updateRecentEmojis(); // Show recently used emojis if any
   })
   .catch((err) => console.error('Error loading emoji data:', err));
 
@@ -474,10 +604,28 @@ function generateSubgroupContent(subgroup) {
 // Add event listener to the search input
 searchInput.addEventListener('input', (e) => {
   const query = e.target.value.toLowerCase();
+  const selectedGroup = groupFilter.value;
+  const selectedSubgroup = subgroupFilter.value;
 
   if (query) {
+    let searchData = emojiData;
+    
+    // If filters are active, search within filtered data
+    if (selectedGroup) {
+      searchData = {};
+      if (selectedSubgroup) {
+        if (emojiData[selectedGroup] && emojiData[selectedGroup][selectedSubgroup]) {
+          searchData[selectedGroup] = {};
+          searchData[selectedGroup][selectedSubgroup] = emojiData[selectedGroup][selectedSubgroup];
+        }
+      } else {
+        searchData[selectedGroup] = emojiData[selectedGroup];
+      }
+    }
+
+    // Perform search within the (possibly filtered) data
     const filteredEmojis = {};
-    Object.entries(emojiData).forEach(([group, subgroups]) => {
+    Object.entries(searchData).forEach(([group, subgroups]) => {
       Object.entries(subgroups).forEach(([subgroup, emojis]) => {
         const filtered = emojis.filter(
           (emoji) =>
@@ -493,8 +641,8 @@ searchInput.addEventListener('input', (e) => {
 
     renderEmojis(filteredEmojis, true); // Render filtered results
   } else {
-    // Reset to the full emoji list with lazy loading
-    renderEmojis(emojiData, false);
+    // No search query - apply current filters
+    applyFilters();
   }
 });
 
