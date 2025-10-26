@@ -16,6 +16,10 @@ const clearFiltersBtn = document.getElementById('clear-filters');
 // Theme toggle
 const themeToggle = document.getElementById('theme-toggle');
 
+// Menu toggle
+const menuToggle = document.getElementById('menu-toggle');
+const headerMenu = document.getElementById('header-menu');
+
 // Recently used emojis
 const recentEmojisSection = document.getElementById('recent-emojis');
 const recentEmojisGrid = document.querySelector('.recent-emojis-grid');
@@ -146,6 +150,29 @@ function initializeTheme() {
 
 // Theme toggle event listener
 themeToggle.addEventListener('click', toggleTheme);
+
+// Menu toggle event listener
+menuToggle.addEventListener('click', toggleMenu);
+
+// Menu toggle function
+function toggleMenu() {
+  const isOpen = headerMenu.classList.contains('open');
+  menuToggle.classList.toggle('active', !isOpen);
+  headerMenu.classList.toggle('open', !isOpen);
+  
+  // Close menu when clicking outside
+  if (!isOpen) {
+    document.addEventListener('click', closeMenuOnClickOutside);
+  } else {
+    document.removeEventListener('click', closeMenuOnClickOutside);
+  }
+}
+
+function closeMenuOnClickOutside(event) {
+  if (!headerMenu.contains(event.target) && !menuToggle.contains(event.target)) {
+    toggleMenu();
+  }
+}
 
 // Recently used emojis functions
 function addToRecent(emojiData) {

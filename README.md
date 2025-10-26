@@ -4,9 +4,10 @@ Website for emoj.ie
 ## ✨ Features
 
 - 🔍 **Smart Search**: Instant search with live filtering
-- 🏷️ **Advanced Filtering**: Filter by emoji groups and subgroups
-- 📋 **Bulk Selection**: Select and copy multiple emojis at once
-- 🌙 **Dark Mode**: Modern theme toggle with system preference detection
+- 🏷️ **Advanced Filtering**: Filter by emoji groups and subgroups (accessible via burger menu)
+- 📋 **Bulk Selection**: Select multiple emojis and copy them together (via menu)
+- 🌙 **Dark Mode**: Toggle between light and dark themes with system preference detection
+- 🍔 **Burger Menu**: Collapsible menu for mobile and desktop with smooth animations
 - 📱 **Responsive Design**: Optimized for all devices and screen sizes
 - ♿ **Accessibility**: Full keyboard navigation and screen reader support
 - 💾 **Offline Support**: Service worker caching for offline use
