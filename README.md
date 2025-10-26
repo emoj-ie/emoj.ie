@@ -1,37 +1,39 @@
 # emoj.ie
 Website for emoj.ie
 
-## Features
+## ✨ Features
 
-- Search and browse emojis by category
-- **Advanced filtering**: Filter by emoji groups and subgroups
-- **Smart search**: Search works within active filters
-- **Recently used emojis**: Quick access to your most recently copied emojis
-- **Dark mode**: Toggle between light and dark themes with system preference detection
-- Click any emoji to view detailed information in a modal
-- Copy emojis or Unicode codes to clipboard
-- Responsive design for mobile and desktop
-- Offline support with service worker caching
+- 🔍 **Smart Search**: Instant search with live filtering
+- 🏷️ **Advanced Filtering**: Filter by emoji groups and subgroups
+- 📋 **Bulk Selection**: Select and copy multiple emojis at once
+- 🌙 **Dark Mode**: Modern theme toggle with system preference detection
+- 📱 **Responsive Design**: Optimized for all devices and screen sizes
+- ♿ **Accessibility**: Full keyboard navigation and screen reader support
+- 💾 **Offline Support**: Service worker caching for offline use
+- 🎨 **Modern UI**: Sleek design with smooth animations and transitions
 
-## Running Locally
+## 🚀 Getting Started
 
-To serve this app locally on Linux, you can use Python's built-in HTTP server.
+The site is fully static and works immediately. Features include:
 
-1. Navigate to the project directory:
-   ```bash
-   cd /path/to/emoj.ie
-   ```
+- **Live Search**: Type to instantly filter emojis
+- **Category Filters**: Narrow down by emoji groups and subgroups
+- **Theme Toggle**: Click the moon/sun icon for dark/light mode
+- **Bulk Actions**: Select multiple emojis and copy them together
+- **Recent History**: Automatically tracks your recently used emojis
 
-2. Start the server (Python 3):
-   ```bash
-   python3 -m http.server 8000
-   ```
+## 🎯 User Experience Highlights
 
-3. Open your browser and go to `http://localhost:8000`
+- **Smooth Animations**: Modern transitions and micro-interactions
+- **Touch Optimized**: Perfect mobile experience with touch gestures
+- **Keyboard Friendly**: Full keyboard navigation support
+- **High Contrast**: Excellent readability in both themes
+- **Performance**: Optimized for fast loading and smooth scrolling
 
-If you have Python 2 instead, use:
-```bash
-python -m SimpleHTTPServer 8000
-```
+## 🛠️ Technical Features
 
-The site includes a service worker that caches the emoji data and core files for offline use.
+- **CSS Variables**: Modern theming system with CSS custom properties
+- **Progressive Enhancement**: Works without JavaScript
+- **Service Worker**: Offline functionality and caching
+- **Modern Fonts**: Inter font family for crisp readability
+- **Responsive Grid**: Flexible layouts that adapt to any screen size

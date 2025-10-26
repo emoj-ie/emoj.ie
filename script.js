@@ -19,6 +19,9 @@ const themeToggle = document.getElementById('theme-toggle');
 // Recently used emojis
 const recentEmojisSection = document.getElementById('recent-emojis');
 const recentEmojisGrid = document.querySelector('.recent-emojis-grid');
+const carouselPrev = document.querySelector('.carousel-prev');
+const carouselNext = document.querySelector('.carousel-next');
+const recentCarousel = document.querySelector('.recent-carousel');
 let recentEmojis = JSON.parse(localStorage.getItem('recentEmojis')) || [];
 
 // Modal elements
@@ -188,7 +191,37 @@ function updateRecentEmojis() {
     `;
     recentEmojisGrid.appendChild(emojiElement);
   });
+  
+  // Update carousel navigation
+  updateCarouselNavigation();
 }
+
+function updateCarouselNavigation() {
+  const scrollLeft = recentCarousel.scrollLeft;
+  const scrollWidth = recentCarousel.scrollWidth;
+  const clientWidth = recentCarousel.clientWidth;
+  
+  // Show/hide navigation buttons based on scroll position
+  carouselPrev.style.display = scrollLeft > 0 ? 'flex' : 'none';
+  carouselNext.style.display = scrollLeft < scrollWidth - clientWidth - 1 ? 'flex' : 'none';
+}
+
+function scrollCarousel(direction) {
+  const emojiWidth = 56 + 12; // emoji width + gap
+  const scrollAmount = emojiWidth * 3; // Scroll 3 emojis at a time
+  
+  recentCarousel.scrollBy({
+    left: direction * scrollAmount,
+    behavior: 'smooth'
+  });
+}
+
+// Carousel event listeners
+carouselPrev.addEventListener('click', () => scrollCarousel(-1));
+carouselNext.addEventListener('click', () => scrollCarousel(1));
+
+// Update navigation on scroll
+recentCarousel.addEventListener('scroll', updateCarouselNavigation);
 
 // Filter functions
 function populateGroupFilter() {
