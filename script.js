@@ -274,7 +274,7 @@ function populateGroupFilter() {
 }
 
 function populateSubgroupFilter(group) {
-  subgroupFilter.innerHTML = '<option value="">All Subgroups</option>';
+  subgroupFilter.innerHTML = '<option value="">All Subcategories</option>';
   
   if (group && emojiData[group]) {
     const subgroups = Object.keys(emojiData[group]).sort();
