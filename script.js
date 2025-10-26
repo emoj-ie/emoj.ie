@@ -57,8 +57,8 @@ function showEmojiModal(emoji) {
   }
   
   // Store emoji data for copy buttons
-  modalCopyBtn.emojiData = emoji.emoji;
-  modalCopyUnicodeBtn.emojiData = emoji.hexcode;
+  modalCopyBtn.emojiData = emoji;
+  modalCopyUnicodeBtn.emojiData = emoji;
   
   // Show modal
   modal.style.display = 'block';
@@ -89,13 +89,13 @@ document.addEventListener('keydown', (e) => {
 
 // Modal copy buttons
 modalCopyBtn.addEventListener('click', function() {
-  copyToClipboard(this.emojiData);
+  copyToClipboard(this.emojiData.emoji);
   addToRecent(this.emojiData);
   hideEmojiModal(); // Close modal after copying
 });
 
 modalCopyUnicodeBtn.addEventListener('click', function() {
-  copyToClipboard(this.emojiData);
+  copyToClipboard(this.emojiData.hexcode);
   addToRecent(this.emojiData);
   hideEmojiModal(); // Close modal after copying
 });
