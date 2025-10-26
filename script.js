@@ -174,16 +174,14 @@ function populateSubgroupFilter(group) {
 function applyFilters() {
   const selectedGroup = groupFilter.value;
   const selectedSubgroup = subgroupFilter.value;
+  const searchQuery = searchInput.value.toLowerCase().trim();
+  
+  let filteredData = {};
   
   if (!selectedGroup) {
-    // No filters - show all
-    renderEmojis(emojiData, false);
-    return;
-  }
-  
-  const filteredData = {};
-  
-  if (selectedSubgroup) {
+    // No filters - use all data
+    filteredData = emojiData;
+  } else if (selectedSubgroup) {
     // Filter by both group and subgroup
     if (emojiData[selectedGroup] && emojiData[selectedGroup][selectedSubgroup]) {
       filteredData[selectedGroup] = {};
@@ -194,7 +192,26 @@ function applyFilters() {
     filteredData[selectedGroup] = emojiData[selectedGroup];
   }
   
-  renderEmojis(filteredData, false);
+  // If there's a search query, apply it to the filtered data
+  if (searchQuery) {
+    const searchResults = {};
+    Object.entries(filteredData).forEach(([group, subgroups]) => {
+      Object.entries(subgroups).forEach(([subgroup, emojis]) => {
+        const filtered = emojis.filter(
+          (emoji) =>
+            emoji.annotation.toLowerCase().includes(searchQuery) ||
+            (emoji.tags && emoji.tags.toLowerCase().includes(searchQuery))
+        );
+        if (filtered.length > 0) {
+          if (!searchResults[group]) searchResults[group] = {};
+          searchResults[group][subgroup] = filtered;
+        }
+      });
+    });
+    renderEmojis(searchResults, true);
+  } else {
+    renderEmojis(filteredData, false);
+  }
 }
 
 // Filter event listeners
@@ -603,47 +620,27 @@ function generateSubgroupContent(subgroup) {
 
 // Add event listener to the search input
 searchInput.addEventListener('input', (e) => {
-  const query = e.target.value.toLowerCase();
-  const selectedGroup = groupFilter.value;
-  const selectedSubgroup = subgroupFilter.value;
-
+  const query = e.target.value.toLowerCase().trim();
+  
   if (query) {
-    let searchData = emojiData;
-    
-    // If filters are active, search within filtered data
-    if (selectedGroup) {
-      searchData = {};
-      if (selectedSubgroup) {
-        if (emojiData[selectedGroup] && emojiData[selectedGroup][selectedSubgroup]) {
-          searchData[selectedGroup] = {};
-          searchData[selectedGroup][selectedSubgroup] = emojiData[selectedGroup][selectedSubgroup];
-        }
-      } else {
-        searchData[selectedGroup] = emojiData[selectedGroup];
-      }
-    }
-
-    // Perform search within the (possibly filtered) data
-    const filteredEmojis = {};
-    Object.entries(searchData).forEach(([group, subgroups]) => {
-      Object.entries(subgroups).forEach(([subgroup, emojis]) => {
-        const filtered = emojis.filter(
-          (emoji) =>
-            emoji.annotation.toLowerCase().includes(query) || // Search in annotation
-            (emoji.tags && emoji.tags.toLowerCase().includes(query)) // Search in tags if available
-        );
-        if (filtered.length > 0) {
-          if (!filteredEmojis[group]) filteredEmojis[group] = {};
-          filteredEmojis[group][subgroup] = filtered;
-        }
-      });
-    });
-
-    renderEmojis(filteredEmojis, true); // Render filtered results
+    // Apply search to current filters
+    applyFilters();
   } else {
     // No search query - apply current filters
     applyFilters();
   }
+});
+
+clearFiltersBtn.addEventListener('click', function() {
+  groupFilter.value = '';
+  subgroupFilter.value = '';
+  subgroupFilter.disabled = true;
+  searchInput.value = '';
+  
+  // Reset scope indicator
+  updateSearchScope('All Emojis', false);
+  
+  applyFilters();
 });
 
 const backToTopButton = document.getElementById('back-to-top');

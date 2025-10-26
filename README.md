@@ -5,6 +5,7 @@ Website for emoj.ie
 
 - Search and browse emojis by category
 - **Advanced filtering**: Filter by emoji groups and subgroups
+- **Smart search**: Search works within active filters
 - **Recently used emojis**: Quick access to your most recently copied emojis
 - Click any emoji to view detailed information in a modal
 - Copy emojis or Unicode codes to clipboard
