@@ -5,7 +5,6 @@ Website for emoj.ie
 
 - 🔍 **Smart Search**: Instant search with live filtering
 - 🏷️ **Advanced Filtering**: Filter by emoji groups and subgroups (accessible via burger menu)
-- 📋 **Bulk Selection**: Select multiple emojis and copy them together (via menu)
 - 🌙 **Dark Mode**: Toggle between light and dark themes with system preference detection
 - 🍔 **Burger Menu**: Collapsible menu for mobile and desktop with smooth animations
 - 📱 **Responsive Design**: Optimized for all devices and screen sizes
@@ -20,7 +19,6 @@ The site is fully static and works immediately. Features include:
 - **Live Search**: Type to instantly filter emojis
 - **Category Filters**: Narrow down by emoji groups and subgroups
 - **Theme Toggle**: Click the moon/sun icon for dark/light mode
-- **Bulk Actions**: Select multiple emojis and copy them together
 - **Recent History**: Automatically tracks your recently used emojis
 
 ## 🎯 User Experience Highlights
