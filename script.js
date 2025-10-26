@@ -28,6 +28,9 @@ const carouselNext = document.querySelector('.carousel-next');
 const recentCarousel = document.querySelector('.recent-carousel');
 let recentEmojis = JSON.parse(localStorage.getItem('recentEmojis')) || [];
 
+// Clean up recent emojis - remove any entries without hexcodes
+recentEmojis = recentEmojis.filter(emoji => emoji && emoji.hexcode);
+
 // Modal elements
 const modal = document.getElementById('emoji-modal');
 const modalClose = document.getElementById('modal-close');
@@ -185,6 +188,9 @@ function addToRecent(emojiData) {
   // Keep only last 20
   recentEmojis = recentEmojis.slice(0, 20);
   
+  // Clean up recent emojis - remove any entries without hexcodes
+  recentEmojis = recentEmojis.filter(emoji => emoji && emoji.hexcode);
+  
   // Save to localStorage
   localStorage.setItem('recentEmojis', JSON.stringify(recentEmojis));
   
@@ -202,6 +208,12 @@ function updateRecentEmojis() {
   recentEmojisGrid.innerHTML = '';
   
   recentEmojis.forEach(emojiData => {
+    // Skip emojis without valid hexcode
+    if (!emojiData.hexcode) {
+      console.warn('Skipping emoji without hexcode:', emojiData);
+      return;
+    }
+    
     const emojiElement = document.createElement('li');
     emojiElement.className = 'emoji';
     emojiElement.innerHTML = `
@@ -533,6 +545,10 @@ function showToast(message) {
 }
 
 function formatHexcode(hexcode) {
+  if (!hexcode) {
+    console.warn('formatHexcode: hexcode is undefined or null');
+    return '';
+  }
   return hexcode.toUpperCase().replaceAll(/\s/g, '-');
 }
 
