@@ -8,6 +8,83 @@ let currentBatch = 0;
 // Adjust the relative path based on the current location
 const jsonPath = new URL('grouped-openmoji.json', window.location.origin).href;
 
+// Modal elements
+const modal = document.getElementById('emoji-modal');
+const modalClose = document.getElementById('modal-close');
+const modalEmojiImg = document.getElementById('modal-emoji-img');
+const modalEmojiName = document.getElementById('modal-emoji-name');
+const modalUnicode = document.getElementById('modal-unicode');
+const modalHexcode = document.getElementById('modal-hexcode');
+const modalGroup = document.getElementById('modal-group');
+const modalSubgroup = document.getElementById('modal-subgroup');
+const modalTags = document.getElementById('modal-tags');
+const modalTagsSection = document.getElementById('modal-tags-section');
+const modalCopyBtn = document.getElementById('modal-copy-btn');
+const modalCopyUnicodeBtn = document.getElementById('modal-copy-unicode-btn');
+
+// Modal functions
+function showEmojiModal(emoji) {
+  // Set modal content
+  const emojiUrl = `https://cdn.jsdelivr.net/npm/openmoji@15.1.0/color/svg/${formatHexcode(emoji.hexcode)}.svg`;
+  modalEmojiImg.src = emojiUrl;
+  modalEmojiImg.alt = emoji.annotation;
+  
+  modalEmojiName.textContent = emoji.annotation;
+  modalUnicode.textContent = `U+${emoji.hexcode}`;
+  modalHexcode.textContent = emoji.hexcode;
+  modalGroup.textContent = emoji.group.replace(/-/g, ' ');
+  modalSubgroup.textContent = emoji.subgroups.replace(/-/g, ' ');
+  
+  // Handle tags
+  if (emoji.tags) {
+    modalTags.textContent = emoji.tags;
+    modalTagsSection.style.display = 'block';
+  } else {
+    modalTagsSection.style.display = 'none';
+  }
+  
+  // Store emoji data for copy buttons
+  modalCopyBtn.emojiData = emoji.emoji;
+  modalCopyUnicodeBtn.emojiData = emoji.hexcode;
+  
+  // Show modal
+  modal.style.display = 'block';
+  document.body.style.overflow = 'hidden'; // Prevent background scrolling
+}
+
+function hideEmojiModal() {
+  modal.style.display = 'none';
+  document.body.style.overflow = 'auto'; // Restore scrolling
+}
+
+// Modal event listeners
+modalClose.addEventListener('click', hideEmojiModal);
+
+// Close modal when clicking outside
+modal.addEventListener('click', (e) => {
+  if (e.target === modal) {
+    hideEmojiModal();
+  }
+});
+
+// Close modal on Escape key
+document.addEventListener('keydown', (e) => {
+  if (e.key === 'Escape' && modal.style.display === 'block') {
+    hideEmojiModal();
+  }
+});
+
+// Modal copy buttons
+modalCopyBtn.addEventListener('click', function() {
+  copyToClipboard(this.emojiData);
+  hideEmojiModal(); // Close modal after copying
+});
+
+modalCopyUnicodeBtn.addEventListener('click', function() {
+  copyToClipboard(this.emojiData);
+  hideEmojiModal(); // Close modal after copying
+});
+
 // Fetch emoji data and render initially
 fetch(jsonPath)
   .then((res) => res.json())
@@ -84,7 +161,7 @@ function renderBatch(groupedEmojis, renderAll = false) {
                               )}.svg" 
                               alt="${emoji.annotation}" 
                               loading="lazy"
-                              onclick="copyToClipboard('${emoji.emoji}')"
+                              onclick="showEmojiModal({emoji: '${emoji.emoji}', hexcode: '${emoji.hexcode}', annotation: '${emoji.annotation.replace(/'/g, "\\'")}', group: '${emoji.group}', subgroups: '${emoji.subgroups}', tags: '${emoji.tags || ''}'})"
                             >
                             <hr/>
                             <a href="/${group}/${subgroup}/${sanitizeAnnotation(emoji.annotation).replaceAll('--', '-')}">

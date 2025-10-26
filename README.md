@@ -4,7 +4,8 @@ Website for emoj.ie
 ## Features
 
 - Search and browse emojis by category
-- Copy emojis to clipboard with one click
+- Click any emoji to view detailed information in a modal
+- Copy emojis or Unicode codes to clipboard
 - Responsive design for mobile and desktop
 - Offline support with service worker caching
 

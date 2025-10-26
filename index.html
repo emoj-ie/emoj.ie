@@ -65,6 +65,31 @@
     <footer>
       <p>© 2025 Emoj.ie | <a href="./about">About</a></p>
     </footer>
+    
+    <!-- Emoji Details Modal -->
+    <div id="emoji-modal" class="modal">
+      <div class="modal-content">
+        <span class="modal-close" id="modal-close">&times;</span>
+        <div class="modal-emoji-display">
+          <img id="modal-emoji-img" src="" alt="">
+        </div>
+        <div class="modal-details">
+          <h2 id="modal-emoji-name"></h2>
+          <div class="modal-info">
+            <p><strong>Unicode:</strong> <code id="modal-unicode"></code></p>
+            <p><strong>Hex Code:</strong> <code id="modal-hexcode"></code></p>
+            <p><strong>Group:</strong> <span id="modal-group"></span></p>
+            <p><strong>Subgroup:</strong> <span id="modal-subgroup"></span></p>
+            <p id="modal-tags-section"><strong>Tags:</strong> <span id="modal-tags"></span></p>
+          </div>
+          <div class="modal-actions">
+            <button id="modal-copy-btn" class="copy-btn">Copy Emoji</button>
+            <button id="modal-copy-unicode-btn" class="copy-btn secondary">Copy Unicode</button>
+          </div>
+        </div>
+      </div>
+    </div>
+
     <script>
       // Register service worker for offline caching
       if ('serviceWorker' in navigator) {
