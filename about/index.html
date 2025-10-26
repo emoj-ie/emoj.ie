@@ -151,5 +151,19 @@
     <footer>
       <p>© 2025 emoj.ie | <a href="../">Home</a></p>
     </footer>
+    <script>
+      // Register service worker for offline caching
+      if ('serviceWorker' in navigator) {
+        window.addEventListener('load', function() {
+          navigator.serviceWorker.register('/sw.js')
+            .then(function(registration) {
+              console.log('Service Worker registered successfully:', registration.scope);
+            })
+            .catch(function(error) {
+              console.log('Service Worker registration failed:', error);
+            });
+        });
+      }
+    </script>
   </body>
 </html>
