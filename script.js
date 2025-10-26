@@ -13,6 +13,9 @@ const groupFilter = document.getElementById('group-filter');
 const subgroupFilter = document.getElementById('subgroup-filter');
 const clearFiltersBtn = document.getElementById('clear-filters');
 
+// Theme toggle
+const themeToggle = document.getElementById('theme-toggle');
+
 // Recently used emojis
 const recentEmojisSection = document.getElementById('recent-emojis');
 const recentEmojisGrid = document.querySelector('.recent-emojis-grid');
@@ -96,6 +99,50 @@ modalCopyUnicodeBtn.addEventListener('click', function() {
   addToRecent(this.emojiData);
   hideEmojiModal(); // Close modal after copying
 });
+
+// Theme management functions
+function getSystemTheme() {
+  return window.matchMedia && window.matchMedia('(prefers-color-scheme: dark)').matches ? 'dark' : 'light';
+}
+
+function getStoredTheme() {
+  return localStorage.getItem('theme');
+}
+
+function setTheme(theme) {
+  document.documentElement.setAttribute('data-theme', theme);
+  localStorage.setItem('theme', theme);
+  
+  // Update toggle button icon
+  themeToggle.textContent = theme === 'dark' ? '☀️' : '🌙';
+}
+
+function toggleTheme() {
+  const currentTheme = document.documentElement.getAttribute('data-theme') || 'light';
+  const newTheme = currentTheme === 'dark' ? 'light' : 'dark';
+  setTheme(newTheme);
+}
+
+function initializeTheme() {
+  const storedTheme = getStoredTheme();
+  const systemTheme = getSystemTheme();
+  const initialTheme = storedTheme || systemTheme;
+  
+  setTheme(initialTheme);
+  
+  // Listen for system theme changes
+  if (window.matchMedia) {
+    window.matchMedia('(prefers-color-scheme: dark)').addEventListener('change', (e) => {
+      // Only auto-switch if no stored preference
+      if (!getStoredTheme()) {
+        setTheme(e.matches ? 'dark' : 'light');
+      }
+    });
+  }
+}
+
+// Theme toggle event listener
+themeToggle.addEventListener('click', toggleTheme);
 
 // Recently used emojis functions
 function addToRecent(emojiData) {
@@ -239,6 +286,7 @@ fetch(jsonPath)
     renderBatch(emojiData); // Render initial emojis in batches
     setupLazyLoading(emojiData); // Setup lazy loading
     updateRecentEmojis(); // Show recently used emojis if any
+    initializeTheme(); // Initialize theme on page load
   })
   .catch((err) => console.error('Error loading emoji data:', err));
 
@@ -636,10 +684,6 @@ clearFiltersBtn.addEventListener('click', function() {
   subgroupFilter.value = '';
   subgroupFilter.disabled = true;
   searchInput.value = '';
-  
-  // Reset scope indicator
-  updateSearchScope('All Emojis', false);
-  
   applyFilters();
 });
 

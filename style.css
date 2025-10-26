@@ -1,3 +1,52 @@
+/* CSS Custom Properties for Theming */
+:root {
+  /* Light theme (default) */
+  --bg-color: #fafafa;
+  --text-color: #333;
+  --header-bg: #4caf50;
+  --header-text: #fff;
+  --card-bg: #fff;
+  --card-border: #ddd;
+  --card-shadow: rgba(0, 0, 0, 0.1);
+  --input-bg: #fff;
+  --input-border: #ddd;
+  --input-focus: rgba(76, 175, 80, 0.3);
+  --button-bg: #4caf50;
+  --button-hover: #45a049;
+  --button-secondary: #2196f3;
+  --button-danger: #f44336;
+  --button-danger-hover: #d32f2f;
+  --link-color: #4caf50;
+  --modal-bg: #fff;
+  --modal-overlay: rgba(0, 0, 0, 0.7);
+  --toast-bg: #4caf50;
+  --recent-bg: #fafafa;
+}
+
+/* Dark theme */
+[data-theme="dark"] {
+  --bg-color: #121212;
+  --text-color: #e0e0e0;
+  --header-bg: #2e7d32;
+  --header-text: #fff;
+  --card-bg: #1e1e1e;
+  --card-border: #333;
+  --card-shadow: rgba(0, 0, 0, 0.3);
+  --input-bg: #2a2a2a;
+  --input-border: #555;
+  --input-focus: rgba(76, 175, 80, 0.5);
+  --button-bg: #4caf50;
+  --button-hover: #45a049;
+  --button-secondary: #2196f3;
+  --button-danger: #f44336;
+  --button-danger-hover: #d32f2f;
+  --link-color: #81c784;
+  --modal-bg: #2a2a2a;
+  --modal-overlay: rgba(0, 0, 0, 0.85);
+  --toast-bg: #4caf50;
+  --recent-bg: #1a1a1a;
+}
+
 body {
   margin: 0;
   font-family: Arial, sans-serif;
@@ -5,11 +54,12 @@ body {
   flex-direction: column;
   align-items: center;
   text-align: center;
-  color: #333;
-  background: #fafafa;
+  color: var(--text-color);
+  background: var(--bg-color);
   line-height: 1.6;
   max-width: 100%; /* Prevent horizontal scrolling */
   overflow-x: hidden; /* Hide any unintended horizontal overflow */
+  transition: background 0.3s ease, color 0.3s ease;
 }
 header h1 {
   padding: 0 1rem;
@@ -23,7 +73,7 @@ hr {
 }
 /* Header Styling */
 .header {
-  background: #4caf50;
+  background: var(--header-bg);
   padding: 0.5rem 1rem;
   position: sticky;
   top: 0;
@@ -47,6 +97,26 @@ hr {
   height: 40px;
   display: block;
 }
+
+.theme-toggle {
+  background: none;
+  border: none;
+  font-size: 1.5rem;
+  cursor: pointer;
+  padding: 0.5rem;
+  border-radius: 50%;
+  transition: background 0.2s;
+  margin-left: 1rem;
+}
+
+.theme-toggle:hover {
+  background: rgba(255, 255, 255, 0.1);
+}
+
+[data-theme="dark"] .theme-toggle {
+  content: "☀️";
+}
+
 .search-container {
   flex-grow: 1;
   margin-left: 1rem;
@@ -55,17 +125,19 @@ hr {
   width: 100%;
   max-width: 400px;
   padding: 0.3rem 0.7rem;
-  border: none;
+  border: 1px solid var(--input-border);
   border-radius: 15px;
   font-size: 0.9rem;
   box-shadow: 0 1px 3px rgba(0, 0, 0, 0.2);
+  background: var(--input-bg);
+  color: var(--text-color);
 }
 .search-container input::placeholder {
   color: #a5d6a7;
 }
 .search-container input:focus {
   outline: none;
-  box-shadow: 0 0 5px rgba(0, 0, 0, 0.2);
+  box-shadow: 0 0 5px var(--input-focus);
 }
 
 /* Filter Controls */
@@ -79,22 +151,23 @@ hr {
 
 .filter-controls select {
   padding: 0.4rem 0.6rem;
-  border: 1px solid #ddd;
+  border: 1px solid var(--input-border);
   border-radius: 6px;
   font-size: 0.85rem;
-  background: white;
+  background: var(--input-bg);
+  color: var(--text-color);
   cursor: pointer;
   min-width: 120px;
 }
 
 .filter-controls select:focus {
   outline: none;
-  border-color: #4caf50;
-  box-shadow: 0 0 3px rgba(76, 175, 80, 0.3);
+  border-color: var(--button-bg);
+  box-shadow: 0 0 3px var(--input-focus);
 }
 
 .clear-filters-btn {
-  background: #f44336;
+  background: var(--button-danger);
   color: white;
   border: none;
   padding: 0.4rem 0.8rem;
@@ -105,7 +178,7 @@ hr {
 }
 
 .clear-filters-btn:hover {
-  background: #d32f2f;
+  background: var(--button-danger-hover);
 }
 
 /* Recently Used Emojis */
@@ -127,7 +200,7 @@ hr {
   justify-content: center;
   gap: 8px;
   padding: 1rem;
-  background: #fafafa;
+  background: var(--recent-bg);
   border-radius: 8px;
 }
 
@@ -285,10 +358,10 @@ main h2 {
   width: 60px;
   margin: 0;
   padding: 5px;
-  background: white;
-  border: 1px solid #ddd;
+  background: var(--card-bg);
+  border: 1px solid var(--card-border);
   border-radius: 4px;
-  box-shadow: 0 1px 3px rgba(0, 0, 0, 0.1);
+  box-shadow: 0 1px 3px var(--card-shadow);
   transition: transform 0.1s;
 }
 .emoji:hover {
@@ -309,7 +382,7 @@ footer {
   margin-top: 2rem;
 }
 footer a {
-  color: #4caf50;
+  color: var(--link-color);
   text-decoration: none;
 }
 footer a:hover {
@@ -320,7 +393,7 @@ footer a:hover {
   bottom: 20px;
   left: 50%;
   transform: translateX(-50%);
-  background: #4caf50;
+  background: var(--toast-bg);
   color: white;
   padding: 10px 20px;
   border-radius: 4px;
@@ -389,12 +462,12 @@ ul li {
   top: 0;
   width: 100%;
   height: 100%;
-  background-color: rgba(0, 0, 0, 0.7);
+  background-color: var(--modal-overlay);
   backdrop-filter: blur(5px);
 }
 
 .modal-content {
-  background-color: white;
+  background-color: var(--modal-bg);
   margin: 10% auto;
   padding: 0;
   border-radius: 12px;
