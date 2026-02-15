@@ -80,10 +80,10 @@
     });
   }
 
-  function getDayOfYear(date) {
-    var start = new Date(Date.UTC(date.getUTCFullYear(), 0, 1));
-    var now = new Date(Date.UTC(date.getUTCFullYear(), date.getUTCMonth(), date.getUTCDate()));
-    return Math.floor((now - start) / 86400000) + 1;
+  function getMonthDayKey(date) {
+    var month = String(date.getMonth() + 1).padStart(2, '0');
+    var day = String(date.getDate()).padStart(2, '0');
+    return month + '-' + day;
   }
 
   function applyDailyLogoEmoji() {
@@ -104,8 +104,11 @@
           return;
         }
 
-        var day = getDayOfYear(new Date());
-        var selected = rows[Math.min(rows.length, day) - 1] || rows[0];
+        var monthDay = getMonthDayKey(new Date());
+        var selected =
+          rows.find(function (row) {
+            return row && row.monthDay === monthDay;
+          }) || rows[0];
         if (!selected || !selected.emoji) {
           return;
         }

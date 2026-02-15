@@ -166,12 +166,12 @@ function renderGlobalAdvancedMenu() {
       <div class="control-group">
         <label for="global-skin-tone-mode">Default Skin Tone</label>
         <select id="global-skin-tone-mode" aria-label="Select default skin tone">
-          <option value="0">None</option>
-          <option value="1">Light</option>
-          <option value="2">Medium-Light</option>
-          <option value="3">Medium</option>
-          <option value="4">Medium-Dark</option>
           <option value="5">Dark</option>
+          <option value="4">Medium-Dark</option>
+          <option value="3">Medium</option>
+          <option value="2">Medium-Light</option>
+          <option value="1">Light</option>
+          <option value="0">Yellow</option>
         </select>
       </div>
     </div>
@@ -322,12 +322,12 @@ function renderHomePage(model, config) {
       <div class="control-group">
         <label for="skin-tone-mode">Default Skin Tone</label>
         <select id="skin-tone-mode" aria-label="Select default skin tone">
-          <option value="0">None</option>
-          <option value="1">Light</option>
-          <option value="2">Medium-Light</option>
-          <option value="3">Medium</option>
-          <option value="4">Medium-Dark</option>
           <option value="5">Dark</option>
+          <option value="4">Medium-Dark</option>
+          <option value="3">Medium</option>
+          <option value="2">Medium-Light</option>
+          <option value="1">Light</option>
+          <option value="0">Yellow</option>
         </select>
       </div>
       <div class="control-group">
@@ -733,64 +733,216 @@ function buildHomeDataPayload(emojiEntries) {
 function buildDailyEmojiPayload(emojiEntries) {
   const source = [...emojiEntries]
     .filter((entry) => entry.indexable && !entry.isVariant && entry.group !== 'component')
+    .map((entry) => {
+      const tags = Array.isArray(entry.tags) ? entry.tags.join(' ') : String(entry.tags || '');
+      const searchText = [
+        String(entry.annotation || ''),
+        String(entry.group || ''),
+        String(entry.subgroup || ''),
+        tags,
+      ]
+        .join(' ')
+        .toLowerCase();
+
+      return {
+        ...entry,
+        hexLower: normalizeHex(entry.hexLower || entry.hexcode || ''),
+        searchText,
+      };
+    })
     .sort((a, b) => a.detailRoute.localeCompare(b.detailRoute, 'en', { sensitivity: 'base' }));
 
   const fallbackSource =
     source.length > 0
       ? source
-      : [...emojiEntries].sort((a, b) =>
-          a.detailRoute.localeCompare(b.detailRoute, 'en', { sensitivity: 'base' })
-        );
+      : [...emojiEntries]
+          .map((entry) => ({
+            ...entry,
+            hexLower: normalizeHex(entry.hexLower || entry.hexcode || ''),
+            searchText: [
+              String(entry.annotation || ''),
+              String(entry.group || ''),
+              String(entry.subgroup || ''),
+            ]
+              .join(' ')
+              .toLowerCase(),
+          }))
+          .sort((a, b) => a.detailRoute.localeCompare(b.detailRoute, 'en', { sensitivity: 'base' }));
 
   const entryByHex = new Map();
   for (const entry of fallbackSource) {
-    const hex = normalizeHex(entry.hexLower || entry.hexcode || '');
-    if (hex && !entryByHex.has(hex)) {
-      entryByHex.set(hex, entry);
+    if (entry.hexLower && !entryByHex.has(entry.hexLower)) {
+      entryByHex.set(entry.hexLower, entry);
     }
   }
 
-  const resolvePool = (hexList = []) =>
-    hexList
-      .map((hex) => entryByHex.get(normalizeHex(hex || '')))
-      .filter(Boolean);
+  const fixedDateHexes = DAILY_EMOJI_EDITORIAL.fixedDateHexes || {};
+  const reservedOverrideHexes = new Set();
+  for (const hexes of Object.values(fixedDateHexes)) {
+    const list = Array.isArray(hexes) ? hexes : [hexes];
+    for (const hex of list) {
+      const normalized = normalizeHex(hex || '');
+      if (normalized && entryByHex.has(normalized)) {
+        reservedOverrideHexes.add(normalized);
+      }
+    }
+  }
 
-  const fallbackPool = resolvePool(DAILY_EMOJI_EDITORIAL.fallbackPool);
-  const safetySource =
-    fallbackSource.length > 0
-      ? fallbackSource
-      : [
-          {
-            emoji: '😀',
-            annotation: 'emoji',
-            detailRoute: '',
-            hexLower: '1f600',
-          },
-        ];
+  const monthGroupBias = {
+    '01': ['travel-places', 'activities'],
+    '02': ['smileys-emotion', 'food-drink'],
+    '03': ['animals-nature', 'travel-places'],
+    '04': ['animals-nature', 'travel-places'],
+    '05': ['animals-nature', 'activities'],
+    '06': ['travel-places', 'activities'],
+    '07': ['activities', 'travel-places'],
+    '08': ['food-drink', 'travel-places'],
+    '09': ['objects', 'food-drink'],
+    '10': ['activities', 'animals-nature'],
+    '11': ['food-drink', 'travel-places'],
+    '12': ['activities', 'travel-places'],
+  };
+
+  const weeklyThemeKeywords = [
+    ['smile', 'joy', 'sparkle'],
+    ['animal', 'nature', 'bird'],
+    ['food', 'drink', 'fruit'],
+    ['travel', 'place', 'weather'],
+    ['sport', 'game', 'activity'],
+    ['object', 'tool', 'light'],
+    ['symbol', 'star', 'moon'],
+  ];
+
+  const usedHexes = new Set();
+
+  const pickByHexList = (hexList = [], { allowReserved = false } = {}) => {
+    for (const hex of hexList) {
+      const normalized = normalizeHex(hex || '');
+      const entry = entryByHex.get(normalized);
+      if (!entry || usedHexes.has(entry.hexLower)) {
+        continue;
+      }
+      if (!allowReserved && reservedOverrideHexes.has(entry.hexLower)) {
+        continue;
+      }
+      return entry;
+    }
+    return null;
+  };
+
+  const scoreEntry = (entry, keywords, monthKey) => {
+    let score = 0;
+    const text = entry.searchText || '';
+    for (const rawKeyword of keywords) {
+      const keyword = String(rawKeyword || '').trim().toLowerCase();
+      if (!keyword) continue;
+      if (text.includes(keyword)) {
+        score += keyword.includes(' ') ? 6 : 4;
+        continue;
+      }
+
+      const parts = keyword.split(/\s+/).filter(Boolean);
+      for (const part of parts) {
+        if (part.length >= 3 && text.includes(part)) {
+          score += 1;
+        }
+      }
+    }
+
+    if ((monthGroupBias[monthKey] || []).includes(entry.group)) {
+      score += 1;
+    }
+
+    return score;
+  };
+
+  const pickByKeywords = (keywords = [], monthKey, { allowReserved = false } = {}) => {
+    let best = null;
+    let bestScore = 0;
+
+    for (const entry of fallbackSource) {
+      if (usedHexes.has(entry.hexLower)) {
+        continue;
+      }
+      if (!allowReserved && reservedOverrideHexes.has(entry.hexLower)) {
+        continue;
+      }
+
+      const score = scoreEntry(entry, keywords, monthKey);
+      if (score <= 0) {
+        continue;
+      }
+
+      if (
+        score > bestScore ||
+        (score === bestScore &&
+          best &&
+          entry.detailRoute.localeCompare(best.detailRoute, 'en', { sensitivity: 'base' }) < 0)
+      ) {
+        best = entry;
+        bestScore = score;
+      } else if (!best) {
+        best = entry;
+        bestScore = score;
+      }
+    }
+
+    return best;
+  };
 
   const rows = [];
-  for (let day = 1; day <= 366; day += 1) {
-    const date = new Date(Date.UTC(2024, 0, day));
+  for (let dayIndex = 1; dayIndex <= 366; dayIndex += 1) {
+    const date = new Date(Date.UTC(2024, 0, dayIndex));
     const monthKey = String(date.getUTCMonth() + 1).padStart(2, '0');
     const dayKey = String(date.getUTCDate()).padStart(2, '0');
-    const monthDayKey = `${monthKey}-${dayKey}`;
+    const monthDay = `${monthKey}-${dayKey}`;
+    const dayOfMonth = date.getUTCDate();
 
-    const holidayPool = resolvePool(DAILY_EMOJI_EDITORIAL.holidayOverrides?.[monthDayKey]);
-    const monthPool = resolvePool(DAILY_EMOJI_EDITORIAL.monthlyPools?.[monthKey]);
+    const fixedHexes = fixedDateHexes[monthDay] || [];
+    const fixedList = Array.isArray(fixedHexes) ? fixedHexes : [fixedHexes];
+    const monthThemes = DAILY_EMOJI_EDITORIAL.monthThemeKeywords?.[monthKey] || [];
+    const dateTheme = DAILY_EMOJI_EDITORIAL.dateKeywordOverrides?.[monthDay] || [];
+    const monthFallback = DAILY_EMOJI_EDITORIAL.monthFallbackHexes?.[monthKey] || [];
+    const weeklyThemes = weeklyThemeKeywords[(dayOfMonth - 1) % weeklyThemeKeywords.length];
+    const fallbackKeywords = DAILY_EMOJI_EDITORIAL.fallbackKeywords || [];
 
-    let selected = holidayPool[0];
-    if (!selected && monthPool.length > 0) {
-      selected = monthPool[(date.getUTCDate() - 1) % monthPool.length];
-    }
-    if (!selected && fallbackPool.length > 0) {
-      selected = fallbackPool[(day - 1) % fallbackPool.length];
+    let selected = pickByHexList(fixedList, { allowReserved: true });
+    if (!selected) {
+      selected = pickByKeywords([...dateTheme, ...monthThemes, ...weeklyThemes], monthKey);
     }
     if (!selected) {
-      selected = safetySource[(day - 1) % safetySource.length];
+      selected = pickByKeywords(monthThemes, monthKey);
+    }
+    if (!selected) {
+      selected = pickByHexList(monthFallback, { allowReserved: false });
+    }
+    if (!selected) {
+      selected = pickByKeywords([...weeklyThemes, ...fallbackKeywords], monthKey, {
+        allowReserved: false,
+      });
+    }
+    if (!selected) {
+      selected = fallbackSource.find(
+        (entry) => !usedHexes.has(entry.hexLower) && !reservedOverrideHexes.has(entry.hexLower)
+      );
+    }
+    if (!selected) {
+      selected = fallbackSource.find((entry) => !usedHexes.has(entry.hexLower));
+    }
+    if (!selected) {
+      selected = {
+        emoji: '😀',
+        annotation: 'emoji',
+        detailRoute: '',
+        hexLower: '1f600',
+      };
     }
 
+    usedHexes.add(selected.hexLower);
     rows.push({
-      day,
+      monthDay,
+      month: monthKey,
+      dayOfMonth,
       emoji: selected.emoji || '😀',
       annotation: selected.annotation || 'emoji',
       detailRoute: selected.detailRoute || '',

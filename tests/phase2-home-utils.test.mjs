@@ -55,6 +55,9 @@ test('generated homepage contains phase 2 controls and module script', () => {
   assert.match(indexHtml, /id="copy-mode"/);
   assert.match(indexHtml, /id="home-results"/);
   assert.match(indexHtml, /src="home-app\.mjs" type="module" defer/);
+  assert.match(indexHtml, /<option value="5">Dark<\/option>/);
+  assert.match(indexHtml, /<option value="0">Yellow<\/option>/);
+  assert.ok(!indexHtml.includes('<option value="0">None</option>'));
   assert.ok(!indexHtml.includes('onclick='));
 });
 

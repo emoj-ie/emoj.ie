@@ -379,10 +379,18 @@ a:hover {
 }
 
 .panel-card-preview {
-  margin-top: 0.15rem;
-  font-size: 1.15rem;
-  letter-spacing: 0.08em;
-  color: var(--text-strong);
+  margin-top: 0.2rem;
+  display: flex;
+  align-items: center;
+  gap: 0.3rem;
+  min-height: 24px;
+}
+
+.panel-card-preview-img {
+  width: 22px;
+  height: 22px;
+  object-fit: contain;
+  flex: 0 0 auto;
 }
 
 .advanced-menu {

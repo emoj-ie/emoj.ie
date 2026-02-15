@@ -310,17 +310,16 @@ import {
 
   function buildPanelPreview(entries, limit = 4) {
     if (!Array.isArray(entries) || entries.length === 0) {
-      return '';
+      return [];
     }
 
     return entries
       .slice(0, limit)
-      .map((entry) => resolveSkinToneEntry(entry).emoji)
-      .filter(Boolean)
-      .join(' ');
+      .map((entry) => resolveSkinToneEntry(entry))
+      .filter((entry) => Boolean(entry && entry.hexLower));
   }
 
-  function createPanelCard(label, meta, preview, onClick) {
+  function createPanelCard(label, meta, previewEntries, onClick) {
     const button = document.createElement('button');
     button.type = 'button';
     button.className = 'panel-card';
@@ -335,11 +334,25 @@ import {
 
     button.appendChild(title);
     button.appendChild(detail);
-    if (preview) {
+    if (Array.isArray(previewEntries) && previewEntries.length > 0) {
       const previewNode = document.createElement('span');
       previewNode.className = 'panel-card-preview';
       previewNode.setAttribute('aria-hidden', 'true');
-      previewNode.textContent = preview;
+
+      for (const entry of previewEntries) {
+        const previewImage = document.createElement('img');
+        const asset = resolveAsset(entry);
+        previewImage.className = 'panel-card-preview-img';
+        previewImage.src = asset.src;
+        previewImage.dataset.cdnSrc = asset.cdn;
+        previewImage.dataset.hex = entry.hexLower;
+        previewImage.alt = '';
+        previewImage.width = 22;
+        previewImage.height = 22;
+        previewImage.loading = 'lazy';
+        previewNode.appendChild(previewImage);
+      }
+
       button.appendChild(previewNode);
     }
     button.addEventListener('click', onClick);

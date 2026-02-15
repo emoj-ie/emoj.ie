@@ -7,6 +7,7 @@ const root = process.cwd();
 const grouped = JSON.parse(fs.readFileSync(path.join(root, 'grouped-openmoji.json'), 'utf8'));
 const manifest = JSON.parse(fs.readFileSync(path.join(root, 'build-manifest.json'), 'utf8'));
 const sitemapIndex = fs.readFileSync(path.join(root, 'sitemap.xml'), 'utf8');
+const buildRunner = fs.readFileSync(path.join(root, 'utils/build/index.mjs'), 'utf8');
 
 function countEmojiEntries(groupedData) {
   let count = 0;
@@ -64,4 +65,9 @@ test('legacy redirect sample exists and has redirect markup', () => {
   const html = fs.readFileSync(path.join(root, redirectCandidate), 'utf8');
   assert.match(html, /http-equiv="refresh"/i);
   assert.match(html, /window\.location\.replace\(/);
+});
+
+test('build runner exposes progress output for long build steps', () => {
+  assert.match(buildRunner, /formatProgressBar/);
+  assert.match(buildRunner, /Syncing generated files/);
 });
