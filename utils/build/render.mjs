@@ -213,26 +213,13 @@ function renderHomePage(model, config) {
     .map((group) => `<option value="${escapeHtml(group.key)}">${escapeHtml(group.title)}</option>`)
     .join('');
 
-  const totalSubgroups = model.groups.reduce((sum, group) => sum + group.subgroups.length, 0);
-  const totalEmojis = model.emojiEntries.length;
-
   const groupLinks = model.groups
     .map(
       (group) => `<li><a href="/${group.route}"><span>${escapeHtml(group.title)}</span><small>${group.subgroups.length} collections</small></a></li>`
     )
     .join('');
 
-  const body = `<section class="home-hero">
-    <p class="hero-eyebrow">Precision Emoji Tooling</p>
-    <h1>Find, copy, and ship the right emoji in seconds.</h1>
-    <p>Fast discovery across groups and subgroups, with deep-linkable filters and format-aware copy actions.</p>
-    <ul class="hero-stats">
-      <li><strong>${totalEmojis}</strong><span>emoji entries</span></li>
-      <li><strong>${model.groups.length}</strong><span>major groups</span></li>
-      <li><strong>${totalSubgroups}</strong><span>subgroups</span></li>
-    </ul>
-  </section>
-  <section class="home-controls" aria-label="Emoji Search Controls">
+  const body = `<section class="home-controls" aria-label="Emoji Search Controls">
     <div class="control-group control-search">
       <label for="search">Search</label>
       <input id="search" type="search" autocomplete="off" placeholder="Search by name, tag, group, or subgroup…" />
