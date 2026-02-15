@@ -4,9 +4,11 @@ import path from 'node:path';
 import { fileURLToPath } from 'node:url';
 
 import { loadEmojiModel } from './load-data.mjs';
+import { ensureBaseEmojiAssets } from './emoji-assets.mjs';
 import { buildLegacyRedirects } from './redirects.mjs';
 import { renderSite } from './render.mjs';
 import { buildSitemapIndexXml, buildSitemapXml } from './sitemap.mjs';
+import { buildServiceWorker } from './sw.mjs';
 import { verifyModel, verifyRenderResult } from './verify.mjs';
 
 const __filename = fileURLToPath(import.meta.url);
@@ -44,44 +46,6 @@ async function writeTextFile(rootDir, relativeFile, contents) {
   await fs.writeFile(filePath, contents, 'utf8');
 }
 
-async function syncDirectory(sourceDir, targetDir) {
-  const sourceExists = await pathExists(sourceDir);
-  if (!sourceExists) {
-    await fs.rm(targetDir, { recursive: true, force: true });
-    return;
-  }
-
-  await fs.mkdir(targetDir, { recursive: true });
-
-  const [sourceEntries, targetEntries] = await Promise.all([
-    fs.readdir(sourceDir, { withFileTypes: true }),
-    fs.readdir(targetDir, { withFileTypes: true }),
-  ]);
-
-  const sourceNames = new Set(sourceEntries.map((entry) => entry.name));
-
-  for (const targetEntry of targetEntries) {
-    if (!sourceNames.has(targetEntry.name)) {
-      await fs.rm(path.join(targetDir, targetEntry.name), { recursive: true, force: true });
-    }
-  }
-
-  for (const sourceEntry of sourceEntries) {
-    const sourcePath = path.join(sourceDir, sourceEntry.name);
-    const targetPath = path.join(targetDir, sourceEntry.name);
-
-    if (sourceEntry.isDirectory()) {
-      await syncDirectory(sourcePath, targetPath);
-      continue;
-    }
-
-    if (sourceEntry.isFile()) {
-      await fs.mkdir(path.dirname(targetPath), { recursive: true });
-      await fs.copyFile(sourcePath, targetPath);
-    }
-  }
-}
-
 async function syncFile(sourceFile, targetFile) {
   if (!(await pathExists(sourceFile))) {
     await fs.rm(targetFile, { force: true });
@@ -108,6 +72,7 @@ function buildHash(parts) {
 async function main() {
   const args = new Set(process.argv.slice(2));
   const checkOnly = args.has('--check');
+  const skipAssets = args.has('--skip-assets');
 
   const configPath = path.join(ROOT_DIR, 'utils/site.config.json');
   const config = await readJson(configPath);
@@ -121,6 +86,17 @@ async function main() {
   await fs.mkdir(tempRoot, { recursive: true });
 
   const model = await loadEmojiModel({ rootDir: ROOT_DIR, config });
+
+  let assetStats = null;
+  if (!checkOnly && !skipAssets) {
+    assetStats = await ensureBaseEmojiAssets({
+      rootDir: ROOT_DIR,
+      model,
+      config,
+      refresh: args.has('--refresh-assets'),
+    });
+  }
+
   const legacyRedirects = buildLegacyRedirects(model.emojiEntries, {
     preferBaseForCollisions: config.redirects?.preferBaseForCollisions,
   });
@@ -166,11 +142,15 @@ async function main() {
   await writeTextFile(tempRoot, config.build.sitemapEmoji, emojiSitemapXml);
   await writeTextFile(tempRoot, config.build.sitemapIndex, sitemapIndexXml);
 
-  const managedRoots = stableList(model.groups.map((group) => group.key));
+  const managedRoots = stableList([
+    ...model.groups.map((group) => group.key),
+    ...(config.indexing?.includeAboutPage ? ['about'] : []),
+  ]);
   const managedFiles = stableList([
     config.build.sitemapIndex,
     config.build.sitemapCore,
     config.build.sitemapEmoji,
+    'sw.js',
     manifestFile,
   ]);
 
@@ -179,18 +159,24 @@ async function main() {
     config.build.sitemapCore,
     config.build.sitemapEmoji,
     config.build.sitemapIndex,
+    'sw.js',
   ]);
+
+  const buildHashValue = buildHash([
+    groupedDataHash,
+    JSON.stringify(config.indexing || {}),
+    JSON.stringify(config.redirects || {}),
+    ...managedRoots,
+    ...generatedFileList,
+  ]);
+
+  const swContent = buildServiceWorker({ buildHash: buildHashValue });
+  await writeTextFile(tempRoot, 'sw.js', swContent);
 
   const manifest = {
     version: 1,
     generatedAt: timestamp,
-    buildHash: buildHash([
-      groupedDataHash,
-      JSON.stringify(config.indexing || {}),
-      JSON.stringify(config.redirects || {}),
-      ...managedRoots,
-      ...generatedFileList,
-    ]),
+    buildHash: buildHashValue,
     managedRoots,
     managedFiles,
     stats: {
@@ -209,19 +195,12 @@ async function main() {
   if (!checkOnly) {
     const previousManifest = (await readJsonIfExists(manifestPath)) || {};
 
-    const rootsToSync = stableList([
-      ...managedRoots,
-      ...(previousManifest.managedRoots || []),
-    ]);
-
     const filesToSync = stableList([
-      ...managedFiles,
+      ...generatedFileList,
       ...(previousManifest.managedFiles || []),
+      ...(previousManifest.files || []),
+      ...managedFiles,
     ]);
-
-    for (const root of rootsToSync) {
-      await syncDirectory(path.join(tempRoot, root), path.join(outputRoot, root));
-    }
 
     for (const file of filesToSync) {
       await syncFile(path.join(tempRoot, file), path.join(outputRoot, file));
@@ -237,6 +216,11 @@ async function main() {
   console.log(`Generated files: ${generatedFileList.length}`);
   console.log(`Core sitemap routes: ${renderResult.coreRoutes.size}`);
   console.log(`Emoji sitemap routes: ${renderResult.emojiRoutes.size}`);
+  if (assetStats) {
+    console.log(
+      `Local emoji assets: ${assetStats.total} total (${assetStats.downloaded} downloaded, ${assetStats.skipped} cached)`
+    );
+  }
 }
 
 main().catch((error) => {

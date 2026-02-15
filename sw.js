@@ -1,112 +1,92 @@
-const CACHE_NAME = 'emojie-v1';
-const STATIC_CACHE_URLS = [
+const CACHE_NAME = 'emojie-3df3e19d5161370d';
+const CORE_ASSETS = [
   '/',
   '/index.html',
-  '/style.css',
-  '/script.js',
-  '/grouped-openmoji.json',
-  '/logo.svg',
-  '/favicon.ico',
   '/about/',
-  '/about/index.html'
+  '/about/index.html',
+  '/style.css',
+  '/generated-pages.js',
+  '/home-app.mjs',
+  '/home-utils.mjs',
+  '/grouped-openmoji.json',
+  '/favicon.ico',
+  '/logo.svg'
 ];
 
-// Install event - cache static assets
-self.addEventListener('install', event => {
+self.addEventListener('install', (event) => {
   event.waitUntil(
-    caches.open(CACHE_NAME)
-      .then(cache => {
-        return cache.addAll(STATIC_CACHE_URLS);
-      })
-      .then(() => {
-        return self.skipWaiting();
-      })
+    caches
+      .open(CACHE_NAME)
+      .then((cache) => cache.addAll(CORE_ASSETS))
+      .then(() => self.skipWaiting())
   );
 });
 
-// Activate event - clean up old caches
-self.addEventListener('activate', event => {
+self.addEventListener('activate', (event) => {
   event.waitUntil(
-    caches.keys().then(cacheNames => {
-      return Promise.all(
-        cacheNames.map(cacheName => {
-          if (cacheName !== CACHE_NAME) {
-            return caches.delete(cacheName);
-          }
-        })
-      );
-    }).then(() => {
-      return self.clients.claim();
-    })
+    caches
+      .keys()
+      .then((keys) => Promise.all(keys.filter((key) => key !== CACHE_NAME).map((key) => caches.delete(key))))
+      .then(() => self.clients.claim())
   );
 });
 
-// Fetch event - serve from cache when offline, cache emoji images on demand
-self.addEventListener('fetch', event => {
-  const url = new URL(event.request.url);
+function isEmojiAsset(url) {
+  return (
+    url.pathname.startsWith('/assets/emoji/base/') ||
+    (url.hostname === 'cdn.jsdelivr.net' && url.pathname.includes('/openmoji/') && url.pathname.endsWith('.svg'))
+  );
+}
 
-  // Handle emoji SVG requests from CDN - cache them when fetched
-  if (url.hostname === 'cdn.jsdelivr.net' && url.pathname.includes('/openmoji/') && url.pathname.endsWith('.svg')) {
+self.addEventListener('fetch', (event) => {
+  const request = event.request;
+  const url = new URL(request.url);
+
+  if (request.method !== 'GET') {
+    return;
+  }
+
+  if (isEmojiAsset(url)) {
     event.respondWith(
-      caches.match(event.request)
-        .then(response => {
-          if (response) {
+      caches.match(request).then((cached) => {
+        if (cached) return cached;
+
+        return fetch(request)
+          .then((response) => {
+            if (response && response.status === 200) {
+              const clone = response.clone();
+              caches.open(CACHE_NAME).then((cache) => cache.put(request, clone));
+            }
             return response;
-          }
-          return fetch(event.request)
-            .then(response => {
-              // Cache successful responses
-              if (response.status === 200) {
-                const responseClone = response.clone();
-                caches.open(CACHE_NAME)
-                  .then(cache => {
-                    cache.put(event.request, responseClone);
-                  });
-              }
-              return response;
+          })
+          .catch(() =>
+            new Response('Emoji asset unavailable offline', {
+              status: 503,
+              statusText: 'Service Unavailable',
             })
-            .catch(() => {
-              // If offline and not cached, return a placeholder or fallback
-              return new Response('Emoji not available offline', {
-                status: 503,
-                statusText: 'Service Unavailable'
-              });
-            });
-        })
+          );
+      })
     );
-  } else {
-    // For other requests, try cache first, then network
+    return;
+  }
+
+  if (url.origin === location.origin) {
     event.respondWith(
-      caches.match(event.request)
-        .then(response => {
-          if (response) {
-            return response;
-          }
-          return fetch(event.request)
-            .then(response => {
-              // Don't cache external resources that aren't emojis
-              if (!response || response.status !== 200 || !response.type === 'basic') {
-                return response;
-              }
-
-              // Cache same-origin requests
-              if (url.origin === location.origin) {
-                const responseClone = response.clone();
-                caches.open(CACHE_NAME)
-                  .then(cache => {
-                    cache.put(event.request, responseClone);
-                  });
-              }
-
+      caches.match(request).then((cached) => {
+        const networkFetch = fetch(request)
+          .then((response) => {
+            if (!response || response.status !== 200 || response.type !== 'basic') {
               return response;
-            })
-            .catch(() => {
-              // Return offline fallback for HTML pages
-              if (event.request.destination === 'document') {
-                return caches.match('/index.html');
-              }
-            });
-        })
+            }
+
+            const clone = response.clone();
+            caches.open(CACHE_NAME).then((cache) => cache.put(request, clone));
+            return response;
+          })
+          .catch(() => cached || caches.match('/index.html'));
+
+        return cached || networkFetch;
+      })
     );
   }
 });

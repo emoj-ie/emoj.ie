@@ -112,6 +112,10 @@ export async function loadEmojiModel({ rootDir, config }) {
           canonicalRoute: detailRoute,
           noindex: false,
           indexable: false,
+          assetHex: hexLower.toUpperCase(),
+          localAssetPath: '',
+          cdnAssetPath: '',
+          useLocalAsset: false,
         };
 
         emojiEntries.push(entry);
@@ -181,6 +185,10 @@ export async function loadEmojiModel({ rootDir, config }) {
 
     const onlyBaseInSitemap = Boolean(config.indexing?.emojiSitemapBaseOnly);
     entry.indexable = !entry.noindex && (!onlyBaseInSitemap || !entry.isVariant);
+
+    entry.localAssetPath = config.assets.emojiLocalTemplate.replace('{HEX}', entry.assetHex);
+    entry.cdnAssetPath = config.assets.emojiCdnTemplate.replace('{HEX}', entry.assetHex);
+    entry.useLocalAsset = !entry.isVariant && entry.group !== 'component';
   }
 
   const groups = [];

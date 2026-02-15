@@ -28,6 +28,14 @@
     "preferBaseForCollisions": true
   },
   "assets": {
-    "emojiCdnTemplate": "https://cdn.jsdelivr.net/npm/openmoji@15.1.0/color/svg/{HEX}.svg"
+    "emojiCdnTemplate": "https://cdn.jsdelivr.net/npm/openmoji@15.1.0/color/svg/{HEX}.svg",
+    "emojiLocalTemplate": "/assets/emoji/base/{HEX}.svg",
+    "emojiLocalDir": "assets/emoji/base"
+  },
+  "analytics": {
+    "enabled": true,
+    "provider": "plausible",
+    "domain": "emoj.ie",
+    "scriptSrc": "https://plausible.io/js/script.js"
   }
 }
