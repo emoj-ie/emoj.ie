@@ -1,5 +1,20 @@
 # emoj.ie “Best-on-Planet” Overhaul Plan (Static, Phased, UX+Speed First)
 
+## Progress Tracker
+
+- [x] Phase 1: Deterministic generation foundation implemented
+- [x] Phase 1 tests added and passing (`tests/phase1-generator.test.mjs`)
+- [ ] Phase 2: Frontend architecture and UX upgrade
+- [ ] Phase 2 tests added and passing
+- [ ] Phase 3: Accessibility and standards compliance pass
+- [ ] Phase 3 tests added and passing
+- [ ] Phase 4: SEO metadata and JSON-LD at scale
+- [ ] Phase 4 tests added and passing
+- [ ] Phase 5: Asset and caching strategy updates
+- [ ] Phase 5 tests added and passing
+- [ ] Phase 6: Analytics and CI quality gates
+- [ ] Phase 6 tests added and passing
+
 ## Summary
 
 This plan keeps the current static + Node generator model and upgrades emoj.ie into a premium, fast, accessible emoji utility with strong SEO and deterministic generation.  
