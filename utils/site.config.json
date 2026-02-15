@@ -32,6 +32,9 @@
     "emojiLocalTemplate": "/assets/emoji/base/{HEX}.svg",
     "emojiLocalDir": "assets/emoji/base"
   },
+  "ui": {
+    "groupPreviewLimit": 24
+  },
   "analytics": {
     "enabled": true,
     "provider": "plausible",

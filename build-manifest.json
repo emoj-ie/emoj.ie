@@ -1,7 +1,7 @@
 {
   "version": 1,
   "generatedAt": "2025-01-21T17:31:06.093Z",
-  "buildHash": "3df3e19d5161370d",
+  "buildHash": "5e150c72d2280027",
   "managedRoots": [
     "about",
     "activities",
@@ -28,7 +28,7 @@
     "groups": 12,
     "emojis": 4284,
     "redirects": 4193,
-    "files": 8617,
+    "files": 8618,
     "coreRoutes": 133,
     "emojiRoutes": 2062
   },
@@ -2394,6 +2394,7 @@
     "food-drink/food-vegetable/potato--1f954/index.html",
     "food-drink/food-vegetable/potato/index.html",
     "food-drink/index.html",
+    "home-data.json",
     "index.html",
     "objects/book-paper/blue-book--1f4d8/index.html",
     "objects/book-paper/blue-book/index.html",

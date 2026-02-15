@@ -13,6 +13,7 @@
     "test:phase3": "node --test tests/phase3-accessibility-style.test.mjs",
     "test:phase4": "node --test tests/phase4-seo-schema.test.mjs",
     "test:phase5": "node --test tests/phase5-sw-assets.test.mjs",
+    "test:phase7": "node --test tests/phase7-ux-performance.test.mjs",
     "lint:links": "node utils/qa/check-links.mjs",
     "test:a11y-smoke": "node --test tests/phase3-accessibility-style.test.mjs",
     "test:playwright-smoke": "node utils/qa/playwright-smoke.mjs",

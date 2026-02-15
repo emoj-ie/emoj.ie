@@ -16,6 +16,8 @@ import {
   const clearButton = document.getElementById('clear-filters');
   const resultsCount = document.getElementById('results-count');
   const resultsList = document.getElementById('home-results');
+  const resultsSentinel = document.getElementById('results-sentinel');
+  const loadMoreButton = document.getElementById('results-load-more');
   const recentList = document.getElementById('recent-results');
 
   if (!searchInput || !groupFilter || !subgroupFilter || !copyMode || !resultsList) {
@@ -24,15 +26,30 @@ import {
 
   const RECENT_KEY = 'recentEmojisV2';
   const COPY_MODE_KEY = 'copyMode';
+  const CHUNK_MIN = 72;
+  const CHUNK_MAX = 220;
+  const SEARCH_INPUT_DEBOUNCE_MS = 90;
 
   let allEntries = [];
-  let grouped = {};
-  let state = parseUiState(window.location.search, localStorage.getItem(COPY_MODE_KEY) || 'emoji');
+  let subgroupsByGroup = new Map();
+  let filteredEntries = [];
+  let renderedCount = 0;
   let currentResultButtons = [];
+  let observer = null;
+  let searchDebounce = null;
+  let state = parseUiState(window.location.search, localStorage.getItem(COPY_MODE_KEY) || 'emoji');
 
   function track(eventName, props) {
     if (typeof window.plausible !== 'function') return;
     window.plausible(eventName, { props: props || {} });
+  }
+
+  function computeChunkSize() {
+    const vw = window.innerWidth || 1280;
+    const vh = window.innerHeight || 800;
+    const areaFactor = Math.max(1, Math.min(3, (vw * vh) / 900000));
+    const base = Math.round(CHUNK_MIN * areaFactor);
+    return Math.min(CHUNK_MAX, Math.max(CHUNK_MIN, base));
   }
 
   function isVariant(entry) {
@@ -44,14 +61,13 @@ import {
 
   function resolveAsset(entry) {
     const upperHex = entry.hexLower.toUpperCase();
-    if (!isVariant(entry) && entry.group !== 'component') {
-      return {
-        src: `/assets/emoji/base/${upperHex}.svg`,
-        cdn: `https://cdn.jsdelivr.net/npm/openmoji@15.1.0/color/svg/${upperHex}.svg`,
-      };
+    const local = `/assets/emoji/base/${upperHex}.svg`;
+    const cdn = `https://cdn.jsdelivr.net/npm/openmoji@15.1.0/color/svg/${upperHex}.svg`;
+
+    if (entry.useLocalAsset || (!isVariant(entry) && entry.group !== 'component')) {
+      return { src: local, cdn };
     }
 
-    const cdn = `https://cdn.jsdelivr.net/npm/openmoji@15.1.0/color/svg/${upperHex}.svg`;
     return { src: cdn, cdn };
   }
 
@@ -66,6 +82,87 @@ import {
     } else {
       window.history.replaceState({}, '', target);
     }
+  }
+
+  function normalizeEntry(entry) {
+    const hexLower = normalizeHex(entry.hexLower || entry.hexcode || '');
+    const normalized = {
+      ...entry,
+      annotation: (entry.annotation || '').trim(),
+      group: entry.group,
+      subgroup: entry.subgroup,
+      hexcode: entry.hexcode || hexLower,
+      hexLower,
+      detailRoute: entry.detailRoute || detailRouteFromEmoji(entry),
+      tags: Array.isArray(entry.tags) ? entry.tags.join(' ') : String(entry.tags || ''),
+      useLocalAsset: Boolean(entry.useLocalAsset),
+    };
+
+    normalized.searchText = [
+      normalized.annotation,
+      normalized.tags,
+      normalized.group,
+      normalized.subgroup,
+      normalized.hexLower,
+    ]
+      .filter(Boolean)
+      .join(' ')
+      .toLowerCase();
+
+    return normalized;
+  }
+
+  function flattenGroupedData(groupedData) {
+    const rows = [];
+    for (const [group, subgroups] of Object.entries(groupedData)) {
+      for (const [subgroup, emojis] of Object.entries(subgroups)) {
+        for (const emoji of emojis) {
+          rows.push(normalizeEntry({ ...emoji, group, subgroup }));
+        }
+      }
+    }
+    return rows;
+  }
+
+  function setupGroupMaps(entries) {
+    subgroupsByGroup = new Map();
+    for (const entry of entries) {
+      if (!subgroupsByGroup.has(entry.group)) {
+        subgroupsByGroup.set(entry.group, new Set());
+      }
+      subgroupsByGroup.get(entry.group).add(entry.subgroup);
+    }
+  }
+
+  function populateGroups() {
+    const groups = Array.from(subgroupsByGroup.keys()).sort((a, b) => a.localeCompare(b));
+    groupFilter.innerHTML = '<option value="">All Categories</option>';
+
+    for (const group of groups) {
+      const option = document.createElement('option');
+      option.value = group;
+      option.textContent = humanize(group);
+      groupFilter.appendChild(option);
+    }
+  }
+
+  function populateSubgroups(group) {
+    subgroupFilter.innerHTML = '<option value="">All Subcategories</option>';
+
+    if (!group || !subgroupsByGroup.has(group)) {
+      subgroupFilter.disabled = true;
+      return;
+    }
+
+    const subgroups = Array.from(subgroupsByGroup.get(group)).sort((a, b) => a.localeCompare(b));
+    for (const subgroup of subgroups) {
+      const option = document.createElement('option');
+      option.value = subgroup;
+      option.textContent = humanize(subgroup);
+      subgroupFilter.appendChild(option);
+    }
+
+    subgroupFilter.disabled = false;
   }
 
   function applyStateToControls() {
@@ -87,55 +184,6 @@ import {
     copyMode.value = state.copy;
   }
 
-  function flattenData(data) {
-    const rows = [];
-    for (const [group, subgroups] of Object.entries(data)) {
-      for (const [subgroup, emojis] of Object.entries(subgroups)) {
-        for (const emoji of emojis) {
-          const hexLower = normalizeHex(emoji.hexcode);
-          rows.push({
-            ...emoji,
-            group,
-            subgroup,
-            hexLower,
-            useLocalAsset: !isVariant({ ...emoji, group, subgroup, hexLower }),
-            detailRoute: detailRouteFromEmoji({ ...emoji, group, subgroup }),
-          });
-        }
-      }
-    }
-    return rows;
-  }
-
-  function populateGroups() {
-    const groups = Object.keys(grouped).sort((a, b) => a.localeCompare(b));
-    for (const group of groups) {
-      const option = document.createElement('option');
-      option.value = group;
-      option.textContent = humanize(group);
-      groupFilter.appendChild(option);
-    }
-  }
-
-  function populateSubgroups(group) {
-    subgroupFilter.innerHTML = '<option value="">All Subcategories</option>';
-
-    if (!group || !grouped[group]) {
-      subgroupFilter.disabled = true;
-      return;
-    }
-
-    const subgroups = Object.keys(grouped[group]).sort((a, b) => a.localeCompare(b));
-    for (const subgroup of subgroups) {
-      const option = document.createElement('option');
-      option.value = subgroup;
-      option.textContent = humanize(subgroup);
-      subgroupFilter.appendChild(option);
-    }
-
-    subgroupFilter.disabled = false;
-  }
-
   function filterEntries() {
     const query = state.q.toLowerCase();
 
@@ -143,13 +191,7 @@ import {
       if (state.g && entry.group !== state.g) return false;
       if (state.sg && entry.subgroup !== state.sg) return false;
       if (!query) return true;
-
-      const haystack = [entry.annotation, entry.tags, entry.group, entry.subgroup]
-        .filter(Boolean)
-        .join(' ')
-        .toLowerCase();
-
-      return haystack.includes(query);
+      return entry.searchText.includes(query);
     });
   }
 
@@ -183,9 +225,9 @@ import {
     button.appendChild(img);
 
     const divider = document.createElement('hr');
+
     const link = document.createElement('a');
     link.href = `/${entry.detailRoute}`;
-
     const small = document.createElement('small');
     small.textContent = entry.annotation;
     link.appendChild(small);
@@ -201,44 +243,114 @@ import {
     currentResultButtons = Array.from(resultsList.querySelectorAll('.emoji-copy'));
   }
 
-  function renderResults(pushHistory = true, emitAnalytics = false) {
-    persistState(pushHistory);
+  function hasMoreResults() {
+    return renderedCount < filteredEntries.length;
+  }
 
-    const filtered = filterEntries();
-    const limited = filtered.slice(0, 400);
+  function updateResultStatus() {
+    if (!resultsCount) return;
 
-    resultsList.innerHTML = '';
-    for (const entry of limited) {
-      resultsList.appendChild(entryToCard(entry));
+    if (filteredEntries.length === 0) {
+      resultsCount.textContent = 'No results found. Adjust filters or search terms.';
+      return;
     }
 
+    const showing = Math.min(renderedCount, filteredEntries.length);
+    const total = filteredEntries.length;
+    if (showing < total) {
+      resultsCount.textContent = `${total} results, showing ${showing}. Scroll to load more.`;
+      return;
+    }
+
+    resultsCount.textContent = `${total} result${total === 1 ? '' : 's'} loaded.`;
+  }
+
+  function updateLoadControls() {
+    const showLoad = hasMoreResults();
+
+    if (loadMoreButton) {
+      loadMoreButton.hidden = !showLoad;
+    }
+
+    if (resultsSentinel) {
+      resultsSentinel.hidden = !showLoad;
+    }
+  }
+
+  function appendResultChunk() {
+    if (filteredEntries.length === 0 || !hasMoreResults()) {
+      updateResultStatus();
+      updateLoadControls();
+      return;
+    }
+
+    const chunkSize = computeChunkSize();
+    const nextCount = Math.min(filteredEntries.length, renderedCount + chunkSize);
+    const fragment = document.createDocumentFragment();
+
+    for (let index = renderedCount; index < nextCount; index += 1) {
+      fragment.appendChild(entryToCard(filteredEntries[index]));
+    }
+
+    resultsList.appendChild(fragment);
+    renderedCount = nextCount;
+
     updateKeyboardCollection();
+    updateResultStatus();
+    updateLoadControls();
+  }
 
-    const suffix = filtered.length > limited.length ? ` (showing first ${limited.length})` : '';
-    resultsCount.textContent = `${filtered.length} result${filtered.length === 1 ? '' : 's'}${suffix}`;
+  function renderEmptyState() {
+    resultsList.innerHTML = '';
+    const empty = document.createElement('li');
+    empty.className = 'emoji-empty';
+    empty.textContent = 'No matching emojis found.';
+    resultsList.appendChild(empty);
+    renderedCount = 0;
+    updateKeyboardCollection();
+    updateResultStatus();
+    updateLoadControls();
+  }
 
-    if (emitAnalytics) {
-      if (state.q) {
-        track('search', {
-          source: window.location.pathname,
-          hex: '',
-          group: state.g || 'all',
-          subgroup: state.sg || 'all',
-          format: state.copy,
-          query_length: String(state.q.length),
-          results: String(filtered.length),
-        });
-      }
-
-      track('filter', {
+  function emitAnalytics() {
+    if (state.q) {
+      track('search', {
         source: window.location.pathname,
         hex: '',
         group: state.g || 'all',
         subgroup: state.sg || 'all',
         format: state.copy,
-        copy: state.copy,
-        results: String(filtered.length),
+        query_length: String(state.q.length),
+        results: String(filteredEntries.length),
       });
+    }
+
+    track('filter', {
+      source: window.location.pathname,
+      hex: '',
+      group: state.g || 'all',
+      subgroup: state.sg || 'all',
+      format: state.copy,
+      copy: state.copy,
+      results: String(filteredEntries.length),
+    });
+  }
+
+  function renderResults(pushHistory = true, emit = false) {
+    persistState(pushHistory);
+
+    filteredEntries = filterEntries();
+    resultsList.innerHTML = '';
+    renderedCount = 0;
+
+    if (filteredEntries.length === 0) {
+      renderEmptyState();
+    } else {
+      appendResultChunk();
+    }
+
+    if (emit) {
+      emitAnalytics();
     }
   }
 
@@ -263,16 +375,18 @@ import {
     recentList.innerHTML = '';
 
     if (recents.length === 0) {
-      const empty = document.createElement('p');
-      empty.className = 'recent-empty';
+      const empty = document.createElement('li');
+      empty.className = 'emoji-empty';
       empty.textContent = 'No recent emojis yet.';
       recentList.appendChild(empty);
       return;
     }
 
+    const fragment = document.createDocumentFragment();
     for (const item of recents) {
-      recentList.appendChild(entryToCard(item));
+      fragment.appendChild(entryToCard(normalizeEntry(item)));
     }
+    recentList.appendChild(fragment);
   }
 
   function addRecentFromButton(button) {
@@ -282,12 +396,12 @@ import {
     const next = {
       emoji: button.dataset.emoji,
       hexcode: button.dataset.hex,
-      hexLower: button.dataset.hex,
-      annotation: button.dataset.copyLabel || button.dataset.label || 'emoji',
+      annotation: button.dataset.copyLabel || 'emoji',
       group: button.dataset.group,
       subgroup: button.dataset.subgroup,
       detailRoute,
       tags: '',
+      useLocalAsset: button.dataset.group !== 'component',
     };
 
     const prev = readRecents().filter((item) => item.detailRoute !== detailRoute);
@@ -312,67 +426,156 @@ import {
       const prevIndex = activeIndex < 0 ? 0 : Math.max(activeIndex - 1, 0);
       currentResultButtons[prevIndex].focus();
       event.preventDefault();
+      return;
+    }
+
+    if (event.key === 'Enter' && document.activeElement === searchInput) {
+      state.q = searchInput.value.trim();
+      renderResults(true, true);
     }
   }
 
-  window.addEventListener('popstate', () => {
-    state = parseUiState(window.location.search, localStorage.getItem(COPY_MODE_KEY) || 'emoji');
-    applyStateToControls();
-    renderResults(false);
-  });
+  function scheduleSearchRender() {
+    if (searchDebounce) {
+      window.clearTimeout(searchDebounce);
+    }
 
-  groupFilter.addEventListener('change', () => {
-    state.g = groupFilter.value;
-    state.sg = '';
-    populateSubgroups(state.g);
-    renderResults(true, true);
-  });
+    searchDebounce = window.setTimeout(() => {
+      state.q = searchInput.value.trim();
+      renderResults(false, false);
+      searchDebounce = null;
+    }, SEARCH_INPUT_DEBOUNCE_MS);
+  }
 
-  subgroupFilter.addEventListener('change', () => {
-    state.sg = subgroupFilter.value;
-    renderResults(true, true);
-  });
-
-  searchInput.addEventListener('input', () => {
-    state.q = searchInput.value.trim();
-    renderResults(false);
-  });
-
-  searchInput.addEventListener('change', () => {
-    state.q = searchInput.value.trim();
-    renderResults(true, true);
-  });
-
-  copyMode.addEventListener('change', () => {
-    state.copy = copyMode.value;
-    renderResults(true, true);
-  });
-
-  clearButton.addEventListener('click', () => {
-    state = { q: '', g: '', sg: '', copy: state.copy };
-    applyStateToControls();
-    renderResults(true, true);
-  });
-
-  resultsList.addEventListener('keydown', handleKeyNavigation);
-
-  document.addEventListener('emoji:copied', (event) => {
-    const trigger = event.detail?.trigger;
-    if (!trigger || !trigger.dataset || !trigger.dataset.route) {
+  function setupInfiniteObserver() {
+    if (!resultsSentinel || !('IntersectionObserver' in window)) {
       return;
     }
-    addRecentFromButton(trigger);
-  });
 
-  fetch('grouped-openmoji.json')
-    .then((response) => response.json())
-    .then((data) => {
-      grouped = data;
-      allEntries = flattenData(grouped);
-      populateGroups();
+    if (observer) {
+      observer.disconnect();
+    }
+
+    observer = new IntersectionObserver(
+      (entries) => {
+        for (const entry of entries) {
+          if (entry.isIntersecting && hasMoreResults()) {
+            appendResultChunk();
+          }
+        }
+      },
+      {
+        rootMargin: '280px 0px 280px 0px',
+        threshold: 0,
+      }
+    );
+
+    observer.observe(resultsSentinel);
+  }
+
+  function bindInteractions() {
+    window.addEventListener('popstate', () => {
+      state = parseUiState(window.location.search, localStorage.getItem(COPY_MODE_KEY) || 'emoji');
       applyStateToControls();
-      renderResults(false);
+      renderResults(false, false);
+    });
+
+    groupFilter.addEventListener('change', () => {
+      state.g = groupFilter.value;
+      state.sg = '';
+      populateSubgroups(state.g);
+      renderResults(true, true);
+    });
+
+    subgroupFilter.addEventListener('change', () => {
+      state.sg = subgroupFilter.value;
+      renderResults(true, true);
+    });
+
+    searchInput.addEventListener('input', () => {
+      scheduleSearchRender();
+    });
+
+    searchInput.addEventListener('change', () => {
+      state.q = searchInput.value.trim();
+      renderResults(true, true);
+    });
+
+    copyMode.addEventListener('change', () => {
+      state.copy = copyMode.value;
+      renderResults(true, true);
       renderRecents();
+    });
+
+    clearButton.addEventListener('click', () => {
+      state = { q: '', g: '', sg: '', copy: state.copy };
+      applyStateToControls();
+      renderResults(true, true);
+    });
+
+    if (loadMoreButton) {
+      loadMoreButton.addEventListener('click', () => {
+        appendResultChunk();
+      });
+    }
+
+    resultsList.addEventListener('keydown', handleKeyNavigation);
+    document.addEventListener('keydown', handleKeyNavigation);
+
+    document.addEventListener('emoji:copied', (event) => {
+      const trigger = event.detail?.trigger;
+      if (!trigger || !trigger.dataset || !trigger.dataset.route) {
+        return;
+      }
+      addRecentFromButton(trigger);
+    });
+
+    window.addEventListener('resize', () => {
+      updateResultStatus();
+    });
+  }
+
+  function initWithEntries(entries) {
+    allEntries = entries.map((entry) => normalizeEntry(entry));
+    setupGroupMaps(allEntries);
+    populateGroups();
+    applyStateToControls();
+    renderResults(false, false);
+    renderRecents();
+    setupInfiniteObserver();
+  }
+
+  function loadData() {
+    return fetch('home-data.json')
+      .then((response) => {
+        if (!response.ok) {
+          throw new Error(`HTTP ${response.status}`);
+        }
+        return response.json();
+      })
+      .then((rows) => {
+        if (!Array.isArray(rows)) {
+          throw new Error('home-data.json must be an array');
+        }
+        return rows;
+      })
+      .catch(() =>
+        fetch('grouped-openmoji.json')
+          .then((response) => {
+            if (!response.ok) {
+              throw new Error(`HTTP ${response.status}`);
+            }
+            return response.json();
+          })
+          .then((groupedData) => flattenGroupedData(groupedData))
+      );
+  }
+
+  bindInteractions();
+
+  loadData()
+    .then((rows) => {
+      initWithEntries(rows);
     })
     .catch(() => {
       resultsCount.textContent = 'Unable to load emoji data.';

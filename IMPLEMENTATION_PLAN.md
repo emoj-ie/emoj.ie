@@ -15,6 +15,8 @@
 - [x] Phase 6: Analytics and CI quality gates
 - [x] Phase 6 tests added and passing (`tests/phase6-analytics-ci.test.mjs`)
 - [x] Phase 6 QA scripts passing (`npm run lint:links`, `npm run test:a11y-smoke`, `npm run test:lighthouse-budget`, `npm run test:playwright-smoke`*)
+- [x] Phase 7: Premium UX/UI redesign and progressive rendering
+- [x] Phase 7 tests added and passing (`tests/phase7-ux-performance.test.mjs`)
 
 `*` Playwright smoke currently skips when Playwright is not installed, by design.
 
@@ -105,6 +107,14 @@ It uses a phased rollout on GitHub Pages, with strict quality gates (`Lighthouse
 2. Add GitHub Actions CI (`.github/workflows/site-quality.yml`) with Node 20 pipeline.
 3. CI stages: build clean, generated-path verification, metadata/schema lint, broken-link scan, accessibility smoke, Playwright smoke, Lighthouse budgets.
 4. Fail PR if any quality gate fails.
+
+### Phase 7: Experience Overdrive (Premium UI + Loading Performance)
+
+1. Ship a new design system in `style.css` with expressive typography, layered backgrounds, stronger hierarchy, and orientation-aware responsive layout.
+2. Remove the hard `400` homepage result cap and implement progressive chunk rendering with `IntersectionObserver` + manual load-more fallback.
+3. Generate a lightweight `home-data.json` search index and load it on home instead of the heavier full grouped dataset.
+4. Reduce heavyweight group page payloads with subgroup preview limits and direct full-collection links.
+5. Add UX/performance regression tests in `tests/phase7-ux-performance.test.mjs`.
 
 ## Important Public API / Interface Changes
 

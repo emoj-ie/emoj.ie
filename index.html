@@ -17,14 +17,18 @@
     <meta name="twitter:description" content="Search emojis by category, copy in multiple formats, and jump to detailed pages." />
     <meta name="twitter:image" content="https://emoj.ie/android-chrome-512x512.png" />
     <link rel="preconnect" href="https://cdn.jsdelivr.net" crossorigin />
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Outfit:wght@400;500;600;700;800&family=Space+Grotesk:wght@500;600;700&display=swap" />
     <link rel="icon" href="favicon.ico" type="image/x-icon" />
     <link rel="stylesheet" href="style.css" />
     <script defer data-domain="emoj.ie" src="https://plausible.io/js/script.js"></script>
     <script type="application/ld+json">{"@context":"https://schema.org","@type":"Organization","name":"emoj.ie","url":"https://emoj.ie/","logo":"https://emoj.ie/logo.svg"}</script>
     <script type="application/ld+json">{"@context":"https://schema.org","@type":"WebSite","name":"emoj.ie","url":"https://emoj.ie/","potentialAction":{"@type":"SearchAction","target":"https://emoj.ie/?q={search_term_string}","query-input":"required name=search_term_string"}}</script>
   </head>
-  <body>
+  <body class="page-home">
     <a href="#main-content" class="skip-link">Skip To Main Content</a>
+    <div class="page-glow" aria-hidden="true"></div>
     <header class="header">
       <div class="header-container">
         <a href="" class="logo">
@@ -34,15 +38,21 @@
       </div>
     </header>
     
-    <main id="main-content">
+    <main id="main-content" class="page-main">
       <section class="home-hero">
-    <h1>Emoji Search, Copy, And Explore</h1>
-    <p>Fast emoji discovery with deep-linkable filters and copy formats.</p>
+    <p class="hero-eyebrow">Precision Emoji Tooling</p>
+    <h1>Find, copy, and ship the right emoji in seconds.</h1>
+    <p>Fast discovery across groups and subgroups, with deep-linkable filters and format-aware copy actions.</p>
+    <ul class="hero-stats">
+      <li><strong>4284</strong><span>emoji entries</span></li>
+      <li><strong>12</strong><span>major groups</span></li>
+      <li><strong>122</strong><span>subgroups</span></li>
+    </ul>
   </section>
   <section class="home-controls" aria-label="Emoji Search Controls">
     <div class="control-group control-search">
       <label for="search">Search</label>
-      <input id="search" type="search" autocomplete="off" placeholder="Search emojis…" />
+      <input id="search" type="search" autocomplete="off" placeholder="Search by name, tag, group, or subgroup…" />
     </div>
     <div class="control-group">
       <label for="group-filter">Category</label>
@@ -70,15 +80,21 @@
       <button type="button" id="clear-filters" class="copy-btn secondary">Clear</button>
     </div>
   </section>
-  <p id="results-count" class="results-count">Loading…</p>
+  <section class="results-shell" aria-label="Emoji Results">
+  <div class="results-toolbar">
+    <p id="results-count" class="results-count">Loading…</p>
+    <button type="button" id="results-load-more" class="copy-btn secondary" hidden>Load More</button>
+  </div>
   <ul id="home-results" class="emoji-list" aria-label="Search results"></ul>
+  <div id="results-sentinel" class="results-sentinel" aria-hidden="true"></div>
+  </section>
   <section class="recent-section">
     <h2>Recently Copied</h2>
     <ul id="recent-results" class="emoji-list" aria-label="Recently copied emojis"></ul>
   </section>
   <section class="group-directory">
     <h2>Browse Categories</h2>
-    <ul class="group-link-list"><li><a href="/activities/">activities</a></li><li><a href="/animals-nature/">animals nature</a></li><li><a href="/component/">component</a></li><li><a href="/extras-openmoji/">extras openmoji</a></li><li><a href="/extras-unicode/">extras unicode</a></li><li><a href="/flags/">flags</a></li><li><a href="/food-drink/">food drink</a></li><li><a href="/objects/">objects</a></li><li><a href="/people-body/">people body</a></li><li><a href="/smileys-emotion/">smileys emotion</a></li><li><a href="/symbols/">symbols</a></li><li><a href="/travel-places/">travel places</a></li></ul>
+    <ul class="group-link-list"><li><a href="/activities/"><span>activities</span><small>5 collections</small></a></li><li><a href="/animals-nature/"><span>animals nature</span><small>8 collections</small></a></li><li><a href="/component/"><span>component</span><small>2 collections</small></a></li><li><a href="/extras-openmoji/"><span>extras openmoji</span><small>17 collections</small></a></li><li><a href="/extras-unicode/"><span>extras unicode</span><small>4 collections</small></a></li><li><a href="/flags/"><span>flags</span><small>3 collections</small></a></li><li><a href="/food-drink/"><span>food drink</span><small>8 collections</small></a></li><li><a href="/objects/"><span>objects</span><small>18 collections</small></a></li><li><a href="/people-body/"><span>people body</span><small>16 collections</small></a></li><li><a href="/smileys-emotion/"><span>smileys emotion</span><small>16 collections</small></a></li><li><a href="/symbols/"><span>symbols</span><small>14 collections</small></a></li><li><a href="/travel-places/"><span>travel places</span><small>11 collections</small></a></li></ul>
   </section>
     </main>
     <footer>

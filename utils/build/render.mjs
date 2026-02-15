@@ -125,6 +125,7 @@ function renderLayout({
   showHeaderSearch = true,
   scripts = [],
   jsonLd = [],
+  pageClass = 'page-default',
 }) {
   const prefix = relativePrefix(route);
   const pageTitle = `${title} | ${config.site.title}`;
@@ -153,16 +154,20 @@ function renderLayout({
     <meta name="twitter:description" content="${escapeHtml(description)}" />
     <meta name="twitter:image" content="${escapeHtml(socialImage)}" />
     <link rel="preconnect" href="https://cdn.jsdelivr.net" crossorigin />
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Outfit:wght@400;500;600;700;800&family=Space+Grotesk:wght@500;600;700&display=swap" />
     <link rel="icon" href="${prefix}favicon.ico" type="image/x-icon" />
     <link rel="stylesheet" href="${prefix}style.css" />
     ${renderAnalyticsScript(config)}
     ${schemaScripts}
   </head>
-  <body>
+  <body class="${escapeHtml(pageClass)}">
     <a href="#main-content" class="skip-link">Skip To Main Content</a>
+    <div class="page-glow" aria-hidden="true"></div>
     ${renderHeader({ prefix, showSearch: showHeaderSearch })}
     ${breadcrumbs || ''}
-    <main id="main-content">
+    <main id="main-content" class="page-main">
       ${body}
     </main>
     <footer>
@@ -208,20 +213,29 @@ function renderHomePage(model, config) {
     .map((group) => `<option value="${escapeHtml(group.key)}">${escapeHtml(group.title)}</option>`)
     .join('');
 
+  const totalSubgroups = model.groups.reduce((sum, group) => sum + group.subgroups.length, 0);
+  const totalEmojis = model.emojiEntries.length;
+
   const groupLinks = model.groups
     .map(
-      (group) => `<li><a href="/${group.route}">${escapeHtml(group.title)}</a></li>`
+      (group) => `<li><a href="/${group.route}"><span>${escapeHtml(group.title)}</span><small>${group.subgroups.length} collections</small></a></li>`
     )
     .join('');
 
   const body = `<section class="home-hero">
-    <h1>Emoji Search, Copy, And Explore</h1>
-    <p>Fast emoji discovery with deep-linkable filters and copy formats.</p>
+    <p class="hero-eyebrow">Precision Emoji Tooling</p>
+    <h1>Find, copy, and ship the right emoji in seconds.</h1>
+    <p>Fast discovery across groups and subgroups, with deep-linkable filters and format-aware copy actions.</p>
+    <ul class="hero-stats">
+      <li><strong>${totalEmojis}</strong><span>emoji entries</span></li>
+      <li><strong>${model.groups.length}</strong><span>major groups</span></li>
+      <li><strong>${totalSubgroups}</strong><span>subgroups</span></li>
+    </ul>
   </section>
   <section class="home-controls" aria-label="Emoji Search Controls">
     <div class="control-group control-search">
       <label for="search">Search</label>
-      <input id="search" type="search" autocomplete="off" placeholder="Search emojis…" />
+      <input id="search" type="search" autocomplete="off" placeholder="Search by name, tag, group, or subgroup…" />
     </div>
     <div class="control-group">
       <label for="group-filter">Category</label>
@@ -249,8 +263,14 @@ function renderHomePage(model, config) {
       <button type="button" id="clear-filters" class="copy-btn secondary">Clear</button>
     </div>
   </section>
-  <p id="results-count" class="results-count">Loading…</p>
+  <section class="results-shell" aria-label="Emoji Results">
+  <div class="results-toolbar">
+    <p id="results-count" class="results-count">Loading…</p>
+    <button type="button" id="results-load-more" class="copy-btn secondary" hidden>Load More</button>
+  </div>
   <ul id="home-results" class="emoji-list" aria-label="Search results"></ul>
+  <div id="results-sentinel" class="results-sentinel" aria-hidden="true"></div>
+  </section>
   <section class="recent-section">
     <h2>Recently Copied</h2>
     <ul id="recent-results" class="emoji-list" aria-label="Recently copied emojis"></ul>
@@ -294,13 +314,14 @@ function renderHomePage(model, config) {
     showHeaderSearch: false,
     scripts: [{ src: 'home-app.mjs', type: 'module', defer: true }],
     jsonLd: homeJsonLd,
+    pageClass: 'page-home',
   });
 }
 
 function renderAboutPage(config) {
   const body = `<article class="about-page">
     <h1>About emoj.ie</h1>
-    <p>emoj.ie is a fast, static emoji explorer focused on reliable search and copy workflows.</p>
+    <p>emoj.ie is a fast, static emoji explorer focused on reliable search, ergonomic copy workflows, and durable URL structure.</p>
     <h2>Data Source</h2>
     <p>Emoji data and artwork are sourced from the OpenMoji project under CC BY-SA 4.0.</p>
     <h2>Contact</h2>
@@ -324,19 +345,27 @@ function renderAboutPage(config) {
     config,
     showHeaderSearch: true,
     jsonLd: [breadcrumbSchema(config.site.baseUrl, crumbs, canonicalUrl)],
+    pageClass: 'page-about',
   });
 }
 
 function renderGroupPage(group, config) {
+  const previewLimit = Math.max(8, Number(config.ui?.groupPreviewLimit || 24));
   const subgroupSections = group.subgroups
     .map((subgroup) => {
-      const emojiList = subgroup.emojis
+      const preview = subgroup.emojis.slice(0, previewLimit);
+      const emojiList = preview
         .map((emoji) => renderEmojiCard(emoji, config.assets.emojiCdnTemplate))
         .join('');
+      const remaining = subgroup.emojis.length - preview.length;
+      const previewMeta = remaining > 0
+        ? `<p class="subgroup-meta">Showing ${preview.length} of ${subgroup.emojis.length}. <a href="/${subgroup.route}">Open full collection</a>.</p>`
+        : `<p class="subgroup-meta">${subgroup.emojis.length} emoji${subgroup.emojis.length === 1 ? '' : 's'} in this collection.</p>`;
 
       return `<section class="subgroup">
-        <a href="/${subgroup.route}"><h2>${escapeHtml(subgroup.title)}</h2></a>
+        <h2><a href="/${subgroup.route}">${escapeHtml(subgroup.title)}</a></h2>
         <p>${escapeHtml(subgroup.description)}</p>
+        ${previewMeta}
         <ul class="emoji-list">${emojiList}</ul>
       </section>`;
     })
@@ -384,6 +413,7 @@ function renderGroupPage(group, config) {
     config,
     showHeaderSearch: true,
     jsonLd,
+    pageClass: 'page-group',
   });
 }
 
@@ -395,6 +425,7 @@ function renderSubgroupPage(group, subgroup, config) {
   const body = `<section class="subgroup">
     <h1>${escapeHtml(subgroup.title)}</h1>
     <p>${escapeHtml(subgroup.description)}</p>
+    <p class="subgroup-meta">${subgroup.emojis.length} emoji${subgroup.emojis.length === 1 ? '' : 's'} in this collection.</p>
     <ul class="emoji-list">${emojiList}</ul>
   </section>`;
 
@@ -434,6 +465,7 @@ function renderSubgroupPage(group, subgroup, config) {
     config,
     showHeaderSearch: true,
     jsonLd,
+    pageClass: 'page-subgroup',
   });
 }
 
@@ -460,9 +492,9 @@ function renderVariantSection(entry, variantEntries) {
     })
     .join('');
 
-  return `<section>
+  return `<section class="variant-section">
     <h2>Variants</h2>
-    <ul>${items}</ul>
+    <ul class="variant-list">${items}</ul>
   </section>`;
 }
 
@@ -476,39 +508,41 @@ function renderEmojiPage(group, subgroup, entry, variantEntries, config) {
 
   const body = `<article class="emoji-detail">
     <h1>${escapeHtml(label)}</h1>
-    <p class="emoji-detail-hero">${escapeHtml(entry.emoji)}</p>
-    <p>
-      <img src="${escapeHtml(imageSrc)}" alt="${escapeHtml(label)}" width="96" height="96" loading="eager" data-cdn-src="${escapeHtml(cdnSrc)}" data-hex="${escapeHtml(entry.hexLower)}" />
-    </p>
-    <p>
-      <button
-        type="button"
-        class="copy-btn"
-        data-copy-value="${escapeHtml(entry.emoji)}"
-        data-copy-label="${escapeHtml(label)}"
-        data-copy-format="emoji"
-        data-emoji="${escapeHtml(entry.emoji)}"
-        data-hex="${escapeHtml(entry.hexLower)}"
-        data-group="${escapeHtml(entry.group)}"
-        data-subgroup="${escapeHtml(entry.subgroup)}"
-        data-route="${escapeHtml(entry.detailRoute)}"
-      >Copy Emoji</button>
-      <button type="button" class="copy-btn secondary" data-copy-value="${escapeHtml(
-        entry.hexLower
-      )}" data-copy-label="${escapeHtml(label)} hex code" data-copy-format="unicode" data-hex="${escapeHtml(
-        entry.hexLower
-      )}" data-group="${escapeHtml(entry.group)}" data-subgroup="${escapeHtml(
-        entry.subgroup
-      )}" data-route="${escapeHtml(entry.detailRoute)}">Copy Hex</button>
-      <button type="button" class="copy-btn secondary" data-share-url="${escapeHtml(
-        detailUrl
-      )}" data-route="${escapeHtml(entry.detailRoute)}" data-hex="${escapeHtml(
-        entry.hexLower
-      )}" data-group="${escapeHtml(entry.group)}" data-subgroup="${escapeHtml(
-        entry.subgroup
-      )}" data-format="url">Share Link</button>
-    </p>
-    <dl>
+    <section class="emoji-hero-panel">
+      <p class="emoji-detail-hero">${escapeHtml(entry.emoji)}</p>
+      <p class="emoji-detail-art">
+        <img src="${escapeHtml(imageSrc)}" alt="${escapeHtml(label)}" width="96" height="96" loading="eager" data-cdn-src="${escapeHtml(cdnSrc)}" data-hex="${escapeHtml(entry.hexLower)}" />
+      </p>
+      <div class="emoji-actions">
+        <button
+          type="button"
+          class="copy-btn"
+          data-copy-value="${escapeHtml(entry.emoji)}"
+          data-copy-label="${escapeHtml(label)}"
+          data-copy-format="emoji"
+          data-emoji="${escapeHtml(entry.emoji)}"
+          data-hex="${escapeHtml(entry.hexLower)}"
+          data-group="${escapeHtml(entry.group)}"
+          data-subgroup="${escapeHtml(entry.subgroup)}"
+          data-route="${escapeHtml(entry.detailRoute)}"
+        >Copy Emoji</button>
+        <button type="button" class="copy-btn secondary" data-copy-value="${escapeHtml(
+          entry.hexLower
+        )}" data-copy-label="${escapeHtml(label)} hex code" data-copy-format="unicode" data-hex="${escapeHtml(
+          entry.hexLower
+        )}" data-group="${escapeHtml(entry.group)}" data-subgroup="${escapeHtml(
+          entry.subgroup
+        )}" data-route="${escapeHtml(entry.detailRoute)}">Copy Hex</button>
+        <button type="button" class="copy-btn secondary" data-share-url="${escapeHtml(
+          detailUrl
+        )}" data-route="${escapeHtml(entry.detailRoute)}" data-hex="${escapeHtml(
+          entry.hexLower
+        )}" data-group="${escapeHtml(entry.group)}" data-subgroup="${escapeHtml(
+          entry.subgroup
+        )}" data-format="url">Share Link</button>
+      </div>
+    </section>
+    <dl class="emoji-meta">
       <dt>Unicode</dt><dd><code>${escapeHtml(entry.hexLower)}</code></dd>
       <dt>Group</dt><dd>${escapeHtml(group.title)}</dd>
       <dt>Subgroup</dt><dd>${escapeHtml(subgroup.title)}</dd>
@@ -562,6 +596,7 @@ function renderEmojiPage(group, subgroup, entry, variantEntries, config) {
     config,
     showHeaderSearch: true,
     jsonLd,
+    pageClass: 'page-detail',
   });
 }
 
@@ -593,10 +628,41 @@ async function writeRouteHtml(tempRoot, route, html, generatedFiles) {
   generatedFiles.add(file);
 }
 
+async function writeGeneratedFile(tempRoot, file, contents, generatedFiles) {
+  const outputPath = path.join(tempRoot, file);
+  await fs.mkdir(path.dirname(outputPath), { recursive: true });
+  await fs.writeFile(outputPath, contents, 'utf8');
+  generatedFiles.add(file);
+}
+
+function buildHomeDataPayload(emojiEntries) {
+  const rows = [...emojiEntries]
+    .sort((a, b) => a.detailRoute.localeCompare(b.detailRoute, 'en', { sensitivity: 'base' }))
+    .map((entry) => ({
+      emoji: entry.emoji || '',
+      annotation: entry.annotation || '',
+      group: entry.group,
+      subgroup: entry.subgroup,
+      hexcode: entry.hexLower,
+      tags: Array.isArray(entry.tags) ? entry.tags.join(' ') : String(entry.tags || ''),
+      detailRoute: entry.detailRoute,
+      useLocalAsset: Boolean(entry.useLocalAsset),
+    }));
+
+  return `${JSON.stringify(rows)}\n`;
+}
+
 export async function renderSite({ model, legacyRedirects, config, tempRoot }) {
   const generatedFiles = new Set();
   const coreRoutes = new Set();
   const emojiRoutes = new Set();
+
+  await writeGeneratedFile(
+    tempRoot,
+    'home-data.json',
+    buildHomeDataPayload(model.emojiEntries),
+    generatedFiles
+  );
 
   if (config.indexing?.includeHomePage) {
     await writeRouteHtml(tempRoot, '', renderHomePage(model, config), generatedFiles);
