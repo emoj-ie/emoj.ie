@@ -417,6 +417,11 @@ a:hover {
   cursor: pointer;
 }
 
+.advanced-menu[hidden],
+.advanced-backdrop[hidden] {
+  display: none !important;
+}
+
 body.menu-open {
   overflow: hidden;
 }

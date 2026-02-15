@@ -8,6 +8,7 @@ import {
   normalizeHex,
   routeToFile,
 } from './slug.mjs';
+import { DAILY_EMOJI_EDITORIAL } from './daily-emoji-editorial.mjs';
 
 function absoluteUrl(baseUrl, route = '') {
   const base = String(baseUrl).replace(/\/+$/, '');
@@ -698,19 +699,66 @@ function buildDailyEmojiPayload(emojiEntries) {
     .filter((entry) => entry.indexable && !entry.isVariant && entry.group !== 'component')
     .sort((a, b) => a.detailRoute.localeCompare(b.detailRoute, 'en', { sensitivity: 'base' }));
 
-  const fallback = source.length > 0 ? source : [...emojiEntries];
-  const days = 366;
-  const multiplier = 37;
+  const fallbackSource =
+    source.length > 0
+      ? source
+      : [...emojiEntries].sort((a, b) =>
+          a.detailRoute.localeCompare(b.detailRoute, 'en', { sensitivity: 'base' })
+        );
+
+  const entryByHex = new Map();
+  for (const entry of fallbackSource) {
+    const hex = normalizeHex(entry.hexLower || entry.hexcode || '');
+    if (hex && !entryByHex.has(hex)) {
+      entryByHex.set(hex, entry);
+    }
+  }
+
+  const resolvePool = (hexList = []) =>
+    hexList
+      .map((hex) => entryByHex.get(normalizeHex(hex || '')))
+      .filter(Boolean);
+
+  const fallbackPool = resolvePool(DAILY_EMOJI_EDITORIAL.fallbackPool);
+  const safetySource =
+    fallbackSource.length > 0
+      ? fallbackSource
+      : [
+          {
+            emoji: '😀',
+            annotation: 'emoji',
+            detailRoute: '',
+            hexLower: '1f600',
+          },
+        ];
 
   const rows = [];
-  for (let index = 0; index < days; index += 1) {
-    const selected = fallback[(index * multiplier) % fallback.length];
+  for (let day = 1; day <= 366; day += 1) {
+    const date = new Date(Date.UTC(2024, 0, day));
+    const monthKey = String(date.getUTCMonth() + 1).padStart(2, '0');
+    const dayKey = String(date.getUTCDate()).padStart(2, '0');
+    const monthDayKey = `${monthKey}-${dayKey}`;
+
+    const holidayPool = resolvePool(DAILY_EMOJI_EDITORIAL.holidayOverrides?.[monthDayKey]);
+    const monthPool = resolvePool(DAILY_EMOJI_EDITORIAL.monthlyPools?.[monthKey]);
+
+    let selected = holidayPool[0];
+    if (!selected && monthPool.length > 0) {
+      selected = monthPool[(date.getUTCDate() - 1) % monthPool.length];
+    }
+    if (!selected && fallbackPool.length > 0) {
+      selected = fallbackPool[(day - 1) % fallbackPool.length];
+    }
+    if (!selected) {
+      selected = safetySource[(day - 1) % safetySource.length];
+    }
+
     rows.push({
-      day: index + 1,
+      day,
       emoji: selected.emoji || '😀',
       annotation: selected.annotation || 'emoji',
-      detailRoute: selected.detailRoute,
-      hexcode: selected.hexLower,
+      detailRoute: selected.detailRoute || '',
+      hexcode: normalizeHex(selected.hexLower || selected.hexcode || '') || '1f600',
     });
   }
 

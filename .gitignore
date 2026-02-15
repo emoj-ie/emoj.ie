@@ -1,2 +1,1 @@
-/utils/*.
-/.build-tmp/*.
+.build-tmp/

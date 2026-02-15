@@ -9,6 +9,12 @@ function read(filePath) {
   return fs.readFileSync(path.join(root, filePath), 'utf8');
 }
 
+function leapDayOfYear(month, day) {
+  const start = Date.UTC(2024, 0, 1);
+  const target = Date.UTC(2024, month - 1, day);
+  return Math.floor((target - start) / 86400000) + 1;
+}
+
 test('home app uses progressive rendering and lightweight home index data', () => {
   const homeApp = read('home-app.mjs');
 
@@ -22,10 +28,16 @@ test('homepage template has lazy loading controls', () => {
   const home = read('index.html');
 
   assert.match(home, /id="header-menu-toggle"/);
-  assert.match(home, /id="advanced-menu"/);
+  assert.match(home, /id="advanced-menu"[^>]*\shidden\b/);
+  assert.match(home, /id="advanced-backdrop"[^>]*\shidden\b/);
   assert.match(home, /id="panel-grid"/);
   assert.match(home, /id="results-load-more"/);
   assert.match(home, /id="results-sentinel"/);
+});
+
+test('advanced menu hidden state is enforced by css', () => {
+  const style = read('style.css');
+  assert.match(style, /\.advanced-menu\[hidden\],\s*\.advanced-backdrop\[hidden\]\s*\{[\s\S]*?display:\s*none !important;/);
 });
 
 test('build emits a full home-data index', () => {
@@ -50,6 +62,18 @@ test('daily emoji schedule exists for all days of year', () => {
   assert.ok(Array.isArray(rows), 'daily-emoji.json should be an array');
   assert.equal(rows.length, 366, `expected 366 daily entries, got ${rows.length}`);
   assert.ok(rows.every((row) => typeof row.emoji === 'string' && row.emoji.length > 0));
+
+  const newYears = rows.find((row) => row.day === leapDayOfYear(1, 1));
+  const valentines = rows.find((row) => row.day === leapDayOfYear(2, 14));
+  const halloween = rows.find((row) => row.day === leapDayOfYear(10, 31));
+
+  assert.ok(newYears, 'expected Jan 1 entry');
+  assert.ok(valentines, 'expected Feb 14 entry');
+  assert.ok(halloween, 'expected Oct 31 entry');
+
+  assert.ok(['1f386', '1f389'].includes(newYears.hexcode), `unexpected Jan 1 hex ${newYears.hexcode}`);
+  assert.ok(['2764', '1f495'].includes(valentines.hexcode), `unexpected Feb 14 hex ${valentines.hexcode}`);
+  assert.ok(['1f383', '1f47b', '1f577'].includes(halloween.hexcode), `unexpected Oct 31 hex ${halloween.hexcode}`);
 });
 
 test('heavy group page uses preview copy that points users to subgroup pages', () => {

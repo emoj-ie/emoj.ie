@@ -17,6 +17,7 @@
 - [x] Phase 6 QA scripts passing (`npm run lint:links`, `npm run test:a11y-smoke`, `npm run test:lighthouse-budget`, `npm run test:playwright-smoke`*)
 - [x] Phase 7: Premium UX/UI redesign and progressive rendering
 - [x] Phase 7 tests added and passing (`tests/phase7-ux-performance.test.mjs`)
+- [x] Post-Phase update: editorial 366-day emoji schedule + burger-gated advanced menu visibility
 
 `*` Playwright smoke currently skips when Playwright is not installed, by design.
 
