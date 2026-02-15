@@ -1,0 +1,33 @@
+{
+  "site": {
+    "baseUrl": "https://emoj.ie",
+    "title": "emoj.ie",
+    "defaultDescription": "Find and copy emojis quickly from categories like smileys, animals, and flags.",
+    "socialImage": "/android-chrome-512x512.png"
+  },
+  "paths": {
+    "groupedData": "grouped-openmoji.json",
+    "outputRoot": ".",
+    "tempBuildDir": ".build-tmp"
+  },
+  "build": {
+    "manifestFile": "build-manifest.json",
+    "sitemapIndex": "sitemap.xml",
+    "sitemapCore": "sitemap-core.xml",
+    "sitemapEmoji": "sitemap-emoji.xml"
+  },
+  "indexing": {
+    "noindexGroups": ["component"],
+    "noindexVariants": true,
+    "includeAboutPage": true,
+    "includeHomePage": true,
+    "emojiSitemapBaseOnly": true
+  },
+  "redirects": {
+    "generateLegacySlugRedirects": true,
+    "preferBaseForCollisions": true
+  },
+  "assets": {
+    "emojiCdnTemplate": "https://cdn.jsdelivr.net/npm/openmoji@15.1.0/color/svg/{HEX}.svg"
+  }
+}
