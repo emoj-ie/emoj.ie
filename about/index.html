@@ -3,167 +3,54 @@
   <head>
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>About emoj.ie</title>
+    <title>About | emoj.ie</title>
+    <meta name="description" content="About the emoj.ie emoji explorer and data sources." />
+    <link rel="canonical" href="https://emoj.ie/about/" />
+    
+    <meta property="og:type" content="website" />
+    <meta property="og:title" content="About | emoj.ie" />
+    <meta property="og:description" content="About the emoj.ie emoji explorer and data sources." />
+    <meta property="og:url" content="https://emoj.ie/about/" />
+    <meta property="og:image" content="https://emoj.ie/android-chrome-512x512.png" />
+    <meta name="twitter:card" content="summary_large_image" />
+    <meta name="twitter:title" content="About | emoj.ie" />
+    <meta name="twitter:description" content="About the emoj.ie emoji explorer and data sources." />
+    <meta name="twitter:image" content="https://emoj.ie/android-chrome-512x512.png" />
+    <link rel="preconnect" href="https://cdn.jsdelivr.net" crossorigin />
+    <link rel="icon" href="../favicon.ico" type="image/x-icon" />
     <link rel="stylesheet" href="../style.css" />
-    <style>
-      /* Add custom styles specific to the About page */
-      main {
-        max-width: 800px;
-        margin: 2rem auto;
-        padding: 1rem;
-        background: white;
-        box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
-        border-radius: 8px;
-      }
-
-      main section {
-        margin-bottom: 2rem;
-      }
-
-      h2,
-      h3 {
-        color: #4caf50;
-      }
-
-      ul {
-        padding: 0;
-        list-style: none;
-      }
-
-      ul li {
-        margin-bottom: 1rem;
-        padding-left: 1.5rem;
-        position: relative;
-      }
-
-      ul li:before {
-        content: '✔️';
-        position: absolute;
-        left: 0;
-      }
-
-      a {
-        color: #4caf50;
-        text-decoration: none;
-      }
-
-      a:hover {
-        text-decoration: underline;
-      }
-    </style>
+    <script defer data-domain="emoj.ie" src="https://plausible.io/js/script.js"></script>
+    <script type="application/ld+json">{"@context":"https://schema.org","@type":"BreadcrumbList","itemListElement":[{"@type":"ListItem","position":1,"name":"Home","item":"https://emoj.ie/"},{"@type":"ListItem","position":2,"name":"About","item":"https://emoj.ie/about/"}]}</script>
   </head>
   <body>
+    <a href="#main-content" class="skip-link">Skip To Main Content</a>
     <header class="header">
       <div class="header-container">
         <a href="../" class="logo">
-          <img src="../logo.svg" alt="emoj.ie Logo" />
+          <img src="../logo.svg" alt="emoj.ie logo" width="90" height="40" />
         </a>
-        <div class="search-container">
-          <input
-            type="text"
-            id="search"
-            placeholder="Search emojis..."
-            aria-label="Search emojis"
-          />
-        </div>
+        <form class="header-search" action="../" method="get" role="search">
+        <label for="search" class="visually-hidden">Search Emojis</label>
+        <input id="search" name="q" type="search" autocomplete="off" placeholder="Search emojis…" />
+        <button type="submit">Search</button>
+      </form>
       </div>
     </header>
-    <main>
-      <section>
-        <h2>Welcome to emoj.ie!</h2>
-        <p>
-          emoj.ie is your one-stop destination for all things emoji! Whether
-          you're looking to explore, search, or copy emojis for your projects,
-          we've got you covered with a fast and accessible tool. Dive into the
-          world of emojis with ease and fun!
-        </p>
-      </section>
-      <section>
-        <h3>Why emoj.ie?</h3>
-        <p>
-          At emoj.ie, we believe in simplicity, speed, and accessibility. Our
-          platform is designed for everyone—whether you're a designer,
-          developer, or just a fan of emojis. With emoj.ie, finding the perfect
-          emoji is just a click away!
-        </p>
-      </section>
-      <section>
-        <h3>Credits</h3>
-        <ul>
-          <li>
-            Emojis are sourced from the
-            <a
-              href="https://github.com/hfg-gmuend/openmoji"
-              target="_blank"
-              rel="noopener"
-              >OpenMoji</a
-            >
-            project, an open-source emoji library under the
-            <a
-              href="https://creativecommons.org/licenses/by-sa/4.0/"
-              target="_blank"
-              rel="noopener"
-              >CC BY-SA 4.0 license</a
-            >.
-          </li>
-          <li>
-            The favicon was generated using the following graphics from
-            <a
-              href="https://github.com/twitter/twemoji"
-              target="_blank"
-              rel="noopener"
-              >Twitter Twemoji</a
-            >:
-            <ul>
-              <li>Graphics Title: 1f600.svg</li>
-              <li>Graphics Author: Copyright 2020 Twitter, Inc.</li>
-              <li>
-                Graphics Source:
-                <a
-                  href="https://github.com/twitter/twemoji/blob/master/assets/svg/1f600.svg"
-                  target="_blank"
-                  rel="noopener"
-                  >View on GitHub</a
-                >
-              </li>
-              <li>
-                Graphics License:
-                <a
-                  href="https://creativecommons.org/licenses/by/4.0/"
-                  target="_blank"
-                  rel="noopener"
-                  >CC BY 4.0</a
-                >
-              </li>
-            </ul>
-          </li>
-        </ul>
-      </section>
-      <section>
-        <h3>Contact Us</h3>
-        <p>
-          Have feedback or suggestions? Reach out to us at
-          <a href="mailto:info@emoj.ie">info<cite>@</cite>emoj.ie</a>. We'd love to
-          hear from you!
-        </p>
-      </section>
+    <nav class="breadcrumbs" aria-label="Breadcrumb"><a href="/">Home</a> / <span>About</span></nav>
+    <main id="main-content">
+      <article class="about-page">
+    <h1>About emoj.ie</h1>
+    <p>emoj.ie is a fast, static emoji explorer focused on reliable search and copy workflows.</p>
+    <h2>Data Source</h2>
+    <p>Emoji data and artwork are sourced from the OpenMoji project under CC BY-SA 4.0.</p>
+    <h2>Contact</h2>
+    <p><a href="mailto:info@emoj.ie">info@emoj.ie</a></p>
+  </article>
     </main>
     <footer>
-      <p>© 2025 emoj.ie | <a href="../">Home</a></p>
+      <p>© 2026 emoj.ie | <a href="../about">About</a></p>
     </footer>
-    <script>
-      // Register service worker for offline caching
-      if ('serviceWorker' in navigator) {
-        window.addEventListener('load', function() {
-          navigator.serviceWorker.register('/sw.js')
-            .then(function(registration) {
-              console.log('Service Worker registered successfully:', registration.scope);
-            })
-            .catch(function(error) {
-              console.log('Service Worker registration failed:', error);
-            });
-        });
-      }
-    </script>
+    <div id="live-region" aria-live="polite" aria-atomic="true" style="position:absolute;left:-9999px;top:auto;width:1px;height:1px;overflow:hidden;"></div>
+    <script src="../generated-pages.js" defer></script>
   </body>
 </html>

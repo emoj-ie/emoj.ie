@@ -1,4 +1,22 @@
 (function () {
+  function track(eventName, props) {
+    if (typeof window.plausible !== 'function') {
+      return;
+    }
+
+    window.plausible(eventName, { props: props || {} });
+  }
+
+  function analyticsContext(element, defaultFormat) {
+    return {
+      source: window.location.pathname,
+      hex: (element && element.getAttribute('data-hex')) || '',
+      group: (element && element.getAttribute('data-group')) || '',
+      subgroup: (element && element.getAttribute('data-subgroup')) || '',
+      format: (element && element.getAttribute('data-format')) || defaultFormat || '',
+    };
+  }
+
   function ensureLiveRegion() {
     let region = document.getElementById('live-region');
     if (region) {
@@ -50,7 +68,49 @@
     temp.remove();
   }
 
+  function registerServiceWorker() {
+    if (!('serviceWorker' in navigator)) {
+      return;
+    }
+
+    window.addEventListener('load', function () {
+      navigator.serviceWorker.register('/sw.js').catch(function () {
+        // Ignore registration errors for static hosting edge-cases.
+      });
+    });
+  }
+
   document.addEventListener('click', function (event) {
+    const shareButton = event.target.closest('[data-share-url]');
+    if (shareButton) {
+      const shareUrl = shareButton.getAttribute('data-share-url');
+      if (shareUrl) {
+        copyText(shareUrl)
+          .then(function () {
+            showToast('Link copied');
+            track('share', {
+              ...analyticsContext(shareButton, 'url'),
+              route: shareButton.getAttribute('data-route') || '',
+            });
+          })
+          .catch(function () {
+            showToast('Share failed. Try again.');
+          });
+      }
+      return;
+    }
+
+    const variantLink = event.target.closest('[data-variant-select]');
+    if (variantLink) {
+      const targetHex = variantLink.getAttribute('data-variant-to') || '';
+      track('variant_select', {
+        ...analyticsContext(variantLink, 'variant'),
+        hex: targetHex,
+        from: variantLink.getAttribute('data-variant-from') || '',
+        to: targetHex,
+      });
+    }
+
     const button = event.target.closest('[data-copy-value]');
     if (!button) {
       return;
@@ -65,6 +125,20 @@
     copyText(value)
       .then(function () {
         showToast('Copied: ' + label);
+        const copyFormat = button.getAttribute('data-copy-format') || 'emoji';
+        track('copy', {
+          ...analyticsContext(button, copyFormat),
+          format: copyFormat,
+        });
+        document.dispatchEvent(
+          new CustomEvent('emoji:copied', {
+            detail: {
+              value: value,
+              label: label,
+              trigger: button,
+            },
+          })
+        );
       })
       .catch(function () {
         showToast('Copy failed. Try again.');
@@ -80,4 +154,24 @@
       }
     }
   });
+
+  document.addEventListener(
+    'error',
+    function (event) {
+      const image = event.target;
+      if (!(image instanceof HTMLImageElement)) {
+        return;
+      }
+
+      const fallback = image.dataset.cdnSrc;
+      if (!fallback || image.src === fallback) {
+        return;
+      }
+
+      image.src = fallback;
+    },
+    true
+  );
+
+  registerServiceWorker();
 })();

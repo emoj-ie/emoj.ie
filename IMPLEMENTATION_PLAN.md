@@ -4,16 +4,19 @@
 
 - [x] Phase 1: Deterministic generation foundation implemented
 - [x] Phase 1 tests added and passing (`tests/phase1-generator.test.mjs`)
-- [ ] Phase 2: Frontend architecture and UX upgrade
-- [ ] Phase 2 tests added and passing
-- [ ] Phase 3: Accessibility and standards compliance pass
-- [ ] Phase 3 tests added and passing
-- [ ] Phase 4: SEO metadata and JSON-LD at scale
-- [ ] Phase 4 tests added and passing
-- [ ] Phase 5: Asset and caching strategy updates
-- [ ] Phase 5 tests added and passing
-- [ ] Phase 6: Analytics and CI quality gates
-- [ ] Phase 6 tests added and passing
+- [x] Phase 2: Frontend architecture and UX upgrade
+- [x] Phase 2 tests added and passing (`tests/phase2-home-utils.test.mjs`)
+- [x] Phase 3: Accessibility and standards compliance pass
+- [x] Phase 3 tests added and passing (`tests/phase3-accessibility-style.test.mjs`)
+- [x] Phase 4: SEO metadata and JSON-LD at scale
+- [x] Phase 4 tests added and passing (`tests/phase4-seo-schema.test.mjs`)
+- [x] Phase 5: Asset and caching strategy updates
+- [x] Phase 5 tests added and passing (`tests/phase5-sw-assets.test.mjs`)
+- [x] Phase 6: Analytics and CI quality gates
+- [x] Phase 6 tests added and passing (`tests/phase6-analytics-ci.test.mjs`)
+- [x] Phase 6 QA scripts passing (`npm run lint:links`, `npm run test:a11y-smoke`, `npm run test:lighthouse-budget`, `npm run test:playwright-smoke`*)
+
+`*` Playwright smoke currently skips when Playwright is not installed, by design.
 
 ## Summary
 

@@ -105,6 +105,8 @@ body {
   -moz-osx-font-smoothing: grayscale;
   transition: background var(--transition-normal), color var(--transition-normal);
   min-height: 100vh;
+  touch-action: manipulation;
+  -webkit-tap-highlight-color: rgba(59, 130, 246, 0.25);
 }
 
 header h1 {
@@ -182,7 +184,7 @@ hr {
   backdrop-filter: blur(10px);
   box-shadow: var(--shadow-md);
   color: var(--text-primary);
-  transition: all var(--transition-fast);
+  transition: background var(--transition-fast), border-color var(--transition-fast), color var(--transition-fast), transform var(--transition-fast), box-shadow var(--transition-fast), opacity var(--transition-fast);
 }
 
 .search-container input::placeholder {
@@ -191,7 +193,7 @@ hr {
 }
 
 .search-container input:focus {
-  outline: none;
+  outline: 2px solid transparent;
   border-color: rgba(255, 255, 255, 0.5);
   background: white;
   box-shadow: var(--shadow-lg);
@@ -212,7 +214,7 @@ hr {
   display: flex;
   align-items: center;
   justify-content: center;
-  transition: all var(--transition-fast);
+  transition: background var(--transition-fast), border-color var(--transition-fast), color var(--transition-fast), transform var(--transition-fast), box-shadow var(--transition-fast), opacity var(--transition-fast);
   backdrop-filter: blur(10px);
   flex-shrink: 0;
 }
@@ -236,7 +238,7 @@ hr {
   justify-content: center;
   align-items: center;
   gap: 3px;
-  transition: all var(--transition-fast);
+  transition: background var(--transition-fast), border-color var(--transition-fast), color var(--transition-fast), transform var(--transition-fast), box-shadow var(--transition-fast), opacity var(--transition-fast);
   backdrop-filter: blur(10px);
   flex-shrink: 0;
 }
@@ -254,7 +256,7 @@ hr {
   width: 18px;
   height: 2px;
   background: white;
-  transition: all var(--transition-fast);
+  transition: background var(--transition-fast), border-color var(--transition-fast), color var(--transition-fast), transform var(--transition-fast), box-shadow var(--transition-fast), opacity var(--transition-fast);
   border-radius: 1px;
 }
 
@@ -325,7 +327,7 @@ hr {
   color: var(--text-primary);
   cursor: pointer;
   width: 100%;
-  transition: all var(--transition-fast);
+  transition: background var(--transition-fast), border-color var(--transition-fast), color var(--transition-fast), transform var(--transition-fast), box-shadow var(--transition-fast), opacity var(--transition-fast);
   appearance: none;
   background-image: url("data:image/svg+xml,%3csvg xmlns='http://www.w3.org/2000/svg' fill='none' viewBox='0 0 20 20'%3e%3cpath stroke='%236b7280' stroke-linecap='round' stroke-linejoin='round' stroke-width='1.5' d='m6 8 4 4 4-4'/%3e%3c/svg%3e");
   background-position: right 0.75rem center;
@@ -335,7 +337,7 @@ hr {
 }
 
 .filter-controls select:focus {
-  outline: none;
+  outline: 2px solid transparent;
   border-color: var(--border-focus);
   box-shadow: 0 0 0 3px var(--border-focus);
   background-color: var(--bg-secondary);
@@ -361,7 +363,7 @@ hr {
   font-size: var(--text-base);
   font-weight: 600;
   cursor: pointer;
-  transition: all var(--transition-fast);
+  transition: background var(--transition-fast), border-color var(--transition-fast), color var(--transition-fast), transform var(--transition-fast), box-shadow var(--transition-fast), opacity var(--transition-fast);
   width: 100%;
   margin-top: 1rem;
 }
@@ -390,7 +392,7 @@ hr {
   color: white;
   cursor: pointer;
   min-width: 140px;
-  transition: all var(--transition-fast);
+  transition: background var(--transition-fast), border-color var(--transition-fast), color var(--transition-fast), transform var(--transition-fast), box-shadow var(--transition-fast), opacity var(--transition-fast);
   font-weight: 500;
 }
 
@@ -400,7 +402,7 @@ hr {
 }
 
 .filter-controls select:focus {
-  outline: none;
+  outline: 2px solid transparent;
   border-color: white;
   background: rgba(255, 255, 255, 0.2);
   box-shadow: 0 0 0 3px rgba(255, 255, 255, 0.1);
@@ -415,7 +417,7 @@ hr {
   font-size: var(--text-sm);
   font-weight: 600;
   cursor: pointer;
-  transition: all var(--transition-fast);
+  transition: background var(--transition-fast), border-color var(--transition-fast), color var(--transition-fast), transform var(--transition-fast), box-shadow var(--transition-fast), opacity var(--transition-fast);
   backdrop-filter: blur(10px);
   text-transform: uppercase;
   letter-spacing: 0.025em;
@@ -568,7 +570,7 @@ hr {
   border: 1px solid var(--border-primary);
   border-radius: var(--radius-lg);
   box-shadow: var(--shadow-sm);
-  transition: all var(--transition-fast);
+  transition: background var(--transition-fast), border-color var(--transition-fast), color var(--transition-fast), transform var(--transition-fast), box-shadow var(--transition-fast), opacity var(--transition-fast);
   cursor: pointer;
   position: relative;
   margin: 0.25rem;
@@ -582,8 +584,8 @@ hr {
   border-color: var(--border-focus);
 }
 
-.emoji:focus {
-  outline: none;
+.emoji:focus-visible {
+  outline: 2px solid transparent;
   box-shadow: var(--shadow-md), 0 0 0 3px var(--border-focus);
 }
 
@@ -779,7 +781,7 @@ hr {
   justify-content: center;
   font-size: var(--text-sm);
   font-weight: bold;
-  transition: all var(--transition-fast);
+  transition: background var(--transition-fast), border-color var(--transition-fast), color var(--transition-fast), transform var(--transition-fast), box-shadow var(--transition-fast), opacity var(--transition-fast);
   flex-shrink: 0;
 }
 
@@ -847,7 +849,7 @@ footer a:hover {
   font-weight: 600;
   z-index: 1000;
   opacity: 1;
-  transition: all var(--transition-normal);
+  transition: background var(--transition-normal), border-color var(--transition-normal), color var(--transition-normal), transform var(--transition-normal), box-shadow var(--transition-normal), opacity var(--transition-normal);
   backdrop-filter: blur(10px);
   border: 1px solid rgba(255, 255, 255, 0.1);
 }
@@ -875,7 +877,7 @@ footer a:hover {
   align-items: center;
   justify-content: center;
   z-index: 1000;
-  transition: all var(--transition-fast);
+  transition: background var(--transition-fast), border-color var(--transition-fast), color var(--transition-fast), transform var(--transition-fast), box-shadow var(--transition-fast), opacity var(--transition-fast);
   backdrop-filter: blur(10px);
 }
 
@@ -943,7 +945,7 @@ footer a:hover {
   font-weight: 600;
   cursor: pointer;
   z-index: 1;
-  transition: all var(--transition-fast);
+  transition: background var(--transition-fast), border-color var(--transition-fast), color var(--transition-fast), transform var(--transition-fast), box-shadow var(--transition-fast), opacity var(--transition-fast);
   background: none;
   border: none;
   padding: 0.5rem;
@@ -1058,7 +1060,7 @@ footer a:hover {
   font-size: var(--text-sm);
   font-weight: 600;
   font-family: var(--font-family);
-  transition: all var(--transition-fast);
+  transition: background var(--transition-fast), border-color var(--transition-fast), color var(--transition-fast), transform var(--transition-fast), box-shadow var(--transition-fast), opacity var(--transition-fast);
   min-width: 140px;
   text-transform: uppercase;
   letter-spacing: 0.025em;
@@ -1168,13 +1170,16 @@ footer a:hover {
 }
 
 /* Focus States for Accessibility */
-.emoji:focus,
-.filter-controls select:focus,
-.search-container input:focus,
-.theme-toggle:focus,
-.copy-btn:focus,
-.modal-close:focus {
-  outline: none;
+.emoji:focus-visible,
+.filter-controls select:focus-visible,
+.search-container input:focus-visible,
+.theme-toggle:focus-visible,
+.copy-btn:focus-visible,
+.modal-close:focus-visible,
+.header-search input:focus-visible,
+.header-search button:focus-visible,
+.group-link-list a:focus-visible {
+  outline: 2px solid transparent;
   box-shadow: 0 0 0 3px var(--border-focus);
 }
 
@@ -1241,4 +1246,158 @@ footer a:hover {
   outline: 2px solid var(--border-focus);
   outline-offset: 2px;
   border-radius: var(--radius-sm);
+}
+
+/* Phase 2 shell + home experience */
+.visually-hidden {
+  border: 0;
+  clip: rect(0, 0, 0, 0);
+  height: 1px;
+  margin: -1px;
+  overflow: hidden;
+  padding: 0;
+  position: absolute;
+  width: 1px;
+}
+
+.header-search {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  flex: 1 1 auto;
+  max-width: 520px;
+  margin-left: 1rem;
+}
+
+.header-search input {
+  width: 100%;
+  padding: 0.6rem 0.85rem;
+  border-radius: var(--radius-md);
+  border: 1px solid rgba(255, 255, 255, 0.45);
+  background: rgba(255, 255, 255, 0.98);
+  color: #0f172a;
+}
+
+.header-search button {
+  border: 1px solid rgba(255, 255, 255, 0.35);
+  background: rgba(255, 255, 255, 0.15);
+  color: #fff;
+  border-radius: var(--radius-md);
+  padding: 0.55rem 0.8rem;
+  cursor: pointer;
+}
+
+.home-hero {
+  margin: 1.25rem auto 0.75rem;
+  max-width: 1200px;
+  text-align: center;
+}
+
+.home-hero h1 {
+  margin: 0;
+  font-size: clamp(1.85rem, 4vw, 2.75rem);
+  text-wrap: balance;
+}
+
+.home-hero p {
+  margin: 0.65rem auto 0;
+  max-width: 650px;
+  color: var(--text-secondary);
+}
+
+.home-controls {
+  margin: 1.5rem auto;
+  max-width: 1200px;
+  display: grid;
+  grid-template-columns: 2fr 1fr 1fr 1fr auto;
+  gap: 0.9rem;
+  align-items: end;
+}
+
+.control-group {
+  display: flex;
+  flex-direction: column;
+  gap: 0.35rem;
+}
+
+.control-group label {
+  font-size: var(--text-sm);
+  color: var(--text-secondary);
+  font-weight: 600;
+}
+
+.control-group input,
+.control-group select {
+  padding: 0.7rem 0.8rem;
+  border-radius: var(--radius-md);
+  border: 1px solid var(--border-primary);
+  background: var(--bg-primary);
+  color: var(--text-primary);
+}
+
+.control-actions {
+  justify-content: flex-end;
+}
+
+.results-count {
+  margin: 0.5rem auto;
+  max-width: 1200px;
+  font-size: var(--text-sm);
+  color: var(--text-secondary);
+}
+
+.recent-section,
+.group-directory {
+  margin: 2rem auto;
+  max-width: 1200px;
+}
+
+.group-link-list {
+  list-style: none;
+  margin: 0.75rem 0 0;
+  padding: 0;
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.5rem;
+}
+
+.group-link-list a {
+  display: inline-flex;
+  align-items: center;
+  padding: 0.45rem 0.7rem;
+  border-radius: var(--radius-md);
+  border: 1px solid var(--border-primary);
+  text-decoration: none;
+  color: var(--text-primary);
+  background: var(--bg-secondary);
+}
+
+.about-page {
+  max-width: 780px;
+  margin: 2rem auto;
+  padding: 1rem;
+}
+
+.emoji-detail-hero {
+  font-size: 3rem;
+  line-height: 1;
+}
+
+.recent-empty {
+  color: var(--text-tertiary);
+  font-size: var(--text-sm);
+}
+
+@media (max-width: 980px) {
+  .home-controls {
+    grid-template-columns: 1fr 1fr;
+  }
+
+  .control-search {
+    grid-column: 1 / -1;
+  }
+
+  .control-actions {
+    grid-column: 1 / -1;
+  }
 }

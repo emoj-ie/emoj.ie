@@ -1,152 +1,91 @@
 <!DOCTYPE html>
 <html lang="en">
   <head>
-    <title>emoj.ie - Search, Copy, and Explore Emojis Easily</title>
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <meta
-      property="og:title"
-      content="emoj.ie - Search, Copy, and Explore Emojis Easily"
-    />
-    <meta
-      property="og:description"
-      content="Find and copy emojis quickly from categories like smileys, animals, and flags. Perfect for fun or professional use."
-    />
-    <meta property="og:image" content="https://emoj.ie/logo.png" />
-    <meta property="og:url" content="https://emoj.ie" />
+    <title>Search, Copy, And Explore Emojis | emoj.ie</title>
+    <meta name="description" content="Search emojis by category, copy in multiple formats, and jump to detailed pages." />
+    <link rel="canonical" href="https://emoj.ie/" />
+    
     <meta property="og:type" content="website" />
-    <title>emoj.ie - Emoji Search</title>
+    <meta property="og:title" content="Search, Copy, And Explore Emojis | emoj.ie" />
+    <meta property="og:description" content="Search emojis by category, copy in multiple formats, and jump to detailed pages." />
+    <meta property="og:url" content="https://emoj.ie/" />
+    <meta property="og:image" content="https://emoj.ie/android-chrome-512x512.png" />
+    <meta name="twitter:card" content="summary_large_image" />
+    <meta name="twitter:title" content="Search, Copy, And Explore Emojis | emoj.ie" />
+    <meta name="twitter:description" content="Search emojis by category, copy in multiple formats, and jump to detailed pages." />
+    <meta name="twitter:image" content="https://emoj.ie/android-chrome-512x512.png" />
+    <link rel="preconnect" href="https://cdn.jsdelivr.net" crossorigin />
     <link rel="icon" href="favicon.ico" type="image/x-icon" />
     <link rel="stylesheet" href="style.css" />
+    <script defer data-domain="emoj.ie" src="https://plausible.io/js/script.js"></script>
+    <script type="application/ld+json">{"@context":"https://schema.org","@type":"Organization","name":"emoj.ie","url":"https://emoj.ie/","logo":"https://emoj.ie/logo.svg"}</script>
+    <script type="application/ld+json">{"@context":"https://schema.org","@type":"WebSite","name":"emoj.ie","url":"https://emoj.ie/","potentialAction":{"@type":"SearchAction","target":"https://emoj.ie/?q={search_term_string}","query-input":"required name=search_term_string"}}</script>
   </head>
   <body>
+    <a href="#main-content" class="skip-link">Skip To Main Content</a>
     <header class="header">
       <div class="header-container">
-        <a href="/" class="logo">
-          <img src="logo.svg" alt="emoj.ie Logo" />
+        <a href="" class="logo">
+          <img src="logo.svg" alt="emoj.ie logo" width="90" height="40" />
         </a>
         
-        <div class="search-container">
-          <input
-            type="text"
-            id="search"
-            placeholder="Search emojis..."
-            aria-label="Search emojis"
-          />
-        </div>
-
-        <button id="theme-toggle" class="theme-toggle" title="Toggle dark mode" aria-label="Toggle theme">
-          🌙
-        </button>
-
-        <button id="menu-toggle" class="menu-toggle" title="Toggle menu" aria-label="Toggle navigation menu">
-          <span class="hamburger-line"></span>
-          <span class="hamburger-line"></span>
-          <span class="hamburger-line"></span>
-        </button>
-      </div>
-
-      <div id="header-menu" class="header-menu">
-        <div class="menu-content">
-          <div class="filter-controls">
-            <div class="filter-group">
-              <label for="group-filter" class="filter-label">Category</label>
-              <select id="group-filter" aria-label="Filter by group" title="Filter emojis by major category (smileys, animals, food, etc.)">
-                <option value="">All Categories</option>
-              </select>
-            </div>
-            <div class="filter-group">
-              <label for="subgroup-filter" class="filter-label">Subcategory</label>
-              <select id="subgroup-filter" aria-label="Filter by subgroup" title="Filter by subcategory within the selected group" disabled>
-                <option value="">All Subcategories</option>
-              </select>
-            </div>
-            <button id="clear-filters" class="clear-filters-btn" aria-label="Clear all filters" title="Clear search and filters">Clear All</button>
-          </div>
-        </div>
       </div>
     </header>
-    <section id="recent-emojis" class="recent-emojis" style="display: none;">
-      <h3>Recently Used</h3>
-      <div class="recent-emojis-container">
-        <button class="carousel-btn carousel-prev" aria-label="Previous emojis">‹</button>
-        <div class="recent-carousel">
-          <div class="recent-emojis-grid">
-            <!-- Recently used emojis will be populated here -->
-          </div>
-        </div>
-        <button class="carousel-btn carousel-next" aria-label="Next emojis">›</button>
-      </div>
-    </section>
-    <main id="emoji-list">
-      <div id="emoji-loading-grid">
-        <div class="loading-grid">
-          <div class="loading-item">😀</div>
-          <div class="loading-item">🥰</div>
-          <div class="loading-item">😋</div>
-          <div class="loading-item">🤗</div>
-        </div>
-        <hr class="group-divider" />
-        <div class="loading-grid">
-          <div class="loading-item">🤐</div>
-          <div class="loading-item">🥶</div>
-          <div class="loading-item">🤠</div>
-          <div class="loading-item">😎</div>
-        </div>
-        <hr class="group-divider" />
-        <div class="loading-grid">
-          <div class="loading-item">😤</div>
-          <div class="loading-item">💩</div>
-          <div class="loading-item">💩</div>
-          <div class="loading-item">🙈</div>
-        </div>
-      </div>
-    </main>
-    <button id="back-to-top" class="back-to-top" aria-label="Back to top">
-      ↑
-    </button>
-    <footer>
-      <p>© 2025 Emoj.ie | <a href="./about">About</a></p>
-    </footer>
     
-    <!-- Emoji Details Modal -->
-    <div id="emoji-modal" class="modal">
-      <div class="modal-content">
-        <span class="modal-close" id="modal-close">&times;</span>
-        <div class="modal-emoji-display">
-          <img id="modal-emoji-img" src="" alt="">
-        </div>
-        <div class="modal-details">
-          <h2 id="modal-emoji-name"></h2>
-          <div class="modal-info">
-            <p><strong>Unicode:</strong> <code id="modal-unicode"></code></p>
-            <p><strong>Hex Code:</strong> <code id="modal-hexcode"></code></p>
-            <p><strong>Group:</strong> <span id="modal-group"></span></p>
-            <p><strong>Subgroup:</strong> <span id="modal-subgroup"></span></p>
-            <p id="modal-tags-section"><strong>Tags:</strong> <span id="modal-tags"></span></p>
-          </div>
-          <div class="modal-actions">
-            <button id="modal-copy-btn" class="copy-btn">Copy Emoji</button>
-            <button id="modal-copy-unicode-btn" class="copy-btn secondary">Copy Unicode</button>
-          </div>
-        </div>
-      </div>
+    <main id="main-content">
+      <section class="home-hero">
+    <h1>Emoji Search, Copy, And Explore</h1>
+    <p>Fast emoji discovery with deep-linkable filters and copy formats.</p>
+  </section>
+  <section class="home-controls" aria-label="Emoji Search Controls">
+    <div class="control-group control-search">
+      <label for="search">Search</label>
+      <input id="search" type="search" autocomplete="off" placeholder="Search emojis…" />
     </div>
-
-    <script>
-      // Register service worker for offline caching
-      if ('serviceWorker' in navigator) {
-        window.addEventListener('load', function() {
-          navigator.serviceWorker.register('/sw.js')
-            .then(function(registration) {
-              console.log('Service Worker registered successfully:', registration.scope);
-            })
-            .catch(function(error) {
-              console.log('Service Worker registration failed:', error);
-            });
-        });
-      }
-    </script>
-    <script src="script.js" defer></script>
+    <div class="control-group">
+      <label for="group-filter">Category</label>
+      <select id="group-filter" aria-label="Filter by category">
+        <option value="">All Categories</option>
+        <option value="activities">activities</option><option value="animals-nature">animals nature</option><option value="component">component</option><option value="extras-openmoji">extras openmoji</option><option value="extras-unicode">extras unicode</option><option value="flags">flags</option><option value="food-drink">food drink</option><option value="objects">objects</option><option value="people-body">people body</option><option value="smileys-emotion">smileys emotion</option><option value="symbols">symbols</option><option value="travel-places">travel places</option>
+      </select>
+    </div>
+    <div class="control-group">
+      <label for="subgroup-filter">Subcategory</label>
+      <select id="subgroup-filter" aria-label="Filter by subcategory" disabled>
+        <option value="">All Subcategories</option>
+      </select>
+    </div>
+    <div class="control-group">
+      <label for="copy-mode">Copy Format</label>
+      <select id="copy-mode" aria-label="Select copy format">
+        <option value="emoji">Emoji</option>
+        <option value="unicode">Unicode Hex</option>
+        <option value="html">HTML Entity</option>
+        <option value="shortcode">Shortcode</option>
+      </select>
+    </div>
+    <div class="control-group control-actions">
+      <button type="button" id="clear-filters" class="copy-btn secondary">Clear</button>
+    </div>
+  </section>
+  <p id="results-count" class="results-count">Loading…</p>
+  <ul id="home-results" class="emoji-list" aria-label="Search results"></ul>
+  <section class="recent-section">
+    <h2>Recently Copied</h2>
+    <ul id="recent-results" class="emoji-list" aria-label="Recently copied emojis"></ul>
+  </section>
+  <section class="group-directory">
+    <h2>Browse Categories</h2>
+    <ul class="group-link-list"><li><a href="/activities/">activities</a></li><li><a href="/animals-nature/">animals nature</a></li><li><a href="/component/">component</a></li><li><a href="/extras-openmoji/">extras openmoji</a></li><li><a href="/extras-unicode/">extras unicode</a></li><li><a href="/flags/">flags</a></li><li><a href="/food-drink/">food drink</a></li><li><a href="/objects/">objects</a></li><li><a href="/people-body/">people body</a></li><li><a href="/smileys-emotion/">smileys emotion</a></li><li><a href="/symbols/">symbols</a></li><li><a href="/travel-places/">travel places</a></li></ul>
+  </section>
+    </main>
+    <footer>
+      <p>© 2026 emoj.ie | <a href="about">About</a></p>
+    </footer>
+    <div id="live-region" aria-live="polite" aria-atomic="true" style="position:absolute;left:-9999px;top:auto;width:1px;height:1px;overflow:hidden;"></div>
+    <script src="generated-pages.js" defer></script>
+    <script src="home-app.mjs" type="module" defer></script>
   </body>
 </html>

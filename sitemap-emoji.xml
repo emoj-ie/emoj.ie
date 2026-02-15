@@ -71,17 +71,17 @@
     <priority>0.7</priority>
   </url>
   <url>
-    <loc>https://emoj.ie/activities/event/apanese-dolls--1f38e/</loc>
-    <lastmod>2025-01-21T17:31:06.093Z</lastmod>
-    <priority>0.7</priority>
-  </url>
-  <url>
     <loc>https://emoj.ie/activities/event/balloon--1f388/</loc>
     <lastmod>2025-01-21T17:31:06.093Z</lastmod>
     <priority>0.7</priority>
   </url>
   <url>
     <loc>https://emoj.ie/activities/event/carp-streamer--1f38f/</loc>
+    <lastmod>2025-01-21T17:31:06.093Z</lastmod>
+    <priority>0.7</priority>
+  </url>
+  <url>
+    <loc>https://emoj.ie/activities/event/christmas-tree--1f384/</loc>
     <lastmod>2025-01-21T17:31:06.093Z</lastmod>
     <priority>0.7</priority>
   </url>
@@ -101,12 +101,12 @@
     <priority>0.7</priority>
   </url>
   <url>
-    <loc>https://emoj.ie/activities/event/hristmas-tree--1f384/</loc>
+    <loc>https://emoj.ie/activities/event/jack-o-lantern--1f383/</loc>
     <lastmod>2025-01-21T17:31:06.093Z</lastmod>
     <priority>0.7</priority>
   </url>
   <url>
-    <loc>https://emoj.ie/activities/event/jack-o-lantern--1f383/</loc>
+    <loc>https://emoj.ie/activities/event/japanese-dolls--1f38e/</loc>
     <lastmod>2025-01-21T17:31:06.093Z</lastmod>
     <priority>0.7</priority>
   </url>
@@ -1026,11 +1026,6 @@
     <priority>0.7</priority>
   </url>
   <url>
-    <loc>https://emoj.ie/animals-nature/animal-reptile/ex--1f996/</loc>
-    <lastmod>2025-01-21T17:31:06.093Z</lastmod>
-    <priority>0.7</priority>
-  </url>
-  <url>
     <loc>https://emoj.ie/animals-nature/animal-reptile/lizard--1f98e/</loc>
     <lastmod>2025-01-21T17:31:06.093Z</lastmod>
     <priority>0.7</priority>
@@ -1042,6 +1037,11 @@
   </url>
   <url>
     <loc>https://emoj.ie/animals-nature/animal-reptile/snake--1f40d/</loc>
+    <lastmod>2025-01-21T17:31:06.093Z</lastmod>
+    <priority>0.7</priority>
+  </url>
+  <url>
+    <loc>https://emoj.ie/animals-nature/animal-reptile/t-rex--1f996/</loc>
     <lastmod>2025-01-21T17:31:06.093Z</lastmod>
     <priority>0.7</priority>
   </url>
@@ -1251,11 +1251,6 @@
     <priority>0.7</priority>
   </url>
   <url>
-    <loc>https://emoj.ie/extras-openmoji/brand/afari--e051/</loc>
-    <lastmod>2025-01-21T17:31:06.093Z</lastmod>
-    <priority>0.7</priority>
-  </url>
-  <url>
     <loc>https://emoj.ie/extras-openmoji/brand/android--e047/</loc>
     <lastmod>2025-01-21T17:31:06.093Z</lastmod>
     <priority>0.7</priority>
@@ -1276,7 +1271,17 @@
     <priority>0.7</priority>
   </url>
   <url>
+    <loc>https://emoj.ie/extras-openmoji/brand/chrome--e054/</loc>
+    <lastmod>2025-01-21T17:31:06.093Z</lastmod>
+    <priority>0.7</priority>
+  </url>
+  <url>
     <loc>https://emoj.ie/extras-openmoji/brand/chrome-canary--e065/</loc>
+    <lastmod>2025-01-21T17:31:06.093Z</lastmod>
+    <priority>0.7</priority>
+  </url>
+  <url>
+    <loc>https://emoj.ie/extras-openmoji/brand/chromium--e053/</loc>
     <lastmod>2025-01-21T17:31:06.093Z</lastmod>
     <priority>0.7</priority>
   </url>
@@ -1291,11 +1296,6 @@
     <priority>0.7</priority>
   </url>
   <url>
-    <loc>https://emoj.ie/extras-openmoji/brand/dge--e057/</loc>
-    <lastmod>2025-01-21T17:31:06.093Z</lastmod>
-    <priority>0.7</priority>
-  </url>
-  <url>
     <loc>https://emoj.ie/extras-openmoji/brand/discord--e061/</loc>
     <lastmod>2025-01-21T17:31:06.093Z</lastmod>
     <priority>0.7</priority>
@@ -1306,17 +1306,22 @@
     <priority>0.7</priority>
   </url>
   <url>
+    <loc>https://emoj.ie/extras-openmoji/brand/edge--e057/</loc>
+    <lastmod>2025-01-21T17:31:06.093Z</lastmod>
+    <priority>0.7</priority>
+  </url>
+  <url>
     <loc>https://emoj.ie/extras-openmoji/brand/element--e05e/</loc>
     <lastmod>2025-01-21T17:31:06.093Z</lastmod>
     <priority>0.7</priority>
   </url>
   <url>
-    <loc>https://emoj.ie/extras-openmoji/brand/etscape-avigator--e055/</loc>
+    <loc>https://emoj.ie/extras-openmoji/brand/facebook--e042/</loc>
     <lastmod>2025-01-21T17:31:06.093Z</lastmod>
     <priority>0.7</priority>
   </url>
   <url>
-    <loc>https://emoj.ie/extras-openmoji/brand/facebook--e042/</loc>
+    <loc>https://emoj.ie/extras-openmoji/brand/firefox--e050/</loc>
     <lastmod>2025-01-21T17:31:06.093Z</lastmod>
     <priority>0.7</priority>
   </url>
@@ -1346,17 +1351,7 @@
     <priority>0.7</priority>
   </url>
   <url>
-    <loc>https://emoj.ie/extras-openmoji/brand/hrome--e054/</loc>
-    <lastmod>2025-01-21T17:31:06.093Z</lastmod>
-    <priority>0.7</priority>
-  </url>
-  <url>
-    <loc>https://emoj.ie/extras-openmoji/brand/hromium--e053/</loc>
-    <lastmod>2025-01-21T17:31:06.093Z</lastmod>
-    <priority>0.7</priority>
-  </url>
-  <url>
-    <loc>https://emoj.ie/extras-openmoji/brand/i-aturalist--e058/</loc>
+    <loc>https://emoj.ie/extras-openmoji/brand/inaturalist--e058/</loc>
     <lastmod>2025-01-21T17:31:06.093Z</lastmod>
     <priority>0.7</priority>
   </url>
@@ -1366,7 +1361,7 @@
     <priority>0.7</priority>
   </url>
   <url>
-    <loc>https://emoj.ie/extras-openmoji/brand/irefox--e050/</loc>
+    <loc>https://emoj.ie/extras-openmoji/brand/internet-explorer--e056/</loc>
     <lastmod>2025-01-21T17:31:06.093Z</lastmod>
     <priority>0.7</priority>
   </url>
@@ -1406,7 +1401,7 @@
     <priority>0.7</priority>
   </url>
   <url>
-    <loc>https://emoj.ie/extras-openmoji/brand/nternet-xplorer--e056/</loc>
+    <loc>https://emoj.ie/extras-openmoji/brand/netscape-navigator--e055/</loc>
     <lastmod>2025-01-21T17:31:06.093Z</lastmod>
     <priority>0.7</priority>
   </url>
@@ -1421,12 +1416,12 @@
     <priority>0.7</priority>
   </url>
   <url>
-    <loc>https://emoj.ie/extras-openmoji/brand/peertube--e05b/</loc>
+    <loc>https://emoj.ie/extras-openmoji/brand/opera--e052/</loc>
     <lastmod>2025-01-21T17:31:06.093Z</lastmod>
     <priority>0.7</priority>
   </url>
   <url>
-    <loc>https://emoj.ie/extras-openmoji/brand/pera--e052/</loc>
+    <loc>https://emoj.ie/extras-openmoji/brand/peertube--e05b/</loc>
     <lastmod>2025-01-21T17:31:06.093Z</lastmod>
     <priority>0.7</priority>
   </url>
@@ -1451,12 +1446,22 @@
     <priority>0.7</priority>
   </url>
   <url>
+    <loc>https://emoj.ie/extras-openmoji/brand/safari--e051/</loc>
+    <lastmod>2025-01-21T17:31:06.093Z</lastmod>
+    <priority>0.7</priority>
+  </url>
+  <url>
     <loc>https://emoj.ie/extras-openmoji/brand/signal--e05d/</loc>
     <lastmod>2025-01-21T17:31:06.093Z</lastmod>
     <priority>0.7</priority>
   </url>
   <url>
     <loc>https://emoj.ie/extras-openmoji/brand/svg--e06b/</loc>
+    <lastmod>2025-01-21T17:31:06.093Z</lastmod>
+    <priority>0.7</priority>
+  </url>
+  <url>
+    <loc>https://emoj.ie/extras-openmoji/brand/twitter--e040/</loc>
     <lastmod>2025-01-21T17:31:06.093Z</lastmod>
     <priority>0.7</priority>
   </url>
@@ -1487,11 +1492,6 @@
   </url>
   <url>
     <loc>https://emoj.ie/extras-openmoji/brand/winrar--e06d/</loc>
-    <lastmod>2025-01-21T17:31:06.093Z</lastmod>
-    <priority>0.7</priority>
-  </url>
-  <url>
-    <loc>https://emoj.ie/extras-openmoji/brand/witter--e040/</loc>
     <lastmod>2025-01-21T17:31:06.093Z</lastmod>
     <priority>0.7</priority>
   </url>
@@ -2496,17 +2496,17 @@
     <priority>0.7</priority>
   </url>
   <url>
+    <loc>https://emoj.ie/extras-openmoji/people/greta-thunberg--e188/</loc>
+    <lastmod>2025-01-21T17:31:06.093Z</lastmod>
+    <priority>0.7</priority>
+  </url>
+  <url>
     <loc>https://emoj.ie/extras-openmoji/people/horse-riding--e184/</loc>
     <lastmod>2025-01-21T17:31:06.093Z</lastmod>
     <priority>0.7</priority>
   </url>
   <url>
     <loc>https://emoj.ie/extras-openmoji/people/person-with-dog--e182/</loc>
-    <lastmod>2025-01-21T17:31:06.093Z</lastmod>
-    <priority>0.7</priority>
-  </url>
-  <url>
-    <loc>https://emoj.ie/extras-openmoji/people/reta-hunberg--e188/</loc>
     <lastmod>2025-01-21T17:31:06.093Z</lastmod>
     <priority>0.7</priority>
   </url>
@@ -2606,11 +2606,6 @@
     <priority>0.7</priority>
   </url>
   <url>
-    <loc>https://emoj.ie/extras-openmoji/technology/9000--25c9-fe0f-200d-1f534-200d-25ae-fe0f/</loc>
-    <lastmod>2025-01-21T17:31:06.093Z</lastmod>
-    <priority>0.7</priority>
-  </url>
-  <url>
     <loc>https://emoj.ie/extras-openmoji/technology/arduino--e1d3/</loc>
     <lastmod>2025-01-21T17:31:06.093Z</lastmod>
     <priority>0.7</priority>
@@ -2652,6 +2647,11 @@
   </url>
   <url>
     <loc>https://emoj.ie/extras-openmoji/technology/gps--e1cd/</loc>
+    <lastmod>2025-01-21T17:31:06.093Z</lastmod>
+    <priority>0.7</priority>
+  </url>
+  <url>
+    <loc>https://emoj.ie/extras-openmoji/technology/hal-9000--25c9-fe0f-200d-1f534-200d-25ae-fe0f/</loc>
     <lastmod>2025-01-21T17:31:06.093Z</lastmod>
     <priority>0.7</priority>
   </url>
@@ -3051,7 +3051,7 @@
     <priority>0.7</priority>
   </url>
   <url>
-    <loc>https://emoj.ie/extras-openmoji/ui-element/toggle-button-state--e245/</loc>
+    <loc>https://emoj.ie/extras-openmoji/ui-element/toggle-button-state-b--e245/</loc>
     <lastmod>2025-01-21T17:31:06.093Z</lastmod>
     <priority>0.7</priority>
   </url>
@@ -3101,132 +3101,137 @@
     <priority>0.7</priority>
   </url>
   <url>
-    <loc>https://emoj.ie/extras-unicode/regional-indicator/regional-indicator--1f1e6/</loc>
+    <loc>https://emoj.ie/extras-unicode/regional-indicator/regional-indicator-a--1f1e6/</loc>
     <lastmod>2025-01-21T17:31:06.093Z</lastmod>
     <priority>0.7</priority>
   </url>
   <url>
-    <loc>https://emoj.ie/extras-unicode/regional-indicator/regional-indicator--1f1e7/</loc>
+    <loc>https://emoj.ie/extras-unicode/regional-indicator/regional-indicator-b--1f1e7/</loc>
     <lastmod>2025-01-21T17:31:06.093Z</lastmod>
     <priority>0.7</priority>
   </url>
   <url>
-    <loc>https://emoj.ie/extras-unicode/regional-indicator/regional-indicator--1f1e8/</loc>
+    <loc>https://emoj.ie/extras-unicode/regional-indicator/regional-indicator-c--1f1e8/</loc>
     <lastmod>2025-01-21T17:31:06.093Z</lastmod>
     <priority>0.7</priority>
   </url>
   <url>
-    <loc>https://emoj.ie/extras-unicode/regional-indicator/regional-indicator--1f1e9/</loc>
+    <loc>https://emoj.ie/extras-unicode/regional-indicator/regional-indicator-d--1f1e9/</loc>
     <lastmod>2025-01-21T17:31:06.093Z</lastmod>
     <priority>0.7</priority>
   </url>
   <url>
-    <loc>https://emoj.ie/extras-unicode/regional-indicator/regional-indicator--1f1ea/</loc>
+    <loc>https://emoj.ie/extras-unicode/regional-indicator/regional-indicator-e--1f1ea/</loc>
     <lastmod>2025-01-21T17:31:06.093Z</lastmod>
     <priority>0.7</priority>
   </url>
   <url>
-    <loc>https://emoj.ie/extras-unicode/regional-indicator/regional-indicator--1f1eb/</loc>
+    <loc>https://emoj.ie/extras-unicode/regional-indicator/regional-indicator-f--1f1eb/</loc>
     <lastmod>2025-01-21T17:31:06.093Z</lastmod>
     <priority>0.7</priority>
   </url>
   <url>
-    <loc>https://emoj.ie/extras-unicode/regional-indicator/regional-indicator--1f1ec/</loc>
+    <loc>https://emoj.ie/extras-unicode/regional-indicator/regional-indicator-g--1f1ec/</loc>
     <lastmod>2025-01-21T17:31:06.093Z</lastmod>
     <priority>0.7</priority>
   </url>
   <url>
-    <loc>https://emoj.ie/extras-unicode/regional-indicator/regional-indicator--1f1ed/</loc>
+    <loc>https://emoj.ie/extras-unicode/regional-indicator/regional-indicator-h--1f1ed/</loc>
     <lastmod>2025-01-21T17:31:06.093Z</lastmod>
     <priority>0.7</priority>
   </url>
   <url>
-    <loc>https://emoj.ie/extras-unicode/regional-indicator/regional-indicator--1f1ee/</loc>
+    <loc>https://emoj.ie/extras-unicode/regional-indicator/regional-indicator-i--1f1ee/</loc>
     <lastmod>2025-01-21T17:31:06.093Z</lastmod>
     <priority>0.7</priority>
   </url>
   <url>
-    <loc>https://emoj.ie/extras-unicode/regional-indicator/regional-indicator--1f1ef/</loc>
+    <loc>https://emoj.ie/extras-unicode/regional-indicator/regional-indicator-j--1f1ef/</loc>
     <lastmod>2025-01-21T17:31:06.093Z</lastmod>
     <priority>0.7</priority>
   </url>
   <url>
-    <loc>https://emoj.ie/extras-unicode/regional-indicator/regional-indicator--1f1f0/</loc>
+    <loc>https://emoj.ie/extras-unicode/regional-indicator/regional-indicator-k--1f1f0/</loc>
     <lastmod>2025-01-21T17:31:06.093Z</lastmod>
     <priority>0.7</priority>
   </url>
   <url>
-    <loc>https://emoj.ie/extras-unicode/regional-indicator/regional-indicator--1f1f1/</loc>
+    <loc>https://emoj.ie/extras-unicode/regional-indicator/regional-indicator-l--1f1f1/</loc>
     <lastmod>2025-01-21T17:31:06.093Z</lastmod>
     <priority>0.7</priority>
   </url>
   <url>
-    <loc>https://emoj.ie/extras-unicode/regional-indicator/regional-indicator--1f1f2/</loc>
+    <loc>https://emoj.ie/extras-unicode/regional-indicator/regional-indicator-m--1f1f2/</loc>
     <lastmod>2025-01-21T17:31:06.093Z</lastmod>
     <priority>0.7</priority>
   </url>
   <url>
-    <loc>https://emoj.ie/extras-unicode/regional-indicator/regional-indicator--1f1f3/</loc>
+    <loc>https://emoj.ie/extras-unicode/regional-indicator/regional-indicator-n--1f1f3/</loc>
     <lastmod>2025-01-21T17:31:06.093Z</lastmod>
     <priority>0.7</priority>
   </url>
   <url>
-    <loc>https://emoj.ie/extras-unicode/regional-indicator/regional-indicator--1f1f4/</loc>
+    <loc>https://emoj.ie/extras-unicode/regional-indicator/regional-indicator-o--1f1f4/</loc>
     <lastmod>2025-01-21T17:31:06.093Z</lastmod>
     <priority>0.7</priority>
   </url>
   <url>
-    <loc>https://emoj.ie/extras-unicode/regional-indicator/regional-indicator--1f1f5/</loc>
+    <loc>https://emoj.ie/extras-unicode/regional-indicator/regional-indicator-p--1f1f5/</loc>
     <lastmod>2025-01-21T17:31:06.093Z</lastmod>
     <priority>0.7</priority>
   </url>
   <url>
-    <loc>https://emoj.ie/extras-unicode/regional-indicator/regional-indicator--1f1f6/</loc>
+    <loc>https://emoj.ie/extras-unicode/regional-indicator/regional-indicator-q--1f1f6/</loc>
     <lastmod>2025-01-21T17:31:06.093Z</lastmod>
     <priority>0.7</priority>
   </url>
   <url>
-    <loc>https://emoj.ie/extras-unicode/regional-indicator/regional-indicator--1f1f7/</loc>
+    <loc>https://emoj.ie/extras-unicode/regional-indicator/regional-indicator-r--1f1f7/</loc>
     <lastmod>2025-01-21T17:31:06.093Z</lastmod>
     <priority>0.7</priority>
   </url>
   <url>
-    <loc>https://emoj.ie/extras-unicode/regional-indicator/regional-indicator--1f1f8/</loc>
+    <loc>https://emoj.ie/extras-unicode/regional-indicator/regional-indicator-s--1f1f8/</loc>
     <lastmod>2025-01-21T17:31:06.093Z</lastmod>
     <priority>0.7</priority>
   </url>
   <url>
-    <loc>https://emoj.ie/extras-unicode/regional-indicator/regional-indicator--1f1f9/</loc>
+    <loc>https://emoj.ie/extras-unicode/regional-indicator/regional-indicator-t--1f1f9/</loc>
     <lastmod>2025-01-21T17:31:06.093Z</lastmod>
     <priority>0.7</priority>
   </url>
   <url>
-    <loc>https://emoj.ie/extras-unicode/regional-indicator/regional-indicator--1f1fa/</loc>
+    <loc>https://emoj.ie/extras-unicode/regional-indicator/regional-indicator-u--1f1fa/</loc>
     <lastmod>2025-01-21T17:31:06.093Z</lastmod>
     <priority>0.7</priority>
   </url>
   <url>
-    <loc>https://emoj.ie/extras-unicode/regional-indicator/regional-indicator--1f1fb/</loc>
+    <loc>https://emoj.ie/extras-unicode/regional-indicator/regional-indicator-v--1f1fb/</loc>
     <lastmod>2025-01-21T17:31:06.093Z</lastmod>
     <priority>0.7</priority>
   </url>
   <url>
-    <loc>https://emoj.ie/extras-unicode/regional-indicator/regional-indicator--1f1fc/</loc>
+    <loc>https://emoj.ie/extras-unicode/regional-indicator/regional-indicator-w--1f1fc/</loc>
     <lastmod>2025-01-21T17:31:06.093Z</lastmod>
     <priority>0.7</priority>
   </url>
   <url>
-    <loc>https://emoj.ie/extras-unicode/regional-indicator/regional-indicator--1f1fd/</loc>
+    <loc>https://emoj.ie/extras-unicode/regional-indicator/regional-indicator-x--1f1fd/</loc>
     <lastmod>2025-01-21T17:31:06.093Z</lastmod>
     <priority>0.7</priority>
   </url>
   <url>
-    <loc>https://emoj.ie/extras-unicode/regional-indicator/regional-indicator--1f1fe/</loc>
+    <loc>https://emoj.ie/extras-unicode/regional-indicator/regional-indicator-y--1f1fe/</loc>
     <lastmod>2025-01-21T17:31:06.093Z</lastmod>
     <priority>0.7</priority>
   </url>
   <url>
-    <loc>https://emoj.ie/extras-unicode/regional-indicator/regional-indicator--1f1ff/</loc>
+    <loc>https://emoj.ie/extras-unicode/regional-indicator/regional-indicator-z--1f1ff/</loc>
+    <lastmod>2025-01-21T17:31:06.093Z</lastmod>
+    <priority>0.7</priority>
+  </url>
+  <url>
+    <loc>https://emoj.ie/extras-unicode/subdivision-flag/alabama-flag--1f3f4-e0061-e0076-e007f/</loc>
     <lastmod>2025-01-21T17:31:06.093Z</lastmod>
     <priority>0.7</priority>
   </url>
@@ -3237,11 +3242,6 @@
   </url>
   <url>
     <loc>https://emoj.ie/extras-unicode/subdivision-flag/aragon-flag--1f3f4-e0065-e0073-e0061-e0072-e007f/</loc>
-    <lastmod>2025-01-21T17:31:06.093Z</lastmod>
-    <priority>0.7</priority>
-  </url>
-  <url>
-    <loc>https://emoj.ie/extras-unicode/subdivision-flag/ashington--1f3f4-e0077-e0064-e0063-e007f/</loc>
     <lastmod>2025-01-21T17:31:06.093Z</lastmod>
     <priority>0.7</priority>
   </url>
@@ -3331,11 +3331,6 @@
     <priority>0.7</priority>
   </url>
   <url>
-    <loc>https://emoj.ie/extras-unicode/subdivision-flag/labama-flag--1f3f4-e0061-e0076-e007f/</loc>
-    <lastmod>2025-01-21T17:31:06.093Z</lastmod>
-    <priority>0.7</priority>
-  </url>
-  <url>
     <loc>https://emoj.ie/extras-unicode/subdivision-flag/madrid-autonomous-community-flag--1f3f4-e0065-e0073-e006d-e0064-e007f/</loc>
     <lastmod>2025-01-21T17:31:06.093Z</lastmod>
     <priority>0.7</priority>
@@ -3367,6 +3362,11 @@
   </url>
   <url>
     <loc>https://emoj.ie/extras-unicode/subdivision-flag/valencian-community-flag--1f3f4-e0065-e0073-e0076-e0063-e007f/</loc>
+    <lastmod>2025-01-21T17:31:06.093Z</lastmod>
+    <priority>0.7</priority>
+  </url>
+  <url>
+    <loc>https://emoj.ie/extras-unicode/subdivision-flag/washington-d-c--1f3f4-e0077-e0064-e0063-e007f/</loc>
     <lastmod>2025-01-21T17:31:06.093Z</lastmod>
     <priority>0.7</priority>
   </url>
@@ -3671,1292 +3671,1292 @@
     <priority>0.7</priority>
   </url>
   <url>
-    <loc>https://emoj.ie/flags/country-flag/abon--1f1ec-1f1e6/</loc>
+    <loc>https://emoj.ie/flags/country-flag/afghanistan--1f1e6-1f1eb/</loc>
     <lastmod>2025-01-21T17:31:06.093Z</lastmod>
     <priority>0.7</priority>
   </url>
   <url>
-    <loc>https://emoj.ie/flags/country-flag/acao-hina--1f1f2-1f1f4/</loc>
+    <loc>https://emoj.ie/flags/country-flag/aland-islands--1f1e6-1f1fd/</loc>
     <lastmod>2025-01-21T17:31:06.093Z</lastmod>
     <priority>0.7</priority>
   </url>
   <url>
-    <loc>https://emoj.ie/flags/country-flag/adagascar--1f1f2-1f1ec/</loc>
+    <loc>https://emoj.ie/flags/country-flag/albania--1f1e6-1f1f1/</loc>
     <lastmod>2025-01-21T17:31:06.093Z</lastmod>
     <priority>0.7</priority>
   </url>
   <url>
-    <loc>https://emoj.ie/flags/country-flag/ahamas--1f1e7-1f1f8/</loc>
+    <loc>https://emoj.ie/flags/country-flag/algeria--1f1e9-1f1ff/</loc>
     <lastmod>2025-01-21T17:31:06.093Z</lastmod>
     <priority>0.7</priority>
   </url>
   <url>
-    <loc>https://emoj.ie/flags/country-flag/ahrain--1f1e7-1f1ed/</loc>
+    <loc>https://emoj.ie/flags/country-flag/american-samoa--1f1e6-1f1f8/</loc>
     <lastmod>2025-01-21T17:31:06.093Z</lastmod>
     <priority>0.7</priority>
   </url>
   <url>
-    <loc>https://emoj.ie/flags/country-flag/aiti--1f1ed-1f1f9/</loc>
+    <loc>https://emoj.ie/flags/country-flag/andorra--1f1e6-1f1e9/</loc>
     <lastmod>2025-01-21T17:31:06.093Z</lastmod>
     <priority>0.7</priority>
   </url>
   <url>
-    <loc>https://emoj.ie/flags/country-flag/aiwan--1f1f9-1f1fc/</loc>
+    <loc>https://emoj.ie/flags/country-flag/angola--1f1e6-1f1f4/</loc>
     <lastmod>2025-01-21T17:31:06.093Z</lastmod>
     <priority>0.7</priority>
   </url>
   <url>
-    <loc>https://emoj.ie/flags/country-flag/ajikistan--1f1f9-1f1ef/</loc>
+    <loc>https://emoj.ie/flags/country-flag/anguilla--1f1e6-1f1ee/</loc>
     <lastmod>2025-01-21T17:31:06.093Z</lastmod>
     <priority>0.7</priority>
   </url>
   <url>
-    <loc>https://emoj.ie/flags/country-flag/akistan--1f1f5-1f1f0/</loc>
+    <loc>https://emoj.ie/flags/country-flag/antarctica--1f1e6-1f1f6/</loc>
     <lastmod>2025-01-21T17:31:06.093Z</lastmod>
     <priority>0.7</priority>
   </url>
   <url>
-    <loc>https://emoj.ie/flags/country-flag/alau--1f1f5-1f1fc/</loc>
+    <loc>https://emoj.ie/flags/country-flag/antigua-barbuda--1f1e6-1f1ec/</loc>
     <lastmod>2025-01-21T17:31:06.093Z</lastmod>
     <priority>0.7</priority>
   </url>
   <url>
-    <loc>https://emoj.ie/flags/country-flag/alawi--1f1f2-1f1fc/</loc>
+    <loc>https://emoj.ie/flags/country-flag/argentina--1f1e6-1f1f7/</loc>
     <lastmod>2025-01-21T17:31:06.093Z</lastmod>
     <priority>0.7</priority>
   </url>
   <url>
-    <loc>https://emoj.ie/flags/country-flag/alaysia--1f1f2-1f1fe/</loc>
+    <loc>https://emoj.ie/flags/country-flag/armenia--1f1e6-1f1f2/</loc>
     <lastmod>2025-01-21T17:31:06.093Z</lastmod>
     <priority>0.7</priority>
   </url>
   <url>
-    <loc>https://emoj.ie/flags/country-flag/aldives--1f1f2-1f1fb/</loc>
+    <loc>https://emoj.ie/flags/country-flag/aruba--1f1e6-1f1fc/</loc>
     <lastmod>2025-01-21T17:31:06.093Z</lastmod>
     <priority>0.7</priority>
   </url>
   <url>
-    <loc>https://emoj.ie/flags/country-flag/alestinian-erritories--1f1f5-1f1f8/</loc>
+    <loc>https://emoj.ie/flags/country-flag/ascension-island--1f1e6-1f1e8/</loc>
     <lastmod>2025-01-21T17:31:06.093Z</lastmod>
     <priority>0.7</priority>
   </url>
   <url>
-    <loc>https://emoj.ie/flags/country-flag/ali--1f1f2-1f1f1/</loc>
+    <loc>https://emoj.ie/flags/country-flag/australia--1f1e6-1f1fa/</loc>
     <lastmod>2025-01-21T17:31:06.093Z</lastmod>
     <priority>0.7</priority>
   </url>
   <url>
-    <loc>https://emoj.ie/flags/country-flag/alkland-slands--1f1eb-1f1f0/</loc>
+    <loc>https://emoj.ie/flags/country-flag/austria--1f1e6-1f1f9/</loc>
     <lastmod>2025-01-21T17:31:06.093Z</lastmod>
     <priority>0.7</priority>
   </url>
   <url>
-    <loc>https://emoj.ie/flags/country-flag/allis-utuna--1f1fc-1f1eb/</loc>
+    <loc>https://emoj.ie/flags/country-flag/azerbaijan--1f1e6-1f1ff/</loc>
     <lastmod>2025-01-21T17:31:06.093Z</lastmod>
     <priority>0.7</priority>
   </url>
   <url>
-    <loc>https://emoj.ie/flags/country-flag/alta--1f1f2-1f1f9/</loc>
+    <loc>https://emoj.ie/flags/country-flag/bahamas--1f1e7-1f1f8/</loc>
     <lastmod>2025-01-21T17:31:06.093Z</lastmod>
     <priority>0.7</priority>
   </url>
   <url>
-    <loc>https://emoj.ie/flags/country-flag/amaica--1f1ef-1f1f2/</loc>
+    <loc>https://emoj.ie/flags/country-flag/bahrain--1f1e7-1f1ed/</loc>
     <lastmod>2025-01-21T17:31:06.093Z</lastmod>
     <priority>0.7</priority>
   </url>
   <url>
-    <loc>https://emoj.ie/flags/country-flag/ambia--1f1ec-1f1f2/</loc>
+    <loc>https://emoj.ie/flags/country-flag/bangladesh--1f1e7-1f1e9/</loc>
     <lastmod>2025-01-21T17:31:06.093Z</lastmod>
     <priority>0.7</priority>
   </url>
   <url>
-    <loc>https://emoj.ie/flags/country-flag/ambia--1f1ff-1f1f2/</loc>
+    <loc>https://emoj.ie/flags/country-flag/barbados--1f1e7-1f1e7/</loc>
     <lastmod>2025-01-21T17:31:06.093Z</lastmod>
     <priority>0.7</priority>
   </url>
   <url>
-    <loc>https://emoj.ie/flags/country-flag/ambodia--1f1f0-1f1ed/</loc>
+    <loc>https://emoj.ie/flags/country-flag/belarus--1f1e7-1f1fe/</loc>
     <lastmod>2025-01-21T17:31:06.093Z</lastmod>
     <priority>0.7</priority>
   </url>
   <url>
-    <loc>https://emoj.ie/flags/country-flag/ameroon--1f1e8-1f1f2/</loc>
+    <loc>https://emoj.ie/flags/country-flag/belgium--1f1e7-1f1ea/</loc>
     <lastmod>2025-01-21T17:31:06.093Z</lastmod>
     <priority>0.7</priority>
   </url>
   <url>
-    <loc>https://emoj.ie/flags/country-flag/amibia--1f1f3-1f1e6/</loc>
+    <loc>https://emoj.ie/flags/country-flag/belize--1f1e7-1f1ff/</loc>
     <lastmod>2025-01-21T17:31:06.093Z</lastmod>
     <priority>0.7</priority>
   </url>
   <url>
-    <loc>https://emoj.ie/flags/country-flag/amoa--1f1fc-1f1f8/</loc>
+    <loc>https://emoj.ie/flags/country-flag/benin--1f1e7-1f1ef/</loc>
     <lastmod>2025-01-21T17:31:06.093Z</lastmod>
     <priority>0.7</priority>
   </url>
   <url>
-    <loc>https://emoj.ie/flags/country-flag/an-arino--1f1f8-1f1f2/</loc>
+    <loc>https://emoj.ie/flags/country-flag/bermuda--1f1e7-1f1f2/</loc>
     <lastmod>2025-01-21T17:31:06.093Z</lastmod>
     <priority>0.7</priority>
   </url>
   <url>
-    <loc>https://emoj.ie/flags/country-flag/anada--1f1e8-1f1e6/</loc>
+    <loc>https://emoj.ie/flags/country-flag/bhutan--1f1e7-1f1f9/</loc>
     <lastmod>2025-01-21T17:31:06.093Z</lastmod>
     <priority>0.7</priority>
   </url>
   <url>
-    <loc>https://emoj.ie/flags/country-flag/anama--1f1f5-1f1e6/</loc>
+    <loc>https://emoj.ie/flags/country-flag/bolivia--1f1e7-1f1f4/</loc>
     <lastmod>2025-01-21T17:31:06.093Z</lastmod>
     <priority>0.7</priority>
   </url>
   <url>
-    <loc>https://emoj.ie/flags/country-flag/anary-slands--1f1ee-1f1e8/</loc>
+    <loc>https://emoj.ie/flags/country-flag/bosnia-herzegovina--1f1e7-1f1e6/</loc>
     <lastmod>2025-01-21T17:31:06.093Z</lastmod>
     <priority>0.7</priority>
   </url>
   <url>
-    <loc>https://emoj.ie/flags/country-flag/angladesh--1f1e7-1f1e9/</loc>
+    <loc>https://emoj.ie/flags/country-flag/botswana--1f1e7-1f1fc/</loc>
     <lastmod>2025-01-21T17:31:06.093Z</lastmod>
     <priority>0.7</priority>
   </url>
   <url>
-    <loc>https://emoj.ie/flags/country-flag/anuatu--1f1fb-1f1fa/</loc>
+    <loc>https://emoj.ie/flags/country-flag/bouvet-island--1f1e7-1f1fb/</loc>
     <lastmod>2025-01-21T17:31:06.093Z</lastmod>
     <priority>0.7</priority>
   </url>
   <url>
-    <loc>https://emoj.ie/flags/country-flag/anzania--1f1f9-1f1ff/</loc>
+    <loc>https://emoj.ie/flags/country-flag/brazil--1f1e7-1f1f7/</loc>
     <lastmod>2025-01-21T17:31:06.093Z</lastmod>
     <priority>0.7</priority>
   </url>
   <url>
-    <loc>https://emoj.ie/flags/country-flag/ao-ome-rincipe--1f1f8-1f1f9/</loc>
+    <loc>https://emoj.ie/flags/country-flag/british-indian-ocean-territory--1f1ee-1f1f4/</loc>
     <lastmod>2025-01-21T17:31:06.093Z</lastmod>
     <priority>0.7</priority>
   </url>
   <url>
-    <loc>https://emoj.ie/flags/country-flag/aos--1f1f1-1f1e6/</loc>
+    <loc>https://emoj.ie/flags/country-flag/british-virgin-islands--1f1fb-1f1ec/</loc>
     <lastmod>2025-01-21T17:31:06.093Z</lastmod>
     <priority>0.7</priority>
   </url>
   <url>
-    <loc>https://emoj.ie/flags/country-flag/apan--1f1ef-1f1f5/</loc>
+    <loc>https://emoj.ie/flags/country-flag/brunei--1f1e7-1f1f3/</loc>
     <lastmod>2025-01-21T17:31:06.093Z</lastmod>
     <priority>0.7</priority>
   </url>
   <url>
-    <loc>https://emoj.ie/flags/country-flag/ape-erde--1f1e8-1f1fb/</loc>
+    <loc>https://emoj.ie/flags/country-flag/bulgaria--1f1e7-1f1ec/</loc>
     <lastmod>2025-01-21T17:31:06.093Z</lastmod>
     <priority>0.7</priority>
   </url>
   <url>
-    <loc>https://emoj.ie/flags/country-flag/apua-ew-uinea--1f1f5-1f1ec/</loc>
+    <loc>https://emoj.ie/flags/country-flag/burkina-faso--1f1e7-1f1eb/</loc>
     <lastmod>2025-01-21T17:31:06.093Z</lastmod>
     <priority>0.7</priority>
   </url>
   <url>
-    <loc>https://emoj.ie/flags/country-flag/araguay--1f1f5-1f1fe/</loc>
+    <loc>https://emoj.ie/flags/country-flag/burundi--1f1e7-1f1ee/</loc>
     <lastmod>2025-01-21T17:31:06.093Z</lastmod>
     <priority>0.7</priority>
   </url>
   <url>
-    <loc>https://emoj.ie/flags/country-flag/arbados--1f1e7-1f1e7/</loc>
+    <loc>https://emoj.ie/flags/country-flag/cambodia--1f1f0-1f1ed/</loc>
     <lastmod>2025-01-21T17:31:06.093Z</lastmod>
     <priority>0.7</priority>
   </url>
   <url>
-    <loc>https://emoj.ie/flags/country-flag/aribbean-etherlands--1f1e7-1f1f6/</loc>
+    <loc>https://emoj.ie/flags/country-flag/cameroon--1f1e8-1f1f2/</loc>
     <lastmod>2025-01-21T17:31:06.093Z</lastmod>
     <priority>0.7</priority>
   </url>
   <url>
-    <loc>https://emoj.ie/flags/country-flag/aroe-slands--1f1eb-1f1f4/</loc>
+    <loc>https://emoj.ie/flags/country-flag/canada--1f1e8-1f1e6/</loc>
     <lastmod>2025-01-21T17:31:06.093Z</lastmod>
     <priority>0.7</priority>
   </url>
   <url>
-    <loc>https://emoj.ie/flags/country-flag/arshall-slands--1f1f2-1f1ed/</loc>
+    <loc>https://emoj.ie/flags/country-flag/canary-islands--1f1ee-1f1e8/</loc>
     <lastmod>2025-01-21T17:31:06.093Z</lastmod>
     <priority>0.7</priority>
   </url>
   <url>
-    <loc>https://emoj.ie/flags/country-flag/artinique--1f1f2-1f1f6/</loc>
+    <loc>https://emoj.ie/flags/country-flag/cape-verde--1f1e8-1f1fb/</loc>
     <lastmod>2025-01-21T17:31:06.093Z</lastmod>
     <priority>0.7</priority>
   </url>
   <url>
-    <loc>https://emoj.ie/flags/country-flag/atar--1f1f6-1f1e6/</loc>
+    <loc>https://emoj.ie/flags/country-flag/caribbean-netherlands--1f1e7-1f1f6/</loc>
     <lastmod>2025-01-21T17:31:06.093Z</lastmod>
     <priority>0.7</priority>
   </url>
   <url>
-    <loc>https://emoj.ie/flags/country-flag/atican-ity--1f1fb-1f1e6/</loc>
+    <loc>https://emoj.ie/flags/country-flag/cayman-islands--1f1f0-1f1fe/</loc>
     <lastmod>2025-01-21T17:31:06.093Z</lastmod>
     <priority>0.7</priority>
   </url>
   <url>
-    <loc>https://emoj.ie/flags/country-flag/atvia--1f1f1-1f1fb/</loc>
+    <loc>https://emoj.ie/flags/country-flag/central-african-republic--1f1e8-1f1eb/</loc>
     <lastmod>2025-01-21T17:31:06.093Z</lastmod>
     <priority>0.7</priority>
   </url>
   <url>
-    <loc>https://emoj.ie/flags/country-flag/audi-rabia--1f1f8-1f1e6/</loc>
+    <loc>https://emoj.ie/flags/country-flag/ceuta-melilla--1f1ea-1f1e6/</loc>
     <lastmod>2025-01-21T17:31:06.093Z</lastmod>
     <priority>0.7</priority>
   </url>
   <url>
-    <loc>https://emoj.ie/flags/country-flag/auritania--1f1f2-1f1f7/</loc>
+    <loc>https://emoj.ie/flags/country-flag/chad--1f1f9-1f1e9/</loc>
     <lastmod>2025-01-21T17:31:06.093Z</lastmod>
     <priority>0.7</priority>
   </url>
   <url>
-    <loc>https://emoj.ie/flags/country-flag/auritius--1f1f2-1f1fa/</loc>
+    <loc>https://emoj.ie/flags/country-flag/chile--1f1e8-1f1f1/</loc>
     <lastmod>2025-01-21T17:31:06.093Z</lastmod>
     <priority>0.7</priority>
   </url>
   <url>
-    <loc>https://emoj.ie/flags/country-flag/auru--1f1f3-1f1f7/</loc>
+    <loc>https://emoj.ie/flags/country-flag/china--1f1e8-1f1f3/</loc>
     <lastmod>2025-01-21T17:31:06.093Z</lastmod>
     <priority>0.7</priority>
   </url>
   <url>
-    <loc>https://emoj.ie/flags/country-flag/ayman-slands--1f1f0-1f1fe/</loc>
+    <loc>https://emoj.ie/flags/country-flag/christmas-island--1f1e8-1f1fd/</loc>
     <lastmod>2025-01-21T17:31:06.093Z</lastmod>
     <priority>0.7</priority>
   </url>
   <url>
-    <loc>https://emoj.ie/flags/country-flag/ayotte--1f1fe-1f1f9/</loc>
+    <loc>https://emoj.ie/flags/country-flag/clipperton-island--1f1e8-1f1f5/</loc>
     <lastmod>2025-01-21T17:31:06.093Z</lastmod>
     <priority>0.7</priority>
   </url>
   <url>
-    <loc>https://emoj.ie/flags/country-flag/azakhstan--1f1f0-1f1ff/</loc>
+    <loc>https://emoj.ie/flags/country-flag/cocos-keeling-islands--1f1e8-1f1e8/</loc>
     <lastmod>2025-01-21T17:31:06.093Z</lastmod>
     <priority>0.7</priority>
   </url>
   <url>
-    <loc>https://emoj.ie/flags/country-flag/celand--1f1ee-1f1f8/</loc>
+    <loc>https://emoj.ie/flags/country-flag/colombia--1f1e8-1f1f4/</loc>
     <lastmod>2025-01-21T17:31:06.093Z</lastmod>
     <priority>0.7</priority>
   </url>
   <url>
-    <loc>https://emoj.ie/flags/country-flag/cuador--1f1ea-1f1e8/</loc>
+    <loc>https://emoj.ie/flags/country-flag/comoros--1f1f0-1f1f2/</loc>
     <lastmod>2025-01-21T17:31:06.093Z</lastmod>
     <priority>0.7</priority>
   </url>
   <url>
-    <loc>https://emoj.ie/flags/country-flag/eard-c-onald-slands--1f1ed-1f1f2/</loc>
+    <loc>https://emoj.ie/flags/country-flag/congo-brazzaville--1f1e8-1f1ec/</loc>
     <lastmod>2025-01-21T17:31:06.093Z</lastmod>
     <priority>0.7</priority>
   </url>
   <url>
-    <loc>https://emoj.ie/flags/country-flag/ebanon--1f1f1-1f1e7/</loc>
+    <loc>https://emoj.ie/flags/country-flag/congo-kinshasa--1f1e8-1f1e9/</loc>
     <lastmod>2025-01-21T17:31:06.093Z</lastmod>
     <priority>0.7</priority>
   </url>
   <url>
-    <loc>https://emoj.ie/flags/country-flag/elarus--1f1e7-1f1fe/</loc>
+    <loc>https://emoj.ie/flags/country-flag/cook-islands--1f1e8-1f1f0/</loc>
     <lastmod>2025-01-21T17:31:06.093Z</lastmod>
     <priority>0.7</priority>
   </url>
   <url>
-    <loc>https://emoj.ie/flags/country-flag/elgium--1f1e7-1f1ea/</loc>
+    <loc>https://emoj.ie/flags/country-flag/costa-rica--1f1e8-1f1f7/</loc>
     <lastmod>2025-01-21T17:31:06.093Z</lastmod>
     <priority>0.7</priority>
   </url>
   <url>
-    <loc>https://emoj.ie/flags/country-flag/elize--1f1e7-1f1ff/</loc>
+    <loc>https://emoj.ie/flags/country-flag/cote-d-ivoire--1f1e8-1f1ee/</loc>
     <lastmod>2025-01-21T17:31:06.093Z</lastmod>
     <priority>0.7</priority>
   </url>
   <url>
-    <loc>https://emoj.ie/flags/country-flag/emen--1f1fe-1f1ea/</loc>
+    <loc>https://emoj.ie/flags/country-flag/croatia--1f1ed-1f1f7/</loc>
     <lastmod>2025-01-21T17:31:06.093Z</lastmod>
     <priority>0.7</priority>
   </url>
   <url>
-    <loc>https://emoj.ie/flags/country-flag/enegal--1f1f8-1f1f3/</loc>
+    <loc>https://emoj.ie/flags/country-flag/cuba--1f1e8-1f1fa/</loc>
     <lastmod>2025-01-21T17:31:06.093Z</lastmod>
     <priority>0.7</priority>
   </url>
   <url>
-    <loc>https://emoj.ie/flags/country-flag/enezuela--1f1fb-1f1ea/</loc>
+    <loc>https://emoj.ie/flags/country-flag/curacao--1f1e8-1f1fc/</loc>
     <lastmod>2025-01-21T17:31:06.093Z</lastmod>
     <priority>0.7</priority>
   </url>
   <url>
-    <loc>https://emoj.ie/flags/country-flag/enin--1f1e7-1f1ef/</loc>
+    <loc>https://emoj.ie/flags/country-flag/cyprus--1f1e8-1f1fe/</loc>
     <lastmod>2025-01-21T17:31:06.093Z</lastmod>
     <priority>0.7</priority>
   </url>
   <url>
-    <loc>https://emoj.ie/flags/country-flag/enmark--1f1e9-1f1f0/</loc>
+    <loc>https://emoj.ie/flags/country-flag/czechia--1f1e8-1f1ff/</loc>
     <lastmod>2025-01-21T17:31:06.093Z</lastmod>
     <priority>0.7</priority>
   </url>
   <url>
-    <loc>https://emoj.ie/flags/country-flag/entral-frican-epublic--1f1e8-1f1eb/</loc>
+    <loc>https://emoj.ie/flags/country-flag/denmark--1f1e9-1f1f0/</loc>
     <lastmod>2025-01-21T17:31:06.093Z</lastmod>
     <priority>0.7</priority>
   </url>
   <url>
-    <loc>https://emoj.ie/flags/country-flag/enya--1f1f0-1f1ea/</loc>
+    <loc>https://emoj.ie/flags/country-flag/diego-garcia--1f1e9-1f1ec/</loc>
     <lastmod>2025-01-21T17:31:06.093Z</lastmod>
     <priority>0.7</priority>
   </url>
   <url>
-    <loc>https://emoj.ie/flags/country-flag/eorgia--1f1ec-1f1ea/</loc>
+    <loc>https://emoj.ie/flags/country-flag/djibouti--1f1e9-1f1ef/</loc>
     <lastmod>2025-01-21T17:31:06.093Z</lastmod>
     <priority>0.7</priority>
   </url>
   <url>
-    <loc>https://emoj.ie/flags/country-flag/epal--1f1f3-1f1f5/</loc>
+    <loc>https://emoj.ie/flags/country-flag/dominica--1f1e9-1f1f2/</loc>
     <lastmod>2025-01-21T17:31:06.093Z</lastmod>
     <priority>0.7</priority>
   </url>
   <url>
-    <loc>https://emoj.ie/flags/country-flag/erbia--1f1f7-1f1f8/</loc>
+    <loc>https://emoj.ie/flags/country-flag/dominican-republic--1f1e9-1f1f4/</loc>
     <lastmod>2025-01-21T17:31:06.093Z</lastmod>
     <priority>0.7</priority>
   </url>
   <url>
-    <loc>https://emoj.ie/flags/country-flag/ermany--1f1e9-1f1ea/</loc>
+    <loc>https://emoj.ie/flags/country-flag/ecuador--1f1ea-1f1e8/</loc>
     <lastmod>2025-01-21T17:31:06.093Z</lastmod>
     <priority>0.7</priority>
   </url>
   <url>
-    <loc>https://emoj.ie/flags/country-flag/ermuda--1f1e7-1f1f2/</loc>
+    <loc>https://emoj.ie/flags/country-flag/egypt--1f1ea-1f1ec/</loc>
     <lastmod>2025-01-21T17:31:06.093Z</lastmod>
     <priority>0.7</priority>
   </url>
   <url>
-    <loc>https://emoj.ie/flags/country-flag/ersey--1f1ef-1f1ea/</loc>
+    <loc>https://emoj.ie/flags/country-flag/el-salvador--1f1f8-1f1fb/</loc>
     <lastmod>2025-01-21T17:31:06.093Z</lastmod>
     <priority>0.7</priority>
   </url>
   <url>
-    <loc>https://emoj.ie/flags/country-flag/eru--1f1f5-1f1ea/</loc>
+    <loc>https://emoj.ie/flags/country-flag/equatorial-guinea--1f1ec-1f1f6/</loc>
     <lastmod>2025-01-21T17:31:06.093Z</lastmod>
     <priority>0.7</priority>
   </url>
   <url>
-    <loc>https://emoj.ie/flags/country-flag/esotho--1f1f1-1f1f8/</loc>
+    <loc>https://emoj.ie/flags/country-flag/eritrea--1f1ea-1f1f7/</loc>
     <lastmod>2025-01-21T17:31:06.093Z</lastmod>
     <priority>0.7</priority>
   </url>
   <url>
-    <loc>https://emoj.ie/flags/country-flag/estern-ahara--1f1ea-1f1ed/</loc>
+    <loc>https://emoj.ie/flags/country-flag/estonia--1f1ea-1f1ea/</loc>
     <lastmod>2025-01-21T17:31:06.093Z</lastmod>
     <priority>0.7</priority>
   </url>
   <url>
-    <loc>https://emoj.ie/flags/country-flag/etherlands--1f1f3-1f1f1/</loc>
+    <loc>https://emoj.ie/flags/country-flag/eswatini--1f1f8-1f1ff/</loc>
     <lastmod>2025-01-21T17:31:06.093Z</lastmod>
     <priority>0.7</priority>
   </url>
   <url>
-    <loc>https://emoj.ie/flags/country-flag/eunion--1f1f7-1f1ea/</loc>
+    <loc>https://emoj.ie/flags/country-flag/ethiopia--1f1ea-1f1f9/</loc>
     <lastmod>2025-01-21T17:31:06.093Z</lastmod>
     <priority>0.7</priority>
   </url>
   <url>
-    <loc>https://emoj.ie/flags/country-flag/euta-elilla--1f1ea-1f1e6/</loc>
+    <loc>https://emoj.ie/flags/country-flag/european-union--1f1ea-1f1fa/</loc>
     <lastmod>2025-01-21T17:31:06.093Z</lastmod>
     <priority>0.7</priority>
   </url>
   <url>
-    <loc>https://emoj.ie/flags/country-flag/ew-aledonia--1f1f3-1f1e8/</loc>
+    <loc>https://emoj.ie/flags/country-flag/falkland-islands--1f1eb-1f1f0/</loc>
     <lastmod>2025-01-21T17:31:06.093Z</lastmod>
     <priority>0.7</priority>
   </url>
   <url>
-    <loc>https://emoj.ie/flags/country-flag/ew-ealand--1f1f3-1f1ff/</loc>
+    <loc>https://emoj.ie/flags/country-flag/faroe-islands--1f1eb-1f1f4/</loc>
     <lastmod>2025-01-21T17:31:06.093Z</lastmod>
     <priority>0.7</priority>
   </url>
   <url>
-    <loc>https://emoj.ie/flags/country-flag/exico--1f1f2-1f1fd/</loc>
+    <loc>https://emoj.ie/flags/country-flag/fiji--1f1eb-1f1ef/</loc>
     <lastmod>2025-01-21T17:31:06.093Z</lastmod>
     <priority>0.7</priority>
   </url>
   <url>
-    <loc>https://emoj.ie/flags/country-flag/eychelles--1f1f8-1f1e8/</loc>
+    <loc>https://emoj.ie/flags/country-flag/finland--1f1eb-1f1ee/</loc>
     <lastmod>2025-01-21T17:31:06.093Z</lastmod>
     <priority>0.7</priority>
   </url>
   <url>
-    <loc>https://emoj.ie/flags/country-flag/fghanistan--1f1e6-1f1eb/</loc>
+    <loc>https://emoj.ie/flags/country-flag/france--1f1eb-1f1f7/</loc>
     <lastmod>2025-01-21T17:31:06.093Z</lastmod>
     <priority>0.7</priority>
   </url>
   <url>
-    <loc>https://emoj.ie/flags/country-flag/ganda--1f1fa-1f1ec/</loc>
+    <loc>https://emoj.ie/flags/country-flag/french-guiana--1f1ec-1f1eb/</loc>
     <lastmod>2025-01-21T17:31:06.093Z</lastmod>
     <priority>0.7</priority>
   </url>
   <url>
-    <loc>https://emoj.ie/flags/country-flag/gypt--1f1ea-1f1ec/</loc>
+    <loc>https://emoj.ie/flags/country-flag/french-polynesia--1f1f5-1f1eb/</loc>
     <lastmod>2025-01-21T17:31:06.093Z</lastmod>
     <priority>0.7</priority>
   </url>
   <url>
-    <loc>https://emoj.ie/flags/country-flag/had--1f1f9-1f1e9/</loc>
+    <loc>https://emoj.ie/flags/country-flag/french-southern-territories--1f1f9-1f1eb/</loc>
     <lastmod>2025-01-21T17:31:06.093Z</lastmod>
     <priority>0.7</priority>
   </url>
   <url>
-    <loc>https://emoj.ie/flags/country-flag/hailand--1f1f9-1f1ed/</loc>
+    <loc>https://emoj.ie/flags/country-flag/gabon--1f1ec-1f1e6/</loc>
     <lastmod>2025-01-21T17:31:06.093Z</lastmod>
     <priority>0.7</priority>
   </url>
   <url>
-    <loc>https://emoj.ie/flags/country-flag/hana--1f1ec-1f1ed/</loc>
+    <loc>https://emoj.ie/flags/country-flag/gambia--1f1ec-1f1f2/</loc>
     <lastmod>2025-01-21T17:31:06.093Z</lastmod>
     <priority>0.7</priority>
   </url>
   <url>
-    <loc>https://emoj.ie/flags/country-flag/hile--1f1e8-1f1f1/</loc>
+    <loc>https://emoj.ie/flags/country-flag/georgia--1f1ec-1f1ea/</loc>
     <lastmod>2025-01-21T17:31:06.093Z</lastmod>
     <priority>0.7</priority>
   </url>
   <url>
-    <loc>https://emoj.ie/flags/country-flag/hilippines--1f1f5-1f1ed/</loc>
+    <loc>https://emoj.ie/flags/country-flag/germany--1f1e9-1f1ea/</loc>
     <lastmod>2025-01-21T17:31:06.093Z</lastmod>
     <priority>0.7</priority>
   </url>
   <url>
-    <loc>https://emoj.ie/flags/country-flag/hina--1f1e8-1f1f3/</loc>
+    <loc>https://emoj.ie/flags/country-flag/ghana--1f1ec-1f1ed/</loc>
     <lastmod>2025-01-21T17:31:06.093Z</lastmod>
     <priority>0.7</priority>
   </url>
   <url>
-    <loc>https://emoj.ie/flags/country-flag/hristmas-sland--1f1e8-1f1fd/</loc>
+    <loc>https://emoj.ie/flags/country-flag/gibraltar--1f1ec-1f1ee/</loc>
     <lastmod>2025-01-21T17:31:06.093Z</lastmod>
     <priority>0.7</priority>
   </url>
   <url>
-    <loc>https://emoj.ie/flags/country-flag/hutan--1f1e7-1f1f9/</loc>
+    <loc>https://emoj.ie/flags/country-flag/greece--1f1ec-1f1f7/</loc>
     <lastmod>2025-01-21T17:31:06.093Z</lastmod>
     <priority>0.7</priority>
   </url>
   <url>
-    <loc>https://emoj.ie/flags/country-flag/iberia--1f1f1-1f1f7/</loc>
+    <loc>https://emoj.ie/flags/country-flag/greenland--1f1ec-1f1f1/</loc>
     <lastmod>2025-01-21T17:31:06.093Z</lastmod>
     <priority>0.7</priority>
   </url>
   <url>
-    <loc>https://emoj.ie/flags/country-flag/ibraltar--1f1ec-1f1ee/</loc>
+    <loc>https://emoj.ie/flags/country-flag/grenada--1f1ec-1f1e9/</loc>
     <lastmod>2025-01-21T17:31:06.093Z</lastmod>
     <priority>0.7</priority>
   </url>
   <url>
-    <loc>https://emoj.ie/flags/country-flag/ibya--1f1f1-1f1fe/</loc>
+    <loc>https://emoj.ie/flags/country-flag/guadeloupe--1f1ec-1f1f5/</loc>
     <lastmod>2025-01-21T17:31:06.093Z</lastmod>
     <priority>0.7</priority>
   </url>
   <url>
-    <loc>https://emoj.ie/flags/country-flag/icaragua--1f1f3-1f1ee/</loc>
+    <loc>https://emoj.ie/flags/country-flag/guam--1f1ec-1f1fa/</loc>
     <lastmod>2025-01-21T17:31:06.093Z</lastmod>
     <priority>0.7</priority>
   </url>
   <url>
-    <loc>https://emoj.ie/flags/country-flag/icronesia--1f1eb-1f1f2/</loc>
+    <loc>https://emoj.ie/flags/country-flag/guatemala--1f1ec-1f1f9/</loc>
     <lastmod>2025-01-21T17:31:06.093Z</lastmod>
     <priority>0.7</priority>
   </url>
   <url>
-    <loc>https://emoj.ie/flags/country-flag/iechtenstein--1f1f1-1f1ee/</loc>
+    <loc>https://emoj.ie/flags/country-flag/guernsey--1f1ec-1f1ec/</loc>
     <lastmod>2025-01-21T17:31:06.093Z</lastmod>
     <priority>0.7</priority>
   </url>
   <url>
-    <loc>https://emoj.ie/flags/country-flag/iego-arcia--1f1e9-1f1ec/</loc>
+    <loc>https://emoj.ie/flags/country-flag/guinea--1f1ec-1f1f3/</loc>
     <lastmod>2025-01-21T17:31:06.093Z</lastmod>
     <priority>0.7</priority>
   </url>
   <url>
-    <loc>https://emoj.ie/flags/country-flag/ierra-eone--1f1f8-1f1f1/</loc>
+    <loc>https://emoj.ie/flags/country-flag/guinea-bissau--1f1ec-1f1fc/</loc>
     <lastmod>2025-01-21T17:31:06.093Z</lastmod>
     <priority>0.7</priority>
   </url>
   <url>
-    <loc>https://emoj.ie/flags/country-flag/ietnam--1f1fb-1f1f3/</loc>
+    <loc>https://emoj.ie/flags/country-flag/guyana--1f1ec-1f1fe/</loc>
     <lastmod>2025-01-21T17:31:06.093Z</lastmod>
     <priority>0.7</priority>
   </url>
   <url>
-    <loc>https://emoj.ie/flags/country-flag/iger--1f1f3-1f1ea/</loc>
+    <loc>https://emoj.ie/flags/country-flag/haiti--1f1ed-1f1f9/</loc>
     <lastmod>2025-01-21T17:31:06.093Z</lastmod>
     <priority>0.7</priority>
   </url>
   <url>
-    <loc>https://emoj.ie/flags/country-flag/igeria--1f1f3-1f1ec/</loc>
+    <loc>https://emoj.ie/flags/country-flag/heard-mcdonald-islands--1f1ed-1f1f2/</loc>
     <lastmod>2025-01-21T17:31:06.093Z</lastmod>
     <priority>0.7</priority>
   </url>
   <url>
-    <loc>https://emoj.ie/flags/country-flag/iji--1f1eb-1f1ef/</loc>
+    <loc>https://emoj.ie/flags/country-flag/honduras--1f1ed-1f1f3/</loc>
     <lastmod>2025-01-21T17:31:06.093Z</lastmod>
     <priority>0.7</priority>
   </url>
   <url>
-    <loc>https://emoj.ie/flags/country-flag/imbabwe--1f1ff-1f1fc/</loc>
+    <loc>https://emoj.ie/flags/country-flag/hong-kong-sar-china--1f1ed-1f1f0/</loc>
     <lastmod>2025-01-21T17:31:06.093Z</lastmod>
     <priority>0.7</priority>
   </url>
   <url>
-    <loc>https://emoj.ie/flags/country-flag/imor-este--1f1f9-1f1f1/</loc>
+    <loc>https://emoj.ie/flags/country-flag/hungary--1f1ed-1f1fa/</loc>
     <lastmod>2025-01-21T17:31:06.093Z</lastmod>
     <priority>0.7</priority>
   </url>
   <url>
-    <loc>https://emoj.ie/flags/country-flag/ingapore--1f1f8-1f1ec/</loc>
+    <loc>https://emoj.ie/flags/country-flag/iceland--1f1ee-1f1f8/</loc>
     <lastmod>2025-01-21T17:31:06.093Z</lastmod>
     <priority>0.7</priority>
   </url>
   <url>
-    <loc>https://emoj.ie/flags/country-flag/inland--1f1eb-1f1ee/</loc>
+    <loc>https://emoj.ie/flags/country-flag/india--1f1ee-1f1f3/</loc>
     <lastmod>2025-01-21T17:31:06.093Z</lastmod>
     <priority>0.7</priority>
   </url>
   <url>
-    <loc>https://emoj.ie/flags/country-flag/int-aarten--1f1f8-1f1fd/</loc>
+    <loc>https://emoj.ie/flags/country-flag/indonesia--1f1ee-1f1e9/</loc>
     <lastmod>2025-01-21T17:31:06.093Z</lastmod>
     <priority>0.7</priority>
   </url>
   <url>
-    <loc>https://emoj.ie/flags/country-flag/irgin-slands--1f1fb-1f1ee/</loc>
+    <loc>https://emoj.ie/flags/country-flag/iran--1f1ee-1f1f7/</loc>
     <lastmod>2025-01-21T17:31:06.093Z</lastmod>
     <priority>0.7</priority>
   </url>
   <url>
-    <loc>https://emoj.ie/flags/country-flag/iribati--1f1f0-1f1ee/</loc>
+    <loc>https://emoj.ie/flags/country-flag/iraq--1f1ee-1f1f6/</loc>
     <lastmod>2025-01-21T17:31:06.093Z</lastmod>
     <priority>0.7</priority>
   </url>
   <url>
-    <loc>https://emoj.ie/flags/country-flag/itcairn-slands--1f1f5-1f1f3/</loc>
+    <loc>https://emoj.ie/flags/country-flag/ireland--1f1ee-1f1ea/</loc>
     <lastmod>2025-01-21T17:31:06.093Z</lastmod>
     <priority>0.7</priority>
   </url>
   <url>
-    <loc>https://emoj.ie/flags/country-flag/ithuania--1f1f1-1f1f9/</loc>
+    <loc>https://emoj.ie/flags/country-flag/isle-of-man--1f1ee-1f1f2/</loc>
     <lastmod>2025-01-21T17:31:06.093Z</lastmod>
     <priority>0.7</priority>
   </url>
   <url>
-    <loc>https://emoj.ie/flags/country-flag/iue--1f1f3-1f1fa/</loc>
+    <loc>https://emoj.ie/flags/country-flag/israel--1f1ee-1f1f1/</loc>
     <lastmod>2025-01-21T17:31:06.093Z</lastmod>
     <priority>0.7</priority>
   </url>
   <url>
-    <loc>https://emoj.ie/flags/country-flag/jibouti--1f1e9-1f1ef/</loc>
+    <loc>https://emoj.ie/flags/country-flag/italy--1f1ee-1f1f9/</loc>
     <lastmod>2025-01-21T17:31:06.093Z</lastmod>
     <priority>0.7</priority>
   </url>
   <url>
-    <loc>https://emoj.ie/flags/country-flag/kraine--1f1fa-1f1e6/</loc>
+    <loc>https://emoj.ie/flags/country-flag/jamaica--1f1ef-1f1f2/</loc>
     <lastmod>2025-01-21T17:31:06.093Z</lastmod>
     <priority>0.7</priority>
   </url>
   <url>
-    <loc>https://emoj.ie/flags/country-flag/l-alvador--1f1f8-1f1fb/</loc>
+    <loc>https://emoj.ie/flags/country-flag/japan--1f1ef-1f1f5/</loc>
     <lastmod>2025-01-21T17:31:06.093Z</lastmod>
     <priority>0.7</priority>
   </url>
   <url>
-    <loc>https://emoj.ie/flags/country-flag/land-slands--1f1e6-1f1fd/</loc>
+    <loc>https://emoj.ie/flags/country-flag/jersey--1f1ef-1f1ea/</loc>
     <lastmod>2025-01-21T17:31:06.093Z</lastmod>
     <priority>0.7</priority>
   </url>
   <url>
-    <loc>https://emoj.ie/flags/country-flag/lbania--1f1e6-1f1f1/</loc>
+    <loc>https://emoj.ie/flags/country-flag/jordan--1f1ef-1f1f4/</loc>
     <lastmod>2025-01-21T17:31:06.093Z</lastmod>
     <priority>0.7</priority>
   </url>
   <url>
-    <loc>https://emoj.ie/flags/country-flag/lgeria--1f1e9-1f1ff/</loc>
+    <loc>https://emoj.ie/flags/country-flag/kazakhstan--1f1f0-1f1ff/</loc>
     <lastmod>2025-01-21T17:31:06.093Z</lastmod>
     <priority>0.7</priority>
   </url>
   <url>
-    <loc>https://emoj.ie/flags/country-flag/lipperton-sland--1f1e8-1f1f5/</loc>
+    <loc>https://emoj.ie/flags/country-flag/kenya--1f1f0-1f1ea/</loc>
     <lastmod>2025-01-21T17:31:06.093Z</lastmod>
     <priority>0.7</priority>
   </url>
   <url>
-    <loc>https://emoj.ie/flags/country-flag/lovakia--1f1f8-1f1f0/</loc>
+    <loc>https://emoj.ie/flags/country-flag/kiribati--1f1f0-1f1ee/</loc>
     <lastmod>2025-01-21T17:31:06.093Z</lastmod>
     <priority>0.7</priority>
   </url>
   <url>
-    <loc>https://emoj.ie/flags/country-flag/lovenia--1f1f8-1f1ee/</loc>
+    <loc>https://emoj.ie/flags/country-flag/kosovo--1f1fd-1f1f0/</loc>
     <lastmod>2025-01-21T17:31:06.093Z</lastmod>
     <priority>0.7</priority>
   </url>
   <url>
-    <loc>https://emoj.ie/flags/country-flag/man--1f1f4-1f1f2/</loc>
+    <loc>https://emoj.ie/flags/country-flag/kuwait--1f1f0-1f1fc/</loc>
     <lastmod>2025-01-21T17:31:06.093Z</lastmod>
     <priority>0.7</priority>
   </url>
   <url>
-    <loc>https://emoj.ie/flags/country-flag/merican-amoa--1f1e6-1f1f8/</loc>
+    <loc>https://emoj.ie/flags/country-flag/kyrgyzstan--1f1f0-1f1ec/</loc>
     <lastmod>2025-01-21T17:31:06.093Z</lastmod>
     <priority>0.7</priority>
   </url>
   <url>
-    <loc>https://emoj.ie/flags/country-flag/ndia--1f1ee-1f1f3/</loc>
+    <loc>https://emoj.ie/flags/country-flag/laos--1f1f1-1f1e6/</loc>
     <lastmod>2025-01-21T17:31:06.093Z</lastmod>
     <priority>0.7</priority>
   </url>
   <url>
-    <loc>https://emoj.ie/flags/country-flag/ndonesia--1f1ee-1f1e9/</loc>
+    <loc>https://emoj.ie/flags/country-flag/latvia--1f1f1-1f1fb/</loc>
     <lastmod>2025-01-21T17:31:06.093Z</lastmod>
     <priority>0.7</priority>
   </url>
   <url>
-    <loc>https://emoj.ie/flags/country-flag/ndorra--1f1e6-1f1e9/</loc>
+    <loc>https://emoj.ie/flags/country-flag/lebanon--1f1f1-1f1e7/</loc>
     <lastmod>2025-01-21T17:31:06.093Z</lastmod>
     <priority>0.7</priority>
   </url>
   <url>
-    <loc>https://emoj.ie/flags/country-flag/ngola--1f1e6-1f1f4/</loc>
+    <loc>https://emoj.ie/flags/country-flag/lesotho--1f1f1-1f1f8/</loc>
     <lastmod>2025-01-21T17:31:06.093Z</lastmod>
     <priority>0.7</priority>
   </url>
   <url>
-    <loc>https://emoj.ie/flags/country-flag/nguilla--1f1e6-1f1ee/</loc>
+    <loc>https://emoj.ie/flags/country-flag/liberia--1f1f1-1f1f7/</loc>
     <lastmod>2025-01-21T17:31:06.093Z</lastmod>
     <priority>0.7</priority>
   </url>
   <url>
-    <loc>https://emoj.ie/flags/country-flag/nited-ations--1f1fa-1f1f3/</loc>
+    <loc>https://emoj.ie/flags/country-flag/libya--1f1f1-1f1fe/</loc>
     <lastmod>2025-01-21T17:31:06.093Z</lastmod>
     <priority>0.7</priority>
   </url>
   <url>
-    <loc>https://emoj.ie/flags/country-flag/nited-ingdom--1f1ec-1f1e7/</loc>
+    <loc>https://emoj.ie/flags/country-flag/liechtenstein--1f1f1-1f1ee/</loc>
     <lastmod>2025-01-21T17:31:06.093Z</lastmod>
     <priority>0.7</priority>
   </url>
   <url>
-    <loc>https://emoj.ie/flags/country-flag/nited-rab-mirates--1f1e6-1f1ea/</loc>
+    <loc>https://emoj.ie/flags/country-flag/lithuania--1f1f1-1f1f9/</loc>
     <lastmod>2025-01-21T17:31:06.093Z</lastmod>
     <priority>0.7</priority>
   </url>
   <url>
-    <loc>https://emoj.ie/flags/country-flag/nited-tates--1f1fa-1f1f8/</loc>
+    <loc>https://emoj.ie/flags/country-flag/luxembourg--1f1f1-1f1fa/</loc>
     <lastmod>2025-01-21T17:31:06.093Z</lastmod>
     <priority>0.7</priority>
   </url>
   <url>
-    <loc>https://emoj.ie/flags/country-flag/ntarctica--1f1e6-1f1f6/</loc>
+    <loc>https://emoj.ie/flags/country-flag/macao-sar-china--1f1f2-1f1f4/</loc>
     <lastmod>2025-01-21T17:31:06.093Z</lastmod>
     <priority>0.7</priority>
   </url>
   <url>
-    <loc>https://emoj.ie/flags/country-flag/ntigua-arbuda--1f1e6-1f1ec/</loc>
+    <loc>https://emoj.ie/flags/country-flag/madagascar--1f1f2-1f1ec/</loc>
     <lastmod>2025-01-21T17:31:06.093Z</lastmod>
     <priority>0.7</priority>
   </url>
   <url>
-    <loc>https://emoj.ie/flags/country-flag/ocos-eeling-slands--1f1e8-1f1e8/</loc>
+    <loc>https://emoj.ie/flags/country-flag/malawi--1f1f2-1f1fc/</loc>
     <lastmod>2025-01-21T17:31:06.093Z</lastmod>
     <priority>0.7</priority>
   </url>
   <url>
-    <loc>https://emoj.ie/flags/country-flag/ogo--1f1f9-1f1ec/</loc>
+    <loc>https://emoj.ie/flags/country-flag/malaysia--1f1f2-1f1fe/</loc>
     <lastmod>2025-01-21T17:31:06.093Z</lastmod>
     <priority>0.7</priority>
   </url>
   <url>
-    <loc>https://emoj.ie/flags/country-flag/okelau--1f1f9-1f1f0/</loc>
+    <loc>https://emoj.ie/flags/country-flag/maldives--1f1f2-1f1fb/</loc>
     <lastmod>2025-01-21T17:31:06.093Z</lastmod>
     <priority>0.7</priority>
   </url>
   <url>
-    <loc>https://emoj.ie/flags/country-flag/oland--1f1f5-1f1f1/</loc>
+    <loc>https://emoj.ie/flags/country-flag/mali--1f1f2-1f1f1/</loc>
     <lastmod>2025-01-21T17:31:06.093Z</lastmod>
     <priority>0.7</priority>
   </url>
   <url>
-    <loc>https://emoj.ie/flags/country-flag/oldova--1f1f2-1f1e9/</loc>
+    <loc>https://emoj.ie/flags/country-flag/malta--1f1f2-1f1f9/</loc>
     <lastmod>2025-01-21T17:31:06.093Z</lastmod>
     <priority>0.7</priority>
   </url>
   <url>
-    <loc>https://emoj.ie/flags/country-flag/olivia--1f1e7-1f1f4/</loc>
+    <loc>https://emoj.ie/flags/country-flag/marshall-islands--1f1f2-1f1ed/</loc>
     <lastmod>2025-01-21T17:31:06.093Z</lastmod>
     <priority>0.7</priority>
   </url>
   <url>
-    <loc>https://emoj.ie/flags/country-flag/olombia--1f1e8-1f1f4/</loc>
+    <loc>https://emoj.ie/flags/country-flag/martinique--1f1f2-1f1f6/</loc>
     <lastmod>2025-01-21T17:31:06.093Z</lastmod>
     <priority>0.7</priority>
   </url>
   <url>
-    <loc>https://emoj.ie/flags/country-flag/olomon-slands--1f1f8-1f1e7/</loc>
+    <loc>https://emoj.ie/flags/country-flag/mauritania--1f1f2-1f1f7/</loc>
     <lastmod>2025-01-21T17:31:06.093Z</lastmod>
     <priority>0.7</priority>
   </url>
   <url>
-    <loc>https://emoj.ie/flags/country-flag/omalia--1f1f8-1f1f4/</loc>
+    <loc>https://emoj.ie/flags/country-flag/mauritius--1f1f2-1f1fa/</loc>
     <lastmod>2025-01-21T17:31:06.093Z</lastmod>
     <priority>0.7</priority>
   </url>
   <url>
-    <loc>https://emoj.ie/flags/country-flag/omania--1f1f7-1f1f4/</loc>
+    <loc>https://emoj.ie/flags/country-flag/mayotte--1f1fe-1f1f9/</loc>
     <lastmod>2025-01-21T17:31:06.093Z</lastmod>
     <priority>0.7</priority>
   </url>
   <url>
-    <loc>https://emoj.ie/flags/country-flag/ominica--1f1e9-1f1f2/</loc>
+    <loc>https://emoj.ie/flags/country-flag/mexico--1f1f2-1f1fd/</loc>
     <lastmod>2025-01-21T17:31:06.093Z</lastmod>
     <priority>0.7</priority>
   </url>
   <url>
-    <loc>https://emoj.ie/flags/country-flag/ominican-epublic--1f1e9-1f1f4/</loc>
+    <loc>https://emoj.ie/flags/country-flag/micronesia--1f1eb-1f1f2/</loc>
     <lastmod>2025-01-21T17:31:06.093Z</lastmod>
     <priority>0.7</priority>
   </url>
   <url>
-    <loc>https://emoj.ie/flags/country-flag/omoros--1f1f0-1f1f2/</loc>
+    <loc>https://emoj.ie/flags/country-flag/moldova--1f1f2-1f1e9/</loc>
     <lastmod>2025-01-21T17:31:06.093Z</lastmod>
     <priority>0.7</priority>
   </url>
   <url>
-    <loc>https://emoj.ie/flags/country-flag/onaco--1f1f2-1f1e8/</loc>
+    <loc>https://emoj.ie/flags/country-flag/monaco--1f1f2-1f1e8/</loc>
     <lastmod>2025-01-21T17:31:06.093Z</lastmod>
     <priority>0.7</priority>
   </url>
   <url>
-    <loc>https://emoj.ie/flags/country-flag/onduras--1f1ed-1f1f3/</loc>
+    <loc>https://emoj.ie/flags/country-flag/mongolia--1f1f2-1f1f3/</loc>
     <lastmod>2025-01-21T17:31:06.093Z</lastmod>
     <priority>0.7</priority>
   </url>
   <url>
-    <loc>https://emoj.ie/flags/country-flag/ong-ong-hina--1f1ed-1f1f0/</loc>
+    <loc>https://emoj.ie/flags/country-flag/montenegro--1f1f2-1f1ea/</loc>
     <lastmod>2025-01-21T17:31:06.093Z</lastmod>
     <priority>0.7</priority>
   </url>
   <url>
-    <loc>https://emoj.ie/flags/country-flag/onga--1f1f9-1f1f4/</loc>
+    <loc>https://emoj.ie/flags/country-flag/montserrat--1f1f2-1f1f8/</loc>
     <lastmod>2025-01-21T17:31:06.093Z</lastmod>
     <priority>0.7</priority>
   </url>
   <url>
-    <loc>https://emoj.ie/flags/country-flag/ongo-inshasa--1f1e8-1f1e9/</loc>
+    <loc>https://emoj.ie/flags/country-flag/morocco--1f1f2-1f1e6/</loc>
     <lastmod>2025-01-21T17:31:06.093Z</lastmod>
     <priority>0.7</priority>
   </url>
   <url>
-    <loc>https://emoj.ie/flags/country-flag/ongo-razzaville--1f1e8-1f1ec/</loc>
+    <loc>https://emoj.ie/flags/country-flag/mozambique--1f1f2-1f1ff/</loc>
     <lastmod>2025-01-21T17:31:06.093Z</lastmod>
     <priority>0.7</priority>
   </url>
   <url>
-    <loc>https://emoj.ie/flags/country-flag/ongolia--1f1f2-1f1f3/</loc>
+    <loc>https://emoj.ie/flags/country-flag/myanmar-burma--1f1f2-1f1f2/</loc>
     <lastmod>2025-01-21T17:31:06.093Z</lastmod>
     <priority>0.7</priority>
   </url>
   <url>
-    <loc>https://emoj.ie/flags/country-flag/ontenegro--1f1f2-1f1ea/</loc>
+    <loc>https://emoj.ie/flags/country-flag/namibia--1f1f3-1f1e6/</loc>
     <lastmod>2025-01-21T17:31:06.093Z</lastmod>
     <priority>0.7</priority>
   </url>
   <url>
-    <loc>https://emoj.ie/flags/country-flag/ontserrat--1f1f2-1f1f8/</loc>
+    <loc>https://emoj.ie/flags/country-flag/nauru--1f1f3-1f1f7/</loc>
     <lastmod>2025-01-21T17:31:06.093Z</lastmod>
     <priority>0.7</priority>
   </url>
   <url>
-    <loc>https://emoj.ie/flags/country-flag/ook-slands--1f1e8-1f1f0/</loc>
+    <loc>https://emoj.ie/flags/country-flag/nepal--1f1f3-1f1f5/</loc>
     <lastmod>2025-01-21T17:31:06.093Z</lastmod>
     <priority>0.7</priority>
   </url>
   <url>
-    <loc>https://emoj.ie/flags/country-flag/ordan--1f1ef-1f1f4/</loc>
+    <loc>https://emoj.ie/flags/country-flag/netherlands--1f1f3-1f1f1/</loc>
     <lastmod>2025-01-21T17:31:06.093Z</lastmod>
     <priority>0.7</priority>
   </url>
   <url>
-    <loc>https://emoj.ie/flags/country-flag/orfolk-sland--1f1f3-1f1eb/</loc>
+    <loc>https://emoj.ie/flags/country-flag/new-caledonia--1f1f3-1f1e8/</loc>
     <lastmod>2025-01-21T17:31:06.093Z</lastmod>
     <priority>0.7</priority>
   </url>
   <url>
-    <loc>https://emoj.ie/flags/country-flag/orocco--1f1f2-1f1e6/</loc>
+    <loc>https://emoj.ie/flags/country-flag/new-zealand--1f1f3-1f1ff/</loc>
     <lastmod>2025-01-21T17:31:06.093Z</lastmod>
     <priority>0.7</priority>
   </url>
   <url>
-    <loc>https://emoj.ie/flags/country-flag/orth-acedonia--1f1f2-1f1f0/</loc>
+    <loc>https://emoj.ie/flags/country-flag/nicaragua--1f1f3-1f1ee/</loc>
     <lastmod>2025-01-21T17:31:06.093Z</lastmod>
     <priority>0.7</priority>
   </url>
   <url>
-    <loc>https://emoj.ie/flags/country-flag/orth-orea--1f1f0-1f1f5/</loc>
+    <loc>https://emoj.ie/flags/country-flag/niger--1f1f3-1f1ea/</loc>
     <lastmod>2025-01-21T17:31:06.093Z</lastmod>
     <priority>0.7</priority>
   </url>
   <url>
-    <loc>https://emoj.ie/flags/country-flag/orthern-ariana-slands--1f1f2-1f1f5/</loc>
+    <loc>https://emoj.ie/flags/country-flag/nigeria--1f1f3-1f1ec/</loc>
     <lastmod>2025-01-21T17:31:06.093Z</lastmod>
     <priority>0.7</priority>
   </url>
   <url>
-    <loc>https://emoj.ie/flags/country-flag/ortugal--1f1f5-1f1f9/</loc>
+    <loc>https://emoj.ie/flags/country-flag/niue--1f1f3-1f1fa/</loc>
     <lastmod>2025-01-21T17:31:06.093Z</lastmod>
     <priority>0.7</priority>
   </url>
   <url>
-    <loc>https://emoj.ie/flags/country-flag/orway--1f1f3-1f1f4/</loc>
+    <loc>https://emoj.ie/flags/country-flag/norfolk-island--1f1f3-1f1eb/</loc>
     <lastmod>2025-01-21T17:31:06.093Z</lastmod>
     <priority>0.7</priority>
   </url>
   <url>
-    <loc>https://emoj.ie/flags/country-flag/osnia-erzegovina--1f1e7-1f1e6/</loc>
+    <loc>https://emoj.ie/flags/country-flag/north-korea--1f1f0-1f1f5/</loc>
     <lastmod>2025-01-21T17:31:06.093Z</lastmod>
     <priority>0.7</priority>
   </url>
   <url>
-    <loc>https://emoj.ie/flags/country-flag/osovo--1f1fd-1f1f0/</loc>
+    <loc>https://emoj.ie/flags/country-flag/north-macedonia--1f1f2-1f1f0/</loc>
     <lastmod>2025-01-21T17:31:06.093Z</lastmod>
     <priority>0.7</priority>
   </url>
   <url>
-    <loc>https://emoj.ie/flags/country-flag/osta-ica--1f1e8-1f1f7/</loc>
+    <loc>https://emoj.ie/flags/country-flag/northern-mariana-islands--1f1f2-1f1f5/</loc>
     <lastmod>2025-01-21T17:31:06.093Z</lastmod>
     <priority>0.7</priority>
   </url>
   <url>
-    <loc>https://emoj.ie/flags/country-flag/ote-d-voire--1f1e8-1f1ee/</loc>
+    <loc>https://emoj.ie/flags/country-flag/norway--1f1f3-1f1f4/</loc>
     <lastmod>2025-01-21T17:31:06.093Z</lastmod>
     <priority>0.7</priority>
   </url>
   <url>
-    <loc>https://emoj.ie/flags/country-flag/otswana--1f1e7-1f1fc/</loc>
+    <loc>https://emoj.ie/flags/country-flag/oman--1f1f4-1f1f2/</loc>
     <lastmod>2025-01-21T17:31:06.093Z</lastmod>
     <priority>0.7</priority>
   </url>
   <url>
-    <loc>https://emoj.ie/flags/country-flag/outh-eorgia-outh-andwich-slands--1f1ec-1f1f8/</loc>
+    <loc>https://emoj.ie/flags/country-flag/pakistan--1f1f5-1f1f0/</loc>
     <lastmod>2025-01-21T17:31:06.093Z</lastmod>
     <priority>0.7</priority>
   </url>
   <url>
-    <loc>https://emoj.ie/flags/country-flag/outh-frica--1f1ff-1f1e6/</loc>
+    <loc>https://emoj.ie/flags/country-flag/palau--1f1f5-1f1fc/</loc>
     <lastmod>2025-01-21T17:31:06.093Z</lastmod>
     <priority>0.7</priority>
   </url>
   <url>
-    <loc>https://emoj.ie/flags/country-flag/outh-orea--1f1f0-1f1f7/</loc>
+    <loc>https://emoj.ie/flags/country-flag/palestinian-territories--1f1f5-1f1f8/</loc>
     <lastmod>2025-01-21T17:31:06.093Z</lastmod>
     <priority>0.7</priority>
   </url>
   <url>
-    <loc>https://emoj.ie/flags/country-flag/outh-udan--1f1f8-1f1f8/</loc>
+    <loc>https://emoj.ie/flags/country-flag/panama--1f1f5-1f1e6/</loc>
     <lastmod>2025-01-21T17:31:06.093Z</lastmod>
     <priority>0.7</priority>
   </url>
   <url>
-    <loc>https://emoj.ie/flags/country-flag/ouvet-sland--1f1e7-1f1fb/</loc>
+    <loc>https://emoj.ie/flags/country-flag/papua-new-guinea--1f1f5-1f1ec/</loc>
     <lastmod>2025-01-21T17:31:06.093Z</lastmod>
     <priority>0.7</priority>
   </url>
   <url>
-    <loc>https://emoj.ie/flags/country-flag/ozambique--1f1f2-1f1ff/</loc>
+    <loc>https://emoj.ie/flags/country-flag/paraguay--1f1f5-1f1fe/</loc>
     <lastmod>2025-01-21T17:31:06.093Z</lastmod>
     <priority>0.7</priority>
   </url>
   <url>
-    <loc>https://emoj.ie/flags/country-flag/pain--1f1ea-1f1f8/</loc>
+    <loc>https://emoj.ie/flags/country-flag/peru--1f1f5-1f1ea/</loc>
     <lastmod>2025-01-21T17:31:06.093Z</lastmod>
     <priority>0.7</priority>
   </url>
   <url>
-    <loc>https://emoj.ie/flags/country-flag/quatorial-uinea--1f1ec-1f1f6/</loc>
+    <loc>https://emoj.ie/flags/country-flag/philippines--1f1f5-1f1ed/</loc>
     <lastmod>2025-01-21T17:31:06.093Z</lastmod>
     <priority>0.7</priority>
   </url>
   <url>
-    <loc>https://emoj.ie/flags/country-flag/ran--1f1ee-1f1f7/</loc>
+    <loc>https://emoj.ie/flags/country-flag/pitcairn-islands--1f1f5-1f1f3/</loc>
     <lastmod>2025-01-21T17:31:06.093Z</lastmod>
     <priority>0.7</priority>
   </url>
   <url>
-    <loc>https://emoj.ie/flags/country-flag/rance--1f1eb-1f1f7/</loc>
+    <loc>https://emoj.ie/flags/country-flag/poland--1f1f5-1f1f1/</loc>
     <lastmod>2025-01-21T17:31:06.093Z</lastmod>
     <priority>0.7</priority>
   </url>
   <url>
-    <loc>https://emoj.ie/flags/country-flag/raq--1f1ee-1f1f6/</loc>
+    <loc>https://emoj.ie/flags/country-flag/portugal--1f1f5-1f1f9/</loc>
     <lastmod>2025-01-21T17:31:06.093Z</lastmod>
     <priority>0.7</priority>
   </url>
   <url>
-    <loc>https://emoj.ie/flags/country-flag/razil--1f1e7-1f1f7/</loc>
+    <loc>https://emoj.ie/flags/country-flag/puerto-rico--1f1f5-1f1f7/</loc>
     <lastmod>2025-01-21T17:31:06.093Z</lastmod>
     <priority>0.7</priority>
   </url>
   <url>
-    <loc>https://emoj.ie/flags/country-flag/reece--1f1ec-1f1f7/</loc>
+    <loc>https://emoj.ie/flags/country-flag/qatar--1f1f6-1f1e6/</loc>
     <lastmod>2025-01-21T17:31:06.093Z</lastmod>
     <priority>0.7</priority>
   </url>
   <url>
-    <loc>https://emoj.ie/flags/country-flag/reenland--1f1ec-1f1f1/</loc>
+    <loc>https://emoj.ie/flags/country-flag/reunion--1f1f7-1f1ea/</loc>
     <lastmod>2025-01-21T17:31:06.093Z</lastmod>
     <priority>0.7</priority>
   </url>
   <url>
-    <loc>https://emoj.ie/flags/country-flag/reland--1f1ee-1f1ea/</loc>
+    <loc>https://emoj.ie/flags/country-flag/romania--1f1f7-1f1f4/</loc>
     <lastmod>2025-01-21T17:31:06.093Z</lastmod>
     <priority>0.7</priority>
   </url>
   <url>
-    <loc>https://emoj.ie/flags/country-flag/renada--1f1ec-1f1e9/</loc>
+    <loc>https://emoj.ie/flags/country-flag/russia--1f1f7-1f1fa/</loc>
     <lastmod>2025-01-21T17:31:06.093Z</lastmod>
     <priority>0.7</priority>
   </url>
   <url>
-    <loc>https://emoj.ie/flags/country-flag/rench-olynesia--1f1f5-1f1eb/</loc>
+    <loc>https://emoj.ie/flags/country-flag/rwanda--1f1f7-1f1fc/</loc>
     <lastmod>2025-01-21T17:31:06.093Z</lastmod>
     <priority>0.7</priority>
   </url>
   <url>
-    <loc>https://emoj.ie/flags/country-flag/rench-outhern-erritories--1f1f9-1f1eb/</loc>
+    <loc>https://emoj.ie/flags/country-flag/samoa--1f1fc-1f1f8/</loc>
     <lastmod>2025-01-21T17:31:06.093Z</lastmod>
     <priority>0.7</priority>
   </url>
   <url>
-    <loc>https://emoj.ie/flags/country-flag/rench-uiana--1f1ec-1f1eb/</loc>
+    <loc>https://emoj.ie/flags/country-flag/san-marino--1f1f8-1f1f2/</loc>
     <lastmod>2025-01-21T17:31:06.093Z</lastmod>
     <priority>0.7</priority>
   </url>
   <url>
-    <loc>https://emoj.ie/flags/country-flag/rgentina--1f1e6-1f1f7/</loc>
+    <loc>https://emoj.ie/flags/country-flag/sao-tome-principe--1f1f8-1f1f9/</loc>
     <lastmod>2025-01-21T17:31:06.093Z</lastmod>
     <priority>0.7</priority>
   </url>
   <url>
-    <loc>https://emoj.ie/flags/country-flag/ri-anka--1f1f1-1f1f0/</loc>
+    <loc>https://emoj.ie/flags/country-flag/saudi-arabia--1f1f8-1f1e6/</loc>
     <lastmod>2025-01-21T17:31:06.093Z</lastmod>
     <priority>0.7</priority>
   </url>
   <url>
-    <loc>https://emoj.ie/flags/country-flag/rinidad-obago--1f1f9-1f1f9/</loc>
+    <loc>https://emoj.ie/flags/country-flag/senegal--1f1f8-1f1f3/</loc>
     <lastmod>2025-01-21T17:31:06.093Z</lastmod>
     <priority>0.7</priority>
   </url>
   <url>
-    <loc>https://emoj.ie/flags/country-flag/ristan-da-unha--1f1f9-1f1e6/</loc>
+    <loc>https://emoj.ie/flags/country-flag/serbia--1f1f7-1f1f8/</loc>
     <lastmod>2025-01-21T17:31:06.093Z</lastmod>
     <priority>0.7</priority>
   </url>
   <url>
-    <loc>https://emoj.ie/flags/country-flag/ritish-irgin-slands--1f1fb-1f1ec/</loc>
+    <loc>https://emoj.ie/flags/country-flag/seychelles--1f1f8-1f1e8/</loc>
     <lastmod>2025-01-21T17:31:06.093Z</lastmod>
     <priority>0.7</priority>
   </url>
   <url>
-    <loc>https://emoj.ie/flags/country-flag/ritish-ndian-cean-erritory--1f1ee-1f1f4/</loc>
+    <loc>https://emoj.ie/flags/country-flag/sierra-leone--1f1f8-1f1f1/</loc>
     <lastmod>2025-01-21T17:31:06.093Z</lastmod>
     <priority>0.7</priority>
   </url>
   <url>
-    <loc>https://emoj.ie/flags/country-flag/ritrea--1f1ea-1f1f7/</loc>
+    <loc>https://emoj.ie/flags/country-flag/singapore--1f1f8-1f1ec/</loc>
     <lastmod>2025-01-21T17:31:06.093Z</lastmod>
     <priority>0.7</priority>
   </url>
   <url>
-    <loc>https://emoj.ie/flags/country-flag/rmenia--1f1e6-1f1f2/</loc>
+    <loc>https://emoj.ie/flags/country-flag/sint-maarten--1f1f8-1f1fd/</loc>
     <lastmod>2025-01-21T17:31:06.093Z</lastmod>
     <priority>0.7</priority>
   </url>
   <url>
-    <loc>https://emoj.ie/flags/country-flag/roatia--1f1ed-1f1f7/</loc>
+    <loc>https://emoj.ie/flags/country-flag/slovakia--1f1f8-1f1f0/</loc>
     <lastmod>2025-01-21T17:31:06.093Z</lastmod>
     <priority>0.7</priority>
   </url>
   <url>
-    <loc>https://emoj.ie/flags/country-flag/ruba--1f1e6-1f1fc/</loc>
+    <loc>https://emoj.ie/flags/country-flag/slovenia--1f1f8-1f1ee/</loc>
     <lastmod>2025-01-21T17:31:06.093Z</lastmod>
     <priority>0.7</priority>
   </url>
   <url>
-    <loc>https://emoj.ie/flags/country-flag/ruguay--1f1fa-1f1fe/</loc>
+    <loc>https://emoj.ie/flags/country-flag/solomon-islands--1f1f8-1f1e7/</loc>
     <lastmod>2025-01-21T17:31:06.093Z</lastmod>
     <priority>0.7</priority>
   </url>
   <url>
-    <loc>https://emoj.ie/flags/country-flag/runei--1f1e7-1f1f3/</loc>
+    <loc>https://emoj.ie/flags/country-flag/somalia--1f1f8-1f1f4/</loc>
     <lastmod>2025-01-21T17:31:06.093Z</lastmod>
     <priority>0.7</priority>
   </url>
   <url>
-    <loc>https://emoj.ie/flags/country-flag/scension-sland--1f1e6-1f1e8/</loc>
+    <loc>https://emoj.ie/flags/country-flag/south-africa--1f1ff-1f1e6/</loc>
     <lastmod>2025-01-21T17:31:06.093Z</lastmod>
     <priority>0.7</priority>
   </url>
   <url>
-    <loc>https://emoj.ie/flags/country-flag/sle-of-an--1f1ee-1f1f2/</loc>
+    <loc>https://emoj.ie/flags/country-flag/south-georgia-south-sandwich-islands--1f1ec-1f1f8/</loc>
     <lastmod>2025-01-21T17:31:06.093Z</lastmod>
     <priority>0.7</priority>
   </url>
   <url>
-    <loc>https://emoj.ie/flags/country-flag/srael--1f1ee-1f1f1/</loc>
+    <loc>https://emoj.ie/flags/country-flag/south-korea--1f1f0-1f1f7/</loc>
     <lastmod>2025-01-21T17:31:06.093Z</lastmod>
     <priority>0.7</priority>
   </url>
   <url>
-    <loc>https://emoj.ie/flags/country-flag/stonia--1f1ea-1f1ea/</loc>
+    <loc>https://emoj.ie/flags/country-flag/south-sudan--1f1f8-1f1f8/</loc>
     <lastmod>2025-01-21T17:31:06.093Z</lastmod>
     <priority>0.7</priority>
   </url>
   <url>
-    <loc>https://emoj.ie/flags/country-flag/swatini--1f1f8-1f1ff/</loc>
+    <loc>https://emoj.ie/flags/country-flag/spain--1f1ea-1f1f8/</loc>
     <lastmod>2025-01-21T17:31:06.093Z</lastmod>
     <priority>0.7</priority>
   </url>
   <url>
-    <loc>https://emoj.ie/flags/country-flag/t-arthelemy--1f1e7-1f1f1/</loc>
+    <loc>https://emoj.ie/flags/country-flag/sri-lanka--1f1f1-1f1f0/</loc>
     <lastmod>2025-01-21T17:31:06.093Z</lastmod>
     <priority>0.7</priority>
   </url>
   <url>
-    <loc>https://emoj.ie/flags/country-flag/t-artin--1f1f2-1f1eb/</loc>
+    <loc>https://emoj.ie/flags/country-flag/st-barthelemy--1f1e7-1f1f1/</loc>
     <lastmod>2025-01-21T17:31:06.093Z</lastmod>
     <priority>0.7</priority>
   </url>
   <url>
-    <loc>https://emoj.ie/flags/country-flag/t-elena--1f1f8-1f1ed/</loc>
+    <loc>https://emoj.ie/flags/country-flag/st-helena--1f1f8-1f1ed/</loc>
     <lastmod>2025-01-21T17:31:06.093Z</lastmod>
     <priority>0.7</priority>
   </url>
   <url>
-    <loc>https://emoj.ie/flags/country-flag/t-ierre-iquelon--1f1f5-1f1f2/</loc>
+    <loc>https://emoj.ie/flags/country-flag/st-kitts-nevis--1f1f0-1f1f3/</loc>
     <lastmod>2025-01-21T17:31:06.093Z</lastmod>
     <priority>0.7</priority>
   </url>
   <url>
-    <loc>https://emoj.ie/flags/country-flag/t-incent-renadines--1f1fb-1f1e8/</loc>
+    <loc>https://emoj.ie/flags/country-flag/st-lucia--1f1f1-1f1e8/</loc>
     <lastmod>2025-01-21T17:31:06.093Z</lastmod>
     <priority>0.7</priority>
   </url>
   <url>
-    <loc>https://emoj.ie/flags/country-flag/t-itts-evis--1f1f0-1f1f3/</loc>
+    <loc>https://emoj.ie/flags/country-flag/st-martin--1f1f2-1f1eb/</loc>
     <lastmod>2025-01-21T17:31:06.093Z</lastmod>
     <priority>0.7</priority>
   </url>
   <url>
-    <loc>https://emoj.ie/flags/country-flag/t-ucia--1f1f1-1f1e8/</loc>
+    <loc>https://emoj.ie/flags/country-flag/st-pierre-miquelon--1f1f5-1f1f2/</loc>
     <lastmod>2025-01-21T17:31:06.093Z</lastmod>
     <priority>0.7</priority>
   </url>
   <url>
-    <loc>https://emoj.ie/flags/country-flag/taly--1f1ee-1f1f9/</loc>
+    <loc>https://emoj.ie/flags/country-flag/st-vincent-grenadines--1f1fb-1f1e8/</loc>
     <lastmod>2025-01-21T17:31:06.093Z</lastmod>
     <priority>0.7</priority>
   </url>
   <url>
-    <loc>https://emoj.ie/flags/country-flag/thiopia--1f1ea-1f1f9/</loc>
+    <loc>https://emoj.ie/flags/country-flag/sudan--1f1f8-1f1e9/</loc>
     <lastmod>2025-01-21T17:31:06.093Z</lastmod>
     <priority>0.7</priority>
   </url>
   <url>
-    <loc>https://emoj.ie/flags/country-flag/uadeloupe--1f1ec-1f1f5/</loc>
+    <loc>https://emoj.ie/flags/country-flag/suriname--1f1f8-1f1f7/</loc>
     <lastmod>2025-01-21T17:31:06.093Z</lastmod>
     <priority>0.7</priority>
   </url>
   <url>
-    <loc>https://emoj.ie/flags/country-flag/uam--1f1ec-1f1fa/</loc>
+    <loc>https://emoj.ie/flags/country-flag/svalbard-jan-mayen--1f1f8-1f1ef/</loc>
     <lastmod>2025-01-21T17:31:06.093Z</lastmod>
     <priority>0.7</priority>
   </url>
   <url>
-    <loc>https://emoj.ie/flags/country-flag/uatemala--1f1ec-1f1f9/</loc>
+    <loc>https://emoj.ie/flags/country-flag/sweden--1f1f8-1f1ea/</loc>
     <lastmod>2025-01-21T17:31:06.093Z</lastmod>
     <priority>0.7</priority>
   </url>
   <url>
-    <loc>https://emoj.ie/flags/country-flag/uba--1f1e8-1f1fa/</loc>
+    <loc>https://emoj.ie/flags/country-flag/switzerland--1f1e8-1f1ed/</loc>
     <lastmod>2025-01-21T17:31:06.093Z</lastmod>
     <priority>0.7</priority>
   </url>
   <url>
-    <loc>https://emoj.ie/flags/country-flag/udan--1f1f8-1f1e9/</loc>
+    <loc>https://emoj.ie/flags/country-flag/syria--1f1f8-1f1fe/</loc>
     <lastmod>2025-01-21T17:31:06.093Z</lastmod>
     <priority>0.7</priority>
   </url>
   <url>
-    <loc>https://emoj.ie/flags/country-flag/uernsey--1f1ec-1f1ec/</loc>
+    <loc>https://emoj.ie/flags/country-flag/taiwan--1f1f9-1f1fc/</loc>
     <lastmod>2025-01-21T17:31:06.093Z</lastmod>
     <priority>0.7</priority>
   </url>
   <url>
-    <loc>https://emoj.ie/flags/country-flag/uerto-ico--1f1f5-1f1f7/</loc>
+    <loc>https://emoj.ie/flags/country-flag/tajikistan--1f1f9-1f1ef/</loc>
     <lastmod>2025-01-21T17:31:06.093Z</lastmod>
     <priority>0.7</priority>
   </url>
   <url>
-    <loc>https://emoj.ie/flags/country-flag/uinea--1f1ec-1f1f3/</loc>
+    <loc>https://emoj.ie/flags/country-flag/tanzania--1f1f9-1f1ff/</loc>
     <lastmod>2025-01-21T17:31:06.093Z</lastmod>
     <priority>0.7</priority>
   </url>
   <url>
-    <loc>https://emoj.ie/flags/country-flag/uinea-issau--1f1ec-1f1fc/</loc>
+    <loc>https://emoj.ie/flags/country-flag/thailand--1f1f9-1f1ed/</loc>
     <lastmod>2025-01-21T17:31:06.093Z</lastmod>
     <priority>0.7</priority>
   </url>
   <url>
-    <loc>https://emoj.ie/flags/country-flag/ulgaria--1f1e7-1f1ec/</loc>
+    <loc>https://emoj.ie/flags/country-flag/timor-leste--1f1f9-1f1f1/</loc>
     <lastmod>2025-01-21T17:31:06.093Z</lastmod>
     <priority>0.7</priority>
   </url>
   <url>
-    <loc>https://emoj.ie/flags/country-flag/ungary--1f1ed-1f1fa/</loc>
+    <loc>https://emoj.ie/flags/country-flag/togo--1f1f9-1f1ec/</loc>
     <lastmod>2025-01-21T17:31:06.093Z</lastmod>
     <priority>0.7</priority>
   </url>
   <url>
-    <loc>https://emoj.ie/flags/country-flag/unisia--1f1f9-1f1f3/</loc>
+    <loc>https://emoj.ie/flags/country-flag/tokelau--1f1f9-1f1f0/</loc>
     <lastmod>2025-01-21T17:31:06.093Z</lastmod>
     <priority>0.7</priority>
   </url>
   <url>
-    <loc>https://emoj.ie/flags/country-flag/uracao--1f1e8-1f1fc/</loc>
+    <loc>https://emoj.ie/flags/country-flag/tonga--1f1f9-1f1f4/</loc>
     <lastmod>2025-01-21T17:31:06.093Z</lastmod>
     <priority>0.7</priority>
   </url>
   <url>
-    <loc>https://emoj.ie/flags/country-flag/uriname--1f1f8-1f1f7/</loc>
+    <loc>https://emoj.ie/flags/country-flag/trinidad-tobago--1f1f9-1f1f9/</loc>
     <lastmod>2025-01-21T17:31:06.093Z</lastmod>
     <priority>0.7</priority>
   </url>
   <url>
-    <loc>https://emoj.ie/flags/country-flag/urkina-aso--1f1e7-1f1eb/</loc>
+    <loc>https://emoj.ie/flags/country-flag/tristan-da-cunha--1f1f9-1f1e6/</loc>
     <lastmod>2025-01-21T17:31:06.093Z</lastmod>
     <priority>0.7</priority>
   </url>
   <url>
-    <loc>https://emoj.ie/flags/country-flag/urkiye--1f1f9-1f1f7/</loc>
+    <loc>https://emoj.ie/flags/country-flag/tunisia--1f1f9-1f1f3/</loc>
     <lastmod>2025-01-21T17:31:06.093Z</lastmod>
     <priority>0.7</priority>
   </url>
   <url>
-    <loc>https://emoj.ie/flags/country-flag/urkmenistan--1f1f9-1f1f2/</loc>
+    <loc>https://emoj.ie/flags/country-flag/turkiye--1f1f9-1f1f7/</loc>
     <lastmod>2025-01-21T17:31:06.093Z</lastmod>
     <priority>0.7</priority>
   </url>
   <url>
-    <loc>https://emoj.ie/flags/country-flag/urks-aicos-slands--1f1f9-1f1e8/</loc>
+    <loc>https://emoj.ie/flags/country-flag/turkmenistan--1f1f9-1f1f2/</loc>
     <lastmod>2025-01-21T17:31:06.093Z</lastmod>
     <priority>0.7</priority>
   </url>
   <url>
-    <loc>https://emoj.ie/flags/country-flag/uropean-nion--1f1ea-1f1fa/</loc>
+    <loc>https://emoj.ie/flags/country-flag/turks-caicos-islands--1f1f9-1f1e8/</loc>
     <lastmod>2025-01-21T17:31:06.093Z</lastmod>
     <priority>0.7</priority>
   </url>
   <url>
-    <loc>https://emoj.ie/flags/country-flag/urundi--1f1e7-1f1ee/</loc>
+    <loc>https://emoj.ie/flags/country-flag/tuvalu--1f1f9-1f1fb/</loc>
     <lastmod>2025-01-21T17:31:06.093Z</lastmod>
     <priority>0.7</priority>
   </url>
   <url>
-    <loc>https://emoj.ie/flags/country-flag/ussia--1f1f7-1f1fa/</loc>
+    <loc>https://emoj.ie/flags/country-flag/u-s-outlying-islands--1f1fa-1f1f2/</loc>
     <lastmod>2025-01-21T17:31:06.093Z</lastmod>
     <priority>0.7</priority>
   </url>
   <url>
-    <loc>https://emoj.ie/flags/country-flag/ustralia--1f1e6-1f1fa/</loc>
+    <loc>https://emoj.ie/flags/country-flag/u-s-virgin-islands--1f1fb-1f1ee/</loc>
     <lastmod>2025-01-21T17:31:06.093Z</lastmod>
     <priority>0.7</priority>
   </url>
   <url>
-    <loc>https://emoj.ie/flags/country-flag/ustria--1f1e6-1f1f9/</loc>
+    <loc>https://emoj.ie/flags/country-flag/uganda--1f1fa-1f1ec/</loc>
     <lastmod>2025-01-21T17:31:06.093Z</lastmod>
     <priority>0.7</priority>
   </url>
   <url>
-    <loc>https://emoj.ie/flags/country-flag/utlying-slands--1f1fa-1f1f2/</loc>
+    <loc>https://emoj.ie/flags/country-flag/ukraine--1f1fa-1f1e6/</loc>
     <lastmod>2025-01-21T17:31:06.093Z</lastmod>
     <priority>0.7</priority>
   </url>
   <url>
-    <loc>https://emoj.ie/flags/country-flag/uvalu--1f1f9-1f1fb/</loc>
+    <loc>https://emoj.ie/flags/country-flag/united-arab-emirates--1f1e6-1f1ea/</loc>
     <lastmod>2025-01-21T17:31:06.093Z</lastmod>
     <priority>0.7</priority>
   </url>
   <url>
-    <loc>https://emoj.ie/flags/country-flag/uwait--1f1f0-1f1fc/</loc>
+    <loc>https://emoj.ie/flags/country-flag/united-kingdom--1f1ec-1f1e7/</loc>
     <lastmod>2025-01-21T17:31:06.093Z</lastmod>
     <priority>0.7</priority>
   </url>
   <url>
-    <loc>https://emoj.ie/flags/country-flag/uxembourg--1f1f1-1f1fa/</loc>
+    <loc>https://emoj.ie/flags/country-flag/united-nations--1f1fa-1f1f3/</loc>
     <lastmod>2025-01-21T17:31:06.093Z</lastmod>
     <priority>0.7</priority>
   </url>
   <url>
-    <loc>https://emoj.ie/flags/country-flag/uyana--1f1ec-1f1fe/</loc>
+    <loc>https://emoj.ie/flags/country-flag/united-states--1f1fa-1f1f8/</loc>
     <lastmod>2025-01-21T17:31:06.093Z</lastmod>
     <priority>0.7</priority>
   </url>
   <url>
-    <loc>https://emoj.ie/flags/country-flag/valbard-an-ayen--1f1f8-1f1ef/</loc>
+    <loc>https://emoj.ie/flags/country-flag/uruguay--1f1fa-1f1fe/</loc>
     <lastmod>2025-01-21T17:31:06.093Z</lastmod>
     <priority>0.7</priority>
   </url>
   <url>
-    <loc>https://emoj.ie/flags/country-flag/wanda--1f1f7-1f1fc/</loc>
+    <loc>https://emoj.ie/flags/country-flag/uzbekistan--1f1fa-1f1ff/</loc>
     <lastmod>2025-01-21T17:31:06.093Z</lastmod>
     <priority>0.7</priority>
   </url>
   <url>
-    <loc>https://emoj.ie/flags/country-flag/weden--1f1f8-1f1ea/</loc>
+    <loc>https://emoj.ie/flags/country-flag/vanuatu--1f1fb-1f1fa/</loc>
     <lastmod>2025-01-21T17:31:06.093Z</lastmod>
     <priority>0.7</priority>
   </url>
   <url>
-    <loc>https://emoj.ie/flags/country-flag/witzerland--1f1e8-1f1ed/</loc>
+    <loc>https://emoj.ie/flags/country-flag/vatican-city--1f1fb-1f1e6/</loc>
     <lastmod>2025-01-21T17:31:06.093Z</lastmod>
     <priority>0.7</priority>
   </url>
   <url>
-    <loc>https://emoj.ie/flags/country-flag/yanmar-urma--1f1f2-1f1f2/</loc>
+    <loc>https://emoj.ie/flags/country-flag/venezuela--1f1fb-1f1ea/</loc>
     <lastmod>2025-01-21T17:31:06.093Z</lastmod>
     <priority>0.7</priority>
   </url>
   <url>
-    <loc>https://emoj.ie/flags/country-flag/yprus--1f1e8-1f1fe/</loc>
+    <loc>https://emoj.ie/flags/country-flag/vietnam--1f1fb-1f1f3/</loc>
     <lastmod>2025-01-21T17:31:06.093Z</lastmod>
     <priority>0.7</priority>
   </url>
   <url>
-    <loc>https://emoj.ie/flags/country-flag/yrgyzstan--1f1f0-1f1ec/</loc>
+    <loc>https://emoj.ie/flags/country-flag/wallis-futuna--1f1fc-1f1eb/</loc>
     <lastmod>2025-01-21T17:31:06.093Z</lastmod>
     <priority>0.7</priority>
   </url>
   <url>
-    <loc>https://emoj.ie/flags/country-flag/yria--1f1f8-1f1fe/</loc>
+    <loc>https://emoj.ie/flags/country-flag/western-sahara--1f1ea-1f1ed/</loc>
     <lastmod>2025-01-21T17:31:06.093Z</lastmod>
     <priority>0.7</priority>
   </url>
   <url>
-    <loc>https://emoj.ie/flags/country-flag/zbekistan--1f1fa-1f1ff/</loc>
+    <loc>https://emoj.ie/flags/country-flag/yemen--1f1fe-1f1ea/</loc>
     <lastmod>2025-01-21T17:31:06.093Z</lastmod>
     <priority>0.7</priority>
   </url>
   <url>
-    <loc>https://emoj.ie/flags/country-flag/zechia--1f1e8-1f1ff/</loc>
+    <loc>https://emoj.ie/flags/country-flag/zambia--1f1ff-1f1f2/</loc>
     <lastmod>2025-01-21T17:31:06.093Z</lastmod>
     <priority>0.7</priority>
   </url>
   <url>
-    <loc>https://emoj.ie/flags/country-flag/zerbaijan--1f1e6-1f1ff/</loc>
+    <loc>https://emoj.ie/flags/country-flag/zimbabwe--1f1ff-1f1fc/</loc>
     <lastmod>2025-01-21T17:31:06.093Z</lastmod>
     <priority>0.7</priority>
   </url>
@@ -5001,17 +5001,17 @@
     <priority>0.7</priority>
   </url>
   <url>
-    <loc>https://emoj.ie/flags/subdivision-flag/ales--1f3f4-e0067-e0062-e0077-e006c-e0073-e007f/</loc>
+    <loc>https://emoj.ie/flags/subdivision-flag/england--1f3f4-e0067-e0062-e0065-e006e-e0067-e007f/</loc>
     <lastmod>2025-01-21T17:31:06.093Z</lastmod>
     <priority>0.7</priority>
   </url>
   <url>
-    <loc>https://emoj.ie/flags/subdivision-flag/cotland--1f3f4-e0067-e0062-e0073-e0063-e0074-e007f/</loc>
+    <loc>https://emoj.ie/flags/subdivision-flag/scotland--1f3f4-e0067-e0062-e0073-e0063-e0074-e007f/</loc>
     <lastmod>2025-01-21T17:31:06.093Z</lastmod>
     <priority>0.7</priority>
   </url>
   <url>
-    <loc>https://emoj.ie/flags/subdivision-flag/ngland--1f3f4-e0067-e0062-e0065-e006e-e0067-e007f/</loc>
+    <loc>https://emoj.ie/flags/subdivision-flag/wales--1f3f4-e0067-e0062-e0077-e006c-e0073-e007f/</loc>
     <lastmod>2025-01-21T17:31:06.093Z</lastmod>
     <priority>0.7</priority>
   </url>
@@ -7331,11 +7331,6 @@
     <priority>0.7</priority>
   </url>
   <url>
-    <loc>https://emoj.ie/smileys-emotion/emotion/emoji--1f4a4/</loc>
-    <lastmod>2025-01-21T17:31:06.093Z</lastmod>
-    <priority>0.7</priority>
-  </url>
-  <url>
     <loc>https://emoj.ie/smileys-emotion/emotion/eye-in-speech-bubble--1f441-fe0f-200d-1f5e8-fe0f/</loc>
     <lastmod>2025-01-21T17:31:06.093Z</lastmod>
     <priority>0.7</priority>
@@ -7377,6 +7372,11 @@
   </url>
   <url>
     <loc>https://emoj.ie/smileys-emotion/emotion/thought-balloon--1f4ad/</loc>
+    <lastmod>2025-01-21T17:31:06.093Z</lastmod>
+    <priority>0.7</priority>
+  </url>
+  <url>
+    <loc>https://emoj.ie/smileys-emotion/emotion/zzz--1f4a4/</loc>
     <lastmod>2025-01-21T17:31:06.093Z</lastmod>
     <priority>0.7</priority>
   </url>
@@ -8106,167 +8106,42 @@
     <priority>0.7</priority>
   </url>
   <url>
-    <loc>https://emoj.ie/symbols/alphanum/apanese-acceptable-button--1f251/</loc>
+    <loc>https://emoj.ie/symbols/alphanum/a-button-blood-type--1f170/</loc>
     <lastmod>2025-01-21T17:31:06.093Z</lastmod>
     <priority>0.7</priority>
   </url>
   <url>
-    <loc>https://emoj.ie/symbols/alphanum/apanese-application-button--1f238/</loc>
+    <loc>https://emoj.ie/symbols/alphanum/ab-button-blood-type--1f18e/</loc>
     <lastmod>2025-01-21T17:31:06.093Z</lastmod>
     <priority>0.7</priority>
   </url>
   <url>
-    <loc>https://emoj.ie/symbols/alphanum/apanese-bargain-button--1f250/</loc>
+    <loc>https://emoj.ie/symbols/alphanum/b-button-blood-type--1f171/</loc>
     <lastmod>2025-01-21T17:31:06.093Z</lastmod>
     <priority>0.7</priority>
   </url>
   <url>
-    <loc>https://emoj.ie/symbols/alphanum/apanese-congratulations-button--3297/</loc>
+    <loc>https://emoj.ie/symbols/alphanum/circled-m--24c2/</loc>
     <lastmod>2025-01-21T17:31:06.093Z</lastmod>
     <priority>0.7</priority>
   </url>
   <url>
-    <loc>https://emoj.ie/symbols/alphanum/apanese-discount-button--1f239/</loc>
+    <loc>https://emoj.ie/symbols/alphanum/cl-button--1f191/</loc>
     <lastmod>2025-01-21T17:31:06.093Z</lastmod>
     <priority>0.7</priority>
   </url>
   <url>
-    <loc>https://emoj.ie/symbols/alphanum/apanese-free-of-charge-button--1f21a/</loc>
+    <loc>https://emoj.ie/symbols/alphanum/cool-button--1f192/</loc>
     <lastmod>2025-01-21T17:31:06.093Z</lastmod>
     <priority>0.7</priority>
   </url>
   <url>
-    <loc>https://emoj.ie/symbols/alphanum/apanese-here-button--1f201/</loc>
+    <loc>https://emoj.ie/symbols/alphanum/free-button--1f193/</loc>
     <lastmod>2025-01-21T17:31:06.093Z</lastmod>
     <priority>0.7</priority>
   </url>
   <url>
-    <loc>https://emoj.ie/symbols/alphanum/apanese-monthly-amount-button--1f237/</loc>
-    <lastmod>2025-01-21T17:31:06.093Z</lastmod>
-    <priority>0.7</priority>
-  </url>
-  <url>
-    <loc>https://emoj.ie/symbols/alphanum/apanese-no-vacancy-button--1f235/</loc>
-    <lastmod>2025-01-21T17:31:06.093Z</lastmod>
-    <priority>0.7</priority>
-  </url>
-  <url>
-    <loc>https://emoj.ie/symbols/alphanum/apanese-not-free-of-charge-button--1f236/</loc>
-    <lastmod>2025-01-21T17:31:06.093Z</lastmod>
-    <priority>0.7</priority>
-  </url>
-  <url>
-    <loc>https://emoj.ie/symbols/alphanum/apanese-open-for-business-button--1f23a/</loc>
-    <lastmod>2025-01-21T17:31:06.093Z</lastmod>
-    <priority>0.7</priority>
-  </url>
-  <url>
-    <loc>https://emoj.ie/symbols/alphanum/apanese-passing-grade-button--1f234/</loc>
-    <lastmod>2025-01-21T17:31:06.093Z</lastmod>
-    <priority>0.7</priority>
-  </url>
-  <url>
-    <loc>https://emoj.ie/symbols/alphanum/apanese-prohibited-button--1f232/</loc>
-    <lastmod>2025-01-21T17:31:06.093Z</lastmod>
-    <priority>0.7</priority>
-  </url>
-  <url>
-    <loc>https://emoj.ie/symbols/alphanum/apanese-reserved-button--1f22f/</loc>
-    <lastmod>2025-01-21T17:31:06.093Z</lastmod>
-    <priority>0.7</priority>
-  </url>
-  <url>
-    <loc>https://emoj.ie/symbols/alphanum/apanese-secret-button--3299/</loc>
-    <lastmod>2025-01-21T17:31:06.093Z</lastmod>
-    <priority>0.7</priority>
-  </url>
-  <url>
-    <loc>https://emoj.ie/symbols/alphanum/apanese-service-charge-button--1f202/</loc>
-    <lastmod>2025-01-21T17:31:06.093Z</lastmod>
-    <priority>0.7</priority>
-  </url>
-  <url>
-    <loc>https://emoj.ie/symbols/alphanum/apanese-vacancy-button--1f233/</loc>
-    <lastmod>2025-01-21T17:31:06.093Z</lastmod>
-    <priority>0.7</priority>
-  </url>
-  <url>
-    <loc>https://emoj.ie/symbols/alphanum/button--1f17f/</loc>
-    <lastmod>2025-01-21T17:31:06.093Z</lastmod>
-    <priority>0.7</priority>
-  </url>
-  <url>
-    <loc>https://emoj.ie/symbols/alphanum/button--1f191/</loc>
-    <lastmod>2025-01-21T17:31:06.093Z</lastmod>
-    <priority>0.7</priority>
-  </url>
-  <url>
-    <loc>https://emoj.ie/symbols/alphanum/button--1f192/</loc>
-    <lastmod>2025-01-21T17:31:06.093Z</lastmod>
-    <priority>0.7</priority>
-  </url>
-  <url>
-    <loc>https://emoj.ie/symbols/alphanum/button--1f193/</loc>
-    <lastmod>2025-01-21T17:31:06.093Z</lastmod>
-    <priority>0.7</priority>
-  </url>
-  <url>
-    <loc>https://emoj.ie/symbols/alphanum/button--1f194/</loc>
-    <lastmod>2025-01-21T17:31:06.093Z</lastmod>
-    <priority>0.7</priority>
-  </url>
-  <url>
-    <loc>https://emoj.ie/symbols/alphanum/button--1f195/</loc>
-    <lastmod>2025-01-21T17:31:06.093Z</lastmod>
-    <priority>0.7</priority>
-  </url>
-  <url>
-    <loc>https://emoj.ie/symbols/alphanum/button--1f196/</loc>
-    <lastmod>2025-01-21T17:31:06.093Z</lastmod>
-    <priority>0.7</priority>
-  </url>
-  <url>
-    <loc>https://emoj.ie/symbols/alphanum/button--1f197/</loc>
-    <lastmod>2025-01-21T17:31:06.093Z</lastmod>
-    <priority>0.7</priority>
-  </url>
-  <url>
-    <loc>https://emoj.ie/symbols/alphanum/button--1f198/</loc>
-    <lastmod>2025-01-21T17:31:06.093Z</lastmod>
-    <priority>0.7</priority>
-  </url>
-  <url>
-    <loc>https://emoj.ie/symbols/alphanum/button--1f199/</loc>
-    <lastmod>2025-01-21T17:31:06.093Z</lastmod>
-    <priority>0.7</priority>
-  </url>
-  <url>
-    <loc>https://emoj.ie/symbols/alphanum/button--1f19a/</loc>
-    <lastmod>2025-01-21T17:31:06.093Z</lastmod>
-    <priority>0.7</priority>
-  </url>
-  <url>
-    <loc>https://emoj.ie/symbols/alphanum/button-blood-type--1f170/</loc>
-    <lastmod>2025-01-21T17:31:06.093Z</lastmod>
-    <priority>0.7</priority>
-  </url>
-  <url>
-    <loc>https://emoj.ie/symbols/alphanum/button-blood-type--1f171/</loc>
-    <lastmod>2025-01-21T17:31:06.093Z</lastmod>
-    <priority>0.7</priority>
-  </url>
-  <url>
-    <loc>https://emoj.ie/symbols/alphanum/button-blood-type--1f17e/</loc>
-    <lastmod>2025-01-21T17:31:06.093Z</lastmod>
-    <priority>0.7</priority>
-  </url>
-  <url>
-    <loc>https://emoj.ie/symbols/alphanum/button-blood-type--1f18e/</loc>
-    <lastmod>2025-01-21T17:31:06.093Z</lastmod>
-    <priority>0.7</priority>
-  </url>
-  <url>
-    <loc>https://emoj.ie/symbols/alphanum/circled--24c2/</loc>
+    <loc>https://emoj.ie/symbols/alphanum/id-button--1f194/</loc>
     <lastmod>2025-01-21T17:31:06.093Z</lastmod>
     <priority>0.7</priority>
   </url>
@@ -8301,27 +8176,132 @@
     <priority>0.7</priority>
   </url>
   <url>
-    <loc>https://emoj.ie/symbols/arrow/arrow--1f519/</loc>
+    <loc>https://emoj.ie/symbols/alphanum/japanese-acceptable-button--1f251/</loc>
     <lastmod>2025-01-21T17:31:06.093Z</lastmod>
     <priority>0.7</priority>
   </url>
   <url>
-    <loc>https://emoj.ie/symbols/arrow/arrow--1f51a/</loc>
+    <loc>https://emoj.ie/symbols/alphanum/japanese-application-button--1f238/</loc>
     <lastmod>2025-01-21T17:31:06.093Z</lastmod>
     <priority>0.7</priority>
   </url>
   <url>
-    <loc>https://emoj.ie/symbols/arrow/arrow--1f51b/</loc>
+    <loc>https://emoj.ie/symbols/alphanum/japanese-bargain-button--1f250/</loc>
     <lastmod>2025-01-21T17:31:06.093Z</lastmod>
     <priority>0.7</priority>
   </url>
   <url>
-    <loc>https://emoj.ie/symbols/arrow/arrow--1f51c/</loc>
+    <loc>https://emoj.ie/symbols/alphanum/japanese-congratulations-button--3297/</loc>
     <lastmod>2025-01-21T17:31:06.093Z</lastmod>
     <priority>0.7</priority>
   </url>
   <url>
-    <loc>https://emoj.ie/symbols/arrow/arrow--1f51d/</loc>
+    <loc>https://emoj.ie/symbols/alphanum/japanese-discount-button--1f239/</loc>
+    <lastmod>2025-01-21T17:31:06.093Z</lastmod>
+    <priority>0.7</priority>
+  </url>
+  <url>
+    <loc>https://emoj.ie/symbols/alphanum/japanese-free-of-charge-button--1f21a/</loc>
+    <lastmod>2025-01-21T17:31:06.093Z</lastmod>
+    <priority>0.7</priority>
+  </url>
+  <url>
+    <loc>https://emoj.ie/symbols/alphanum/japanese-here-button--1f201/</loc>
+    <lastmod>2025-01-21T17:31:06.093Z</lastmod>
+    <priority>0.7</priority>
+  </url>
+  <url>
+    <loc>https://emoj.ie/symbols/alphanum/japanese-monthly-amount-button--1f237/</loc>
+    <lastmod>2025-01-21T17:31:06.093Z</lastmod>
+    <priority>0.7</priority>
+  </url>
+  <url>
+    <loc>https://emoj.ie/symbols/alphanum/japanese-no-vacancy-button--1f235/</loc>
+    <lastmod>2025-01-21T17:31:06.093Z</lastmod>
+    <priority>0.7</priority>
+  </url>
+  <url>
+    <loc>https://emoj.ie/symbols/alphanum/japanese-not-free-of-charge-button--1f236/</loc>
+    <lastmod>2025-01-21T17:31:06.093Z</lastmod>
+    <priority>0.7</priority>
+  </url>
+  <url>
+    <loc>https://emoj.ie/symbols/alphanum/japanese-open-for-business-button--1f23a/</loc>
+    <lastmod>2025-01-21T17:31:06.093Z</lastmod>
+    <priority>0.7</priority>
+  </url>
+  <url>
+    <loc>https://emoj.ie/symbols/alphanum/japanese-passing-grade-button--1f234/</loc>
+    <lastmod>2025-01-21T17:31:06.093Z</lastmod>
+    <priority>0.7</priority>
+  </url>
+  <url>
+    <loc>https://emoj.ie/symbols/alphanum/japanese-prohibited-button--1f232/</loc>
+    <lastmod>2025-01-21T17:31:06.093Z</lastmod>
+    <priority>0.7</priority>
+  </url>
+  <url>
+    <loc>https://emoj.ie/symbols/alphanum/japanese-reserved-button--1f22f/</loc>
+    <lastmod>2025-01-21T17:31:06.093Z</lastmod>
+    <priority>0.7</priority>
+  </url>
+  <url>
+    <loc>https://emoj.ie/symbols/alphanum/japanese-secret-button--3299/</loc>
+    <lastmod>2025-01-21T17:31:06.093Z</lastmod>
+    <priority>0.7</priority>
+  </url>
+  <url>
+    <loc>https://emoj.ie/symbols/alphanum/japanese-service-charge-button--1f202/</loc>
+    <lastmod>2025-01-21T17:31:06.093Z</lastmod>
+    <priority>0.7</priority>
+  </url>
+  <url>
+    <loc>https://emoj.ie/symbols/alphanum/japanese-vacancy-button--1f233/</loc>
+    <lastmod>2025-01-21T17:31:06.093Z</lastmod>
+    <priority>0.7</priority>
+  </url>
+  <url>
+    <loc>https://emoj.ie/symbols/alphanum/new-button--1f195/</loc>
+    <lastmod>2025-01-21T17:31:06.093Z</lastmod>
+    <priority>0.7</priority>
+  </url>
+  <url>
+    <loc>https://emoj.ie/symbols/alphanum/ng-button--1f196/</loc>
+    <lastmod>2025-01-21T17:31:06.093Z</lastmod>
+    <priority>0.7</priority>
+  </url>
+  <url>
+    <loc>https://emoj.ie/symbols/alphanum/o-button-blood-type--1f17e/</loc>
+    <lastmod>2025-01-21T17:31:06.093Z</lastmod>
+    <priority>0.7</priority>
+  </url>
+  <url>
+    <loc>https://emoj.ie/symbols/alphanum/ok-button--1f197/</loc>
+    <lastmod>2025-01-21T17:31:06.093Z</lastmod>
+    <priority>0.7</priority>
+  </url>
+  <url>
+    <loc>https://emoj.ie/symbols/alphanum/p-button--1f17f/</loc>
+    <lastmod>2025-01-21T17:31:06.093Z</lastmod>
+    <priority>0.7</priority>
+  </url>
+  <url>
+    <loc>https://emoj.ie/symbols/alphanum/sos-button--1f198/</loc>
+    <lastmod>2025-01-21T17:31:06.093Z</lastmod>
+    <priority>0.7</priority>
+  </url>
+  <url>
+    <loc>https://emoj.ie/symbols/alphanum/up-button--1f199/</loc>
+    <lastmod>2025-01-21T17:31:06.093Z</lastmod>
+    <priority>0.7</priority>
+  </url>
+  <url>
+    <loc>https://emoj.ie/symbols/alphanum/vs-button--1f19a/</loc>
+    <lastmod>2025-01-21T17:31:06.093Z</lastmod>
+    <priority>0.7</priority>
+  </url>
+  <url>
+    <loc>https://emoj.ie/symbols/arrow/back-arrow--1f519/</loc>
     <lastmod>2025-01-21T17:31:06.093Z</lastmod>
     <priority>0.7</priority>
   </url>
@@ -8351,6 +8331,11 @@
     <priority>0.7</priority>
   </url>
   <url>
+    <loc>https://emoj.ie/symbols/arrow/end-arrow--1f51a/</loc>
+    <lastmod>2025-01-21T17:31:06.093Z</lastmod>
+    <priority>0.7</priority>
+  </url>
+  <url>
     <loc>https://emoj.ie/symbols/arrow/left-arrow--2b05/</loc>
     <lastmod>2025-01-21T17:31:06.093Z</lastmod>
     <priority>0.7</priority>
@@ -8362,6 +8347,11 @@
   </url>
   <url>
     <loc>https://emoj.ie/symbols/arrow/left-right-arrow--2194/</loc>
+    <lastmod>2025-01-21T17:31:06.093Z</lastmod>
+    <priority>0.7</priority>
+  </url>
+  <url>
+    <loc>https://emoj.ie/symbols/arrow/on-arrow--1f51b/</loc>
     <lastmod>2025-01-21T17:31:06.093Z</lastmod>
     <priority>0.7</priority>
   </url>
@@ -8382,6 +8372,16 @@
   </url>
   <url>
     <loc>https://emoj.ie/symbols/arrow/right-arrow-curving-up--2934/</loc>
+    <lastmod>2025-01-21T17:31:06.093Z</lastmod>
+    <priority>0.7</priority>
+  </url>
+  <url>
+    <loc>https://emoj.ie/symbols/arrow/soon-arrow--1f51c/</loc>
+    <lastmod>2025-01-21T17:31:06.093Z</lastmod>
+    <priority>0.7</priority>
+  </url>
+  <url>
+    <loc>https://emoj.ie/symbols/arrow/top-arrow--1f51d/</loc>
     <lastmod>2025-01-21T17:31:06.093Z</lastmod>
     <priority>0.7</priority>
   </url>
@@ -8821,11 +8821,6 @@
     <priority>0.7</priority>
   </url>
   <url>
-    <loc>https://emoj.ie/symbols/other-symbol/apanese-symbol-for-beginner--1f530/</loc>
-    <lastmod>2025-01-21T17:31:06.093Z</lastmod>
-    <priority>0.7</priority>
-  </url>
-  <url>
     <loc>https://emoj.ie/symbols/other-symbol/check-box-with-check--2611/</loc>
     <lastmod>2025-01-21T17:31:06.093Z</lastmod>
     <priority>0.7</priority>
@@ -8882,6 +8877,11 @@
   </url>
   <url>
     <loc>https://emoj.ie/symbols/other-symbol/hollow-red-circle--2b55/</loc>
+    <lastmod>2025-01-21T17:31:06.093Z</lastmod>
+    <priority>0.7</priority>
+  </url>
+  <url>
+    <loc>https://emoj.ie/symbols/other-symbol/japanese-symbol-for-beginner--1f530/</loc>
     <lastmod>2025-01-21T17:31:06.093Z</lastmod>
     <priority>0.7</priority>
   </url>
@@ -9011,7 +9011,7 @@
     <priority>0.7</priority>
   </url>
   <url>
-    <loc>https://emoj.ie/symbols/religion/star-of-avid--2721/</loc>
+    <loc>https://emoj.ie/symbols/religion/star-of-david--2721/</loc>
     <lastmod>2025-01-21T17:31:06.093Z</lastmod>
     <priority>0.7</priority>
   </url>
@@ -9022,6 +9022,11 @@
   </url>
   <url>
     <loc>https://emoj.ie/symbols/religion/yin-yang--262f/</loc>
+    <lastmod>2025-01-21T17:31:06.093Z</lastmod>
+    <priority>0.7</priority>
+  </url>
+  <url>
+    <loc>https://emoj.ie/symbols/transport-sign/atm-sign--1f3e7/</loc>
     <lastmod>2025-01-21T17:31:06.093Z</lastmod>
     <priority>0.7</priority>
   </url>
@@ -9067,11 +9072,6 @@
   </url>
   <url>
     <loc>https://emoj.ie/symbols/transport-sign/restroom--1f6bb/</loc>
-    <lastmod>2025-01-21T17:31:06.093Z</lastmod>
-    <priority>0.7</priority>
-  </url>
-  <url>
-    <loc>https://emoj.ie/symbols/transport-sign/sign--1f3e7/</loc>
     <lastmod>2025-01-21T17:31:06.093Z</lastmod>
     <priority>0.7</priority>
   </url>
@@ -9156,67 +9156,67 @@
     <priority>0.7</priority>
   </url>
   <url>
-    <loc>https://emoj.ie/symbols/zodiac/agittarius--2650/</loc>
+    <loc>https://emoj.ie/symbols/zodiac/aquarius--2652/</loc>
     <lastmod>2025-01-21T17:31:06.093Z</lastmod>
     <priority>0.7</priority>
   </url>
   <url>
-    <loc>https://emoj.ie/symbols/zodiac/ancer--264b/</loc>
+    <loc>https://emoj.ie/symbols/zodiac/aries--2648/</loc>
     <lastmod>2025-01-21T17:31:06.093Z</lastmod>
     <priority>0.7</priority>
   </url>
   <url>
-    <loc>https://emoj.ie/symbols/zodiac/apricorn--2651/</loc>
+    <loc>https://emoj.ie/symbols/zodiac/cancer--264b/</loc>
     <lastmod>2025-01-21T17:31:06.093Z</lastmod>
     <priority>0.7</priority>
   </url>
   <url>
-    <loc>https://emoj.ie/symbols/zodiac/aurus--2649/</loc>
+    <loc>https://emoj.ie/symbols/zodiac/capricorn--2651/</loc>
     <lastmod>2025-01-21T17:31:06.093Z</lastmod>
     <priority>0.7</priority>
   </url>
   <url>
-    <loc>https://emoj.ie/symbols/zodiac/corpio--264f/</loc>
+    <loc>https://emoj.ie/symbols/zodiac/gemini--264a/</loc>
     <lastmod>2025-01-21T17:31:06.093Z</lastmod>
     <priority>0.7</priority>
   </url>
   <url>
-    <loc>https://emoj.ie/symbols/zodiac/emini--264a/</loc>
+    <loc>https://emoj.ie/symbols/zodiac/leo--264c/</loc>
     <lastmod>2025-01-21T17:31:06.093Z</lastmod>
     <priority>0.7</priority>
   </url>
   <url>
-    <loc>https://emoj.ie/symbols/zodiac/eo--264c/</loc>
+    <loc>https://emoj.ie/symbols/zodiac/libra--264e/</loc>
     <lastmod>2025-01-21T17:31:06.093Z</lastmod>
     <priority>0.7</priority>
   </url>
   <url>
-    <loc>https://emoj.ie/symbols/zodiac/ibra--264e/</loc>
+    <loc>https://emoj.ie/symbols/zodiac/ophiuchus--26ce/</loc>
     <lastmod>2025-01-21T17:31:06.093Z</lastmod>
     <priority>0.7</priority>
   </url>
   <url>
-    <loc>https://emoj.ie/symbols/zodiac/irgo--264d/</loc>
+    <loc>https://emoj.ie/symbols/zodiac/pisces--2653/</loc>
     <lastmod>2025-01-21T17:31:06.093Z</lastmod>
     <priority>0.7</priority>
   </url>
   <url>
-    <loc>https://emoj.ie/symbols/zodiac/isces--2653/</loc>
+    <loc>https://emoj.ie/symbols/zodiac/sagittarius--2650/</loc>
     <lastmod>2025-01-21T17:31:06.093Z</lastmod>
     <priority>0.7</priority>
   </url>
   <url>
-    <loc>https://emoj.ie/symbols/zodiac/phiuchus--26ce/</loc>
+    <loc>https://emoj.ie/symbols/zodiac/scorpio--264f/</loc>
     <lastmod>2025-01-21T17:31:06.093Z</lastmod>
     <priority>0.7</priority>
   </url>
   <url>
-    <loc>https://emoj.ie/symbols/zodiac/quarius--2652/</loc>
+    <loc>https://emoj.ie/symbols/zodiac/taurus--2649/</loc>
     <lastmod>2025-01-21T17:31:06.093Z</lastmod>
     <priority>0.7</priority>
   </url>
   <url>
-    <loc>https://emoj.ie/symbols/zodiac/ries--2648/</loc>
+    <loc>https://emoj.ie/symbols/zodiac/virgo--264d/</loc>
     <lastmod>2025-01-21T17:31:06.093Z</lastmod>
     <priority>0.7</priority>
   </url>
@@ -9227,16 +9227,6 @@
   </url>
   <url>
     <loc>https://emoj.ie/travel-places/hotel/luggage--1f9f3/</loc>
-    <lastmod>2025-01-21T17:31:06.093Z</lastmod>
-    <priority>0.7</priority>
-  </url>
-  <url>
-    <loc>https://emoj.ie/travel-places/place-building/apanese-castle--1f3ef/</loc>
-    <lastmod>2025-01-21T17:31:06.093Z</lastmod>
-    <priority>0.7</priority>
-  </url>
-  <url>
-    <loc>https://emoj.ie/travel-places/place-building/apanese-post-office--1f3e3/</loc>
     <lastmod>2025-01-21T17:31:06.093Z</lastmod>
     <priority>0.7</priority>
   </url>
@@ -9316,17 +9306,22 @@
     <priority>0.7</priority>
   </url>
   <url>
+    <loc>https://emoj.ie/travel-places/place-building/japanese-castle--1f3ef/</loc>
+    <lastmod>2025-01-21T17:31:06.093Z</lastmod>
+    <priority>0.7</priority>
+  </url>
+  <url>
+    <loc>https://emoj.ie/travel-places/place-building/japanese-post-office--1f3e3/</loc>
+    <lastmod>2025-01-21T17:31:06.093Z</lastmod>
+    <priority>0.7</priority>
+  </url>
+  <url>
     <loc>https://emoj.ie/travel-places/place-building/love-hotel--1f3e9/</loc>
     <lastmod>2025-01-21T17:31:06.093Z</lastmod>
     <priority>0.7</priority>
   </url>
   <url>
     <loc>https://emoj.ie/travel-places/place-building/office-building--1f3e2/</loc>
-    <lastmod>2025-01-21T17:31:06.093Z</lastmod>
-    <priority>0.7</priority>
-  </url>
-  <url>
-    <loc>https://emoj.ie/travel-places/place-building/okyo-tower--1f5fc/</loc>
     <lastmod>2025-01-21T17:31:06.093Z</lastmod>
     <priority>0.7</priority>
   </url>
@@ -9351,7 +9346,12 @@
     <priority>0.7</priority>
   </url>
   <url>
-    <loc>https://emoj.ie/travel-places/place-building/tatue-of-iberty--1f5fd/</loc>
+    <loc>https://emoj.ie/travel-places/place-building/statue-of-liberty--1f5fd/</loc>
+    <lastmod>2025-01-21T17:31:06.093Z</lastmod>
+    <priority>0.7</priority>
+  </url>
+  <url>
+    <loc>https://emoj.ie/travel-places/place-building/tokyo-tower--1f5fc/</loc>
     <lastmod>2025-01-21T17:31:06.093Z</lastmod>
     <priority>0.7</priority>
   </url>
@@ -9416,17 +9416,17 @@
     <priority>0.7</priority>
   </url>
   <url>
-    <loc>https://emoj.ie/travel-places/place-map/globe-showing-mericas--1f30e/</loc>
+    <loc>https://emoj.ie/travel-places/place-map/globe-showing-americas--1f30e/</loc>
     <lastmod>2025-01-21T17:31:06.093Z</lastmod>
     <priority>0.7</priority>
   </url>
   <url>
-    <loc>https://emoj.ie/travel-places/place-map/globe-showing-sia-ustralia--1f30f/</loc>
+    <loc>https://emoj.ie/travel-places/place-map/globe-showing-asia-australia--1f30f/</loc>
     <lastmod>2025-01-21T17:31:06.093Z</lastmod>
     <priority>0.7</priority>
   </url>
   <url>
-    <loc>https://emoj.ie/travel-places/place-map/globe-showing-urope-frica--1f30d/</loc>
+    <loc>https://emoj.ie/travel-places/place-map/globe-showing-europe-africa--1f30d/</loc>
     <lastmod>2025-01-21T17:31:06.093Z</lastmod>
     <priority>0.7</priority>
   </url>
@@ -9436,7 +9436,7 @@
     <priority>0.7</priority>
   </url>
   <url>
-    <loc>https://emoj.ie/travel-places/place-map/map-of-apan--1f5fe/</loc>
+    <loc>https://emoj.ie/travel-places/place-map/map-of-japan--1f5fe/</loc>
     <lastmod>2025-01-21T17:31:06.093Z</lastmod>
     <priority>0.7</priority>
   </url>
