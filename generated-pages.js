@@ -80,6 +80,49 @@
     });
   }
 
+  function getDayOfYear(date) {
+    var start = new Date(Date.UTC(date.getUTCFullYear(), 0, 1));
+    var now = new Date(Date.UTC(date.getUTCFullYear(), date.getUTCMonth(), date.getUTCDate()));
+    return Math.floor((now - start) / 86400000) + 1;
+  }
+
+  function applyDailyLogoEmoji() {
+    var emojiNode = document.querySelector('[data-logo-emoji]');
+    if (!emojiNode) {
+      return;
+    }
+
+    fetch('/daily-emoji.json')
+      .then(function (response) {
+        if (!response.ok) {
+          throw new Error('daily emoji unavailable');
+        }
+        return response.json();
+      })
+      .then(function (rows) {
+        if (!Array.isArray(rows) || rows.length === 0) {
+          return;
+        }
+
+        var day = getDayOfYear(new Date());
+        var selected = rows[Math.min(rows.length, day) - 1] || rows[0];
+        if (!selected || !selected.emoji) {
+          return;
+        }
+
+        emojiNode.textContent = selected.emoji;
+        var logoLink = emojiNode.closest('.logo');
+        if (logoLink) {
+          var label = selected.annotation || 'Emoji of the day';
+          logoLink.setAttribute('title', 'Emoji of the day: ' + label);
+          logoLink.setAttribute('aria-label', 'emoj.ie home. Emoji of the day: ' + label);
+        }
+      })
+      .catch(function () {
+        // Keep fallback emoji in markup.
+      });
+  }
+
   document.addEventListener('click', function (event) {
     const shareButton = event.target.closest('[data-share-url]');
     if (shareButton) {
@@ -174,4 +217,5 @@
   );
 
   registerServiceWorker();
+  applyDailyLogoEmoji();
 })();

@@ -32,14 +32,33 @@
     <div class="page-glow" aria-hidden="true"></div>
     <header class="header">
       <div class="header-container">
-        <a href="../../../" class="logo">
-          <img src="../../../logo.svg" alt="emoj.ie logo" width="90" height="40" />
+        <a href="../../../" class="logo" aria-label="emoj.ie home">
+          <svg class="logo-mark" viewBox="0 0 196 66" role="img" aria-label="emoj.ie">
+            <defs>
+              <linearGradient id="logo-bg" x1="0" y1="0" x2="1" y2="1">
+                <stop offset="0%" stop-color="#0fb9b1" />
+                <stop offset="100%" stop-color="#1458d4" />
+              </linearGradient>
+            </defs>
+            <rect x="2" y="2" width="62" height="62" rx="18" fill="url(#logo-bg)" />
+            <rect x="2" y="2" width="62" height="62" rx="18" fill="none" stroke="rgba(255,255,255,0.5)" />
+            <text
+              x="33"
+              y="43"
+              text-anchor="middle"
+              font-size="30"
+              data-logo-emoji
+              aria-hidden="true"
+            >😀</text>
+            <text x="76" y="42" font-family="Space Grotesk, Outfit, sans-serif" font-size="30" font-weight="700" fill="currentColor">emoj.ie</text>
+          </svg>
         </a>
         <form class="header-search" action="../../../" method="get" role="search">
         <label for="search" class="visually-hidden">Search Emojis</label>
         <input id="search" name="q" type="search" autocomplete="off" placeholder="Search emojis…" />
         <button type="submit">Search</button>
       </form>
+        
       </div>
     </header>
     <nav class="breadcrumbs" aria-label="Breadcrumb"><a href="/">Home</a> / <a href="/people-body/">people body</a> / <a href="/people-body/person/">person</a> / <span>person</span></nav>

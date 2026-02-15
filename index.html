@@ -31,60 +31,113 @@
     <div class="page-glow" aria-hidden="true"></div>
     <header class="header">
       <div class="header-container">
-        <a href="" class="logo">
-          <img src="logo.svg" alt="emoj.ie logo" width="90" height="40" />
+        <a href="" class="logo" aria-label="emoj.ie home">
+          <svg class="logo-mark" viewBox="0 0 196 66" role="img" aria-label="emoj.ie">
+            <defs>
+              <linearGradient id="logo-bg" x1="0" y1="0" x2="1" y2="1">
+                <stop offset="0%" stop-color="#0fb9b1" />
+                <stop offset="100%" stop-color="#1458d4" />
+              </linearGradient>
+            </defs>
+            <rect x="2" y="2" width="62" height="62" rx="18" fill="url(#logo-bg)" />
+            <rect x="2" y="2" width="62" height="62" rx="18" fill="none" stroke="rgba(255,255,255,0.5)" />
+            <text
+              x="33"
+              y="43"
+              text-anchor="middle"
+              font-size="30"
+              data-logo-emoji
+              aria-hidden="true"
+            >😀</text>
+            <text x="76" y="42" font-family="Space Grotesk, Outfit, sans-serif" font-size="30" font-weight="700" fill="currentColor">emoj.ie</text>
+          </svg>
         </a>
-        
+        <form class="header-search" action="" method="get" role="search">
+        <label for="search" class="visually-hidden">Search Emojis</label>
+        <input id="search" name="q" type="search" autocomplete="off" placeholder="Search emojis…" />
+        <button type="submit">Search</button>
+      </form>
+        <button
+        type="button"
+        id="header-menu-toggle"
+        class="header-menu-toggle"
+        aria-label="Open advanced options"
+        aria-controls="advanced-menu"
+        aria-expanded="false"
+      >
+        <span></span><span></span><span></span>
+      </button>
       </div>
     </header>
     
     <main id="main-content" class="page-main">
-      <section class="home-controls" aria-label="Emoji Search Controls">
-    <div class="control-group control-search">
-      <label for="search">Search</label>
-      <input id="search" type="search" autocomplete="off" placeholder="Search by name, tag, group, or subgroup…" />
+      <section class="panel-shell" aria-label="Emoji Explorer">
+    <div class="panel-header">
+      <h1>Emoji Explorer</h1>
+      <p>Choose a category panel, then a subcategory, then copy emojis instantly.</p>
     </div>
-    <div class="control-group">
-      <label for="group-filter">Category</label>
-      <select id="group-filter" aria-label="Filter by category">
-        <option value="">All Categories</option>
-        <option value="activities">activities</option><option value="animals-nature">animals nature</option><option value="component">component</option><option value="extras-openmoji">extras openmoji</option><option value="extras-unicode">extras unicode</option><option value="flags">flags</option><option value="food-drink">food drink</option><option value="objects">objects</option><option value="people-body">people body</option><option value="smileys-emotion">smileys emotion</option><option value="symbols">symbols</option><option value="travel-places">travel places</option>
-      </select>
-    </div>
-    <div class="control-group">
-      <label for="subgroup-filter">Subcategory</label>
-      <select id="subgroup-filter" aria-label="Filter by subcategory" disabled>
-        <option value="">All Subcategories</option>
-      </select>
-    </div>
-    <div class="control-group">
-      <label for="copy-mode">Copy Format</label>
-      <select id="copy-mode" aria-label="Select copy format">
-        <option value="emoji">Emoji</option>
-        <option value="unicode">Unicode Hex</option>
-        <option value="html">HTML Entity</option>
-        <option value="shortcode">Shortcode</option>
-      </select>
-    </div>
-    <div class="control-group control-actions">
-      <button type="button" id="clear-filters" class="copy-btn secondary">Clear</button>
-    </div>
+    <nav class="panel-crumbs" aria-label="Explorer Breadcrumb">
+      <button type="button" id="panel-home" class="copy-btn secondary">All Categories</button>
+      <span id="panel-current">Categories</span>
+    </nav>
+    <div id="panel-grid" class="panel-grid" data-level="group" aria-live="polite"></div>
+    <section class="results-shell" aria-label="Emoji Results">
+      <div class="results-toolbar">
+        <p id="results-count" class="results-count">Loading…</p>
+        <button type="button" id="results-load-more" class="copy-btn secondary" hidden>Load More</button>
+      </div>
+      <ul id="home-results" class="emoji-list" aria-label="Search results"></ul>
+      <div id="results-sentinel" class="results-sentinel" aria-hidden="true"></div>
+    </section>
   </section>
-  <section class="results-shell" aria-label="Emoji Results">
-  <div class="results-toolbar">
-    <p id="results-count" class="results-count">Loading…</p>
-    <button type="button" id="results-load-more" class="copy-btn secondary" hidden>Load More</button>
-  </div>
-  <ul id="home-results" class="emoji-list" aria-label="Search results"></ul>
-  <div id="results-sentinel" class="results-sentinel" aria-hidden="true"></div>
-  </section>
+
+  <aside id="advanced-menu" class="advanced-menu" hidden>
+    <div class="advanced-header">
+      <h2>Advanced Options</h2>
+      <button type="button" id="advanced-close" class="copy-btn secondary">Close</button>
+    </div>
+    <div class="advanced-grid">
+      <div class="control-group">
+        <label for="copy-mode">Copy Format</label>
+        <select id="copy-mode" aria-label="Select copy format">
+          <option value="emoji">Emoji</option>
+          <option value="unicode">Unicode Hex</option>
+          <option value="html">HTML Entity</option>
+          <option value="shortcode">Shortcode</option>
+        </select>
+      </div>
+      <div class="control-group">
+        <label for="skin-tone-mode">Default Skin Tone</label>
+        <select id="skin-tone-mode" aria-label="Select default skin tone">
+          <option value="0">None</option>
+          <option value="1">Light</option>
+          <option value="2">Medium-Light</option>
+          <option value="3">Medium</option>
+          <option value="4">Medium-Dark</option>
+          <option value="5">Dark</option>
+        </select>
+      </div>
+      <div class="control-group">
+        <label for="group-filter">Category</label>
+        <select id="group-filter" aria-label="Filter by category">
+          <option value="">All Categories</option>
+          <option value="activities">activities</option><option value="animals-nature">animals nature</option><option value="component">component</option><option value="extras-openmoji">extras openmoji</option><option value="extras-unicode">extras unicode</option><option value="flags">flags</option><option value="food-drink">food drink</option><option value="objects">objects</option><option value="people-body">people body</option><option value="smileys-emotion">smileys emotion</option><option value="symbols">symbols</option><option value="travel-places">travel places</option>
+        </select>
+      </div>
+      <div class="control-group">
+        <label for="subgroup-filter">Subcategory</label>
+        <select id="subgroup-filter" aria-label="Filter by subcategory" disabled>
+          <option value="">All Subcategories</option>
+        </select>
+      </div>
+    </div>
+    <button type="button" id="clear-filters" class="copy-btn secondary advanced-clear">Reset Selection</button>
+  </aside>
+  <button type="button" id="advanced-backdrop" class="advanced-backdrop" hidden tabindex="-1" aria-hidden="true"></button>
+
   <section class="recent-section">
     <h2>Recently Copied</h2>
     <ul id="recent-results" class="emoji-list" aria-label="Recently copied emojis"></ul>
-  </section>
-  <section class="group-directory">
-    <h2>Browse Categories</h2>
-    <ul class="group-link-list"><li><a href="/activities/"><span>activities</span><small>5 collections</small></a></li><li><a href="/animals-nature/"><span>animals nature</span><small>8 collections</small></a></li><li><a href="/component/"><span>component</span><small>2 collections</small></a></li><li><a href="/extras-openmoji/"><span>extras openmoji</span><small>17 collections</small></a></li><li><a href="/extras-unicode/"><span>extras unicode</span><small>4 collections</small></a></li><li><a href="/flags/"><span>flags</span><small>3 collections</small></a></li><li><a href="/food-drink/"><span>food drink</span><small>8 collections</small></a></li><li><a href="/objects/"><span>objects</span><small>18 collections</small></a></li><li><a href="/people-body/"><span>people body</span><small>16 collections</small></a></li><li><a href="/smileys-emotion/"><span>smileys emotion</span><small>16 collections</small></a></li><li><a href="/symbols/"><span>symbols</span><small>14 collections</small></a></li><li><a href="/travel-places/"><span>travel places</span><small>11 collections</small></a></li></ul>
   </section>
     </main>
     <footer>

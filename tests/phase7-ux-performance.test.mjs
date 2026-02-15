@@ -21,6 +21,9 @@ test('home app uses progressive rendering and lightweight home index data', () =
 test('homepage template has lazy loading controls', () => {
   const home = read('index.html');
 
+  assert.match(home, /id="header-menu-toggle"/);
+  assert.match(home, /id="advanced-menu"/);
+  assert.match(home, /id="panel-grid"/);
   assert.match(home, /id="results-load-more"/);
   assert.match(home, /id="results-sentinel"/);
 });
@@ -37,6 +40,16 @@ test('build emits a full home-data index', () => {
   assert.ok(typeof sample.group === 'string' && sample.group.length > 0);
   assert.ok(typeof sample.subgroup === 'string' && sample.subgroup.length > 0);
   assert.ok(typeof sample.detailRoute === 'string' && sample.detailRoute.endsWith('/'));
+});
+
+test('daily emoji schedule exists for all days of year', () => {
+  const dailyPath = path.join(root, 'daily-emoji.json');
+  assert.ok(fs.existsSync(dailyPath), 'daily-emoji.json should exist');
+
+  const rows = JSON.parse(fs.readFileSync(dailyPath, 'utf8'));
+  assert.ok(Array.isArray(rows), 'daily-emoji.json should be an array');
+  assert.equal(rows.length, 366, `expected 366 daily entries, got ${rows.length}`);
+  assert.ok(rows.every((row) => typeof row.emoji === 'string' && row.emoji.length > 0));
 });
 
 test('heavy group page uses preview copy that points users to subgroup pages', () => {

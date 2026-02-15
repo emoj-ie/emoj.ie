@@ -5,6 +5,7 @@ import {
   escapeHtml,
   formatHexForAsset,
   humanizeSlug,
+  normalizeHex,
   routeToFile,
 } from './slug.mjs';
 
@@ -65,7 +66,20 @@ function breadcrumbSchema(baseUrl, crumbs, canonicalUrl) {
   };
 }
 
-function renderHeader({ prefix, showSearch }) {
+function renderHeader({ prefix, showSearch, showMenuToggle }) {
+  const menuToggle = showMenuToggle
+    ? `<button
+        type="button"
+        id="header-menu-toggle"
+        class="header-menu-toggle"
+        aria-label="Open advanced options"
+        aria-controls="advanced-menu"
+        aria-expanded="false"
+      >
+        <span></span><span></span><span></span>
+      </button>`
+    : '';
+
   const search = showSearch
     ? `<form class="header-search" action="${prefix}" method="get" role="search">
         <label for="search" class="visually-hidden">Search Emojis</label>
@@ -76,10 +90,29 @@ function renderHeader({ prefix, showSearch }) {
 
   return `<header class="header">
       <div class="header-container">
-        <a href="${prefix}" class="logo">
-          <img src="${prefix}logo.svg" alt="emoj.ie logo" width="90" height="40" />
+        <a href="${prefix}" class="logo" aria-label="emoj.ie home">
+          <svg class="logo-mark" viewBox="0 0 196 66" role="img" aria-label="emoj.ie">
+            <defs>
+              <linearGradient id="logo-bg" x1="0" y1="0" x2="1" y2="1">
+                <stop offset="0%" stop-color="#0fb9b1" />
+                <stop offset="100%" stop-color="#1458d4" />
+              </linearGradient>
+            </defs>
+            <rect x="2" y="2" width="62" height="62" rx="18" fill="url(#logo-bg)" />
+            <rect x="2" y="2" width="62" height="62" rx="18" fill="none" stroke="rgba(255,255,255,0.5)" />
+            <text
+              x="33"
+              y="43"
+              text-anchor="middle"
+              font-size="30"
+              data-logo-emoji
+              aria-hidden="true"
+            >😀</text>
+            <text x="76" y="42" font-family="Space Grotesk, Outfit, sans-serif" font-size="30" font-weight="700" fill="currentColor">emoj.ie</text>
+          </svg>
         </a>
         ${search}
+        ${menuToggle}
       </div>
     </header>`;
 }
@@ -123,6 +156,7 @@ function renderLayout({
   breadcrumbs,
   config,
   showHeaderSearch = true,
+  showMenuToggle = false,
   scripts = [],
   jsonLd = [],
   pageClass = 'page-default',
@@ -165,7 +199,7 @@ function renderLayout({
   <body class="${escapeHtml(pageClass)}">
     <a href="#main-content" class="skip-link">Skip To Main Content</a>
     <div class="page-glow" aria-hidden="true"></div>
-    ${renderHeader({ prefix, showSearch: showHeaderSearch })}
+    ${renderHeader({ prefix, showSearch: showHeaderSearch, showMenuToggle })}
     ${breadcrumbs || ''}
     <main id="main-content" class="page-main">
       ${body}
@@ -213,58 +247,73 @@ function renderHomePage(model, config) {
     .map((group) => `<option value="${escapeHtml(group.key)}">${escapeHtml(group.title)}</option>`)
     .join('');
 
-  const groupLinks = model.groups
-    .map(
-      (group) => `<li><a href="/${group.route}"><span>${escapeHtml(group.title)}</span><small>${group.subgroups.length} collections</small></a></li>`
-    )
-    .join('');
+  const body = `<section class="panel-shell" aria-label="Emoji Explorer">
+    <div class="panel-header">
+      <h1>Emoji Explorer</h1>
+      <p>Choose a category panel, then a subcategory, then copy emojis instantly.</p>
+    </div>
+    <nav class="panel-crumbs" aria-label="Explorer Breadcrumb">
+      <button type="button" id="panel-home" class="copy-btn secondary">All Categories</button>
+      <span id="panel-current">Categories</span>
+    </nav>
+    <div id="panel-grid" class="panel-grid" data-level="group" aria-live="polite"></div>
+    <section class="results-shell" aria-label="Emoji Results">
+      <div class="results-toolbar">
+        <p id="results-count" class="results-count">Loading…</p>
+        <button type="button" id="results-load-more" class="copy-btn secondary" hidden>Load More</button>
+      </div>
+      <ul id="home-results" class="emoji-list" aria-label="Search results"></ul>
+      <div id="results-sentinel" class="results-sentinel" aria-hidden="true"></div>
+    </section>
+  </section>
 
-  const body = `<section class="home-controls" aria-label="Emoji Search Controls">
-    <div class="control-group control-search">
-      <label for="search">Search</label>
-      <input id="search" type="search" autocomplete="off" placeholder="Search by name, tag, group, or subgroup…" />
+  <aside id="advanced-menu" class="advanced-menu" hidden>
+    <div class="advanced-header">
+      <h2>Advanced Options</h2>
+      <button type="button" id="advanced-close" class="copy-btn secondary">Close</button>
     </div>
-    <div class="control-group">
-      <label for="group-filter">Category</label>
-      <select id="group-filter" aria-label="Filter by category">
-        <option value="">All Categories</option>
-        ${groupOptions}
-      </select>
+    <div class="advanced-grid">
+      <div class="control-group">
+        <label for="copy-mode">Copy Format</label>
+        <select id="copy-mode" aria-label="Select copy format">
+          <option value="emoji">Emoji</option>
+          <option value="unicode">Unicode Hex</option>
+          <option value="html">HTML Entity</option>
+          <option value="shortcode">Shortcode</option>
+        </select>
+      </div>
+      <div class="control-group">
+        <label for="skin-tone-mode">Default Skin Tone</label>
+        <select id="skin-tone-mode" aria-label="Select default skin tone">
+          <option value="0">None</option>
+          <option value="1">Light</option>
+          <option value="2">Medium-Light</option>
+          <option value="3">Medium</option>
+          <option value="4">Medium-Dark</option>
+          <option value="5">Dark</option>
+        </select>
+      </div>
+      <div class="control-group">
+        <label for="group-filter">Category</label>
+        <select id="group-filter" aria-label="Filter by category">
+          <option value="">All Categories</option>
+          ${groupOptions}
+        </select>
+      </div>
+      <div class="control-group">
+        <label for="subgroup-filter">Subcategory</label>
+        <select id="subgroup-filter" aria-label="Filter by subcategory" disabled>
+          <option value="">All Subcategories</option>
+        </select>
+      </div>
     </div>
-    <div class="control-group">
-      <label for="subgroup-filter">Subcategory</label>
-      <select id="subgroup-filter" aria-label="Filter by subcategory" disabled>
-        <option value="">All Subcategories</option>
-      </select>
-    </div>
-    <div class="control-group">
-      <label for="copy-mode">Copy Format</label>
-      <select id="copy-mode" aria-label="Select copy format">
-        <option value="emoji">Emoji</option>
-        <option value="unicode">Unicode Hex</option>
-        <option value="html">HTML Entity</option>
-        <option value="shortcode">Shortcode</option>
-      </select>
-    </div>
-    <div class="control-group control-actions">
-      <button type="button" id="clear-filters" class="copy-btn secondary">Clear</button>
-    </div>
-  </section>
-  <section class="results-shell" aria-label="Emoji Results">
-  <div class="results-toolbar">
-    <p id="results-count" class="results-count">Loading…</p>
-    <button type="button" id="results-load-more" class="copy-btn secondary" hidden>Load More</button>
-  </div>
-  <ul id="home-results" class="emoji-list" aria-label="Search results"></ul>
-  <div id="results-sentinel" class="results-sentinel" aria-hidden="true"></div>
-  </section>
+    <button type="button" id="clear-filters" class="copy-btn secondary advanced-clear">Reset Selection</button>
+  </aside>
+  <button type="button" id="advanced-backdrop" class="advanced-backdrop" hidden tabindex="-1" aria-hidden="true"></button>
+
   <section class="recent-section">
     <h2>Recently Copied</h2>
     <ul id="recent-results" class="emoji-list" aria-label="Recently copied emojis"></ul>
-  </section>
-  <section class="group-directory">
-    <h2>Browse Categories</h2>
-    <ul class="group-link-list">${groupLinks}</ul>
   </section>`;
 
   const homeUrl = absoluteUrl(config.site.baseUrl, '');
@@ -298,7 +347,8 @@ function renderHomePage(model, config) {
     body,
     breadcrumbs: '',
     config,
-    showHeaderSearch: false,
+    showHeaderSearch: true,
+    showMenuToggle: true,
     scripts: [{ src: 'home-app.mjs', type: 'module', defer: true }],
     jsonLd: homeJsonLd,
     pageClass: 'page-home',
@@ -634,7 +684,35 @@ function buildHomeDataPayload(emojiEntries) {
       tags: Array.isArray(entry.tags) ? entry.tags.join(' ') : String(entry.tags || ''),
       detailRoute: entry.detailRoute,
       useLocalAsset: Boolean(entry.useLocalAsset),
+      baseHex: entry.baseHex || entry.hexLower,
+      isVariant: Boolean(entry.isVariant),
+      skintone: entry.skintone === '' || entry.skintone == null ? 0 : Number(entry.skintone) || 0,
+      skintoneBaseHex: entry.skintone_base_hexcode ? normalizeHex(entry.skintone_base_hexcode) : '',
     }));
+
+  return `${JSON.stringify(rows)}\n`;
+}
+
+function buildDailyEmojiPayload(emojiEntries) {
+  const source = [...emojiEntries]
+    .filter((entry) => entry.indexable && !entry.isVariant && entry.group !== 'component')
+    .sort((a, b) => a.detailRoute.localeCompare(b.detailRoute, 'en', { sensitivity: 'base' }));
+
+  const fallback = source.length > 0 ? source : [...emojiEntries];
+  const days = 366;
+  const multiplier = 37;
+
+  const rows = [];
+  for (let index = 0; index < days; index += 1) {
+    const selected = fallback[(index * multiplier) % fallback.length];
+    rows.push({
+      day: index + 1,
+      emoji: selected.emoji || '😀',
+      annotation: selected.annotation || 'emoji',
+      detailRoute: selected.detailRoute,
+      hexcode: selected.hexLower,
+    });
+  }
 
   return `${JSON.stringify(rows)}\n`;
 }
@@ -648,6 +726,12 @@ export async function renderSite({ model, legacyRedirects, config, tempRoot }) {
     tempRoot,
     'home-data.json',
     buildHomeDataPayload(model.emojiEntries),
+    generatedFiles
+  );
+  await writeGeneratedFile(
+    tempRoot,
+    'daily-emoji.json',
+    buildDailyEmojiPayload(model.emojiEntries),
     generatedFiles
   );
 

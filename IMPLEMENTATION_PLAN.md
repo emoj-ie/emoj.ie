@@ -274,6 +274,17 @@ Static + Node generator overhaul focused on UX + speed first, while fixing SEO, 
   - Lighthouse budgets
 - Fail PR on gate failures.
 
+## Phase 7: Header + Panel Navigator UX
+
+- Replace image logo with inline SVG brand mark and daily emoji slot in header.
+- Generate `daily-emoji.json` with a deterministic emoji-of-the-day schedule (366 entries).
+- Move primary search to header and keep advanced controls in a burger-triggered options drawer.
+- Add default skin tone preference (`None`, `Light`, `Medium-Light`, `Medium`, `Medium-Dark`, `Dark`) with local persistence.
+- Rework homepage interaction to 3-level panel flow:
+  - categories (12 group panels)
+  - subcategories (selected group)
+  - emoji cards (selected subgroup, lazy chunk rendering)
+
 ## Acceptance Criteria
 
 - Deterministic build: consecutive clean builds produce identical manifests.
