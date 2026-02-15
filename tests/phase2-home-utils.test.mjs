@@ -61,5 +61,7 @@ test('generated homepage contains phase 2 controls and module script', () => {
 test('generated about page uses shared shell and no inline handlers', () => {
   const aboutHtml = fs.readFileSync(path.join(root, 'about/index.html'), 'utf8');
   assert.match(aboutHtml, /class="header-search"/);
+  assert.match(aboutHtml, /id="header-menu-toggle"/);
+  assert.match(aboutHtml, /id="global-advanced-menu"[^>]*\shidden\b/);
   assert.ok(!aboutHtml.includes('onclick='));
 });

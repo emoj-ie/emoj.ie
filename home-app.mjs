@@ -58,6 +58,9 @@ import {
   let groupKeys = [];
   let subgroupsByGroup = new Map();
   let variantsByBaseTone = new Map();
+  let groupPreviewEntries = new Map();
+  let subgroupPreviewEntries = new Map();
+  let subgroupEntryCounts = new Map();
 
   let filteredEntries = [];
   let renderedCount = 0;
@@ -160,6 +163,9 @@ import {
     groupKeys = [];
     subgroupsByGroup = new Map();
     variantsByBaseTone = new Map();
+    groupPreviewEntries = new Map();
+    subgroupPreviewEntries = new Map();
+    subgroupEntryCounts = new Map();
 
     const groupSet = new Set();
     const baseSeen = new Set();
@@ -185,6 +191,21 @@ import {
         if (!baseSeen.has(key)) {
           baseSeen.add(key);
           baseEntries.push(entry);
+
+          const groupPreview = groupPreviewEntries.get(entry.group) || [];
+          if (groupPreview.length < 6) {
+            groupPreview.push(entry);
+            groupPreviewEntries.set(entry.group, groupPreview);
+          }
+
+          const subgroupKey = `${entry.group}::${entry.subgroup}`;
+          subgroupEntryCounts.set(subgroupKey, (subgroupEntryCounts.get(subgroupKey) || 0) + 1);
+
+          const subgroupPreview = subgroupPreviewEntries.get(subgroupKey) || [];
+          if (subgroupPreview.length < 6) {
+            subgroupPreview.push(entry);
+            subgroupPreviewEntries.set(subgroupKey, subgroupPreview);
+          }
         }
       }
     }
@@ -287,7 +308,19 @@ import {
     }
   }
 
-  function createPanelCard(label, meta, onClick) {
+  function buildPanelPreview(entries, limit = 4) {
+    if (!Array.isArray(entries) || entries.length === 0) {
+      return '';
+    }
+
+    return entries
+      .slice(0, limit)
+      .map((entry) => resolveSkinToneEntry(entry).emoji)
+      .filter(Boolean)
+      .join(' ');
+  }
+
+  function createPanelCard(label, meta, preview, onClick) {
     const button = document.createElement('button');
     button.type = 'button';
     button.className = 'panel-card';
@@ -302,6 +335,13 @@ import {
 
     button.appendChild(title);
     button.appendChild(detail);
+    if (preview) {
+      const previewNode = document.createElement('span');
+      previewNode.className = 'panel-card-preview';
+      previewNode.setAttribute('aria-hidden', 'true');
+      previewNode.textContent = preview;
+      button.appendChild(previewNode);
+    }
     button.addEventListener('click', onClick);
     return button;
   }
@@ -337,8 +377,9 @@ import {
     const groups = panelSearchFilter(groupKeys);
     for (const group of groups) {
       const subgroupCount = subgroupsByGroup.get(group)?.size || 0;
+      const preview = buildPanelPreview(groupPreviewEntries.get(group));
       panelGrid.appendChild(
-        createPanelCard(humanize(group), `${subgroupCount} subcategories`, () => {
+        createPanelCard(humanize(group), `${subgroupCount} subcategories`, preview, () => {
           state.g = group;
           state.sg = '';
           applyStateToControls();
@@ -360,9 +401,11 @@ import {
     const filtered = panelSearchFilter(subgroups);
 
     for (const subgroup of filtered) {
-      const count = baseEntries.filter((entry) => entry.group === state.g && entry.subgroup === subgroup).length;
+      const subgroupKey = `${state.g}::${subgroup}`;
+      const count = subgroupEntryCounts.get(subgroupKey) || 0;
+      const preview = buildPanelPreview(subgroupPreviewEntries.get(subgroupKey));
       panelGrid.appendChild(
-        createPanelCard(humanize(subgroup), `${count} emoji${count === 1 ? '' : 's'}`, () => {
+        createPanelCard(humanize(subgroup), `${count} emoji${count === 1 ? '' : 's'}`, preview, () => {
           state.sg = subgroup;
           applyStateToControls();
           renderExplorer(true, true);

@@ -67,14 +67,14 @@ function breadcrumbSchema(baseUrl, crumbs, canonicalUrl) {
   };
 }
 
-function renderHeader({ prefix, showSearch, showMenuToggle }) {
+function renderHeader({ prefix, showSearch, showMenuToggle, menuControlsId = 'advanced-menu' }) {
   const menuToggle = showMenuToggle
     ? `<button
         type="button"
         id="header-menu-toggle"
         class="header-menu-toggle"
         aria-label="Open advanced options"
-        aria-controls="advanced-menu"
+        aria-controls="${escapeHtml(menuControlsId)}"
         aria-expanded="false"
       >
         <span></span><span></span><span></span>
@@ -147,6 +147,39 @@ function renderAnalyticsScript(config) {
   return `<script defer data-domain="${domain}" src="${src}"></script>`;
 }
 
+function renderGlobalAdvancedMenu() {
+  return `<aside id="global-advanced-menu" class="advanced-menu advanced-menu-global" hidden>
+    <div class="advanced-header">
+      <h2>Quick Options</h2>
+      <button type="button" id="global-advanced-close" class="copy-btn secondary">Close</button>
+    </div>
+    <div class="advanced-grid">
+      <div class="control-group">
+        <label for="global-copy-mode">Default Copy Format</label>
+        <select id="global-copy-mode" aria-label="Select default copy format">
+          <option value="emoji">Emoji</option>
+          <option value="unicode">Unicode Hex</option>
+          <option value="html">HTML Entity</option>
+          <option value="shortcode">Shortcode</option>
+        </select>
+      </div>
+      <div class="control-group">
+        <label for="global-skin-tone-mode">Default Skin Tone</label>
+        <select id="global-skin-tone-mode" aria-label="Select default skin tone">
+          <option value="0">None</option>
+          <option value="1">Light</option>
+          <option value="2">Medium-Light</option>
+          <option value="3">Medium</option>
+          <option value="4">Medium-Dark</option>
+          <option value="5">Dark</option>
+        </select>
+      </div>
+    </div>
+    <a class="copy-btn secondary" href="/">Open Full Explorer</a>
+  </aside>
+  <button type="button" id="global-advanced-backdrop" class="advanced-backdrop" hidden tabindex="-1" aria-hidden="true"></button>`;
+}
+
 function renderLayout({
   route,
   title,
@@ -157,7 +190,7 @@ function renderLayout({
   breadcrumbs,
   config,
   showHeaderSearch = true,
-  showMenuToggle = false,
+  showMenuToggle = true,
   scripts = [],
   jsonLd = [],
   pageClass = 'page-default',
@@ -166,6 +199,9 @@ function renderLayout({
   const pageTitle = `${title} | ${config.site.title}`;
   const socialImage = toAssetUrl(config.site.baseUrl, config.site.socialImage);
   const robotsTag = robots ? `<meta name="robots" content="${escapeHtml(robots)}" />` : '';
+  const isHomePage = pageClass === 'page-home';
+  const menuControlsId = isHomePage ? 'advanced-menu' : 'global-advanced-menu';
+  const globalAdvancedMenu = showMenuToggle && !isHomePage ? renderGlobalAdvancedMenu() : '';
 
   const defaultScripts = [{ src: 'generated-pages.js', defer: true }];
   const schemaScripts = jsonLd.map((item) => jsonLdScript(item)).join('\n    ');
@@ -200,11 +236,12 @@ function renderLayout({
   <body class="${escapeHtml(pageClass)}">
     <a href="#main-content" class="skip-link">Skip To Main Content</a>
     <div class="page-glow" aria-hidden="true"></div>
-    ${renderHeader({ prefix, showSearch: showHeaderSearch, showMenuToggle })}
+    ${renderHeader({ prefix, showSearch: showHeaderSearch, showMenuToggle, menuControlsId })}
     ${breadcrumbs || ''}
     <main id="main-content" class="page-main">
       ${body}
     </main>
+    ${globalAdvancedMenu}
     <footer>
       <p>© 2026 emoj.ie | <a href="${prefix}about">About</a></p>
     </footer>
@@ -250,8 +287,7 @@ function renderHomePage(model, config) {
 
   const body = `<section class="panel-shell" aria-label="Emoji Explorer">
     <div class="panel-header">
-      <h1>Emoji Explorer</h1>
-      <p>Choose a category panel, then a subcategory, then copy emojis instantly.</p>
+      <h1>Find Emoji Fast</h1>
     </div>
     <nav class="panel-crumbs" aria-label="Explorer Breadcrumb">
       <button type="button" id="panel-home" class="copy-btn secondary">All Categories</button>

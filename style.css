@@ -378,6 +378,13 @@ a:hover {
   font-size: 0.82rem;
 }
 
+.panel-card-preview {
+  margin-top: 0.15rem;
+  font-size: 1.15rem;
+  letter-spacing: 0.08em;
+  color: var(--text-strong);
+}
+
 .advanced-menu {
   position: fixed;
   right: 0.9rem;
@@ -415,6 +422,10 @@ a:hover {
   background: rgba(9, 15, 29, 0.3);
   z-index: 150;
   cursor: pointer;
+}
+
+.advanced-menu-global .advanced-grid {
+  grid-template-columns: 1fr;
 }
 
 .advanced-menu[hidden],

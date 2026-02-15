@@ -21,6 +21,7 @@ test('home app uses progressive rendering and lightweight home index data', () =
   assert.match(homeApp, /home-data\.json/);
   assert.match(homeApp, /IntersectionObserver/);
   assert.match(homeApp, /appendResultChunk/);
+  assert.match(homeApp, /panel-card-preview/);
   assert.ok(!homeApp.includes('slice(0, 400)'), 'hard 400 result cap should be removed');
 });
 
@@ -33,6 +34,7 @@ test('homepage template has lazy loading controls', () => {
   assert.match(home, /id="panel-grid"/);
   assert.match(home, /id="results-load-more"/);
   assert.match(home, /id="results-sentinel"/);
+  assert.ok(!home.includes('Choose a category panel, then a subcategory, then copy emojis instantly.'));
 });
 
 test('advanced menu hidden state is enforced by css', () => {

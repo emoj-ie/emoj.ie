@@ -123,6 +123,76 @@
       });
   }
 
+  function initGlobalHeaderMenu() {
+    if (document.body.classList.contains('page-home')) {
+      return;
+    }
+
+    var toggle = document.getElementById('header-menu-toggle');
+    var menu = document.getElementById('global-advanced-menu');
+    var close = document.getElementById('global-advanced-close');
+    var backdrop = document.getElementById('global-advanced-backdrop');
+    var copyMode = document.getElementById('global-copy-mode');
+    var skinToneMode = document.getElementById('global-skin-tone-mode');
+
+    if (!toggle || !menu) {
+      return;
+    }
+
+    function setOpen(open) {
+      menu.hidden = !open;
+      if (backdrop) {
+        backdrop.hidden = !open;
+      }
+      toggle.setAttribute('aria-expanded', open ? 'true' : 'false');
+      document.body.classList.toggle('menu-open', open);
+    }
+
+    var savedCopyMode = localStorage.getItem('copyMode') || 'emoji';
+    if (copyMode) {
+      if (['emoji', 'unicode', 'html', 'shortcode'].indexOf(savedCopyMode) === -1) {
+        savedCopyMode = 'emoji';
+      }
+      copyMode.value = savedCopyMode;
+      copyMode.addEventListener('change', function () {
+        localStorage.setItem('copyMode', copyMode.value);
+      });
+    }
+
+    var savedSkinTone = localStorage.getItem('defaultSkinTone') || '0';
+    if (skinToneMode) {
+      if (['0', '1', '2', '3', '4', '5'].indexOf(savedSkinTone) === -1) {
+        savedSkinTone = '0';
+      }
+      skinToneMode.value = savedSkinTone;
+      skinToneMode.addEventListener('change', function () {
+        localStorage.setItem('defaultSkinTone', skinToneMode.value);
+      });
+    }
+
+    toggle.addEventListener('click', function () {
+      setOpen(menu.hidden);
+    });
+
+    if (close) {
+      close.addEventListener('click', function () {
+        setOpen(false);
+      });
+    }
+
+    if (backdrop) {
+      backdrop.addEventListener('click', function () {
+        setOpen(false);
+      });
+    }
+
+    document.addEventListener('keydown', function (event) {
+      if (event.key === 'Escape' && !menu.hidden) {
+        setOpen(false);
+      }
+    });
+  }
+
   document.addEventListener('click', function (event) {
     const shareButton = event.target.closest('[data-share-url]');
     if (shareButton) {
@@ -218,4 +288,5 @@
 
   registerServiceWorker();
   applyDailyLogoEmoji();
+  initGlobalHeaderMenu();
 })();

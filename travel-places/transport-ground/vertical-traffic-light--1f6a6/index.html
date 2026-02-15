@@ -58,7 +58,16 @@
         <input id="search" name="q" type="search" autocomplete="off" placeholder="Search emojis…" />
         <button type="submit">Search</button>
       </form>
-        
+        <button
+        type="button"
+        id="header-menu-toggle"
+        class="header-menu-toggle"
+        aria-label="Open advanced options"
+        aria-controls="global-advanced-menu"
+        aria-expanded="false"
+      >
+        <span></span><span></span><span></span>
+      </button>
       </div>
     </header>
     <nav class="breadcrumbs" aria-label="Breadcrumb"><a href="/">Home</a> / <a href="/travel-places/">travel places</a> / <a href="/travel-places/transport-ground/">transport ground</a> / <span>vertical traffic light</span></nav>
@@ -97,6 +106,36 @@
     
   </article>
     </main>
+    <aside id="global-advanced-menu" class="advanced-menu advanced-menu-global" hidden>
+    <div class="advanced-header">
+      <h2>Quick Options</h2>
+      <button type="button" id="global-advanced-close" class="copy-btn secondary">Close</button>
+    </div>
+    <div class="advanced-grid">
+      <div class="control-group">
+        <label for="global-copy-mode">Default Copy Format</label>
+        <select id="global-copy-mode" aria-label="Select default copy format">
+          <option value="emoji">Emoji</option>
+          <option value="unicode">Unicode Hex</option>
+          <option value="html">HTML Entity</option>
+          <option value="shortcode">Shortcode</option>
+        </select>
+      </div>
+      <div class="control-group">
+        <label for="global-skin-tone-mode">Default Skin Tone</label>
+        <select id="global-skin-tone-mode" aria-label="Select default skin tone">
+          <option value="0">None</option>
+          <option value="1">Light</option>
+          <option value="2">Medium-Light</option>
+          <option value="3">Medium</option>
+          <option value="4">Medium-Dark</option>
+          <option value="5">Dark</option>
+        </select>
+      </div>
+    </div>
+    <a class="copy-btn secondary" href="/">Open Full Explorer</a>
+  </aside>
+  <button type="button" id="global-advanced-backdrop" class="advanced-backdrop" hidden tabindex="-1" aria-hidden="true"></button>
     <footer>
       <p>© 2026 emoj.ie | <a href="../../../about">About</a></p>
     </footer>
