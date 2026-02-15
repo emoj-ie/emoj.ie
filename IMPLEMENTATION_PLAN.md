@@ -18,6 +18,7 @@
 - [x] Phase 7: Premium UX/UI redesign and progressive rendering
 - [x] Phase 7 tests added and passing (`tests/phase7-ux-performance.test.mjs`)
 - [x] Post-Phase update: editorial 366-day emoji schedule + burger-gated advanced menu visibility
+- [x] Post-Phase update: unified header on all pages + emoji previews in category/subcategory cards + concise landing copy
 
 `*` Playwright smoke currently skips when Playwright is not installed, by design.
 
