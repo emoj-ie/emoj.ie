@@ -20,6 +20,7 @@
 - [x] Post-Phase update: editorial 366-day emoji schedule + burger-gated advanced menu visibility
 - [x] Post-Phase update: unified header on all pages + emoji previews in category/subcategory cards + concise landing copy
 - [x] Post-Phase update: duplicate-free editorial daily schedule keyed by `MM-DD` + build progress bars + SVG panel previews + reordered skin tone controls
+- [x] Post-Phase update: panel cards now navigate to route URLs (`/{group}/`, `/{group}/{subgroup}/`) instead of query-param state
 
 `*` Playwright smoke currently skips when Playwright is not installed, by design.
 

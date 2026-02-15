@@ -358,6 +358,8 @@ a:hover {
   gap: 0.25rem;
   text-align: left;
   cursor: pointer;
+  text-decoration: none;
+  color: inherit;
   transition: transform 160ms ease, box-shadow 160ms ease, border-color 160ms ease;
 }
 
@@ -365,6 +367,10 @@ a:hover {
   transform: translateY(-2px);
   box-shadow: var(--shadow-sm);
   border-color: var(--border-strong);
+}
+
+.panel-card-link:hover {
+  color: inherit;
 }
 
 .panel-card-title {

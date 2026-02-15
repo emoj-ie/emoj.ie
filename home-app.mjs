@@ -319,10 +319,16 @@ import {
       .filter((entry) => Boolean(entry && entry.hexLower));
   }
 
-  function createPanelCard(label, meta, previewEntries, onClick) {
-    const button = document.createElement('button');
-    button.type = 'button';
-    button.className = 'panel-card';
+  function createPanelCard(label, meta, previewEntries, onClick, href = '') {
+    const card = href ? document.createElement('a') : document.createElement('button');
+    card.className = 'panel-card';
+
+    if (href) {
+      card.classList.add('panel-card-link');
+      card.href = href;
+    } else {
+      card.type = 'button';
+    }
 
     const title = document.createElement('span');
     title.className = 'panel-card-title';
@@ -332,8 +338,8 @@ import {
     detail.className = 'panel-card-meta';
     detail.textContent = meta;
 
-    button.appendChild(title);
-    button.appendChild(detail);
+    card.appendChild(title);
+    card.appendChild(detail);
     if (Array.isArray(previewEntries) && previewEntries.length > 0) {
       const previewNode = document.createElement('span');
       previewNode.className = 'panel-card-preview';
@@ -353,10 +359,12 @@ import {
         previewNode.appendChild(previewImage);
       }
 
-      button.appendChild(previewNode);
+      card.appendChild(previewNode);
     }
-    button.addEventListener('click', onClick);
-    return button;
+    if (typeof onClick === 'function') {
+      card.addEventListener('click', onClick);
+    }
+    return card;
   }
 
   function updatePanelCrumbs(level) {
@@ -392,12 +400,7 @@ import {
       const subgroupCount = subgroupsByGroup.get(group)?.size || 0;
       const preview = buildPanelPreview(groupPreviewEntries.get(group));
       panelGrid.appendChild(
-        createPanelCard(humanize(group), `${subgroupCount} subcategories`, preview, () => {
-          state.g = group;
-          state.sg = '';
-          applyStateToControls();
-          renderExplorer(true, true);
-        })
+        createPanelCard(humanize(group), `${subgroupCount} subcategories`, preview, null, `/${group}/`)
       );
     }
 
@@ -418,11 +421,13 @@ import {
       const count = subgroupEntryCounts.get(subgroupKey) || 0;
       const preview = buildPanelPreview(subgroupPreviewEntries.get(subgroupKey));
       panelGrid.appendChild(
-        createPanelCard(humanize(subgroup), `${count} emoji${count === 1 ? '' : 's'}`, preview, () => {
-          state.sg = subgroup;
-          applyStateToControls();
-          renderExplorer(true, true);
-        })
+        createPanelCard(
+          humanize(subgroup),
+          `${count} emoji${count === 1 ? '' : 's'}`,
+          preview,
+          null,
+          `/${state.g}/${subgroup}/`
+        )
       );
     }
 
