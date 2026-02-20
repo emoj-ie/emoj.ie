@@ -88,10 +88,14 @@ test('emoji sitemap uses canonical short emoji routes and core sitemap includes 
   assert.match(coreSitemap, /https:\/\/emoj\.ie\/smileys-emotion\//);
   assert.match(coreSitemap, /https:\/\/emoj\.ie\/search\//);
   assert.match(coreSitemap, /https:\/\/emoj\.ie\/tag\//);
-  assert.match(alternativesIndex, /<h1>Emoji Site Alternatives<\/h1>/);
+  assert.match(alternativesIndex, /<h1\b[^>]*>Emoji Site Alternatives<\/h1>/);
   assert.match(categoryAliasIndex, /<meta http-equiv="refresh" content="0; url=https:\/\/emoj\.ie\/"/);
-  assert.match(searchIndex, /<h1>Emoji Search Topics<\/h1>/);
-  assert.match(tagIndex, /<h1>Emoji Tags<\/h1>/);
+  assert.match(searchIndex, /<h1\b[^>]*>Emoji Search Topics<\/h1>/);
+  assert.match(tagIndex, /<h1\b[^>]*>Emoji Tags<\/h1>/);
+  assert.match(searchIndex, /class="panel-grid panel-grid-balanced"/);
+  assert.match(tagIndex, /class="panel-grid panel-grid-balanced"/);
+  assert.ok(!searchIndex.includes('group-link-list'));
+  assert.ok(!tagIndex.includes('group-link-list'));
 });
 
 test('legacy detail route points canonical to short emoji route', () => {
@@ -151,8 +155,9 @@ test('curated search pages are generated with canonical metadata', () => {
   const searchPage = read(`${searchRoute}index.html`);
 
   assertMetaSet(searchPage, `${searchRoute}index.html`);
-  assert.match(searchPage, /<h1>[^<]+<\/h1>/);
-  assert.match(searchPage, /<ul class="emoji-list">/);
+  assert.match(searchPage, /<h1\b[^>]*>[^<]+<\/h1>/);
+  assert.match(searchPage, /<ul class="emoji-list emoji-list-panel">/);
+  assert.ok(!searchPage.includes('collection-kicker'));
   assert.ok(!searchPage.includes('noindex,follow'));
 });
 

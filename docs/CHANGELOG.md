@@ -142,6 +142,11 @@ All notable project updates are tracked here in human-readable form.
   - duplicated credits run blocks and added per-run bookmark markers in markup
   - randomized bookmark emojis on load and on every crawl `animationiteration` cycle
   - kept credits crawl infinite while preserving text-link-only attribution style
+- Exposed hidden hub routes in global navigation and normalized hub templates:
+  - added shared footer links to `Home`, `Search Topics`, `Tags`, `Compare Sites`, and `About`
+  - expanded burger-menu `More` links on home and non-home pages to include the same hubs
+  - rebuilt `alternatives/`, `tag/`, and `search/` index pages into minimal panel-card grids
+  - switched `tag/{name}` and `search/{term}` pages to panel-style emoji cards with visually hidden `h1` and reduced copy
 
 ### Notes
 - Phase 0 through Phase 5 are complete for the current roadmap scope.

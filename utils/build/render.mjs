@@ -262,6 +262,14 @@ function renderAnalyticsScript(config) {
 }
 
 function renderGlobalAdvancedMenu() {
+  const linkList = `<div class="advanced-link-list">
+        <a class="copy-btn secondary" href="/">Home</a>
+        <a class="copy-btn secondary" href="/search/">Search Topics</a>
+        <a class="copy-btn secondary" href="/tag/">Tags</a>
+        <a class="copy-btn secondary" href="/alternatives/">Compare Sites</a>
+        <a class="copy-btn secondary" href="/about/">About</a>
+      </div>`;
+
   return `<aside id="global-advanced-menu" class="advanced-menu advanced-menu-global" hidden>
     <div class="advanced-header">
       <h2>Options</h2>
@@ -304,11 +312,7 @@ function renderGlobalAdvancedMenu() {
     </div>
     <details class="advanced-disclosure">
       <summary>More</summary>
-      <div class="advanced-link-list">
-        <a class="copy-btn secondary" href="/search/">Search Topics</a>
-        <a class="copy-btn secondary" href="/tag/">Tags</a>
-        <a class="copy-btn secondary" href="/alternatives/">Compare Sites</a>
-      </div>
+      ${linkList}
     </details>
   </aside>
   <button type="button" id="global-advanced-backdrop" class="advanced-backdrop" hidden tabindex="-1" aria-hidden="true"></button>`;
@@ -377,7 +381,14 @@ function renderLayout({
     </main>
     ${globalAdvancedMenu}
     <footer>
-      <p>© 2026 emoj.ie | <a href="${prefix}about">About</a></p>
+      <nav class="footer-links" aria-label="Footer">
+        <a href="/">Home</a>
+        <a href="/search/">Search Topics</a>
+        <a href="/tag/">Tags</a>
+        <a href="/alternatives/">Compare Sites</a>
+        <a href="/about/">About</a>
+      </nav>
+      <p>© 2026 emoj.ie</p>
     </footer>
     <div id="live-region" aria-live="polite" aria-atomic="true" style="position:absolute;left:-9999px;top:auto;width:1px;height:1px;overflow:hidden;"></div>
     ${renderScripts(prefix, [...defaultScripts, ...scripts])}
@@ -524,6 +535,17 @@ function renderPanelCardLink({ title, href, previewEntry, previewEntries = [], a
   )}">
     <span class="panel-card-title">${escapeHtml(titleText)}</span>
     <span class="panel-card-hero" aria-hidden="true">${heroMarkup}</span>
+  </a>`;
+}
+
+function renderGlyphPanelCardLink({ title, href, glyph = '🙂' }) {
+  return `<a class="panel-card panel-card-link" href="/${escapeHtml(href)}" aria-label="Open ${escapeHtml(
+    title
+  )}">
+    <span class="panel-card-title">${escapeHtml(title)}</span>
+    <span class="panel-card-hero" aria-hidden="true">
+      <span class="panel-card-hero-fallback">${escapeHtml(glyph)}</span>
+    </span>
   </a>`;
 }
 
@@ -678,9 +700,11 @@ function renderHomePage(model, config) {
     <details class="advanced-disclosure">
       <summary>More</summary>
       <div class="advanced-link-list">
+        <a class="copy-btn secondary" href="/">Home</a>
         <a class="copy-btn secondary" href="/search/">Search Topics</a>
         <a class="copy-btn secondary" href="/tag/">Tags</a>
         <a class="copy-btn secondary" href="/alternatives/">Compare Sites</a>
+        <a class="copy-btn secondary" href="/about/">About</a>
       </div>
     </details>
     <button type="button" id="clear-filters" class="copy-btn secondary advanced-clear">Reset Selection</button>
@@ -885,21 +909,23 @@ function renderAboutPage(model, config) {
 }
 
 function renderAlternativeIndexPage(config) {
-  const items = COMPETITOR_ALTERNATIVES.map(
-    (item) =>
-      `<li><a href="/${item.route}"><span>${escapeHtml(item.name)} alternative</span><small>Use-case fit, strengths, and migration checklist</small></a></li>`
+  const glyphMap = {
+    emojipedia: '📚',
+    getemoji: '⚡',
+    findemoji: '🧭',
+  };
+
+  const cards = COMPETITOR_ALTERNATIVES.map((item) =>
+    renderGlyphPanelCardLink({
+      title: `${item.name} Alternative`,
+      href: item.route,
+      glyph: glyphMap[item.key] || '🧩',
+    })
   ).join('');
 
-  const body = `<section class="group">
-    <p class="collection-kicker">Competitor Alternatives</p>
-    <h1>Emoji Site Alternatives</h1>
-    <p>Compare emoj.ie against popular emoji tools with honest strengths, tradeoffs, and best-fit guidance.</p>
-    <div class="collection-stat-row">
-      <span><strong>${COMPETITOR_ALTERNATIVES.length}</strong> comparison pages</span>
-      <span><strong>4</strong> fit dimensions per page</span>
-      <span><strong>0</strong> fluff claims</span>
-    </div>
-    <ul class="group-link-list">${items}</ul>
+  const body = `<section class="panel-shell home-emoji-shell">
+    <h1 class="visually-hidden">Emoji Site Alternatives</h1>
+    <div class="panel-grid panel-grid-balanced">${cards}</div>
   </section>`;
 
   const canonicalUrl = absoluteUrl(config.site.baseUrl, 'alternatives/');
@@ -1038,7 +1064,7 @@ function renderCategoryIndexPage(categories, config) {
     .join('');
 
   const body = `<section class="panel-shell home-emoji-shell">
-    <h1>Emoji Categories</h1>
+    <h1 class="visually-hidden">Emoji Categories</h1>
     <div class="panel-grid panel-grid-balanced">${cards}</div>
   </section>`;
 
@@ -1080,29 +1106,22 @@ function renderCategoryIndexPage(categories, config) {
 }
 
 function renderTagIndexPage(tags, config) {
-  const items = tags
+  const cards = tags
     .slice(0, 260)
-    .map(
-      (tag) =>
-        `<li><a href="/${tag.route}"><span>${escapeHtml(tag.title)}</span><small>${tag.emojis.length} emojis</small></a></li>`
+    .map((tag) =>
+      renderPanelCardLink({
+        title: tag.title,
+        href: tag.route,
+        previewEntry: pickPanelPreviewEntry(tag.emojis),
+        previewEntries: tag.emojis,
+        assetTemplate: config.assets.emojiCdnTemplate,
+      })
     )
     .join('');
-  const visibleTags = tags.slice(0, 260);
-  const totalTagCoverage = visibleTags.reduce(
-    (sum, tag) => sum + Number(tag.emojis?.length || 0),
-    0
-  );
 
-  const body = `<section class="group">
-    <p class="collection-kicker">Tag Directory</p>
-    <h1>Emoji Tags</h1>
-    <p>Use tags when you know the vibe but not the exact emoji. Each tag groups meaning-adjacent options.</p>
-    <div class="collection-stat-row">
-      <span><strong>${visibleTags.length}</strong> curated tags</span>
-      <span><strong>${totalTagCoverage.toLocaleString('en-US')}</strong> tag-to-emoji links</span>
-      <span><strong>Meaning-driven</strong> discovery</span>
-    </div>
-    <ul class="group-link-list">${items}</ul>
+  const body = `<section class="panel-shell home-emoji-shell">
+    <h1 class="visually-hidden">Emoji Tags</h1>
+    <div class="panel-grid panel-grid-balanced">${cards}</div>
   </section>`;
 
   const canonicalUrl = absoluteUrl(config.site.baseUrl, 'tag/');
@@ -1145,17 +1164,12 @@ function renderTagIndexPage(tags, config) {
 function renderTagPage(tag, config) {
   const emojiList = tag.emojis
     .slice(0, 360)
-    .map((emoji) => renderEmojiCard(emoji, config.assets.emojiCdnTemplate))
+    .map((emoji) => renderEmojiPanelCard(emoji, config.assets.emojiCdnTemplate))
     .join('');
 
   const body = `<section class="subgroup">
-    <p class="collection-kicker">Tag Collection</p>
-    <h1>${escapeHtml(tag.title)} emojis</h1>
-    <p>${escapeHtml(tag.description)} This set is tuned for fast copy and adjacent idea discovery.</p>
-    <p class="subgroup-meta">${tag.emojis.length} emoji${tag.emojis.length === 1 ? '' : 's'} tagged with ${escapeHtml(
-      tag.title
-    )}.</p>
-    <ul class="emoji-list">${emojiList}</ul>
+    <h1 class="visually-hidden">${escapeHtml(tag.title)} emojis</h1>
+    <ul class="emoji-list emoji-list-panel">${emojiList}</ul>
   </section>`;
 
   const canonicalUrl = absoluteUrl(config.site.baseUrl, tag.route);
@@ -1197,29 +1211,22 @@ function renderTagPage(tag, config) {
 }
 
 function renderSearchIndexPage(searchPages, config) {
-  const items = searchPages
+  const cards = searchPages
     .slice(0, 80)
-    .map(
-      (searchPage) =>
-        `<li><a href="/${searchPage.route}"><span>${escapeHtml(searchPage.title)}</span><small>${searchPage.emojis.length} matches</small></a></li>`
+    .map((searchPage) =>
+      renderPanelCardLink({
+        title: searchPage.title,
+        href: searchPage.route,
+        previewEntry: pickPanelPreviewEntry(searchPage.emojis),
+        previewEntries: searchPage.emojis,
+        assetTemplate: config.assets.emojiCdnTemplate,
+      })
     )
     .join('');
-  const visibleTopics = searchPages.slice(0, 80);
-  const totalTopicCoverage = visibleTopics.reduce(
-    (sum, topic) => sum + Number(topic.emojis?.length || 0),
-    0
-  );
 
-  const body = `<section class="group">
-    <p class="collection-kicker">Search Topic Directory</p>
-    <h1>Emoji Search Topics</h1>
-    <p>Browse curated intent clusters built from emoji meanings, tags, and real search language.</p>
-    <div class="collection-stat-row">
-      <span><strong>${visibleTopics.length}</strong> curated search topics</span>
-      <span><strong>${totalTopicCoverage.toLocaleString('en-US')}</strong> topic-to-emoji links</span>
-      <span><strong>Intent-matched</strong> exploration</span>
-    </div>
-    <ul class="group-link-list">${items}</ul>
+  const body = `<section class="panel-shell home-emoji-shell">
+    <h1 class="visually-hidden">Emoji Search Topics</h1>
+    <div class="panel-grid panel-grid-balanced">${cards}</div>
   </section>`;
 
   const canonicalUrl = absoluteUrl(config.site.baseUrl, 'search/');
@@ -1262,15 +1269,12 @@ function renderSearchIndexPage(searchPages, config) {
 function renderSearchPage(searchPage, config) {
   const emojiList = searchPage.emojis
     .slice(0, 360)
-    .map((emoji) => renderEmojiCard(emoji, config.assets.emojiCdnTemplate))
+    .map((emoji) => renderEmojiPanelCard(emoji, config.assets.emojiCdnTemplate))
     .join('');
 
   const body = `<section class="subgroup">
-    <p class="collection-kicker">Search Topic</p>
-    <h1>${escapeHtml(searchPage.title)}</h1>
-    <p>${escapeHtml(searchPage.description)} Copy fast, then branch into related options below.</p>
-    <p class="subgroup-meta">${searchPage.emojis.length} emoji${searchPage.emojis.length === 1 ? '' : 's'} matched this curated search topic.</p>
-    <ul class="emoji-list">${emojiList}</ul>
+    <h1 class="visually-hidden">${escapeHtml(searchPage.title)}</h1>
+    <ul class="emoji-list emoji-list-panel">${emojiList}</ul>
   </section>`;
 
   const canonicalUrl = absoluteUrl(config.site.baseUrl, searchPage.route);

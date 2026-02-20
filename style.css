@@ -1979,6 +1979,30 @@ footer {
   text-align: center;
   color: var(--text-muted);
   font-size: 0.92rem;
+  display: grid;
+  gap: 0.38rem;
+}
+
+.footer-links {
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: center;
+  gap: 0.45rem 0.8rem;
+}
+
+.footer-links a {
+  text-decoration: none;
+  color: var(--text-muted);
+  border-bottom: 1px solid transparent;
+}
+
+.footer-links a:hover {
+  color: var(--text-strong);
+  border-bottom-color: color-mix(in oklab, var(--brand-primary), transparent 28%);
+}
+
+footer p {
+  margin: 0;
 }
 
 .toast {

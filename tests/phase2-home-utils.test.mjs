@@ -55,6 +55,9 @@ test('generated homepage contains phase 2 controls and module script', () => {
   assert.match(indexHtml, /id="copy-mode"/);
   assert.match(indexHtml, /id="home-results"/);
   assert.match(indexHtml, /src="home-app\.mjs" type="module" defer/);
+  assert.match(indexHtml, /href="\/search\/"/);
+  assert.match(indexHtml, /href="\/tag\/"/);
+  assert.match(indexHtml, /href="\/alternatives\/"/);
   assert.match(indexHtml, /<option value="5">Dark<\/option>/);
   assert.match(indexHtml, /<option value="0">Yellow<\/option>/);
   assert.match(indexHtml, /<h2>Options<\/h2>/);
@@ -72,6 +75,8 @@ test('generated about page uses shared shell and no inline handlers', () => {
   assert.match(aboutHtml, /id="about-shuffle"[^>]*>🔀<\/button>/);
   assert.match(aboutHtml, /id="about-emoji-wall"/);
   assert.match(aboutHtml, /<h2>Options<\/h2>/);
+  assert.match(aboutHtml, /class="footer-links"/);
+  assert.match(aboutHtml, /href="\/tag\/"/);
   assert.match(aboutHtml, /data-credits-run-marker/);
   assert.match(aboutHtml, /data-credits-run="1"/);
   assert.match(aboutHtml, /data-credits-run="2"/);
