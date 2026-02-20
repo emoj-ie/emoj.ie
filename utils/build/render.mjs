@@ -593,11 +593,22 @@ function renderHomePage(model, config) {
   const groupOptions = model.groups
     .map((group) => `<option value="${escapeHtml(group.key)}">${escapeHtml(group.title)}</option>`)
     .join('');
+  const groupSkeletonCards = Array.from({ length: 12 }, (_, index) => {
+    const widthClass = index % 3 === 0 ? 'panel-skeleton-line-short' : '';
+    return `<div class="panel-card panel-card-skeleton" aria-hidden="true" data-skeleton-index="${index + 1}">
+      <span class="panel-card-title panel-card-title-skeleton">
+        <span class="panel-skeleton-line ${widthClass}"></span>
+      </span>
+      <span class="panel-card-hero" aria-hidden="true">
+        <span class="panel-skeleton-glyph"></span>
+      </span>
+    </div>`;
+  }).join('');
 
   const body = `<section class="panel-shell home-emoji-shell" aria-label="Emoji Explorer">
     <h1 class="visually-hidden">Emoji Categories</h1>
-    <div id="panel-grid" class="panel-grid" data-level="group" aria-live="polite"></div>
-    <section class="results-shell" aria-label="Emoji Results">
+    <div id="panel-grid" class="panel-grid" data-level="group" aria-live="polite">${groupSkeletonCards}</div>
+    <section class="results-shell" aria-label="Emoji Results" hidden>
       <div class="results-toolbar">
         <p id="results-count" class="results-count">Loading…</p>
         <button type="button" id="results-load-more" class="copy-btn secondary" hidden>Load More</button>

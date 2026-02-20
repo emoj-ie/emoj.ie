@@ -124,6 +124,10 @@ All notable project updates are tracked here in human-readable form.
   - made About tiles fully tap/click copyable via existing copy event wiring
   - introduced a Star Wars-style open-source credits crawl (dependency-free CSS animation)
   - kept helper copy minimal (`Tap any tile to copy.`) to preserve scan-first simplicity
+- Reduced homepage CLS with exact-match category skeletons:
+  - server-rendered 12 homepage panel-card skeletons before data hydration
+  - aligned skeleton geometry to final category card layout for stable first paint
+  - hid results shell by default on home and only show it when needed
 
 ### Notes
 - Phase 0 through Phase 5 are complete for the current roadmap scope.

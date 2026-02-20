@@ -44,6 +44,8 @@ test('homepage template has lazy loading controls', () => {
   assert.match(home, /id="advanced-menu"[^>]*\shidden\b/);
   assert.match(home, /id="advanced-backdrop"[^>]*\shidden\b/);
   assert.match(home, /id="panel-grid"/);
+  assert.equal((home.match(/panel-card-skeleton/g) || []).length, 12);
+  assert.match(home, /<section class="results-shell"[^>]*\shidden\b/);
   assert.match(home, /id="results-load-more"/);
   assert.match(home, /id="results-sentinel"/);
   assert.match(home, /id="favorite-results"/);

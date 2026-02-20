@@ -1416,6 +1416,8 @@ function withinDistance(a, b, maxDistance = 1) {
       initWithEntries(rows);
     })
     .catch(() => {
+      panelGrid.hidden = true;
+      resultsShell.hidden = false;
       if (resultsCount) {
         resultsCount.textContent = 'Unable to load emoji data.';
       }
