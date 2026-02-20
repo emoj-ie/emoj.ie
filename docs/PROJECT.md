@@ -127,7 +127,7 @@ Last updated: 2026-02-20
 - `pwa_prompt_shown` / `pwa_installed` (deferred in current milestone).
 
 ## Microcopy Direction (English)
-- Search placeholder: `Search by emoji, meaning, or keyword`
+- Search placeholder: `Search by emoji, meaning, or keyword…`
 - Empty state (search): `No matches yet. Try a broader word like "happy", "food", or "heart".`
 - Empty state (favorites): `No favorites yet. Star emojis you use often.`
 - Copy toast: `Copied {emoji} {name}`

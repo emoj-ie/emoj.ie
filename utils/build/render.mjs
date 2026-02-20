@@ -200,7 +200,7 @@ function renderHeader({
   const search = showSearch
     ? `<form class="header-search" action="${prefix}" method="get" role="search">
         <label for="search" class="visually-hidden">Search Emojis</label>
-        <input id="search" name="q" type="search" autocomplete="off" placeholder="Search by emoji, meaning, or keyword" />
+        <input id="search" name="q" type="search" autocomplete="off" placeholder="Search by emoji, meaning, or keyword…" />
         <button type="submit">Search</button>
       </form>`
     : '';

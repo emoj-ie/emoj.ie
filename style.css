@@ -165,6 +165,8 @@ h3 {
   line-height: 1.2;
   letter-spacing: -0.03em;
   margin: 0;
+  text-wrap: balance;
+  scroll-margin-top: 6rem;
 }
 
 h1 {
