@@ -66,5 +66,8 @@ test('generated about page uses shared shell and no inline handlers', () => {
   assert.match(aboutHtml, /class="header-search"/);
   assert.match(aboutHtml, /id="header-menu-toggle"/);
   assert.match(aboutHtml, /id="global-advanced-menu"[^>]*\shidden\b/);
+  assert.match(aboutHtml, /id="about-shuffle"/);
+  assert.match(aboutHtml, /id="about-emoji-wall"/);
+  assert.match(aboutHtml, /Tap any tile to copy/);
   assert.ok(!aboutHtml.includes('onclick='));
 });

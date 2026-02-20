@@ -2,6 +2,20 @@
   const THEME_PREFERENCE_KEY = 'themePreference';
   const THEME_SEQUENCE = ['system', 'light', 'dark'];
 
+  function pickRandomSubset(items, limit) {
+    var source = Array.isArray(items) ? items.slice() : [];
+    var count = Math.min(limit, source.length);
+    var result = [];
+
+    for (var i = 0; i < count; i += 1) {
+      var index = Math.floor(Math.random() * source.length);
+      result.push(source[index]);
+      source.splice(index, 1);
+    }
+
+    return result;
+  }
+
   function track(eventName, props) {
     if (typeof window.plausible !== 'function') {
       return;
@@ -219,6 +233,113 @@
       });
   }
 
+  function initAboutPlayground() {
+    if (!document.body.classList.contains('page-about')) {
+      return;
+    }
+
+    var wall = document.getElementById('about-emoji-wall');
+    var shuffle = document.getElementById('about-shuffle');
+    if (!wall || !shuffle) {
+      return;
+    }
+
+    var pool = [
+      { emoji: '😀', annotation: 'grinning face' },
+      { emoji: '😎', annotation: 'smiling face with sunglasses' },
+      { emoji: '🤖', annotation: 'robot' },
+      { emoji: '🎉', annotation: 'party popper' },
+      { emoji: '🚀', annotation: 'rocket' },
+      { emoji: '🌈', annotation: 'rainbow' },
+      { emoji: '🧠', annotation: 'brain' },
+      { emoji: '🍕', annotation: 'pizza' },
+      { emoji: '⚽', annotation: 'soccer ball' },
+      { emoji: '🎧', annotation: 'headphones' },
+      { emoji: '🦊', annotation: 'fox' },
+      { emoji: '💡', annotation: 'light bulb' },
+      { emoji: '✨', annotation: 'sparkles' },
+      { emoji: '🌟', annotation: 'glowing star' },
+    ];
+
+    function renderWall() {
+      var picks = pickRandomSubset(pool, 12);
+      if (!picks.length) {
+        return;
+      }
+
+      wall.replaceChildren();
+      picks.forEach(function (item) {
+        if (!item || !item.emoji) return;
+
+        var label = item.annotation || 'emoji';
+        var li = document.createElement('li');
+        var button = document.createElement('button');
+        button.type = 'button';
+        button.className = 'about-emoji-chip';
+        button.setAttribute('data-copy-value', item.emoji);
+        button.setAttribute('data-copy-label', label);
+        button.setAttribute('data-copy-format', 'emoji');
+        button.setAttribute('aria-label', 'Copy ' + label + ' emoji');
+
+        var glyph = document.createElement('span');
+        glyph.className = 'about-emoji-glyph';
+        glyph.setAttribute('aria-hidden', 'true');
+        glyph.textContent = item.emoji;
+
+        var small = document.createElement('small');
+        small.textContent = label;
+
+        button.appendChild(glyph);
+        button.appendChild(small);
+        li.appendChild(button);
+        wall.appendChild(li);
+      });
+
+      wall.classList.remove('is-refreshing');
+      void wall.offsetWidth;
+      wall.classList.add('is-refreshing');
+    }
+
+    shuffle.addEventListener('click', function () {
+      renderWall();
+      track('about_shuffle', {
+        source: window.location.pathname,
+      });
+    });
+
+    fetch('/daily-emoji.json')
+      .then(function (response) {
+        if (!response.ok) {
+          throw new Error('daily emoji unavailable');
+        }
+        return response.json();
+      })
+      .then(function (rows) {
+        if (!Array.isArray(rows)) {
+          return;
+        }
+
+        var nextPool = rows
+          .filter(function (item) {
+            return item && item.emoji;
+          })
+          .map(function (item) {
+            return {
+              emoji: item.emoji,
+              annotation: item.annotation || 'emoji',
+            };
+          });
+
+        if (nextPool.length >= 12) {
+          pool = nextPool;
+          renderWall();
+        }
+      })
+      .catch(function () {
+        // Keep fallback pool.
+      });
+  }
+
   function initGlobalHeaderMenu() {
     if (document.body.classList.contains('page-home')) {
       return;
@@ -385,5 +506,6 @@
   registerServiceWorker();
   initThemeToggle();
   applyDailyLogoEmoji();
+  initAboutPlayground();
   initGlobalHeaderMenu();
 })();

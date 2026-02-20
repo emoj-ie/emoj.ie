@@ -61,6 +61,11 @@ All notable project updates are tracked here in human-readable form.
   - removed card count metadata on landing panels to reduce cognitive load
   - kept favorites/recents hidden until populated and preserved 3-click discovery flow
 - Updated UX/performance and baseline Playwright assertions to match the simplified breadcrumb and dynamic hero-card behavior.
+- Rebuilt the About page with copy-first clarity and lighter language:
+  - replaced corporate/internal phrasing with short user-centered messaging
+  - added a playful interactive emoji wall (shuffle + tap-to-copy)
+  - added direct About CTAs to browse emojis and category hubs
+  - kept implementation dependency-free and static-host friendly
 
 ### Notes
 - Phase 0 through Phase 5 are complete for the current roadmap scope.

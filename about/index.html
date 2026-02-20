@@ -3,18 +3,18 @@
   <head>
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>About | emoj.ie</title>
-    <meta name="description" content="About the emoj.ie emoji explorer and data sources." />
+    <title>About emoj.ie | emoj.ie</title>
+    <meta name="description" content="Why emoj.ie exists: a fast, friendly emoji finder built for instant copy and simple discovery." />
     <link rel="canonical" href="https://emoj.ie/about/" />
     
     <meta property="og:type" content="website" />
-    <meta property="og:title" content="About | emoj.ie" />
-    <meta property="og:description" content="About the emoj.ie emoji explorer and data sources." />
+    <meta property="og:title" content="About emoj.ie | emoj.ie" />
+    <meta property="og:description" content="Why emoj.ie exists: a fast, friendly emoji finder built for instant copy and simple discovery." />
     <meta property="og:url" content="https://emoj.ie/about/" />
     <meta property="og:image" content="https://emoj.ie/android-chrome-512x512.png" />
     <meta name="twitter:card" content="summary_large_image" />
-    <meta name="twitter:title" content="About | emoj.ie" />
-    <meta name="twitter:description" content="About the emoj.ie emoji explorer and data sources." />
+    <meta name="twitter:title" content="About emoj.ie | emoj.ie" />
+    <meta name="twitter:description" content="Why emoj.ie exists: a fast, friendly emoji finder built for instant copy and simple discovery." />
     <meta name="twitter:image" content="https://emoj.ie/android-chrome-512x512.png" />
     <link rel="preconnect" href="https://cdn.jsdelivr.net" crossorigin />
     <link rel="preconnect" href="https://fonts.googleapis.com" />
@@ -79,31 +79,188 @@
     </header>
     <nav class="breadcrumbs" aria-label="Breadcrumb"><a href="/">Home</a> / <span>About</span></nav>
     <main id="main-content" class="page-main">
-      <article class="about-page">
+      <article class="about-page about-page-v2">
     <p class="collection-kicker">About</p>
-    <h1>About emoj.ie</h1>
-    <p class="about-lede">emoj.ie is a static-first emoji site designed for fast copy workflows, clear discovery, and local-first persistence.</p>
+    <h1>Emoji should feel instant.</h1>
+    <p class="about-lede">emoj.ie helps you find, copy, and reuse the right emoji in seconds. It is fast, friendly, and simple on desktop and mobile.</p>
+    <div class="about-pill-row" aria-label="What emoj.ie stands for">
+      <span>⚡ Fast</span>
+      <span>🎯 Clear</span>
+      <span>🔒 Local-first</span>
+      <span>🧒 Kid-friendly</span>
+    </div>
+    <section class="about-grid about-grid-signals">
+      <section class="about-card">
+        <h2>Made for speed</h2>
+        <p>Open the site, pick a category, and copy in a tap. No account or setup required.</p>
+      </section>
+      <section class="about-card">
+        <h2>Made for humans</h2>
+        <p>Simple navigation, clear labels, and responsive layouts keep the focus on emoji, not UI clutter.</p>
+      </section>
+      <section class="about-card">
+        <h2>Made to remember</h2>
+        <p>Favorites and recents stay on your device so your everyday emoji set is always close.</p>
+      </section>
+    </section>
+    <section class="about-card about-playground" aria-labelledby="about-playground-title">
+      <div class="about-playground-head">
+        <div>
+          <h2 id="about-playground-title">Emoji playground</h2>
+          <p>Tap any tile to copy. Hit shuffle to spark new ideas.</p>
+        </div>
+        <button type="button" id="about-shuffle" class="copy-btn secondary">Shuffle</button>
+      </div>
+      <ul id="about-emoji-wall" class="about-emoji-wall" aria-live="polite"><li>
+        <button
+          type="button"
+          class="about-emoji-chip"
+          data-copy-value="😀"
+          data-copy-label="grinning face"
+          data-copy-format="emoji"
+          aria-label="Copy grinning face emoji"
+        >
+          <span class="about-emoji-glyph" aria-hidden="true">😀</span>
+          <small>grinning face</small>
+        </button>
+      </li><li>
+        <button
+          type="button"
+          class="about-emoji-chip"
+          data-copy-value="🤖"
+          data-copy-label="robot"
+          data-copy-format="emoji"
+          aria-label="Copy robot emoji"
+        >
+          <span class="about-emoji-glyph" aria-hidden="true">🤖</span>
+          <small>robot</small>
+        </button>
+      </li><li>
+        <button
+          type="button"
+          class="about-emoji-chip"
+          data-copy-value="🎉"
+          data-copy-label="party popper"
+          data-copy-format="emoji"
+          aria-label="Copy party popper emoji"
+        >
+          <span class="about-emoji-glyph" aria-hidden="true">🎉</span>
+          <small>party popper</small>
+        </button>
+      </li><li>
+        <button
+          type="button"
+          class="about-emoji-chip"
+          data-copy-value="🌈"
+          data-copy-label="rainbow"
+          data-copy-format="emoji"
+          aria-label="Copy rainbow emoji"
+        >
+          <span class="about-emoji-glyph" aria-hidden="true">🌈</span>
+          <small>rainbow</small>
+        </button>
+      </li><li>
+        <button
+          type="button"
+          class="about-emoji-chip"
+          data-copy-value="🦊"
+          data-copy-label="fox"
+          data-copy-format="emoji"
+          aria-label="Copy fox emoji"
+        >
+          <span class="about-emoji-glyph" aria-hidden="true">🦊</span>
+          <small>fox</small>
+        </button>
+      </li><li>
+        <button
+          type="button"
+          class="about-emoji-chip"
+          data-copy-value="🍕"
+          data-copy-label="pizza"
+          data-copy-format="emoji"
+          aria-label="Copy pizza emoji"
+        >
+          <span class="about-emoji-glyph" aria-hidden="true">🍕</span>
+          <small>pizza</small>
+        </button>
+      </li><li>
+        <button
+          type="button"
+          class="about-emoji-chip"
+          data-copy-value="⚽"
+          data-copy-label="soccer ball"
+          data-copy-format="emoji"
+          aria-label="Copy soccer ball emoji"
+        >
+          <span class="about-emoji-glyph" aria-hidden="true">⚽</span>
+          <small>soccer ball</small>
+        </button>
+      </li><li>
+        <button
+          type="button"
+          class="about-emoji-chip"
+          data-copy-value="🎧"
+          data-copy-label="headphones"
+          data-copy-format="emoji"
+          aria-label="Copy headphones emoji"
+        >
+          <span class="about-emoji-glyph" aria-hidden="true">🎧</span>
+          <small>headphones</small>
+        </button>
+      </li><li>
+        <button
+          type="button"
+          class="about-emoji-chip"
+          data-copy-value="🚀"
+          data-copy-label="rocket"
+          data-copy-format="emoji"
+          aria-label="Copy rocket emoji"
+        >
+          <span class="about-emoji-glyph" aria-hidden="true">🚀</span>
+          <small>rocket</small>
+        </button>
+      </li><li>
+        <button
+          type="button"
+          class="about-emoji-chip"
+          data-copy-value="🧠"
+          data-copy-label="brain"
+          data-copy-format="emoji"
+          aria-label="Copy brain emoji"
+        >
+          <span class="about-emoji-glyph" aria-hidden="true">🧠</span>
+          <small>brain</small>
+        </button>
+      </li><li>
+        <button
+          type="button"
+          class="about-emoji-chip"
+          data-copy-value="✨"
+          data-copy-label="sparkles"
+          data-copy-format="emoji"
+          aria-label="Copy sparkles emoji"
+        >
+          <span class="about-emoji-glyph" aria-hidden="true">✨</span>
+          <small>sparkles</small>
+        </button>
+      </li><li>
+        <button
+          type="button"
+          class="about-emoji-chip"
+          data-copy-value="💡"
+          data-copy-label="light bulb"
+          data-copy-format="emoji"
+          aria-label="Copy light bulb emoji"
+        >
+          <span class="about-emoji-glyph" aria-hidden="true">💡</span>
+          <small>light bulb</small>
+        </button>
+      </li></ul>
+    </section>
     <section class="about-grid">
       <section class="about-card">
-        <h2>What We Optimize</h2>
-        <ul class="story-list">
-          <li>Find and copy the right emoji in seconds.</li>
-          <li>Reduce repeat search work with local favorites and recents.</li>
-          <li>Publish indexable routes that are genuinely useful.</li>
-        </ul>
-      </section>
-      <section class="about-card">
-        <h2>How It Is Built</h2>
-        <ul class="story-list">
-          <li>Static-first generation for predictable speed on GitHub Pages.</li>
-          <li>Plain HTML/CSS/JS architecture with lightweight client logic.</li>
-          <li>Automated QA coverage across build, accessibility, links, and e2e.</li>
-        </ul>
-      </section>
-      <section class="about-card">
-        <h2>Data And License</h2>
-        <p>Emoji data and artwork are sourced from the OpenMoji project under CC BY-SA 4.0.</p>
-        <p>Keyword enrichment comes from open metadata fields in the source dataset.</p>
+        <h2>Open data, clear credit</h2>
+        <p>Emoji artwork and base metadata come from OpenMoji under CC BY-SA 4.0, with open keyword enrichment.</p>
       </section>
       <section class="about-card">
         <h2>Contact</h2>
@@ -111,6 +268,10 @@
         <p><a href="mailto:info@emoj.ie">info@emoj.ie</a></p>
       </section>
     </section>
+    <div class="about-cta-row">
+      <a class="copy-btn" href="/">Browse emojis</a>
+      <a class="copy-btn secondary" href="/category/">Open categories</a>
+    </div>
   </article>
     </main>
     <aside id="global-advanced-menu" class="advanced-menu advanced-menu-global" hidden>
