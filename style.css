@@ -793,7 +793,7 @@ a:hover {
   padding: 0.82rem 0.86rem;
   display: grid;
   gap: 0.25rem;
-  text-align: left;
+  text-align: center;
   cursor: pointer;
   text-decoration: none;
   color: inherit;
@@ -830,6 +830,11 @@ a:hover {
   letter-spacing: -0.01em;
   line-height: 1.15;
   font-size: 0.98rem;
+  min-height: 2.3em;
+  display: -webkit-box;
+  -webkit-line-clamp: 2;
+  -webkit-box-orient: vertical;
+  overflow: hidden;
 }
 
 .panel-card-meta {
@@ -1070,14 +1075,34 @@ body.menu-open {
   border-top: 1px solid var(--border-soft);
 }
 
+.emoji-label,
+.emoji > a {
+  display: block;
+  width: 100%;
+  min-width: 0;
+  text-decoration: none;
+}
+
+.emoji-label:hover small,
+.emoji > a:hover small {
+  text-decoration: underline;
+  text-underline-offset: 2px;
+}
+
 .emoji small {
   display: block;
   color: var(--text-body);
   font-size: 0.83rem;
-  line-height: 1.35;
+  line-height: 1.25;
+  text-align: center;
+  min-height: 2.5em;
+  display: -webkit-box;
+  -webkit-line-clamp: 2;
+  -webkit-box-orient: vertical;
+  white-space: normal;
+  word-break: break-word;
   overflow: hidden;
   text-overflow: ellipsis;
-  white-space: nowrap;
 }
 
 .emoji-empty {

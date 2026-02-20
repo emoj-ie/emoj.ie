@@ -77,6 +77,10 @@ All notable project updates are tracked here in human-readable form.
   - enforced divisor-only category grid columns on home (`12 / 6 / 4 / 3 / 2 / 1`) to avoid uneven rows
   - pinned the burger control to the right edge of the header
   - moved search icon to the right side inside the input to prevent placeholder overlap
+- Polished card text UX across home and collection pages:
+  - centered card titles/labels for cleaner visual rhythm
+  - fixed long emoji names overflowing card bounds by switching to 2-line clamped labels
+  - added hover/title access to full emoji names when labels are truncated
 
 ### Notes
 - Phase 0 through Phase 5 are complete for the current roadmap scope.

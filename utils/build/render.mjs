@@ -390,7 +390,7 @@ function renderEmojiCard(entry, assetTemplate) {
       <img src="${escapeHtml(src)}" alt="${escapeHtml(label)}" width="48" height="48" loading="lazy" data-cdn-src="${escapeHtml(cdnSrc)}" data-hex="${escapeHtml(entry.hexLower)}" />
     </button>
     <hr />
-    <a href="${escapeHtml(detailHref)}"><small>${escapeHtml(label)}</small></a>
+    <a class="emoji-label" href="${escapeHtml(detailHref)}" title="${escapeHtml(label)}"><small>${escapeHtml(label)}</small></a>
   </li>`;
 }
 

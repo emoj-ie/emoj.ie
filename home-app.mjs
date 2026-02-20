@@ -627,7 +627,9 @@ function withinDistance(a, b, maxDistance = 1) {
     const divider = document.createElement('hr');
 
     const link = document.createElement('a');
+    link.className = 'emoji-label';
     link.href = `/${display.detailRoute}`;
+    link.title = display.annotation;
     const small = document.createElement('small');
     small.textContent = display.annotation;
     link.appendChild(small);
@@ -1036,7 +1038,9 @@ function withinDistance(a, b, maxDistance = 1) {
 
       const divider = document.createElement('hr');
       const link = document.createElement('a');
+      link.className = 'emoji-label';
       link.href = `/${display.detailRoute}`;
+      link.title = display.annotation;
       const small = document.createElement('small');
       small.textContent = display.annotation;
       link.appendChild(small);
@@ -1101,7 +1105,9 @@ function withinDistance(a, b, maxDistance = 1) {
 
       const divider = document.createElement('hr');
       const link = document.createElement('a');
+      link.className = 'emoji-label';
       link.href = `/${display.detailRoute}`;
+      link.title = display.annotation;
       const small = document.createElement('small');
       small.textContent = display.annotation;
       link.appendChild(small);
