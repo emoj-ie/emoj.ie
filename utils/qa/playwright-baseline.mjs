@@ -88,6 +88,7 @@ async function run() {
     await page.selectOption('#group-filter', 'smileys-emotion');
     await page.waitForTimeout(250);
     await page.selectOption('#subgroup-filter', 'face-smiling');
+    await page.selectOption('#copy-mode', 'unicode');
     await page.click('#advanced-close');
     await page.waitForSelector('#home-results .emoji-copy', { timeout: 20000 });
 
@@ -123,6 +124,8 @@ async function run() {
     assert.match(toastText, /Copied:/, 'Expected copy toast after selecting emoji');
     const copiedValue = await page.evaluate(() => window.__copiedValue || '');
     assert.ok(copiedValue.length > 0, 'Expected clipboard stub to receive copied value');
+    const expectedHexCopy = (await filteredButtons.first().getAttribute('data-hex')) || '';
+    assert.equal(copiedValue, expectedHexCopy, 'Unicode copy mode should copy emoji hexcode');
 
     const favoriteButtons = page.locator('#home-results .emoji-favorite');
     assert.ok((await favoriteButtons.count()) > 0, 'Expected favorite buttons in search results');
