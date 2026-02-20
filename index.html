@@ -231,14 +231,18 @@
   </aside>
   <button type="button" id="advanced-backdrop" class="advanced-backdrop" hidden tabindex="-1" aria-hidden="true"></button>
 
-  <section id="favorites-section" class="recent-section" hidden>
+  <section id="favorites-section" class="recent-section" data-empty="true">
     <h2>Favorites</h2>
-    <ul id="favorite-results" class="emoji-list" aria-label="Favorite emojis"></ul>
+    <ul id="favorite-results" class="emoji-list" aria-label="Favorite emojis">
+      <li class="emoji-empty-rail">No favorites yet.</li>
+    </ul>
   </section>
 
-  <section id="recents-section" class="recent-section" hidden>
+  <section id="recents-section" class="recent-section" data-empty="true">
     <h2>Recently Copied</h2>
-    <ul id="recent-results" class="emoji-list" aria-label="Recently copied emojis"></ul>
+    <ul id="recent-results" class="emoji-list" aria-label="Recently copied emojis">
+      <li class="emoji-empty-rail">No recent emojis yet.</li>
+    </ul>
   </section>
 
   <section id="tofu-score-home" class="recent-section tofu-score-home" data-tofu-score-root data-tofu-context="home">

@@ -1,7 +1,7 @@
 (function () {
-  var CACHE_KEY = 'emojiTofuScoreV3';
+  var CACHE_KEY = 'emojiTofuScoreV4';
   var CACHE_MAX_AGE_MS = 1000 * 60 * 60 * 24 * 7;
-  var SCORE_VERSION = 3;
+  var SCORE_VERSION = 4;
 
   function track(eventName, props) {
     if (typeof window.plausible !== 'function') {
@@ -37,6 +37,67 @@
     ctx.font =
       '28px "Apple Color Emoji","Segoe UI Emoji","Noto Color Emoji","Twemoji Mozilla",sans-serif';
 
+    function countOpaquePixels(data) {
+      var count = 0;
+      for (var i = 3; i < data.length; i += 4) {
+        if (data[i] > 0) count += 1;
+      }
+      return count;
+    }
+
+    function countUniqueColors(data, max) {
+      var cap = Number(max) > 0 ? Number(max) : 24;
+      var seen = new Set();
+      for (var i = 0; i < data.length; i += 4) {
+        if (data[i + 3] === 0) continue;
+        var key = (data[i] << 16) | (data[i + 1] << 8) | data[i + 2];
+        seen.add(key);
+        if (seen.size >= cap) {
+          break;
+        }
+      }
+      return seen.size;
+    }
+
+    function pixelDiffCount(a, b) {
+      var diff = 0;
+      for (var i = 0; i < a.length; i += 1) {
+        if (a[i] !== b[i]) diff += 1;
+      }
+      return diff;
+    }
+
+    function meanAbsoluteDiff(a, b) {
+      var total = 0;
+      for (var i = 0; i < a.length; i += 1) {
+        total += Math.abs(a[i] - b[i]);
+      }
+      return total / a.length;
+    }
+
+    function buildSharedMask(a, b) {
+      var mask = new Uint8Array(a.length / 4);
+      var size = 0;
+      for (var i = 0, pixelIndex = 0; i < a.length; i += 4, pixelIndex += 1) {
+        if (a[i + 3] > 0 && b[i + 3] > 0) {
+          mask[pixelIndex] = 1;
+          size += 1;
+        }
+      }
+      return { mask: mask, size: size };
+    }
+
+    function maskCoverage(data, sharedMask) {
+      if (!sharedMask || sharedMask.size < 8) return 0;
+      var filled = 0;
+      for (var i = 3, pixelIndex = 0; i < data.length; i += 4, pixelIndex += 1) {
+        if (sharedMask.mask[pixelIndex] && data[i] > 0) {
+          filled += 1;
+        }
+      }
+      return filled / sharedMask.size;
+    }
+
     function draw(glyph) {
       ctx.clearRect(0, 0, 32, 32);
       ctx.fillText(glyph, 0, 0);
@@ -44,18 +105,43 @@
     }
 
     var tofuData = new Uint8ClampedArray(draw('\ufffd'));
+    var privateUseA = new Uint8ClampedArray(draw('\ue000'));
+    var privateUseB = new Uint8ClampedArray(draw('\ue001'));
+    var nonCharacter = new Uint8ClampedArray(draw(String.fromCodePoint(0x10ffff)));
+    var tofuMask = buildSharedMask(privateUseA, privateUseB);
+    if (tofuMask.size < 8) {
+      tofuMask = buildSharedMask(tofuData, nonCharacter);
+    }
 
     return function isEmojiSupported(emoji) {
       var emojiData = draw(emoji);
-      var diff = 0;
-
-      for (var i = 0; i < emojiData.length; i += 1) {
-        if (emojiData[i] !== tofuData[i]) {
-          diff += 1;
-        }
+      var opaque = countOpaquePixels(emojiData);
+      if (opaque < 8) {
+        return false;
       }
 
-      return diff > 100;
+      var diffToReplacement = pixelDiffCount(emojiData, tofuData);
+      if (diffToReplacement <= 100) {
+        return false;
+      }
+
+      var closestProbe = Math.min(
+        meanAbsoluteDiff(emojiData, privateUseA),
+        meanAbsoluteDiff(emojiData, privateUseB),
+        meanAbsoluteDiff(emojiData, nonCharacter)
+      );
+      var colors = countUniqueColors(emojiData, 16);
+      var probeCoverage = maskCoverage(emojiData, tofuMask);
+
+      // Some platforms render tofu as a monochrome framed glyph with inline code text.
+      if (closestProbe < 6 && colors <= 6 && opaque < 640) {
+        return false;
+      }
+      if (probeCoverage > 0.9 && colors <= 4 && opaque < 700) {
+        return false;
+      }
+
+      return true;
     };
   }
 

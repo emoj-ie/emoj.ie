@@ -434,15 +434,47 @@ function withinDistance(a, b, maxDistance = 1) {
       .filter((entry) => Boolean(entry && entry.hexLower));
   }
 
+  function isPrivateUseCodepoint(codepoint) {
+    if (!Number.isFinite(codepoint)) return false;
+    if (codepoint >= 0xe000 && codepoint <= 0xf8ff) return true;
+    if (codepoint >= 0xf0000 && codepoint <= 0xffffd) return true;
+    if (codepoint >= 0x100000 && codepoint <= 0x10fffd) return true;
+    return false;
+  }
+
+  function canUseTitleRepresentative(entry) {
+    if (!entry || !entry.emoji) {
+      return false;
+    }
+
+    const hex = String(entry.hexLower || entry.hexcode || '').toLowerCase();
+    if (hex) {
+      const parts = hex
+        .split('-')
+        .map((part) => Number.parseInt(part, 16))
+        .filter((part) => Number.isFinite(part));
+      if (parts.some((part) => isPrivateUseCodepoint(part))) {
+        return false;
+      }
+    }
+
+    return !/[\uE000-\uF8FF]/.test(String(entry.emoji));
+  }
+
+  function pickTitleRepresentative(previewEntries) {
+    if (!Array.isArray(previewEntries) || previewEntries.length === 0) {
+      return '';
+    }
+    const candidate = previewEntries.find((entry) => canUseTitleRepresentative(entry));
+    return candidate && candidate.emoji ? `${candidate.emoji} ` : '';
+  }
+
   function createPanelCard(label, meta, previewEntries, onClick) {
     const card = document.createElement('button');
     card.className = 'panel-card';
     card.type = 'button';
 
-    const representativeEmoji =
-      Array.isArray(previewEntries) && previewEntries.length > 0 && previewEntries[0]?.emoji
-        ? `${previewEntries[0].emoji} `
-        : '';
+    const representativeEmoji = pickTitleRepresentative(previewEntries);
     const title = document.createElement('span');
     title.className = 'panel-card-title';
     title.textContent = `${representativeEmoji}${label}`;
@@ -998,11 +1030,16 @@ function withinDistance(a, b, maxDistance = 1) {
     recentList.innerHTML = '';
 
     if (recents.length === 0) {
-      if (recentsSection) recentsSection.hidden = true;
+      if (recentsSection) {
+        recentsSection.dataset.empty = 'true';
+      }
+      recentList.innerHTML = '<li class="emoji-empty-rail">No recent emojis yet.</li>';
       return;
     }
 
-    if (recentsSection) recentsSection.hidden = false;
+    if (recentsSection) {
+      delete recentsSection.dataset.empty;
+    }
 
     const fragment = document.createDocumentFragment();
     for (const raw of recents) {
@@ -1066,11 +1103,16 @@ function withinDistance(a, b, maxDistance = 1) {
     favoriteList.innerHTML = '';
 
     if (favorites.length === 0) {
-      if (favoritesSection) favoritesSection.hidden = true;
+      if (favoritesSection) {
+        favoritesSection.dataset.empty = 'true';
+      }
+      favoriteList.innerHTML = '<li class="emoji-empty-rail">No favorites yet.</li>';
       return;
     }
 
-    if (favoritesSection) favoritesSection.hidden = false;
+    if (favoritesSection) {
+      delete favoritesSection.dataset.empty;
+    }
 
     const fragment = document.createDocumentFragment();
     for (const raw of favorites) {

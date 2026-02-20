@@ -154,6 +154,11 @@ All notable project updates are tracked here in human-readable form.
 - Refined About credits crawl interaction and art direction:
   - pause crawl animation on hover and touch
   - replaced heavy background with a simpler, subtle emoji-space wallpaper for better readability
+- Hardened tofu detection + reduced homepage shift:
+  - upgraded detector heuristics to classify blank glyph output and tofu-like probe matches as missing support
+  - bumped tofu cache key/version so stale 100% readings are invalidated
+  - kept Favorites and Recently Copied rails mounted from first paint with stable empty states to prevent tofu panel layout jumps
+  - filtered panel title-prefix emoji to skip private-use codepoints that commonly render as tofu
 
 ### Notes
 - Phase 0 through Phase 5 are complete for the current roadmap scope.

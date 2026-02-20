@@ -1063,8 +1063,7 @@ a:hover {
 }
 
 .panel-grid[hidden],
-.results-shell[hidden],
-.recent-section[hidden] {
+.results-shell[hidden] {
   display: none !important;
 }
 
@@ -1079,6 +1078,10 @@ body.menu-open {
 .emoji-detail,
 .about-page {
   padding: 1.2rem;
+}
+
+.recent-section {
+  min-block-size: 186px;
 }
 
 .results-toolbar {
@@ -1106,6 +1109,19 @@ body.menu-open {
   display: grid;
   gap: 0.7rem;
   grid-template-columns: repeat(auto-fill, minmax(120px, 1fr));
+}
+
+.emoji-empty-rail {
+  grid-column: 1 / -1;
+  min-height: 54px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  border: 1px dashed var(--border-soft);
+  border-radius: var(--radius-md);
+  color: var(--text-muted);
+  font-size: 0.84rem;
+  background: color-mix(in oklab, var(--bg-soft), transparent 22%);
 }
 
 .emoji-list-panel {

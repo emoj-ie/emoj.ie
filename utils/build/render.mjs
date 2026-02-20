@@ -485,6 +485,43 @@ function pickPanelPreviewEntry(entries = []) {
   return entries.find((entry) => Boolean(entry?.hexLower)) || null;
 }
 
+function isPrivateUseCodepoint(codepoint) {
+  if (!Number.isFinite(codepoint)) return false;
+  if (codepoint >= 0xe000 && codepoint <= 0xf8ff) return true;
+  if (codepoint >= 0xf0000 && codepoint <= 0xffffd) return true;
+  if (codepoint >= 0x100000 && codepoint <= 0x10fffd) return true;
+  return false;
+}
+
+function canUseTitleRepresentative(entry) {
+  if (!entry?.emoji) {
+    return false;
+  }
+
+  const hex = String(entry.hexLower || entry.hexcode || '').toLowerCase();
+  if (hex) {
+    const parts = hex
+      .split('-')
+      .map((part) => Number.parseInt(part, 16))
+      .filter((part) => Number.isFinite(part));
+    if (parts.some((part) => isPrivateUseCodepoint(part))) {
+      return false;
+    }
+  }
+
+  return !/[\uE000-\uF8FF]/.test(String(entry.emoji));
+}
+
+function pickTitleRepresentative(previewEntry, previewEntries = []) {
+  const candidates = [previewEntry, ...(previewEntries || [])].filter(Boolean);
+  for (const candidate of candidates) {
+    if (canUseTitleRepresentative(candidate)) {
+      return `${candidate.emoji} `;
+    }
+  }
+  return '';
+}
+
 function serializePanelPreviewSequence(entries, assetTemplate, limit = 8) {
   const uniqueEntries = [];
   const seenHex = new Set();
@@ -513,7 +550,7 @@ function serializePanelPreviewSequence(entries, assetTemplate, limit = 8) {
 
 function renderPanelCardLink({ title, href, previewEntry, previewEntries = [], assetTemplate }) {
   let heroMarkup = '<span class="panel-card-hero-fallback" aria-hidden="true">🙂</span>';
-  const representative = previewEntry?.emoji ? `${previewEntry.emoji} ` : '';
+  const representative = pickTitleRepresentative(previewEntry, previewEntries);
   const titleText = `${representative}${title}`;
 
   if (previewEntry) {
@@ -711,14 +748,18 @@ function renderHomePage(model, config) {
   </aside>
   <button type="button" id="advanced-backdrop" class="advanced-backdrop" hidden tabindex="-1" aria-hidden="true"></button>
 
-  <section id="favorites-section" class="recent-section" hidden>
+  <section id="favorites-section" class="recent-section" data-empty="true">
     <h2>Favorites</h2>
-    <ul id="favorite-results" class="emoji-list" aria-label="Favorite emojis"></ul>
+    <ul id="favorite-results" class="emoji-list" aria-label="Favorite emojis">
+      <li class="emoji-empty-rail">No favorites yet.</li>
+    </ul>
   </section>
 
-  <section id="recents-section" class="recent-section" hidden>
+  <section id="recents-section" class="recent-section" data-empty="true">
     <h2>Recently Copied</h2>
-    <ul id="recent-results" class="emoji-list" aria-label="Recently copied emojis"></ul>
+    <ul id="recent-results" class="emoji-list" aria-label="Recently copied emojis">
+      <li class="emoji-empty-rail">No recent emojis yet.</li>
+    </ul>
   </section>
 
   <section id="tofu-score-home" class="recent-section tofu-score-home" data-tofu-score-root data-tofu-context="home">

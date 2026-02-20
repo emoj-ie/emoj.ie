@@ -50,8 +50,10 @@ test('homepage template has lazy loading controls', () => {
   assert.match(home, /id="results-load-more"/);
   assert.match(home, /id="results-sentinel"/);
   assert.match(home, /id="favorite-results"/);
-  assert.match(home, /id="favorites-section"[^>]*\shidden\b/);
-  assert.match(home, /id="recents-section"[^>]*\shidden\b/);
+  assert.match(home, /id="favorites-section"[^>]*data-empty="true"/);
+  assert.match(home, /id="recents-section"[^>]*data-empty="true"/);
+  assert.match(home, /class="emoji-empty-rail">No favorites yet\./);
+  assert.match(home, /class="emoji-empty-rail">No recent emojis yet\./);
   assert.match(home, /id="tofu-score-home"/);
   assert.match(home, /data-tofu-score-root/);
   assert.match(home, /emoji-diagnostics\.js/);
