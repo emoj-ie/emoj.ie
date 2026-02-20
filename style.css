@@ -852,17 +852,20 @@ a:hover {
 .panel-card-hero {
   display: grid;
   place-items: center;
-  min-height: 66px;
-  margin-top: 0.25rem;
-  border: 2px solid color-mix(in oklab, var(--border-soft), transparent 12%);
-  border-radius: 12px;
-  background: color-mix(in oklab, var(--bg-elevated), var(--bg-soft) 12%);
+  justify-items: center;
+  min-height: 76px;
+  margin-top: 0.2rem;
+  border: 0;
+  border-radius: 0;
+  background: transparent;
 }
 
 .panel-card-hero-img {
-  width: 56px;
-  height: 56px;
+  width: 72px;
+  height: 72px;
   object-fit: contain;
+  display: block;
+  margin-inline: auto;
   transition: opacity 130ms ease, transform 130ms ease;
 }
 
@@ -872,7 +875,7 @@ a:hover {
 }
 
 .panel-card-hero-fallback {
-  font-size: 2rem;
+  font-size: 2.4rem;
   line-height: 1;
 }
 
@@ -1117,6 +1120,17 @@ body.menu-open {
   box-shadow: var(--shadow-sm);
   border-color: var(--border-strong);
   color: var(--text-strong);
+}
+
+.about-page-min {
+  display: block;
+  text-align: center;
+}
+
+.about-page-min p {
+  margin: 0;
+  font-size: 1.05rem;
+  color: var(--text-body);
 }
 
 .emoji {
@@ -1928,12 +1942,12 @@ kbd {
   }
 
   .panel-card-hero {
-    min-height: 56px;
+    min-height: 66px;
   }
 
   .panel-card-hero-img {
-    width: 48px;
-    height: 48px;
+    width: 62px;
+    height: 62px;
   }
 
   .emoji-hero-panel {

@@ -714,88 +714,9 @@ function renderHomePage(model, config) {
 }
 
 function renderAboutPage(config) {
-  const starterWall = [
-    ['😀', 'grinning face'],
-    ['🤖', 'robot'],
-    ['🎉', 'party popper'],
-    ['🌈', 'rainbow'],
-    ['🦊', 'fox'],
-    ['🍕', 'pizza'],
-    ['⚽', 'soccer ball'],
-    ['🎧', 'headphones'],
-    ['🚀', 'rocket'],
-    ['🧠', 'brain'],
-    ['✨', 'sparkles'],
-    ['💡', 'light bulb'],
-  ];
-
-  const starterWallMarkup = starterWall
-    .map(
-      ([emoji, label]) => `<li>
-        <button
-          type="button"
-          class="about-emoji-chip"
-          data-copy-value="${escapeHtml(emoji)}"
-          data-copy-label="${escapeHtml(label)}"
-          data-copy-format="emoji"
-          aria-label="Copy ${escapeHtml(label)} emoji"
-        >
-          <span class="about-emoji-glyph" aria-hidden="true">${escapeHtml(emoji)}</span>
-          <small>${escapeHtml(label)}</small>
-        </button>
-      </li>`
-    )
-    .join('');
-
-  const body = `<article class="about-page about-page-v2">
-    <p class="collection-kicker">About</p>
-    <h1>Emoji should feel instant.</h1>
-    <p class="about-lede">emoj.ie helps you find, copy, and reuse the right emoji in seconds. It is fast, friendly, and simple on desktop and mobile.</p>
-    <div class="about-pill-row" aria-label="What emoj.ie stands for">
-      <span>⚡ Fast</span>
-      <span>🎯 Clear</span>
-      <span>🔒 Local-first</span>
-      <span>🧒 Kid-friendly</span>
-    </div>
-    <section class="about-grid about-grid-signals">
-      <section class="about-card">
-        <h2>Made for speed</h2>
-        <p>Open the site, pick a category, and copy in a tap. No account or setup required.</p>
-      </section>
-      <section class="about-card">
-        <h2>Made for humans</h2>
-        <p>Simple navigation, clear labels, and responsive layouts keep the focus on emoji, not UI clutter.</p>
-      </section>
-      <section class="about-card">
-        <h2>Made to remember</h2>
-        <p>Favorites and recents stay on your device so your everyday emoji set is always close.</p>
-      </section>
-    </section>
-    <section class="about-card about-playground" aria-labelledby="about-playground-title">
-      <div class="about-playground-head">
-        <div>
-          <h2 id="about-playground-title">Emoji playground</h2>
-          <p>Tap any tile to copy. Hit shuffle to spark new ideas.</p>
-        </div>
-        <button type="button" id="about-shuffle" class="copy-btn secondary">Shuffle</button>
-      </div>
-      <ul id="about-emoji-wall" class="about-emoji-wall" aria-live="polite">${starterWallMarkup}</ul>
-    </section>
-    <section class="about-grid">
-      <section class="about-card">
-        <h2>Open data, clear credit</h2>
-        <p>Emoji artwork and base metadata come from OpenMoji under CC BY-SA 4.0, with open keyword enrichment.</p>
-      </section>
-      <section class="about-card">
-        <h2>Contact</h2>
-        <p>Questions, ideas, or partnerships:</p>
-        <p><a href="mailto:info@emoj.ie">info@emoj.ie</a></p>
-      </section>
-    </section>
-    <div class="about-cta-row">
-      <a class="copy-btn" href="/">Browse emojis</a>
-      <a class="copy-btn secondary" href="/">Open categories</a>
-    </div>
+  const body = `<article class="about-page about-page-min">
+    <h1 class="visually-hidden">About emoj.ie</h1>
+    <p>emoj.ie is a short, memorable URL for finding and copying emojis fast.</p>
   </article>`;
 
   const canonicalUrl = absoluteUrl(config.site.baseUrl, 'about/');
@@ -807,7 +728,7 @@ function renderAboutPage(config) {
   return renderLayout({
     route: 'about/',
     title: 'About emoj.ie',
-    description: 'Why emoj.ie exists: a fast, friendly emoji finder built for instant copy and simple discovery.',
+    description: 'emoj.ie is a short, memorable URL for finding and copying emojis fast.',
     canonicalUrl,
     robots: '',
     body,

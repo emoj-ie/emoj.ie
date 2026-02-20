@@ -115,6 +115,10 @@ All notable project updates are tracked here in human-readable form.
   - enabled rotating hero emoji previews on static category/subcategory card pages (not only home)
   - removed confusing `Open Full Explorer` quick-menu jump and replaced it with an in-menu collapsible `More` section
   - improved theme state icons to clearer `System / Light / Dark` glyphs in both home and global quick menus
+- Simplified card visuals and About copy:
+  - removed the inner framed box around card emojis and increased emoji size for clearer scanability
+  - kept emoji glyphs centered on the horizontal axis across card surfaces
+  - reduced `/about/` to a single-line statement focused on the `emoj.ie` URL/value
 
 ### Notes
 - Phase 0 through Phase 5 are complete for the current roadmap scope.
