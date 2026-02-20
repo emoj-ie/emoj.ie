@@ -13,29 +13,31 @@ Last updated: 2026-02-20
 - [x] `/category/{name}` category hubs with descriptive context and browse UX
 - [x] `/tag/{tag}` tag hubs with curated explanations
 - [x] `/search/{term}` pages only when quality threshold and uniqueness are met
+- [x] `/alternatives/{competitor}` pages for competitor-intent comparisons
 - [x] `/about` and lightweight help content for trust and query coverage
 
 ## Current Inventory Snapshot
 | Type | Count | Source Data | Canonical Rule | Indexing Rule | Notes |
 |---|---:|---|---|---|---|
 | Home | 1 | Static template | self-canonical | index | existing |
-| Core routes | 220 | generated | self-canonical | mixed | from `sitemap-core.xml` |
+| Core routes | 252 | generated | self-canonical | mixed | from `sitemap-core.xml` |
 | Emoji detail routes | 2062 | `home-data.json` + sources | canonical to `/emoji/*` routes | index/noindex split | from `sitemap-emoji.xml` |
 | Category routes | 13 (index + 12 groups) | grouped data | self-canonical | index/noindex split | canonical browse layer implemented |
 | Subcategory routes | 120+ | grouped data | self-canonical | index/noindex split | existing |
-| Tag routes | 69 (incl. index) | derived tags | self-canonical | index | implemented |
+| Tag routes | 97 (incl. index) | derived tags (`tags`, `openmoji_tags`, annotations) | self-canonical | index | expanded via enrichment baseline |
 | Search term routes | 17 (index + 16 curated terms) | curated keyword topics + tags + annotations | self-canonical | index | quality-threshold gated generation |
+| Competitor alternatives | 4 (index + 3 pages) | curated editorial comparisons | self-canonical | index | implemented |
 
 ## Technical SEO Checklist
 - [x] Validate canonical tags on all indexable pages
 - [x] Ensure structured data coverage (WebSite, Organization, and page-specific schema)
 - [x] Generate and validate sitemap index + child sitemaps
-- [ ] Confirm `robots.txt` policy and no accidental blocks
+- [x] Confirm `robots.txt` policy and no accidental blocks
 - [x] Add tests for metadata presence and sitemap validity
 - [x] Add validation for canonical `/emoji/{slug}` alias behavior and redirect health
 - [x] Add validation for canonical `/category/{name}` alias behavior
 - [x] Add validation for curated `/search/{term}` route generation and metadata
-- [ ] Add internal link graph checks (home -> category -> subcategory -> detail -> related)
+- [x] Add internal link graph checks (home -> category -> subcategory -> detail -> related)
 
 ## Programmatic SEO Quality Gates
 - A generated page must answer a distinct user intent in under 5 seconds.
@@ -49,6 +51,11 @@ Last updated: 2026-02-20
 - Add canonical category route (`/category/{name}`) while preserving legacy group routes as noindex aliases.
 - Add tag pages from curated taxonomy (not raw every-token generation).
 - Generate only curated, high-quality search-topic pages under `/search/{term}` with minimum match and diversity thresholds.
+- Add competitor alternatives index and comparison pages under `/alternatives/*` with honest fit guidance.
+
+## Indexing Policy
+- `robots.txt` allows crawling and points to `https://emoj.ie/sitemap.xml`.
+- Noindex is still applied where needed at page level (legacy aliases, variants, excluded groups).
 
 ## Metadata And Copy Templates (Phase 2)
 - Emoji detail title: `{Emoji Name} Emoji Meaning, Copy + Variations | emoj.ie`

@@ -39,6 +39,7 @@ Last updated: 2026-02-20
 - Local favorites + recents with keyboard shortcuts.
 - Curated, high-quality detail/context pages for SEO and user confidence.
 - Distinctive brutalist-inspired design that remains highly accessible.
+- Honest competitor comparison pages for switch-intent SEO (`/alternatives/*`).
 
 ## 7) Objections And Responses
 - Objection: "All emoji sites are the same."
@@ -74,3 +75,4 @@ Last updated: 2026-02-20
 - Static-first architecture with small homepage payload.
 - Existing generated route depth and sitemap coverage.
 - Measurable quality gates in CI: build/tests/links/a11y/smoke/perf budget checks.
+- Expanded indexable coverage: category hubs, curated search topics, tag clusters, competitor alternatives.

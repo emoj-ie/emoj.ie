@@ -21,21 +21,21 @@ Last updated: 2026-02-20
 ## Coverage Matrix (Initial)
 | Journey | Current Coverage | Planned Coverage |
 |---|---|---|
-| Home loads and title/meta valid | partial (unit/integration) | full Playwright baseline |
-| Search query filters results | partial | full E2E |
-| Copy emoji to clipboard | partial | full E2E |
-| Keyboard navigation in results/grid | partial | full E2E |
-| Recents persistence (local storage) | partial | full E2E |
-| Favorites persistence (local storage) | none | full E2E |
-| Theme toggle and system default behavior | none | full E2E |
-| Category/subcategory filters | partial | full E2E |
-| SEO routes metadata/sitemap | unit + integration (emoji/category/search/tag canonical assertions) | unit + E2E checks |
+| Home loads and title/meta valid | full (unit + integration + baseline Playwright) | maintain |
+| Search query filters results | full (unit + baseline Playwright) | maintain |
+| Copy emoji to clipboard | full (baseline Playwright) | maintain |
+| Keyboard navigation in results/grid | full (baseline Playwright + unit) | maintain |
+| Recents persistence (local storage) | full (baseline Playwright) | maintain |
+| Favorites persistence (local storage) | full (baseline Playwright + unit) | maintain |
+| Theme toggle and system default behavior | full (baseline Playwright + unit) | maintain |
+| Category/subcategory filters | full (baseline Playwright + unit) | maintain |
+| SEO routes metadata/sitemap | full (unit + integration: emoji/category/search/tag/alternatives + robots + link graph) | maintain |
 | Accessibility smoke | present | broaden with keyboard + focus coverage |
 
 ## Baseline E2E Cases (Planned)
 - [x] Search for a term and verify result count changes.
 - [x] Copy an emoji and verify success signal.
-- [ ] Copy mode switching updates copied payload format.
+- [x] Copy mode switching updates copied payload format.
 - [x] Category and subcategory filtering narrows results.
 - [x] Keyboard arrow navigation moves focus between emoji buttons.
 - [x] Recent list updates after copy and survives page reload.
@@ -44,8 +44,9 @@ Last updated: 2026-02-20
 
 ## SEO Regression Coverage (Current)
 - `tests/phase4-seo-schema.test.mjs` validates metadata + schema on sample pages.
-- Validates sitemap inclusion/exclusion rules for canonical emoji/category/search/tag routes.
+- Validates sitemap inclusion/exclusion rules for canonical emoji/category/search/tag/alternatives routes.
 - Validates legacy detail and legacy group routes canonicalize to current canonical URLs with `noindex,follow`.
+- Validates `robots.txt` policy and internal link graph continuity (home -> category -> subgroup -> emoji -> related).
 
 ## Assumptions
 - Existing Node test suite stays in place; Playwright coverage will be additive.

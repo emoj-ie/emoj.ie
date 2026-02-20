@@ -31,11 +31,24 @@ All notable project updates are tracked here in human-readable form.
 - Canonicalized legacy group routes to `/category/*` with `noindex,follow`.
 - Updated home category panel links to use canonical `/category/*` routes.
 - Expanded SEO route tests to cover category/search metadata and canonical behavior.
+- Refreshed homepage with quick-action topic chips and clearer keyboard-first guidance.
+- Enriched emoji detail pages with meaning/usage copy, keyword pills, code format cards, and related emoji links.
+- Added `robots.txt` generation in build with sitemap pointer.
+- Added explicit internal link graph regression coverage.
+- Expanded keyword enrichment to include `openmoji_tags` + annotation-derived keywords.
+- Added competitor alternative pages under `/alternatives/*` and wired them into sitemap/tests.
+- Extended baseline Playwright e2e to validate copy-mode payload behavior.
 - Added launch planning docs:
   - `docs/LAUNCH.md`
   - `docs/SOCIAL.md`
 
 ### Notes
-- Phase 0, Phase 1, and Phase 2 are complete.
-- Phase 3 implementation is in progress with baseline UX improvements shipped.
-- Phase 4 and Phase 5 implementation are in progress.
+- Phase 0 through Phase 5 are complete for the current roadmap scope.
+- Latest local regression suite passed:
+  - `npm run build`
+  - `npm test`
+  - `npm run lint:links`
+  - `npm run test:a11y-smoke`
+  - `npm run test:playwright-smoke`
+  - `npm run test:playwright-baseline`
+  - `npm run test:lighthouse-budget`

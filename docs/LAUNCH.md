@@ -39,6 +39,11 @@ Last updated: 2026-02-20
 - Reddit (relevant communities): practical announcement with feature list.
 - Indie directories / launch communities: concise listing and visuals.
 
+## ORB Distribution Mix
+- Owned: docs changelog, website release note, email/newsletter.
+- Rented: X, LinkedIn, Reddit posts and short clips.
+- Borrowed: newsletter swaps, founder shout-outs, and niche community reposts.
+
 ## Demo Clip Ideas
 - `5-second copy`: query -> result -> copy -> paste.
 - `Favorite loop`: star emoji, reload, reuse.
@@ -51,13 +56,34 @@ Last updated: 2026-02-20
 - 1 short product description (50 words).
 - 1 long product description (150 words).
 
+## Release Runbook (Final)
+1. Preflight
+   - `npm run build`
+   - `npm test`
+   - `npm run lint:links`
+   - `npm run test:a11y-smoke`
+   - `npm run test:playwright-smoke`
+   - `npm run test:playwright-baseline`
+   - `npm run test:lighthouse-budget`
+2. Artifact checks
+   - verify `sitemap.xml`, `sitemap-core.xml`, `sitemap-emoji.xml`, and `robots.txt`
+   - verify canonical links on sample pages (`/emoji/*`, `/category/*`, `/search/*`, `/tag/*`, `/alternatives/*`)
+3. Publish
+   - push `main` to GitHub Pages source branch
+   - wait for Pages build completion
+   - smoke-check home + representative routes on production
+4. Rollback (if needed)
+   - revert to previous known-good commit
+   - rebuild and redeploy
+   - re-validate sitemap and canonical tags on production
+
 ## Release Checklist
-- [ ] `npm run build`
-- [ ] `npm test`
-- [ ] `npm run lint:links`
-- [ ] `npm run test:a11y-smoke`
-- [ ] `npm run test:playwright-smoke`
-- [ ] `npm run test:playwright-baseline`
-- [ ] `npm run test:lighthouse-budget`
+- [x] `npm run build`
+- [x] `npm test`
+- [x] `npm run lint:links`
+- [x] `npm run test:a11y-smoke`
+- [x] `npm run test:playwright-smoke`
+- [x] `npm run test:playwright-baseline`
+- [x] `npm run test:lighthouse-budget`
 - [ ] Confirm sitemap and canonical routes in production
 - [ ] Publish launch + social posts

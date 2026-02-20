@@ -49,14 +49,16 @@ Last updated: 2026-02-20
 - Expand useful route types: canonical emoji routes, category/tag hubs, and high-value related links.
 - Increase detail page utility (meaning, keywords, variations, similar emojis, quick copy formats).
 - Enrich data pipeline with additional open sources (Unicode data + CLDR keywords + optional Twemoji metadata mapping).
+- Capture competitor-intent queries with honest alternatives/comparison pages.
 
 ## Backlog Candidates
 - [x] Sync opportunities to prioritized backlog in `docs/PROJECT.md`.
-- [ ] Add relevance scoring model (exact > prefix > token > fuzzy) for home search.
-- [ ] Add favorites rail with local persistence and keyboard actions.
-- [ ] Add canonical `/emoji/{slug}` route layer with redirects from legacy patterns.
-- [ ] Add tag taxonomy pages only for meaningful, differentiated clusters.
-- [ ] Enrich detail-page content blocks while preserving low HTML/CSS/JS overhead.
+- [x] Add relevance scoring model (exact > prefix > token > fuzzy) for home search.
+- [x] Add favorites rail with local persistence and keyboard actions.
+- [x] Add canonical `/emoji/{slug}` route layer with redirects from legacy patterns.
+- [x] Add tag taxonomy pages only for meaningful, differentiated clusters.
+- [x] Enrich detail-page content blocks while preserving low HTML/CSS/JS overhead.
+- [x] Add competitor alternatives pages with honest fit guidance.
 
 ## Quantitative Snapshot (Observed)
 - `emoj.ie` homepage HTML payload (raw): ~8 KB
