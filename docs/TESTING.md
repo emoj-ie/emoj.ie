@@ -29,7 +29,7 @@ Last updated: 2026-02-20
 | Favorites persistence (local storage) | none | full E2E |
 | Theme toggle and system default behavior | none | full E2E |
 | Category/subcategory filters | partial | full E2E |
-| SEO routes metadata/sitemap | unit + integration | unit + E2E checks |
+| SEO routes metadata/sitemap | unit + integration (emoji/category/search/tag canonical assertions) | unit + E2E checks |
 | Accessibility smoke | present | broaden with keyboard + focus coverage |
 
 ## Baseline E2E Cases (Planned)
@@ -41,6 +41,11 @@ Last updated: 2026-02-20
 - [x] Recent list updates after copy and survives page reload.
 - [x] Theme mode toggles and persists setting.
 - [x] Favorites updates and survives page reload.
+
+## SEO Regression Coverage (Current)
+- `tests/phase4-seo-schema.test.mjs` validates metadata + schema on sample pages.
+- Validates sitemap inclusion/exclusion rules for canonical emoji/category/search/tag routes.
+- Validates legacy detail and legacy group routes canonicalize to current canonical URLs with `noindex,follow`.
 
 ## Assumptions
 - Existing Node test suite stays in place; Playwright coverage will be additive.

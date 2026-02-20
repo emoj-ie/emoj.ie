@@ -26,6 +26,11 @@ All notable project updates are tracked here in human-readable form.
 - Added/updated tests for analytics wiring and new UX features.
 - Added canonical short emoji routes under `/emoji/*` for indexable detail pages.
 - Added generated tag hub pages under `/tag/*`.
+- Added canonical category hub routes under `/category/*` and category index page.
+- Added curated search-topic routes under `/search/*` with quality thresholds.
+- Canonicalized legacy group routes to `/category/*` with `noindex,follow`.
+- Updated home category panel links to use canonical `/category/*` routes.
+- Expanded SEO route tests to cover category/search metadata and canonical behavior.
 - Added launch planning docs:
   - `docs/LAUNCH.md`
   - `docs/SOCIAL.md`

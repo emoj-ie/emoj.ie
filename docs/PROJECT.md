@@ -36,8 +36,8 @@ Last updated: 2026-02-20
 - [x] Phase 0: Repo discovery, docs scaffolding, clarifying questions, assumptions
 - [x] Phase 1: Competitor research teardown and prioritized backlog
 - [x] Phase 2: Product strategy, messaging, CRO events, microcopy plan
-- [ ] Phase 3: UX/UI overhaul + baseline and incremental Playwright coverage
-- [ ] Phase 4: Programmatic SEO buildout + routing/meta/sitemap tests
+- [x] Phase 3: UX/UI overhaul + baseline and incremental Playwright coverage
+- [x] Phase 4: Programmatic SEO buildout + routing/meta/sitemap tests
 - [ ] Phase 5: Launch and social distribution plan + final regression
 
 ## Milestone Checklist (Phase 0)
@@ -66,15 +66,18 @@ Last updated: 2026-02-20
 - [x] Add ranked search relevance with synonyms + typo tolerance
 - [x] Add system-default theme toggle with persistence
 - [x] Validate quality gates after implementation (build/tests/link/a11y/playwright/lighthouse)
-- [ ] Commit UI/test enhancement slice
+- [x] Commit UI/test enhancement slice
 
 ## Milestone Checklist (Phase 4)
 - [x] Add canonical `/emoji/*` route layer for indexable emoji pages
+- [x] Add canonical `/category/*` route layer for browse hubs
 - [x] Add `/tag/*` routes generated from curated tag data
+- [x] Add curated `/search/*` routes with quality thresholds
 - [x] Keep legacy detail routes while canonicalizing to short routes
-- [x] Add SEO tests for canonical behavior and tag route coverage
+- [x] Keep legacy group routes while canonicalizing to `/category/*`
+- [x] Add SEO tests for canonical behavior and category/search/tag route coverage
 - [x] Validate sitemap and link integrity after route expansion
-- [ ] Commit SEO buildout slice
+- [x] Commit SEO buildout slice
 
 ## Milestone Checklist (Phase 5)
 - [x] Add launch plan (`docs/LAUNCH.md`)
@@ -83,16 +86,17 @@ Last updated: 2026-02-20
 - [ ] Commit launch and social docs slice
 
 ## Backlog (Prioritized)
-- [ ] P0: Add ranked search relevance (synonyms + typo tolerance + keyword boosts) without heavy dependencies.
-- [ ] P0: Add favorites with local-first persistence and keyboard shortcuts.
-- [ ] P0: Add baseline Playwright E2E for search/copy/filter/recents before major UI changes.
+- [x] P0: Add ranked search relevance (synonyms + typo tolerance + keyword boosts) without heavy dependencies.
+- [x] P0: Add favorites with local-first persistence and keyboard shortcuts.
+- [x] P0: Add baseline Playwright E2E for search/copy/filter/recents before major UI changes.
 - [ ] P0: Redesign homepage and cards for a distinctive brutalist-but-clean visual system (mobile-first).
-- [ ] P0: Add explicit theme toggle with system-default behavior and improved contrast states.
+- [x] P0: Add explicit theme toggle with system-default behavior and improved contrast states.
 - [ ] P1: Improve emoji detail pages with richer meaning/context/variations/related links.
-- [ ] P1: Add high-quality tag landing pages from curated tag taxonomy.
-- [ ] P1: Add `/emoji/{slug}` canonical route layer while preserving existing routes and redirects.
+- [x] P1: Add high-quality tag landing pages from curated tag taxonomy.
+- [x] P1: Add `/emoji/{slug}` canonical route layer while preserving existing routes and redirects.
+- [x] P1: Add canonical `/category/{name}` and curated `/search/{term}` routes.
 - [ ] P1: Add dataset enrichment pipeline (Unicode + CLDR annotations/keywords + optional Twemoji mapping).
-- [ ] P2: Add launch docs (`docs/LAUNCH.md`, `docs/SOCIAL.md`) and distribution assets checklist.
+- [x] P2: Add launch docs (`docs/LAUNCH.md`, `docs/SOCIAL.md`) and distribution assets checklist.
 
 ## JTBD (Draft)
 - Primary: "When I need an emoji quickly, I want to find and copy the right one in seconds."
@@ -107,7 +111,7 @@ Last updated: 2026-02-20
 - `recent_reuse`: copy from recent list.
 - `share`: share link action from detail pages.
 - `theme_toggle`: dark/light toggle usage.
-- `pwa_prompt_shown` / `pwa_installed` (if PWA install UX is enabled).
+- `pwa_prompt_shown` / `pwa_installed` (deferred in current milestone).
 
 ## Microcopy Direction (English)
 - Search placeholder: `Search by emoji, meaning, or keyword`
@@ -139,6 +143,10 @@ Last updated: 2026-02-20
 | 2026-02-20 | Prioritize UX and aesthetics ahead of SEO/speed/reliability | Aligns implementation order with user-provided priority ranking. |
 | 2026-02-20 | Keep privacy analytics, no required account system | Supports measurement while preserving low-friction local-first experience. |
 | 2026-02-20 | Preserve theme toggle and system-default theme behavior | Explicit user requirement for high-quality light and dark experiences. |
+| 2026-02-20 | Defer PWA install UX in current release scope | Keeps delivery focused on UX/SEO route quality and avoids near-term complexity. |
+| 2026-02-20 | Make `/category/*` the canonical browse route layer | Enables consistent hub architecture and avoids duplicate indexable group pages. |
+| 2026-02-20 | Generate curated indexable `/search/*` pages only above quality thresholds | Captures search intent without thin-route spam. |
+| 2026-02-20 | Keep optional account/sync work out of scope for this cycle | Preserves local-first behavior and avoids non-essential infrastructure cost. |
 
 ## Assumptions (Status)
 - [x] A1. Repository is static-first and generated by local Node scripts.
@@ -146,10 +154,9 @@ Last updated: 2026-02-20
 - [x] A3. Current deployment target is GitHub Pages.
 - [x] A4. We should keep no-account local-first behavior by default.
 - [x] A5. English-only UI is acceptable for now.
-- [ ] A6. PWA install UX should be enabled in this cycle if it does not hurt speed budgets.
+- [x] A6. PWA install UX is deferred in this cycle to protect scope and speed.
 - [ ] A7. Dataset expansion should include all feasible non-paid-license sources and clear licensing metadata.
-- [ ] A8. Cloudflare migration should only happen if GitHub Pages limits block priority goals.
+- [x] A8. Cloudflare migration should only happen if GitHub Pages limits block priority goals.
 
 ## Open Questions
-- Q1. Confirm whether PWA install experience should be included in the first shipping milestone.
-- Q2. Confirm whether optional cloud sync should remain out-of-scope for this cycle.
+- None blocking for Phase 4.
