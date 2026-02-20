@@ -10,6 +10,14 @@ All notable project updates are tracked here in human-readable form.
   - `docs/SEO.md`
   - `docs/TESTING.md`
   - `docs/CHANGELOG.md`
+- Product marketing baseline context:
+  - `.claude/product-marketing-context.md`
+
+### Changed
+- Updated `docs/PROJECT.md` with confirmed constraints, priority ranking, assumptions status, backlog, JTBD, CRO events, and microcopy direction.
+- Filled `docs/RESEARCH.md` with competitor teardown findings and actionable opportunities.
+- Updated `docs/SEO.md` with current route inventory and programmatic quality gates.
+- Expanded `docs/TESTING.md` with baseline Playwright coverage plan.
 
 ### Notes
-- Phase 0 implementation remains blocked pending stakeholder answers to clarifying questions.
+- Phase 0 is complete; Phase 1 and Phase 2 documentation is in progress.

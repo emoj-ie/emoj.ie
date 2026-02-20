@@ -96,6 +96,17 @@ Last updated: 2026-02-20
 - Theme toggle label: `Switch theme`
 - Recents section title: `Recently Copied`
 
+## Messaging Framework (Phase 2)
+- Value proposition: `Find the right emoji in seconds. Copy it once. Reuse it instantly.`
+- Promise pillars:
+  - Speed: instant search and copy.
+  - Clarity: meanings and related options on detail pages.
+  - Memory: local recents/favorites without account friction.
+- Primary CTA language:
+  - Home: `Start searching`
+  - Detail: `Copy emoji`
+  - Secondary: `View related emojis`
+
 ## Decisions
 | Date | Decision | Rationale |
 |---|---|---|
