@@ -14,7 +14,8 @@
     "manifestFile": "build-manifest.json",
     "sitemapIndex": "sitemap.xml",
     "sitemapCore": "sitemap-core.xml",
-    "sitemapEmoji": "sitemap-emoji.xml"
+    "sitemapEmoji": "sitemap-emoji.xml",
+    "robots": "robots.txt"
   },
   "indexing": {
     "noindexGroups": ["component"],

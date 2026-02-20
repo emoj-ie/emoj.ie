@@ -1,7 +1,7 @@
 {
   "version": 1,
   "generatedAt": "2025-01-21T17:31:06.093Z",
-  "buildHash": "f2a0f9ca76f02ab8",
+  "buildHash": "6ebbae7ce298eb17",
   "managedRoots": [
     "about",
     "activities",
@@ -19,6 +19,7 @@
   ],
   "managedFiles": [
     "build-manifest.json",
+    "robots.txt",
     "sitemap-core.xml",
     "sitemap-emoji.xml",
     "sitemap.xml",
@@ -28,7 +29,7 @@
     "groups": 12,
     "emojis": 4284,
     "redirects": 4193,
-    "files": 10780,
+    "files": 10781,
     "coreRoutes": 220,
     "emojiRoutes": 2062
   },
@@ -9462,6 +9463,7 @@
     "people-body/person/woman-white-hair--1f469-200d-1f9b3/index.html",
     "people-body/person/woman-white-hair/index.html",
     "people-body/person/woman/index.html",
+    "robots.txt",
     "search/animals/index.html",
     "search/drink/index.html",
     "search/fire/index.html",

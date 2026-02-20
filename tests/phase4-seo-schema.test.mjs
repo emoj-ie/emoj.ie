@@ -133,3 +133,35 @@ test('curated search pages are generated with canonical metadata', () => {
   assert.match(searchPage, /<ul class="emoji-list">/);
   assert.ok(!searchPage.includes('noindex,follow'));
 });
+
+test('robots policy is present and points crawlers to sitemap index', () => {
+  const robots = read('robots.txt');
+
+  assert.match(robots, /^User-agent:\s*\*/m);
+  assert.match(robots, /^Allow:\s*\/$/m);
+  assert.match(robots, /^Sitemap:\s*https:\/\/emoj\.ie\/sitemap\.xml$/m);
+});
+
+test('internal link graph connects home -> category -> subgroup -> emoji -> related', () => {
+  const home = read('index.html');
+  assert.match(home, /href="\/category\/"/);
+
+  const categoryIndex = read('category/index.html');
+  const categoryMatch = categoryIndex.match(/href="\/(category\/[a-z0-9-]+\/)"/i);
+  assert.ok(categoryMatch, 'expected at least one category link');
+  const categoryRoute = categoryMatch[1];
+
+  const categoryPage = read(`${categoryRoute}index.html`);
+  const subgroupMatch = categoryPage.match(/href="\/([a-z0-9-]+\/[a-z0-9-]+\/)"/i);
+  assert.ok(subgroupMatch, 'expected subgroup links from category page');
+  const subgroupRoute = subgroupMatch[1];
+
+  const subgroupPage = read(`${subgroupRoute}index.html`);
+  const emojiMatch = subgroupPage.match(/href="\/(emoji\/[a-z0-9-]+--[a-f0-9-]+\/)"/i);
+  assert.ok(emojiMatch, 'expected emoji links from subgroup page');
+  const emojiRoute = emojiMatch[1];
+
+  const emojiPage = read(`${emojiRoute}index.html`);
+  assert.match(emojiPage, /<section class="emoji-related">/);
+  assert.match(emojiPage, /href="\/emoji\/[a-z0-9-]+--[a-f0-9-]+\//i);
+});

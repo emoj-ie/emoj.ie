@@ -7,7 +7,7 @@ import { loadEmojiModel } from './load-data.mjs';
 import { ensureBaseEmojiAssets } from './emoji-assets.mjs';
 import { buildLegacyRedirects } from './redirects.mjs';
 import { renderSite } from './render.mjs';
-import { buildSitemapIndexXml, buildSitemapXml } from './sitemap.mjs';
+import { buildRobotsTxt, buildSitemapIndexXml, buildSitemapXml } from './sitemap.mjs';
 import { buildServiceWorker } from './sw.mjs';
 import { verifyModel, verifyRenderResult } from './verify.mjs';
 
@@ -184,10 +184,15 @@ async function main() {
       lastmod: timestamp,
     }
   );
+  const robotsTxt = buildRobotsTxt({
+    baseUrl: config.site.baseUrl,
+    sitemapIndexFile: config.build.sitemapIndex,
+  });
 
   await writeTextFile(tempRoot, config.build.sitemapCore, coreSitemapXml);
   await writeTextFile(tempRoot, config.build.sitemapEmoji, emojiSitemapXml);
   await writeTextFile(tempRoot, config.build.sitemapIndex, sitemapIndexXml);
+  await writeTextFile(tempRoot, config.build.robots || 'robots.txt', robotsTxt);
 
   const managedRoots = stableList([
     ...model.groups.map((group) => group.key),
@@ -197,6 +202,7 @@ async function main() {
     config.build.sitemapIndex,
     config.build.sitemapCore,
     config.build.sitemapEmoji,
+    config.build.robots || 'robots.txt',
     'sw.js',
     manifestFile,
   ]);
@@ -206,6 +212,7 @@ async function main() {
     config.build.sitemapCore,
     config.build.sitemapEmoji,
     config.build.sitemapIndex,
+    config.build.robots || 'robots.txt',
     'sw.js',
   ]);
 
