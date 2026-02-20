@@ -11,11 +11,6 @@
     <priority>0.8</priority>
   </url>
   <url>
-    <loc>https://emoj.ie/activities/</loc>
-    <lastmod>2025-01-21T17:31:06.093Z</lastmod>
-    <priority>0.8</priority>
-  </url>
-  <url>
     <loc>https://emoj.ie/activities/arts-crafts/</loc>
     <lastmod>2025-01-21T17:31:06.093Z</lastmod>
     <priority>0.8</priority>
@@ -37,11 +32,6 @@
   </url>
   <url>
     <loc>https://emoj.ie/activities/sport/</loc>
-    <lastmod>2025-01-21T17:31:06.093Z</lastmod>
-    <priority>0.8</priority>
-  </url>
-  <url>
-    <loc>https://emoj.ie/animals-nature/</loc>
     <lastmod>2025-01-21T17:31:06.093Z</lastmod>
     <priority>0.8</priority>
   </url>
@@ -86,7 +76,62 @@
     <priority>0.8</priority>
   </url>
   <url>
-    <loc>https://emoj.ie/extras-openmoji/</loc>
+    <loc>https://emoj.ie/category/</loc>
+    <lastmod>2025-01-21T17:31:06.093Z</lastmod>
+    <priority>0.8</priority>
+  </url>
+  <url>
+    <loc>https://emoj.ie/category/activities/</loc>
+    <lastmod>2025-01-21T17:31:06.093Z</lastmod>
+    <priority>0.8</priority>
+  </url>
+  <url>
+    <loc>https://emoj.ie/category/animals-nature/</loc>
+    <lastmod>2025-01-21T17:31:06.093Z</lastmod>
+    <priority>0.8</priority>
+  </url>
+  <url>
+    <loc>https://emoj.ie/category/extras-openmoji/</loc>
+    <lastmod>2025-01-21T17:31:06.093Z</lastmod>
+    <priority>0.8</priority>
+  </url>
+  <url>
+    <loc>https://emoj.ie/category/extras-unicode/</loc>
+    <lastmod>2025-01-21T17:31:06.093Z</lastmod>
+    <priority>0.8</priority>
+  </url>
+  <url>
+    <loc>https://emoj.ie/category/flags/</loc>
+    <lastmod>2025-01-21T17:31:06.093Z</lastmod>
+    <priority>0.8</priority>
+  </url>
+  <url>
+    <loc>https://emoj.ie/category/food-drink/</loc>
+    <lastmod>2025-01-21T17:31:06.093Z</lastmod>
+    <priority>0.8</priority>
+  </url>
+  <url>
+    <loc>https://emoj.ie/category/objects/</loc>
+    <lastmod>2025-01-21T17:31:06.093Z</lastmod>
+    <priority>0.8</priority>
+  </url>
+  <url>
+    <loc>https://emoj.ie/category/people-body/</loc>
+    <lastmod>2025-01-21T17:31:06.093Z</lastmod>
+    <priority>0.8</priority>
+  </url>
+  <url>
+    <loc>https://emoj.ie/category/smileys-emotion/</loc>
+    <lastmod>2025-01-21T17:31:06.093Z</lastmod>
+    <priority>0.8</priority>
+  </url>
+  <url>
+    <loc>https://emoj.ie/category/symbols/</loc>
+    <lastmod>2025-01-21T17:31:06.093Z</lastmod>
+    <priority>0.8</priority>
+  </url>
+  <url>
+    <loc>https://emoj.ie/category/travel-places/</loc>
     <lastmod>2025-01-21T17:31:06.093Z</lastmod>
     <priority>0.8</priority>
   </url>
@@ -176,11 +221,6 @@
     <priority>0.8</priority>
   </url>
   <url>
-    <loc>https://emoj.ie/extras-unicode/</loc>
-    <lastmod>2025-01-21T17:31:06.093Z</lastmod>
-    <priority>0.8</priority>
-  </url>
-  <url>
     <loc>https://emoj.ie/extras-unicode/food-drink/</loc>
     <lastmod>2025-01-21T17:31:06.093Z</lastmod>
     <priority>0.8</priority>
@@ -201,11 +241,6 @@
     <priority>0.8</priority>
   </url>
   <url>
-    <loc>https://emoj.ie/flags/</loc>
-    <lastmod>2025-01-21T17:31:06.093Z</lastmod>
-    <priority>0.8</priority>
-  </url>
-  <url>
     <loc>https://emoj.ie/flags/country-flag/</loc>
     <lastmod>2025-01-21T17:31:06.093Z</lastmod>
     <priority>0.8</priority>
@@ -217,11 +252,6 @@
   </url>
   <url>
     <loc>https://emoj.ie/flags/subdivision-flag/</loc>
-    <lastmod>2025-01-21T17:31:06.093Z</lastmod>
-    <priority>0.8</priority>
-  </url>
-  <url>
-    <loc>https://emoj.ie/food-drink/</loc>
     <lastmod>2025-01-21T17:31:06.093Z</lastmod>
     <priority>0.8</priority>
   </url>
@@ -262,11 +292,6 @@
   </url>
   <url>
     <loc>https://emoj.ie/food-drink/food-vegetable/</loc>
-    <lastmod>2025-01-21T17:31:06.093Z</lastmod>
-    <priority>0.8</priority>
-  </url>
-  <url>
-    <loc>https://emoj.ie/objects/</loc>
     <lastmod>2025-01-21T17:31:06.093Z</lastmod>
     <priority>0.8</priority>
   </url>
@@ -361,11 +386,6 @@
     <priority>0.8</priority>
   </url>
   <url>
-    <loc>https://emoj.ie/people-body/</loc>
-    <lastmod>2025-01-21T17:31:06.093Z</lastmod>
-    <priority>0.8</priority>
-  </url>
-  <url>
     <loc>https://emoj.ie/people-body/body-parts/</loc>
     <lastmod>2025-01-21T17:31:06.093Z</lastmod>
     <priority>0.8</priority>
@@ -446,7 +466,87 @@
     <priority>0.8</priority>
   </url>
   <url>
-    <loc>https://emoj.ie/smileys-emotion/</loc>
+    <loc>https://emoj.ie/search/</loc>
+    <lastmod>2025-01-21T17:31:06.093Z</lastmod>
+    <priority>0.8</priority>
+  </url>
+  <url>
+    <loc>https://emoj.ie/search/animals/</loc>
+    <lastmod>2025-01-21T17:31:06.093Z</lastmod>
+    <priority>0.8</priority>
+  </url>
+  <url>
+    <loc>https://emoj.ie/search/drink/</loc>
+    <lastmod>2025-01-21T17:31:06.093Z</lastmod>
+    <priority>0.8</priority>
+  </url>
+  <url>
+    <loc>https://emoj.ie/search/fire/</loc>
+    <lastmod>2025-01-21T17:31:06.093Z</lastmod>
+    <priority>0.8</priority>
+  </url>
+  <url>
+    <loc>https://emoj.ie/search/food/</loc>
+    <lastmod>2025-01-21T17:31:06.093Z</lastmod>
+    <priority>0.8</priority>
+  </url>
+  <url>
+    <loc>https://emoj.ie/search/hands/</loc>
+    <lastmod>2025-01-21T17:31:06.093Z</lastmod>
+    <priority>0.8</priority>
+  </url>
+  <url>
+    <loc>https://emoj.ie/search/happy/</loc>
+    <lastmod>2025-01-21T17:31:06.093Z</lastmod>
+    <priority>0.8</priority>
+  </url>
+  <url>
+    <loc>https://emoj.ie/search/love/</loc>
+    <lastmod>2025-01-21T17:31:06.093Z</lastmod>
+    <priority>0.8</priority>
+  </url>
+  <url>
+    <loc>https://emoj.ie/search/money/</loc>
+    <lastmod>2025-01-21T17:31:06.093Z</lastmod>
+    <priority>0.8</priority>
+  </url>
+  <url>
+    <loc>https://emoj.ie/search/music/</loc>
+    <lastmod>2025-01-21T17:31:06.093Z</lastmod>
+    <priority>0.8</priority>
+  </url>
+  <url>
+    <loc>https://emoj.ie/search/party/</loc>
+    <lastmod>2025-01-21T17:31:06.093Z</lastmod>
+    <priority>0.8</priority>
+  </url>
+  <url>
+    <loc>https://emoj.ie/search/sad/</loc>
+    <lastmod>2025-01-21T17:31:06.093Z</lastmod>
+    <priority>0.8</priority>
+  </url>
+  <url>
+    <loc>https://emoj.ie/search/sports/</loc>
+    <lastmod>2025-01-21T17:31:06.093Z</lastmod>
+    <priority>0.8</priority>
+  </url>
+  <url>
+    <loc>https://emoj.ie/search/stars/</loc>
+    <lastmod>2025-01-21T17:31:06.093Z</lastmod>
+    <priority>0.8</priority>
+  </url>
+  <url>
+    <loc>https://emoj.ie/search/travel/</loc>
+    <lastmod>2025-01-21T17:31:06.093Z</lastmod>
+    <priority>0.8</priority>
+  </url>
+  <url>
+    <loc>https://emoj.ie/search/weather/</loc>
+    <lastmod>2025-01-21T17:31:06.093Z</lastmod>
+    <priority>0.8</priority>
+  </url>
+  <url>
+    <loc>https://emoj.ie/search/work/</loc>
     <lastmod>2025-01-21T17:31:06.093Z</lastmod>
     <priority>0.8</priority>
   </url>
@@ -527,11 +627,6 @@
   </url>
   <url>
     <loc>https://emoj.ie/smileys-emotion/monkey-face/</loc>
-    <lastmod>2025-01-21T17:31:06.093Z</lastmod>
-    <priority>0.8</priority>
-  </url>
-  <url>
-    <loc>https://emoj.ie/symbols/</loc>
     <lastmod>2025-01-21T17:31:06.093Z</lastmod>
     <priority>0.8</priority>
   </url>
@@ -947,11 +1042,6 @@
   </url>
   <url>
     <loc>https://emoj.ie/tag/zodiac/</loc>
-    <lastmod>2025-01-21T17:31:06.093Z</lastmod>
-    <priority>0.8</priority>
-  </url>
-  <url>
-    <loc>https://emoj.ie/travel-places/</loc>
     <lastmod>2025-01-21T17:31:06.093Z</lastmod>
     <priority>0.8</priority>
   </url>

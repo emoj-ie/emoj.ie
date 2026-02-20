@@ -18,7 +18,7 @@ test('home app uses progressive rendering and lightweight home index data', () =
   assert.match(homeApp, /panel-card-preview/);
   assert.match(homeApp, /panel-card-preview-img/);
   assert.match(homeApp, /panel-card-link/);
-  assert.match(homeApp, /`\/\$\{group\}\//);
+  assert.match(homeApp, /`\/category\/\$\{group\}\//);
   assert.match(homeApp, /`\/\$\{state\.g\}\/\$\{subgroup\}\//);
   assert.ok(!homeApp.includes('slice(0, 400)'), 'hard 400 result cap should be removed');
 });

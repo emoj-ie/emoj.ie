@@ -501,7 +501,13 @@ function withinDistance(a, b, maxDistance = 1) {
       const subgroupCount = subgroupsByGroup.get(group)?.size || 0;
       const preview = buildPanelPreview(groupPreviewEntries.get(group));
       panelGrid.appendChild(
-        createPanelCard(humanize(group), `${subgroupCount} subcategories`, preview, null, `/${group}/`)
+        createPanelCard(
+          humanize(group),
+          `${subgroupCount} subcategories`,
+          preview,
+          null,
+          `/category/${group}/`
+        )
       );
     }
 

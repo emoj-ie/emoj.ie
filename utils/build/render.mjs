@@ -450,6 +450,58 @@ function renderAboutPage(config) {
   });
 }
 
+function renderCategoryIndexPage(categories, config) {
+  const items = categories
+    .slice(0, 40)
+    .map(
+      (category) =>
+        `<li><a href="/${category.route}"><span>${escapeHtml(category.title)}</span><small>${category.subgroups.length} subcategories</small></a></li>`
+    )
+    .join('');
+
+  const body = `<section class="group">
+    <h1>Emoji Categories</h1>
+    <p>Browse emoji categories to jump into focused subcategory collections.</p>
+    <ul class="group-link-list">${items}</ul>
+  </section>`;
+
+  const canonicalUrl = absoluteUrl(config.site.baseUrl, 'category/');
+  const crumbs = [
+    { label: 'Home', href: '/' },
+    { label: 'Categories' },
+  ];
+
+  const jsonLd = [
+    {
+      '@context': 'https://schema.org',
+      '@type': 'CollectionPage',
+      name: 'Emoji Categories',
+      url: canonicalUrl,
+      description: 'Browse emoji categories to discover focused emoji collections.',
+      isPartOf: {
+        '@type': 'WebSite',
+        name: config.site.title,
+        url: absoluteUrl(config.site.baseUrl, ''),
+      },
+    },
+    breadcrumbSchema(config.site.baseUrl, crumbs, canonicalUrl),
+  ];
+
+  return renderLayout({
+    route: 'category/',
+    title: 'Emoji Categories',
+    description: 'Browse emoji categories to discover focused emoji collections.',
+    canonicalUrl,
+    robots: '',
+    body,
+    breadcrumbs: renderBreadcrumbs(crumbs),
+    config,
+    showHeaderSearch: true,
+    jsonLd,
+    pageClass: 'page-category-index',
+  });
+}
+
 function renderTagIndexPage(tags, config) {
   const items = tags
     .slice(0, 260)
@@ -555,7 +607,122 @@ function renderTagPage(tag, config) {
   });
 }
 
-function renderGroupPage(group, config) {
+function renderSearchIndexPage(searchPages, config) {
+  const items = searchPages
+    .slice(0, 80)
+    .map(
+      (searchPage) =>
+        `<li><a href="/${searchPage.route}"><span>${escapeHtml(searchPage.title)}</span><small>${searchPage.emojis.length} matches</small></a></li>`
+    )
+    .join('');
+
+  const body = `<section class="group">
+    <h1>Emoji Search Topics</h1>
+    <p>Browse curated search themes built from emoji meanings, tags, and real usage intent.</p>
+    <ul class="group-link-list">${items}</ul>
+  </section>`;
+
+  const canonicalUrl = absoluteUrl(config.site.baseUrl, 'search/');
+  const crumbs = [
+    { label: 'Home', href: '/' },
+    { label: 'Search Topics' },
+  ];
+
+  const jsonLd = [
+    {
+      '@context': 'https://schema.org',
+      '@type': 'CollectionPage',
+      name: 'Emoji Search Topics',
+      url: canonicalUrl,
+      description: 'Browse curated emoji search topics.',
+      isPartOf: {
+        '@type': 'WebSite',
+        name: config.site.title,
+        url: absoluteUrl(config.site.baseUrl, ''),
+      },
+    },
+    breadcrumbSchema(config.site.baseUrl, crumbs, canonicalUrl),
+  ];
+
+  return renderLayout({
+    route: 'search/',
+    title: 'Emoji Search Topics',
+    description: 'Browse curated emoji search topics.',
+    canonicalUrl,
+    robots: '',
+    body,
+    breadcrumbs: renderBreadcrumbs(crumbs),
+    config,
+    showHeaderSearch: true,
+    jsonLd,
+    pageClass: 'page-search-index',
+  });
+}
+
+function renderSearchPage(searchPage, config) {
+  const emojiList = searchPage.emojis
+    .slice(0, 360)
+    .map((emoji) => renderEmojiCard(emoji, config.assets.emojiCdnTemplate))
+    .join('');
+
+  const body = `<section class="subgroup">
+    <h1>${escapeHtml(searchPage.title)}</h1>
+    <p>${escapeHtml(searchPage.description)}</p>
+    <p class="subgroup-meta">${searchPage.emojis.length} emoji${searchPage.emojis.length === 1 ? '' : 's'} matched this curated search topic.</p>
+    <ul class="emoji-list">${emojiList}</ul>
+  </section>`;
+
+  const canonicalUrl = absoluteUrl(config.site.baseUrl, searchPage.route);
+  const crumbs = [
+    { label: 'Home', href: '/' },
+    { label: 'Search Topics', href: '/search/' },
+    { label: searchPage.title },
+  ];
+
+  const jsonLd = [
+    {
+      '@context': 'https://schema.org',
+      '@type': 'CollectionPage',
+      name: searchPage.title,
+      url: canonicalUrl,
+      description: searchPage.description,
+      isPartOf: {
+        '@type': 'WebSite',
+        name: config.site.title,
+        url: absoluteUrl(config.site.baseUrl, ''),
+      },
+    },
+    breadcrumbSchema(config.site.baseUrl, crumbs, canonicalUrl),
+  ];
+
+  return renderLayout({
+    route: searchPage.route,
+    title: searchPage.title,
+    description: searchPage.description,
+    canonicalUrl,
+    robots: '',
+    body,
+    breadcrumbs: renderBreadcrumbs(crumbs),
+    config,
+    showHeaderSearch: true,
+    jsonLd,
+    pageClass: 'page-search',
+  });
+}
+
+function renderGroupPage(group, config, options = {}) {
+  const renderedRoute = ensureTrailingSlash(options.route || group.route);
+  const canonicalRoute = ensureTrailingSlash(options.canonicalRoute || renderedRoute);
+  const canonicalUrl = absoluteUrl(config.site.baseUrl, canonicalRoute);
+  const isCanonicalRoute = renderedRoute === canonicalRoute;
+  const breadcrumbs = options.breadcrumbs || [
+    { label: 'Home', href: '/' },
+    { label: group.title },
+  ];
+  const pageClass = options.pageClass || 'page-group';
+  const introLabel = options.introLabel || group.title;
+  const description =
+    options.description || `Browse ${introLabel} emojis and copy them instantly.`;
   const previewLimit = Math.max(8, Number(config.ui?.groupPreviewLimit || 24));
   const subgroupSections = group.subgroups
     .map((subgroup) => {
@@ -584,13 +751,8 @@ function renderGroupPage(group, config) {
     ${subgroupSections}
   </section>`;
 
-  const canonicalUrl = absoluteUrl(config.site.baseUrl, group.route);
-  const description = `Browse ${group.title} emojis and copy them instantly.`;
-  const robots = group.noindex ? 'noindex,follow' : '';
-  const crumbs = [
-    { label: 'Home', href: '/' },
-    { label: group.title },
-  ];
+  const robots =
+    group.noindex || options.forceNoindex || !isCanonicalRoute ? 'noindex,follow' : '';
 
   const jsonLd = [
     {
@@ -605,21 +767,21 @@ function renderGroupPage(group, config) {
         url: absoluteUrl(config.site.baseUrl, ''),
       },
     },
-    breadcrumbSchema(config.site.baseUrl, crumbs, canonicalUrl),
+    breadcrumbSchema(config.site.baseUrl, breadcrumbs, canonicalUrl),
   ];
 
   return renderLayout({
-    route: group.route,
+    route: renderedRoute,
     title: `${group.title} Emojis`,
     description,
     canonicalUrl,
     robots,
     body,
-    breadcrumbs: renderBreadcrumbs(crumbs),
+    breadcrumbs: renderBreadcrumbs(breadcrumbs),
     config,
     showHeaderSearch: true,
     jsonLd,
-    pageClass: 'page-group',
+    pageClass,
   });
 }
 
@@ -638,9 +800,10 @@ function renderSubgroupPage(group, subgroup, config) {
   const canonicalUrl = absoluteUrl(config.site.baseUrl, subgroup.route);
   const description = `Explore ${subgroup.title} emojis in ${group.title}.`;
   const robots = subgroup.noindex ? 'noindex,follow' : '';
+  const categoryRoute = group.categoryRoute || group.route;
   const crumbs = [
     { label: 'Home', href: '/' },
-    { label: group.title, href: `/${group.route}` },
+    { label: group.title, href: `/${categoryRoute}` },
     { label: subgroup.title },
   ];
 
@@ -764,9 +927,10 @@ function renderEmojiPage(group, subgroup, entry, variantEntries, config, routeOv
 
   const robots = entry.noindex || !isCanonicalRoute ? 'noindex,follow' : '';
   const description = `${label} emoji. Copy ${label} instantly.`;
+  const categoryRoute = group.categoryRoute || group.route;
   const crumbs = [
     { label: 'Home', href: '/' },
-    { label: group.title, href: `/${group.route}` },
+    { label: group.title, href: `/${categoryRoute}` },
     { label: subgroup.title, href: `/${subgroup.route}` },
     { label },
   ];
@@ -1118,6 +1282,62 @@ export async function renderSite({ model, legacyRedirects, config, tempRoot }) {
     coreRoutes.add('about/');
   }
 
+  const groupByKey = new Map((model.groups || []).map((group) => [group.key, group]));
+
+  if (Array.isArray(model.categories) && model.categories.length > 0) {
+    await writeRouteHtml(
+      tempRoot,
+      'category/',
+      renderCategoryIndexPage(model.categories, config),
+      generatedFiles
+    );
+    coreRoutes.add('category/');
+
+    for (const category of model.categories) {
+      const group = groupByKey.get(category.key);
+      if (!group) continue;
+
+      const canonicalCrumbs = [
+        { label: 'Home', href: '/' },
+        { label: 'Categories', href: '/category/' },
+        { label: category.title },
+      ];
+
+      await writeRouteHtml(
+        tempRoot,
+        category.route,
+        renderGroupPage(group, config, {
+          route: category.route,
+          canonicalRoute: category.route,
+          breadcrumbs: canonicalCrumbs,
+          pageClass: 'page-category',
+          description: `Browse ${category.title} emojis by subcategory and copy instantly.`,
+        }),
+        generatedFiles
+      );
+
+      if (!category.noindex) {
+        coreRoutes.add(category.route);
+      }
+
+      if (category.legacyRoute && category.legacyRoute !== category.route) {
+        await writeRouteHtml(
+          tempRoot,
+          category.legacyRoute,
+          renderGroupPage(group, config, {
+            route: category.legacyRoute,
+            canonicalRoute: category.route,
+            breadcrumbs: canonicalCrumbs,
+            forceNoindex: true,
+            pageClass: 'page-group-legacy',
+            description: `Browse ${category.title} emojis by subcategory and copy instantly.`,
+          }),
+          generatedFiles
+        );
+      }
+    }
+  }
+
   if (Array.isArray(model.tags) && model.tags.length > 0) {
     await writeRouteHtml(tempRoot, 'tag/', renderTagIndexPage(model.tags, config), generatedFiles);
     coreRoutes.add('tag/');
@@ -1125,6 +1345,21 @@ export async function renderSite({ model, legacyRedirects, config, tempRoot }) {
     for (const tag of model.tags) {
       await writeRouteHtml(tempRoot, tag.route, renderTagPage(tag, config), generatedFiles);
       coreRoutes.add(tag.route);
+    }
+  }
+
+  if (Array.isArray(model.searchPages) && model.searchPages.length > 0) {
+    await writeRouteHtml(
+      tempRoot,
+      'search/',
+      renderSearchIndexPage(model.searchPages, config),
+      generatedFiles
+    );
+    coreRoutes.add('search/');
+
+    for (const searchPage of model.searchPages) {
+      await writeRouteHtml(tempRoot, searchPage.route, renderSearchPage(searchPage, config), generatedFiles);
+      coreRoutes.add(searchPage.route);
     }
   }
 
@@ -1137,12 +1372,6 @@ export async function renderSite({ model, legacyRedirects, config, tempRoot }) {
   }
 
   for (const group of model.groups) {
-    await writeRouteHtml(tempRoot, group.route, renderGroupPage(group, config), generatedFiles);
-
-    if (!group.noindex) {
-      coreRoutes.add(group.route);
-    }
-
     for (const subgroup of group.subgroups) {
       await writeRouteHtml(
         tempRoot,
