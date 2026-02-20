@@ -9,21 +9,21 @@ Last updated: 2026-02-20
 - Keep content English-first in this phase to maximize quality depth and editorial consistency.
 
 ## Planned Page Types
-- [ ] `/emoji/{slug}` canonical detail routes with meaning, keywords, variants, and related emojis
+- [x] `/emoji/{slug}` canonical detail routes with meaning, keywords, variants, and related emojis
 - [ ] `/category/{name}` category hubs with descriptive context and browse UX
-- [ ] `/tag/{tag}` tag hubs with curated explanations
+- [x] `/tag/{tag}` tag hubs with curated explanations
 - [ ] `/search/{term}` pages only when quality threshold and uniqueness are met
-- [ ] `/about` and lightweight help content for trust and query coverage
+- [x] `/about` and lightweight help content for trust and query coverage
 
 ## Current Inventory Snapshot
 | Type | Count | Source Data | Canonical Rule | Indexing Rule | Notes |
 |---|---:|---|---|---|---|
 | Home | 1 | Static template | self-canonical | index | existing |
-| Core routes | 133 | generated | self-canonical | mixed | from `sitemap-core.xml` |
-| Emoji detail routes | 2062 | `home-data.json` + sources | canonical to canonical route | index/noindex split | from `sitemap-emoji.xml` |
+| Core routes | 202 | generated | self-canonical | mixed | from `sitemap-core.xml` |
+| Emoji detail routes | 2062 | `home-data.json` + sources | canonical to `/emoji/*` routes | index/noindex split | from `sitemap-emoji.xml` |
 | Category routes | 12 groups | grouped data | self-canonical | index/noindex split | existing, improve descriptions |
 | Subcategory routes | 120+ | grouped data | self-canonical | index/noindex split | existing |
-| Tag routes | 0 | derived tags | self-canonical | index | planned |
+| Tag routes | 69 (incl. index) | derived tags | self-canonical | index | implemented |
 | Search term routes | 0 | query-derived shortlist | canonicalized | conditional | planned |
 
 ## Technical SEO Checklist
@@ -43,7 +43,7 @@ Last updated: 2026-02-20
 
 ## Route Strategy (Draft)
 - Keep existing stable detail routes to preserve backlink equity.
-- Add canonical short emoji route (`/emoji/{slug}--{hex}`) with permanent redirects from alternates.
+- Add canonical short emoji route (`/emoji/{slug}--{hex}`) while preserving legacy detail routes for compatibility.
 - Add tag pages from curated taxonomy (not raw every-token generation).
 - Keep search result pages `noindex` by default; selectively index only curated high-value terms.
 

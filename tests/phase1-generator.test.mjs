@@ -25,6 +25,10 @@ function isDetailPage(filePath) {
   return /--[a-f0-9-]+\/index\.html$/.test(filePath);
 }
 
+function isLegacyDetailPage(filePath) {
+  return isDetailPage(filePath) && !filePath.startsWith('emoji/');
+}
+
 test('manifest stats align with grouped data', () => {
   assert.equal(manifest.stats.emojis, emojiCount);
   assert.ok(manifest.stats.redirects > 0);
@@ -32,7 +36,7 @@ test('manifest stats align with grouped data', () => {
 });
 
 test('detail pages are unique and one-per-emoji', () => {
-  const detailFiles = manifest.files.filter(isDetailPage);
+  const detailFiles = manifest.files.filter(isLegacyDetailPage);
   assert.equal(detailFiles.length, emojiCount);
 
   const unique = new Set(detailFiles);

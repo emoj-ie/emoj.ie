@@ -34,8 +34,8 @@ Last updated: 2026-02-20
 
 ## Roadmap
 - [x] Phase 0: Repo discovery, docs scaffolding, clarifying questions, assumptions
-- [ ] Phase 1: Competitor research teardown and prioritized backlog
-- [ ] Phase 2: Product strategy, messaging, CRO events, microcopy plan
+- [x] Phase 1: Competitor research teardown and prioritized backlog
+- [x] Phase 2: Product strategy, messaging, CRO events, microcopy plan
 - [ ] Phase 3: UX/UI overhaul + baseline and incremental Playwright coverage
 - [ ] Phase 4: Programmatic SEO buildout + routing/meta/sitemap tests
 - [ ] Phase 5: Launch and social distribution plan + final regression
@@ -51,14 +51,36 @@ Last updated: 2026-02-20
 - [x] Research top emoji sites/tools and OS pickers
 - [x] Summarize strengths/weaknesses/opportunities in `docs/RESEARCH.md`
 - [x] Sync prioritized opportunities into project backlog
-- [ ] Commit docs research slice (`docs: competitor research + prioritized backlog`)
+- [x] Commit docs research slice (`docs: competitor research + prioritized backlog`)
 
 ## Milestone Checklist (Phase 2)
 - [x] Define initial target users and JTBD
 - [x] Define core conversion events
 - [x] Draft microcopy direction for search/empty states/copy hints
 - [x] Update project and SEO strategy docs with messaging and CRO framing
-- [ ] Commit docs strategy slice (`docs: product messaging + CRO events + microcopy plan`)
+- [x] Commit docs strategy slice (`docs: product messaging + CRO events + microcopy plan`)
+
+## Milestone Checklist (Phase 3)
+- [x] Add baseline Playwright E2E for search/copy/filter/recents
+- [x] Add favorites with local-first persistence and keyboard support
+- [x] Add ranked search relevance with synonyms + typo tolerance
+- [x] Add system-default theme toggle with persistence
+- [x] Validate quality gates after implementation (build/tests/link/a11y/playwright/lighthouse)
+- [ ] Commit UI/test enhancement slice
+
+## Milestone Checklist (Phase 4)
+- [x] Add canonical `/emoji/*` route layer for indexable emoji pages
+- [x] Add `/tag/*` routes generated from curated tag data
+- [x] Keep legacy detail routes while canonicalizing to short routes
+- [x] Add SEO tests for canonical behavior and tag route coverage
+- [x] Validate sitemap and link integrity after route expansion
+- [ ] Commit SEO buildout slice
+
+## Milestone Checklist (Phase 5)
+- [x] Add launch plan (`docs/LAUNCH.md`)
+- [x] Add social templates (`docs/SOCIAL.md`)
+- [ ] Finalize release runbook and regression summary in changelog
+- [ ] Commit launch and social docs slice
 
 ## Backlog (Prioritized)
 - [ ] P0: Add ranked search relevance (synonyms + typo tolerance + keyword boosts) without heavy dependencies.

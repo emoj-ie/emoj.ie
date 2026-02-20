@@ -33,11 +33,13 @@ test('homepage template has lazy loading controls', () => {
   const home = read('index.html');
 
   assert.match(home, /id="header-menu-toggle"/);
+  assert.match(home, /id="theme-toggle"/);
   assert.match(home, /id="advanced-menu"[^>]*\shidden\b/);
   assert.match(home, /id="advanced-backdrop"[^>]*\shidden\b/);
   assert.match(home, /id="panel-grid"/);
   assert.match(home, /id="results-load-more"/);
   assert.match(home, /id="results-sentinel"/);
+  assert.match(home, /id="favorite-results"/);
   assert.ok(!home.includes('Choose a category panel, then a subcategory, then copy emojis instantly.'));
 });
 
@@ -84,4 +86,14 @@ test('heavy group page uses preview copy that points users to subgroup pages', (
 
   const fileSize = fs.statSync(path.join(root, 'people-body/index.html')).size;
   assert.ok(fileSize < 1200000, `expected people-body page < 1.2MB, got ${fileSize} bytes`);
+});
+
+test('home app includes search relevance helpers and favorites persistence', () => {
+  const homeApp = read('home-app.mjs');
+
+  assert.match(homeApp, /SEARCH_SYNONYMS/);
+  assert.match(homeApp, /expandQueryTokens/);
+  assert.match(homeApp, /withinDistance/);
+  assert.match(homeApp, /favoriteEmojisV1/);
+  assert.match(homeApp, /emoji-favorite/);
 });

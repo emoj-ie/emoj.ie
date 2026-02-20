@@ -68,3 +68,29 @@ test('sitemap excludes noindex component pages and variant emoji detail pages', 
   assert.ok(!coreSitemap.includes('https://emoj.ie/component/'));
   assert.ok(!emojiSitemap.includes(variantUrl));
 });
+
+test('emoji sitemap uses canonical short emoji routes and core sitemap includes tag routes', () => {
+  const coreSitemap = read('sitemap-core.xml');
+  const emojiSitemap = read('sitemap-emoji.xml');
+  const tagIndex = read('tag/index.html');
+
+  assert.match(emojiSitemap, /https:\/\/emoj\.ie\/emoji\/[a-z0-9-]+--[a-f0-9-]+\//i);
+  assert.match(coreSitemap, /https:\/\/emoj\.ie\/tag\//);
+  assert.match(tagIndex, /<h1>Emoji Tags<\/h1>/);
+});
+
+test('legacy detail route points canonical to short emoji route', () => {
+  const legacyRoutePage = read('smileys-emotion/face-smiling/grinning-face--1f600/index.html');
+  const canonicalRoutePage = read('emoji/grinning-face--1f600/index.html');
+
+  assert.match(
+    legacyRoutePage,
+    /<link rel="canonical" href="https:\/\/emoj\.ie\/emoji\/grinning-face--1f600\/"/
+  );
+  assert.match(legacyRoutePage, /<meta name="robots" content="noindex,follow"/);
+  assert.match(
+    canonicalRoutePage,
+    /<link rel="canonical" href="https:\/\/emoj\.ie\/emoji\/grinning-face--1f600\/"/
+  );
+  assert.ok(!canonicalRoutePage.includes('noindex,follow'));
+});

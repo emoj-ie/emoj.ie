@@ -59,6 +59,15 @@
       </form>
         <button
         type="button"
+        id="theme-toggle"
+        class="theme-toggle"
+        aria-label="Switch theme"
+        data-theme-preference="system"
+      >
+        <span class="theme-toggle-glyph" aria-hidden="true">◐</span>
+      </button>
+        <button
+        type="button"
         id="header-menu-toggle"
         class="header-menu-toggle"
         aria-label="Open advanced options"
@@ -133,6 +142,11 @@
     <button type="button" id="clear-filters" class="copy-btn secondary advanced-clear">Reset Selection</button>
   </aside>
   <button type="button" id="advanced-backdrop" class="advanced-backdrop" hidden tabindex="-1" aria-hidden="true"></button>
+
+  <section class="recent-section">
+    <h2>Favorites</h2>
+    <ul id="favorite-results" class="emoji-list" aria-label="Favorite emojis"></ul>
+  </section>
 
   <section class="recent-section">
     <h2>Recently Copied</h2>

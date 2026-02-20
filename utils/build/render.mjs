@@ -2,6 +2,7 @@ import fs from 'node:fs/promises';
 import path from 'node:path';
 
 import {
+  ensureTrailingSlash,
   escapeHtml,
   formatHexForAsset,
   humanizeSlug,
@@ -67,7 +68,25 @@ function breadcrumbSchema(baseUrl, crumbs, canonicalUrl) {
   };
 }
 
-function renderHeader({ prefix, showSearch, showMenuToggle, menuControlsId = 'advanced-menu' }) {
+function renderHeader({
+  prefix,
+  showSearch,
+  showMenuToggle,
+  showThemeToggle = true,
+  menuControlsId = 'advanced-menu',
+}) {
+  const themeToggle = showThemeToggle
+    ? `<button
+        type="button"
+        id="theme-toggle"
+        class="theme-toggle"
+        aria-label="Switch theme"
+        data-theme-preference="system"
+      >
+        <span class="theme-toggle-glyph" aria-hidden="true">◐</span>
+      </button>`
+    : '';
+
   const menuToggle = showMenuToggle
     ? `<button
         type="button"
@@ -113,6 +132,7 @@ function renderHeader({ prefix, showSearch, showMenuToggle, menuControlsId = 'ad
           </svg>
         </a>
         ${search}
+        ${themeToggle}
         ${menuToggle}
       </div>
     </header>`;
@@ -236,7 +256,7 @@ function renderLayout({
   <body class="${escapeHtml(pageClass)}">
     <a href="#main-content" class="skip-link">Skip To Main Content</a>
     <div class="page-glow" aria-hidden="true"></div>
-    ${renderHeader({ prefix, showSearch: showHeaderSearch, showMenuToggle, menuControlsId })}
+    ${renderHeader({ prefix, showSearch: showHeaderSearch, showMenuToggle, showThemeToggle: true, menuControlsId })}
     ${breadcrumbs || ''}
     <main id="main-content" class="page-main">
       ${body}
@@ -256,7 +276,9 @@ function renderEmojiCard(entry, assetTemplate) {
   const src = emojiAssetSource(entry);
   const cdnSrc = entry.cdnAssetPath || assetTemplate.replace('{HEX}', imageHex);
   const label = humanizeSlug(entry.slug);
-  const detailHref = `/${entry.detailRoute}`;
+  const targetRoute =
+    entry.indexable && entry.canonicalRoute ? entry.canonicalRoute : entry.detailRoute;
+  const detailHref = `/${targetRoute}`;
 
   return `<li class="emoji">
     <button
@@ -349,6 +371,11 @@ function renderHomePage(model, config) {
   <button type="button" id="advanced-backdrop" class="advanced-backdrop" hidden tabindex="-1" aria-hidden="true"></button>
 
   <section class="recent-section">
+    <h2>Favorites</h2>
+    <ul id="favorite-results" class="emoji-list" aria-label="Favorite emojis"></ul>
+  </section>
+
+  <section class="recent-section">
     <h2>Recently Copied</h2>
     <ul id="recent-results" class="emoji-list" aria-label="Recently copied emojis"></ul>
   </section>`;
@@ -420,6 +447,111 @@ function renderAboutPage(config) {
     showHeaderSearch: true,
     jsonLd: [breadcrumbSchema(config.site.baseUrl, crumbs, canonicalUrl)],
     pageClass: 'page-about',
+  });
+}
+
+function renderTagIndexPage(tags, config) {
+  const items = tags
+    .slice(0, 260)
+    .map(
+      (tag) =>
+        `<li><a href="/${tag.route}"><span>${escapeHtml(tag.title)}</span><small>${tag.emojis.length} emojis</small></a></li>`
+    )
+    .join('');
+
+  const body = `<section class="group">
+    <h1>Emoji Tags</h1>
+    <p>Browse curated emoji tags to find related emojis faster.</p>
+    <ul class="group-link-list">${items}</ul>
+  </section>`;
+
+  const canonicalUrl = absoluteUrl(config.site.baseUrl, 'tag/');
+  const crumbs = [
+    { label: 'Home', href: '/' },
+    { label: 'Tags' },
+  ];
+
+  const jsonLd = [
+    {
+      '@context': 'https://schema.org',
+      '@type': 'CollectionPage',
+      name: 'Emoji Tags',
+      url: canonicalUrl,
+      description: 'Browse emoji tags and discover related emoji collections.',
+      isPartOf: {
+        '@type': 'WebSite',
+        name: config.site.title,
+        url: absoluteUrl(config.site.baseUrl, ''),
+      },
+    },
+    breadcrumbSchema(config.site.baseUrl, crumbs, canonicalUrl),
+  ];
+
+  return renderLayout({
+    route: 'tag/',
+    title: 'Emoji Tags',
+    description: 'Browse emoji tags and discover related emoji collections.',
+    canonicalUrl,
+    robots: '',
+    body,
+    breadcrumbs: renderBreadcrumbs(crumbs),
+    config,
+    showHeaderSearch: true,
+    jsonLd,
+    pageClass: 'page-tag-index',
+  });
+}
+
+function renderTagPage(tag, config) {
+  const emojiList = tag.emojis
+    .slice(0, 360)
+    .map((emoji) => renderEmojiCard(emoji, config.assets.emojiCdnTemplate))
+    .join('');
+
+  const body = `<section class="subgroup">
+    <h1>${escapeHtml(tag.title)} emojis</h1>
+    <p>${escapeHtml(tag.description)}</p>
+    <p class="subgroup-meta">${tag.emojis.length} emoji${tag.emojis.length === 1 ? '' : 's'} tagged with ${escapeHtml(
+      tag.title
+    )}.</p>
+    <ul class="emoji-list">${emojiList}</ul>
+  </section>`;
+
+  const canonicalUrl = absoluteUrl(config.site.baseUrl, tag.route);
+  const crumbs = [
+    { label: 'Home', href: '/' },
+    { label: 'Tags', href: '/tag/' },
+    { label: tag.title },
+  ];
+
+  const jsonLd = [
+    {
+      '@context': 'https://schema.org',
+      '@type': 'CollectionPage',
+      name: `${tag.title} Emojis`,
+      url: canonicalUrl,
+      description: tag.description,
+      isPartOf: {
+        '@type': 'WebSite',
+        name: config.site.title,
+        url: absoluteUrl(config.site.baseUrl, ''),
+      },
+    },
+    breadcrumbSchema(config.site.baseUrl, crumbs, canonicalUrl),
+  ];
+
+  return renderLayout({
+    route: tag.route,
+    title: `${tag.title} Emojis`,
+    description: tag.description,
+    canonicalUrl,
+    robots: '',
+    body,
+    breadcrumbs: renderBreadcrumbs(crumbs),
+    config,
+    showHeaderSearch: true,
+    jsonLd,
+    pageClass: 'page-tag',
   });
 }
 
@@ -572,13 +704,17 @@ function renderVariantSection(entry, variantEntries) {
   </section>`;
 }
 
-function renderEmojiPage(group, subgroup, entry, variantEntries, config) {
+function renderEmojiPage(group, subgroup, entry, variantEntries, config, routeOverride = '') {
   const imageHex = formatHexForAsset(entry.hexLower);
   const imageSrc = emojiAssetSource(entry);
   const cdnSrc = entry.cdnAssetPath || config.assets.emojiCdnTemplate.replace('{HEX}', imageHex);
-  const canonicalUrl = absoluteUrl(config.site.baseUrl, entry.canonicalRoute);
-  const detailUrl = absoluteUrl(config.site.baseUrl, entry.detailRoute);
+  const renderedRoute = ensureTrailingSlash(routeOverride || entry.detailRoute);
+  const canonicalRoute = ensureTrailingSlash(entry.canonicalRoute || entry.detailRoute);
+  const canonicalUrl = absoluteUrl(config.site.baseUrl, canonicalRoute);
+  const renderedUrl = absoluteUrl(config.site.baseUrl, renderedRoute);
+  const shareUrl = canonicalUrl;
   const label = humanizeSlug(entry.slug);
+  const isCanonicalRoute = renderedRoute === canonicalRoute;
 
   const body = `<article class="emoji-detail">
     <h1>${escapeHtml(label)}</h1>
@@ -598,7 +734,7 @@ function renderEmojiPage(group, subgroup, entry, variantEntries, config) {
           data-hex="${escapeHtml(entry.hexLower)}"
           data-group="${escapeHtml(entry.group)}"
           data-subgroup="${escapeHtml(entry.subgroup)}"
-          data-route="${escapeHtml(entry.detailRoute)}"
+          data-route="${escapeHtml(canonicalRoute)}"
         >Copy Emoji</button>
         <button type="button" class="copy-btn secondary" data-copy-value="${escapeHtml(
           entry.hexLower
@@ -606,10 +742,10 @@ function renderEmojiPage(group, subgroup, entry, variantEntries, config) {
           entry.hexLower
         )}" data-group="${escapeHtml(entry.group)}" data-subgroup="${escapeHtml(
           entry.subgroup
-        )}" data-route="${escapeHtml(entry.detailRoute)}">Copy Hex</button>
+        )}" data-route="${escapeHtml(canonicalRoute)}">Copy Hex</button>
         <button type="button" class="copy-btn secondary" data-share-url="${escapeHtml(
-          detailUrl
-        )}" data-route="${escapeHtml(entry.detailRoute)}" data-hex="${escapeHtml(
+          shareUrl
+        )}" data-route="${escapeHtml(canonicalRoute)}" data-hex="${escapeHtml(
           entry.hexLower
         )}" data-group="${escapeHtml(entry.group)}" data-subgroup="${escapeHtml(
           entry.subgroup
@@ -621,12 +757,12 @@ function renderEmojiPage(group, subgroup, entry, variantEntries, config) {
       <dt>Group</dt><dd>${escapeHtml(group.title)}</dd>
       <dt>Subgroup</dt><dd>${escapeHtml(subgroup.title)}</dd>
       <dt>Canonical</dt><dd><a href="${escapeHtml(canonicalUrl)}">${escapeHtml(canonicalUrl)}</a></dd>
-      <dt>Permalink</dt><dd><a href="${escapeHtml(detailUrl)}">${escapeHtml(detailUrl)}</a></dd>
+      <dt>Permalink</dt><dd><a href="${escapeHtml(renderedUrl)}">${escapeHtml(renderedUrl)}</a></dd>
     </dl>
     ${renderVariantSection(entry, variantEntries)}
   </article>`;
 
-  const robots = entry.noindex ? 'noindex,follow' : '';
+  const robots = entry.noindex || !isCanonicalRoute ? 'noindex,follow' : '';
   const description = `${label} emoji. Copy ${label} instantly.`;
   const crumbs = [
     { label: 'Home', href: '/' },
@@ -640,7 +776,7 @@ function renderEmojiPage(group, subgroup, entry, variantEntries, config) {
       '@context': 'https://schema.org',
       '@type': 'WebPage',
       name: `${label} Emoji`,
-      url: detailUrl,
+      url: canonicalUrl,
       description,
       isPartOf: {
         '@type': 'WebSite',
@@ -653,14 +789,14 @@ function renderEmojiPage(group, subgroup, entry, variantEntries, config) {
       '@type': 'DefinedTerm',
       name: label,
       termCode: entry.hexLower,
-      url: detailUrl,
+      url: canonicalUrl,
       inDefinedTermSet: absoluteUrl(config.site.baseUrl, subgroup.route),
     },
     breadcrumbSchema(config.site.baseUrl, crumbs, canonicalUrl),
   ];
 
   return renderLayout({
-    route: entry.detailRoute,
+    route: renderedRoute,
     title: `${label} Emoji`,
     description,
     canonicalUrl,
@@ -719,7 +855,7 @@ function buildHomeDataPayload(emojiEntries) {
       subgroup: entry.subgroup,
       hexcode: entry.hexLower,
       tags: Array.isArray(entry.tags) ? entry.tags.join(' ') : String(entry.tags || ''),
-      detailRoute: entry.detailRoute,
+      detailRoute: entry.indexable ? entry.canonicalRoute || entry.detailRoute : entry.detailRoute,
       useLocalAsset: Boolean(entry.useLocalAsset),
       baseHex: entry.baseHex || entry.hexLower,
       isVariant: Boolean(entry.isVariant),
@@ -945,7 +1081,7 @@ function buildDailyEmojiPayload(emojiEntries) {
       dayOfMonth,
       emoji: selected.emoji || '😀',
       annotation: selected.annotation || 'emoji',
-      detailRoute: selected.detailRoute || '',
+      detailRoute: selected.canonicalRoute || selected.detailRoute || '',
       hexcode: normalizeHex(selected.hexLower || selected.hexcode || '') || '1f600',
     });
   }
@@ -957,6 +1093,7 @@ export async function renderSite({ model, legacyRedirects, config, tempRoot }) {
   const generatedFiles = new Set();
   const coreRoutes = new Set();
   const emojiRoutes = new Set();
+  const writtenCanonicalEmojiRoutes = new Set();
 
   await writeGeneratedFile(
     tempRoot,
@@ -979,6 +1116,16 @@ export async function renderSite({ model, legacyRedirects, config, tempRoot }) {
   if (config.indexing?.includeAboutPage) {
     await writeRouteHtml(tempRoot, 'about/', renderAboutPage(config), generatedFiles);
     coreRoutes.add('about/');
+  }
+
+  if (Array.isArray(model.tags) && model.tags.length > 0) {
+    await writeRouteHtml(tempRoot, 'tag/', renderTagIndexPage(model.tags, config), generatedFiles);
+    coreRoutes.add('tag/');
+
+    for (const tag of model.tags) {
+      await writeRouteHtml(tempRoot, tag.route, renderTagPage(tag, config), generatedFiles);
+      coreRoutes.add(tag.route);
+    }
   }
 
   const variantsByBase = new Map();
@@ -1013,12 +1160,24 @@ export async function renderSite({ model, legacyRedirects, config, tempRoot }) {
         await writeRouteHtml(
           tempRoot,
           entry.detailRoute,
-          renderEmojiPage(group, subgroup, entry, variantEntries, config),
+          renderEmojiPage(group, subgroup, entry, variantEntries, config, entry.detailRoute),
           generatedFiles
         );
 
         if (entry.indexable) {
-          emojiRoutes.add(entry.detailRoute);
+          if (entry.canonicalRoute === entry.detailRoute) {
+            writtenCanonicalEmojiRoutes.add(entry.canonicalRoute);
+          } else if (!writtenCanonicalEmojiRoutes.has(entry.canonicalRoute)) {
+            await writeRouteHtml(
+              tempRoot,
+              entry.canonicalRoute,
+              renderEmojiPage(group, subgroup, entry, variantEntries, config, entry.canonicalRoute),
+              generatedFiles
+            );
+            writtenCanonicalEmojiRoutes.add(entry.canonicalRoute);
+          }
+
+          emojiRoutes.add(entry.canonicalRoute);
         }
       }
     }

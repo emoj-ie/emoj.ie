@@ -77,6 +77,12 @@ async function run() {
     await page.goto(BASE_URL, { waitUntil: 'networkidle' });
     await page.waitForSelector('#panel-grid .panel-card, #panel-grid .panel-card-link', { timeout: 20000 });
 
+    const initialThemePreference = (await page.getAttribute('#theme-toggle', 'data-theme-preference')) || 'system';
+    await page.click('#theme-toggle');
+    await page.waitForTimeout(120);
+    const toggledThemePreference = (await page.getAttribute('#theme-toggle', 'data-theme-preference')) || '';
+    assert.notEqual(toggledThemePreference, initialThemePreference, 'Theme toggle should cycle preference');
+
     await page.click('#header-menu-toggle');
     await page.waitForSelector('#advanced-menu:not([hidden])', { timeout: 5000 });
     await page.selectOption('#group-filter', 'smileys-emotion');
@@ -118,14 +124,28 @@ async function run() {
     const copiedValue = await page.evaluate(() => window.__copiedValue || '');
     assert.ok(copiedValue.length > 0, 'Expected clipboard stub to receive copied value');
 
+    const favoriteButtons = page.locator('#home-results .emoji-favorite');
+    assert.ok((await favoriteButtons.count()) > 0, 'Expected favorite buttons in search results');
+    await favoriteButtons.first().click();
+    await page.waitForTimeout(150);
+    const activeFavorite = await favoriteButtons.first().getAttribute('aria-pressed');
+    assert.equal(activeFavorite, 'true', 'Favorite toggle should activate selected emoji');
+
+    const favoritesCount = await page.locator('#favorite-results .emoji-copy').count();
+    assert.ok(favoritesCount > 0, 'Expected favorites list to populate after starring');
+
     await page.waitForTimeout(200);
     const recentCount = await page.locator('#recent-results .emoji-copy').count();
     assert.ok(recentCount > 0, 'Expected recents list to populate after copy');
 
     await page.reload({ waitUntil: 'networkidle' });
     await page.waitForSelector('#recent-results .emoji-copy, #recent-results .emoji-empty', { timeout: 10000 });
+    const storedThemePreference = (await page.getAttribute('#theme-toggle', 'data-theme-preference')) || '';
+    assert.equal(storedThemePreference, toggledThemePreference, 'Theme preference should persist after reload');
     const recentReloadCount = await page.locator('#recent-results .emoji-copy').count();
     assert.ok(recentReloadCount > 0, 'Expected recents persistence after reload');
+    const favoritesReloadCount = await page.locator('#favorite-results .emoji-copy').count();
+    assert.ok(favoritesReloadCount > 0, 'Expected favorites persistence after reload');
 
     await browser.close();
     browser = null;

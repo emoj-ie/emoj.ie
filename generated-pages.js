@@ -1,4 +1,7 @@
 (function () {
+  const THEME_PREFERENCE_KEY = 'themePreference';
+  const THEME_SEQUENCE = ['system', 'light', 'dark'];
+
   function track(eventName, props) {
     if (typeof window.plausible !== 'function') {
       return;
@@ -52,6 +55,96 @@
         toast.remove();
       });
     }, 1800);
+  }
+
+  function getSystemTheme() {
+    if (window.matchMedia && window.matchMedia('(prefers-color-scheme: dark)').matches) {
+      return 'dark';
+    }
+    return 'light';
+  }
+
+  function readThemePreference() {
+    const stored = localStorage.getItem(THEME_PREFERENCE_KEY) || 'system';
+    if (THEME_SEQUENCE.indexOf(stored) === -1) {
+      return 'system';
+    }
+    return stored;
+  }
+
+  function resolveTheme(preference) {
+    if (preference === 'dark') return 'dark';
+    if (preference === 'light') return 'light';
+    return getSystemTheme();
+  }
+
+  function setDocumentTheme(theme) {
+    document.documentElement.setAttribute('data-theme', theme);
+  }
+
+  function updateThemeToggleButton(button, preference, theme) {
+    if (!button) return;
+
+    const glyphNode = button.querySelector('.theme-toggle-glyph');
+    if (glyphNode) {
+      if (preference === 'dark') {
+        glyphNode.textContent = '◑';
+      } else if (preference === 'light') {
+        glyphNode.textContent = '◒';
+      } else {
+        glyphNode.textContent = '◐';
+      }
+    }
+
+    button.setAttribute('data-theme-preference', preference);
+    button.setAttribute('aria-label', `Theme: ${preference} (${theme}). Activate to switch.`);
+    button.setAttribute('title', `Theme: ${preference} (${theme})`);
+  }
+
+  function initThemeToggle() {
+    const button = document.getElementById('theme-toggle');
+    let preference = readThemePreference();
+
+    function applyTheme() {
+      const theme = resolveTheme(preference);
+      setDocumentTheme(theme);
+      updateThemeToggleButton(button, preference, theme);
+      return theme;
+    }
+
+    applyTheme();
+
+    if (window.matchMedia) {
+      const media = window.matchMedia('(prefers-color-scheme: dark)');
+      const onSystemThemeChange = function () {
+        if (preference === 'system') {
+          applyTheme();
+        }
+      };
+
+      if (typeof media.addEventListener === 'function') {
+        media.addEventListener('change', onSystemThemeChange);
+      } else if (typeof media.addListener === 'function') {
+        media.addListener(onSystemThemeChange);
+      }
+    }
+
+    if (!button) {
+      return;
+    }
+
+    button.addEventListener('click', function () {
+      const currentIndex = THEME_SEQUENCE.indexOf(preference);
+      preference = THEME_SEQUENCE[(currentIndex + 1) % THEME_SEQUENCE.length];
+      localStorage.setItem(THEME_PREFERENCE_KEY, preference);
+
+      const theme = applyTheme();
+      track('theme_toggle', {
+        source: window.location.pathname,
+        preference: preference,
+        theme: theme,
+      });
+    });
   }
 
   async function copyText(value) {
@@ -290,6 +383,7 @@
   );
 
   registerServiceWorker();
+  initThemeToggle();
   applyDailyLogoEmoji();
   initGlobalHeaderMenu();
 })();

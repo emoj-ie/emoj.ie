@@ -25,6 +25,25 @@ const GROUP_DESCRIPTIONS = {
   'extras-unicode': 'Unicode extras and supporting symbols.',
 };
 
+const TAG_STOPWORDS = new Set([
+  'and',
+  'emoji',
+  'symbol',
+  'sign',
+  'face',
+  'person',
+  'with',
+  'without',
+  'for',
+  'the',
+  'of',
+  'to',
+  'in',
+  'on',
+  'a',
+  'an',
+]);
+
 function compareKeys(a, b) {
   return a.localeCompare(b, 'en', { sensitivity: 'base', numeric: true });
 }
@@ -69,6 +88,25 @@ function getGroupNoindex(config, groupKey) {
   return noindexGroups.includes(groupKey);
 }
 
+function normalizedTagList(entry) {
+  const raw = Array.isArray(entry.tags) ? entry.tags.join(',') : String(entry.tags || '');
+  const parts = raw
+    .split(',')
+    .map((token) => token.trim().toLowerCase())
+    .filter(Boolean);
+
+  const normalized = new Set();
+  for (const part of parts) {
+    const slug = slugify(part);
+    if (!slug || slug.length < 2) continue;
+    if (!/[a-z]/.test(slug)) continue;
+    if (TAG_STOPWORDS.has(slug)) continue;
+    normalized.add(slug);
+  }
+
+  return [...normalized];
+}
+
 export async function loadEmojiModel({ rootDir, config }) {
   const groupedDataPath = path.join(rootDir, config.paths.groupedData);
   const grouped = JSON.parse(await fs.readFile(groupedDataPath, 'utf8'));
@@ -87,6 +125,7 @@ export async function loadEmojiModel({ rootDir, config }) {
         const hexLower = normalizeHex(emoji.hexcode);
         const detailSlug = `${slug}--${hexLower}`;
         const detailRoute = ensureTrailingSlash(`${groupKey}/${subgroupKey}/${detailSlug}`);
+        const emojiRoute = ensureTrailingSlash(`emoji/${detailSlug}`);
         const detailFile = routeToFile(detailRoute);
         const legacyRoute = ensureTrailingSlash(`${groupKey}/${subgroupKey}/${slug}`);
         const legacyFile = routeToFile(legacyRoute);
@@ -99,6 +138,7 @@ export async function loadEmojiModel({ rootDir, config }) {
           hexLower,
           detailSlug,
           detailRoute,
+          emojiRoute,
           detailFile,
           legacyRoute,
           legacyFile,
@@ -177,7 +217,7 @@ export async function loadEmojiModel({ rootDir, config }) {
   for (const entry of emojiEntries) {
     const baseEntry = entryByHex.get(entry.baseHex) || entry;
     entry.baseRoute = baseEntry.detailRoute;
-    entry.canonicalRoute = entry.isVariant ? baseEntry.detailRoute : entry.detailRoute;
+    entry.canonicalRoute = entry.isVariant ? baseEntry.emojiRoute : entry.emojiRoute;
 
     const groupNoindex = getGroupNoindex(config, entry.group);
     const variantNoindex = Boolean(config.indexing?.noindexVariants && entry.isVariant);
@@ -185,6 +225,10 @@ export async function loadEmojiModel({ rootDir, config }) {
 
     const onlyBaseInSitemap = Boolean(config.indexing?.emojiSitemapBaseOnly);
     entry.indexable = !entry.noindex && (!onlyBaseInSitemap || !entry.isVariant);
+
+    if (entry.group === 'component' && !entry.indexable) {
+      entry.canonicalRoute = entry.detailRoute;
+    }
 
     entry.localAssetPath = config.assets.emojiLocalTemplate.replace('{HEX}', entry.assetHex);
     entry.cdnAssetPath = config.assets.emojiCdnTemplate.replace('{HEX}', entry.assetHex);
@@ -226,8 +270,39 @@ export async function loadEmojiModel({ rootDir, config }) {
     });
   }
 
+  const tagMap = new Map();
+  for (const entry of emojiEntries) {
+    if (!entry.indexable) continue;
+    if (entry.group === 'component') continue;
+    if (entry.isVariant) continue;
+
+    for (const tagKey of normalizedTagList(entry)) {
+      if (!tagMap.has(tagKey)) {
+        tagMap.set(tagKey, []);
+      }
+      tagMap.get(tagKey).push(entry);
+    }
+  }
+
+  const tags = [...tagMap.entries()]
+    .map(([key, emojis]) => ({
+      key,
+      title: key.replace(/-/g, ' '),
+      route: ensureTrailingSlash(`tag/${key}`),
+      file: routeToFile(ensureTrailingSlash(`tag/${key}`)),
+      description: `Explore ${key.replace(/-/g, ' ')} emojis and copy them instantly.`,
+      emojis: [...new Set(emojis)].sort((a, b) =>
+        String(a.annotation || '').localeCompare(String(b.annotation || ''), 'en', {
+          sensitivity: 'base',
+        })
+      ),
+    }))
+    .filter((tag) => tag.emojis.length >= 8 && tag.emojis.length <= 260)
+    .sort((a, b) => b.emojis.length - a.emojis.length || compareKeys(a.key, b.key));
+
   return {
     groups,
+    tags,
     emojiEntries,
     groupedDataPath,
   };

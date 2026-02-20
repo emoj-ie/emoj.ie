@@ -29,17 +29,18 @@ Last updated: 2026-02-20
 | Favorites persistence (local storage) | none | full E2E |
 | Theme toggle and system default behavior | none | full E2E |
 | Category/subcategory filters | partial | full E2E |
-| SEO routes metadata/sitemap | partial | unit + E2E checks |
+| SEO routes metadata/sitemap | unit + integration | unit + E2E checks |
 | Accessibility smoke | present | broaden with keyboard + focus coverage |
 
 ## Baseline E2E Cases (Planned)
-- [ ] Search for a term and verify result count changes.
-- [ ] Copy an emoji and verify success signal.
+- [x] Search for a term and verify result count changes.
+- [x] Copy an emoji and verify success signal.
 - [ ] Copy mode switching updates copied payload format.
-- [ ] Category and subcategory filtering narrows results.
-- [ ] Keyboard arrow navigation moves focus between emoji buttons.
-- [ ] Recent list updates after copy and survives page reload.
-- [ ] Theme mode toggles and persists setting.
+- [x] Category and subcategory filtering narrows results.
+- [x] Keyboard arrow navigation moves focus between emoji buttons.
+- [x] Recent list updates after copy and survives page reload.
+- [x] Theme mode toggles and persists setting.
+- [x] Favorites updates and survives page reload.
 
 ## Assumptions
 - Existing Node test suite stays in place; Playwright coverage will be additive.

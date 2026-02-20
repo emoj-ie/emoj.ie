@@ -17,7 +17,15 @@ export function verifyModel({ emojiEntries, legacyRedirects }) {
     throw new Error(`Duplicate detail routes found: ${duplicateDetailRoutes.slice(0, 20).join(', ')}`);
   }
 
-  const knownRoutes = detailRoutes;
+  const knownRoutes = new Set(detailRoutes);
+  for (const entry of emojiEntries) {
+    if (entry.canonicalRoute) {
+      knownRoutes.add(entry.canonicalRoute);
+    }
+    if (entry.emojiRoute) {
+      knownRoutes.add(entry.emojiRoute);
+    }
+  }
   for (const entry of emojiEntries) {
     if (!knownRoutes.has(entry.baseRoute)) {
       throw new Error(`Missing base route for ${entry.detailRoute}: ${entry.baseRoute}`);

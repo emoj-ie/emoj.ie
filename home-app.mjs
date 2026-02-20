@@ -8,6 +8,97 @@ import {
   toSearchParams,
 } from './home-utils.mjs';
 
+const SEARCH_SYNONYMS = Object.freeze({
+  happy: ['smile', 'joy', 'grin', 'cheerful'],
+  sad: ['cry', 'tears', 'upset'],
+  laugh: ['lol', 'joy', 'funny', 'haha'],
+  love: ['heart', 'romance', 'affection'],
+  party: ['celebration', 'birthday', 'confetti'],
+  angry: ['mad', 'rage', 'annoyed'],
+  cat: ['kitty', 'feline'],
+  dog: ['puppy', 'canine'],
+  food: ['meal', 'eat', 'drink'],
+  weather: ['sun', 'rain', 'cloud', 'snow'],
+  work: ['office', 'job', 'business'],
+  money: ['cash', 'bank', 'dollar', 'coin'],
+});
+
+const TOKEN_SPLIT_RE = /[^a-z0-9]+/g;
+
+const SYNONYM_LOOKUP = (() => {
+  const lookup = new Map();
+
+  for (const [key, values] of Object.entries(SEARCH_SYNONYMS)) {
+    const bag = new Set([key, ...values]);
+    for (const token of bag) {
+      const existing = lookup.get(token) || new Set();
+      for (const value of bag) {
+        existing.add(value);
+      }
+      lookup.set(token, existing);
+    }
+  }
+
+  return lookup;
+})();
+
+function tokenizeSearch(value = '') {
+  return String(value)
+    .toLowerCase()
+    .split(TOKEN_SPLIT_RE)
+    .map((part) => part.trim())
+    .filter((part) => part.length > 1);
+}
+
+function expandQueryTokens(tokens = []) {
+  const expanded = new Set(tokens);
+
+  for (const token of tokens) {
+    const aliases = SYNONYM_LOOKUP.get(token);
+    if (!aliases) continue;
+    for (const alias of aliases) {
+      expanded.add(alias);
+    }
+  }
+
+  return [...expanded];
+}
+
+function withinDistance(a, b, maxDistance = 1) {
+  const source = String(a || '').toLowerCase();
+  const target = String(b || '').toLowerCase();
+
+  if (!source || !target) return false;
+  if (source === target) return true;
+  if (Math.abs(source.length - target.length) > maxDistance) return false;
+
+  const rows = source.length + 1;
+  const cols = target.length + 1;
+  const matrix = Array.from({ length: rows }, () => Array(cols).fill(0));
+
+  for (let row = 0; row < rows; row += 1) matrix[row][0] = row;
+  for (let col = 0; col < cols; col += 1) matrix[0][col] = col;
+
+  for (let row = 1; row < rows; row += 1) {
+    let rowMin = Number.POSITIVE_INFINITY;
+    for (let col = 1; col < cols; col += 1) {
+      const cost = source[row - 1] === target[col - 1] ? 0 : 1;
+      matrix[row][col] = Math.min(
+        matrix[row - 1][col] + 1,
+        matrix[row][col - 1] + 1,
+        matrix[row - 1][col - 1] + cost
+      );
+      rowMin = Math.min(rowMin, matrix[row][col]);
+    }
+
+    if (rowMin > maxDistance) {
+      return false;
+    }
+  }
+
+  return matrix[rows - 1][cols - 1] <= maxDistance;
+}
+
 (function () {
   const searchInput = document.getElementById('search');
   const groupFilter = document.getElementById('group-filter');
@@ -26,6 +117,7 @@ import {
   const resultsSentinel = document.getElementById('results-sentinel');
   const loadMoreButton = document.getElementById('results-load-more');
 
+  const favoriteList = document.getElementById('favorite-results');
   const recentList = document.getElementById('recent-results');
 
   const menuToggle = document.getElementById('header-menu-toggle');
@@ -46,6 +138,7 @@ import {
   }
 
   const RECENT_KEY = 'recentEmojisV2';
+  const FAVORITE_KEY = 'favoriteEmojisV1';
   const COPY_MODE_KEY = 'copyMode';
   const SKIN_TONE_KEY = 'defaultSkinTone';
 
@@ -61,6 +154,8 @@ import {
   let groupPreviewEntries = new Map();
   let subgroupPreviewEntries = new Map();
   let subgroupEntryCounts = new Map();
+  let entryByRoute = new Map();
+  let favoriteRouteSet = new Set();
 
   let filteredEntries = [];
   let renderedCount = 0;
@@ -116,10 +211,14 @@ import {
       normalized.group,
       normalized.subgroup,
       normalized.hexLower,
+      normalized.emoji,
     ]
       .filter(Boolean)
       .join(' ')
       .toLowerCase();
+
+    normalized.searchTokens = tokenizeSearch(normalized.searchText);
+    normalized.searchTokenSet = new Set(normalized.searchTokens);
 
     return normalized;
   }
@@ -166,12 +265,14 @@ import {
     groupPreviewEntries = new Map();
     subgroupPreviewEntries = new Map();
     subgroupEntryCounts = new Map();
+    entryByRoute = new Map();
 
     const groupSet = new Set();
     const baseSeen = new Set();
     baseEntries = [];
 
     for (const entry of allEntries) {
+      entryByRoute.set(entry.detailRoute, entry);
       groupSet.add(entry.group);
 
       if (!subgroupsByGroup.has(entry.group)) {
@@ -474,10 +575,12 @@ import {
     const small = document.createElement('small');
     small.textContent = display.annotation;
     link.appendChild(small);
+    const favorite = createFavoriteButton(display);
 
     li.appendChild(button);
     li.appendChild(divider);
     li.appendChild(link);
+    li.appendChild(favorite);
 
     return li;
   }
@@ -535,15 +638,86 @@ import {
     updateLoadControls();
   }
 
+  function entryQueryScore(entry, query, expandedTokens) {
+    const searchText = entry.searchText || '';
+    const annotation = (entry.annotation || '').toLowerCase();
+    const tokenSet = entry.searchTokenSet || new Set();
+    const tokenList = entry.searchTokens || [];
+
+    let score = 0;
+
+    if (searchText.includes(query)) {
+      score += 90;
+    }
+
+    if (annotation.startsWith(query)) {
+      score += 24;
+    }
+
+    for (const token of expandedTokens) {
+      if (!token || token.length < 2) continue;
+
+      if (tokenSet.has(token)) {
+        score += 30;
+        continue;
+      }
+
+      if (tokenList.some((candidate) => candidate.startsWith(token))) {
+        score += 12;
+        continue;
+      }
+
+      if (token.length < 4) {
+        continue;
+      }
+
+      const maxDistance = token.length >= 7 ? 2 : 1;
+      const fuzzy = tokenList.some((candidate) => {
+        if (!candidate || Math.abs(candidate.length - token.length) > maxDistance) {
+          return false;
+        }
+        return withinDistance(candidate, token, maxDistance);
+      });
+
+      if (fuzzy) {
+        score += 6;
+      }
+    }
+
+    return score;
+  }
+
   function filterEmojiEntries() {
     const query = state.q.toLowerCase();
-
-    return baseEntries.filter((entry) => {
+    const scoped = baseEntries.filter((entry) => {
       if (state.g && entry.group !== state.g) return false;
       if (state.sg && entry.subgroup !== state.sg) return false;
-      if (!query) return true;
-      return entry.searchText.includes(query);
+      return true;
     });
+
+    if (!query) {
+      return scoped;
+    }
+
+    const queryTokens = tokenizeSearch(query).slice(0, 5);
+    const expandedTokens = expandQueryTokens(queryTokens).slice(0, 20);
+    const scored = [];
+
+    for (const entry of scoped) {
+      const score = entryQueryScore(entry, query, expandedTokens);
+      if (score > 0) {
+        scored.push({ entry, score });
+      }
+    }
+
+    scored.sort((a, b) => {
+      if (b.score !== a.score) {
+        return b.score - a.score;
+      }
+      return a.entry.annotation.localeCompare(b.entry.annotation, 'en', { sensitivity: 'base' });
+    });
+
+    return scored.map((item) => item.entry);
   }
 
   function renderEmojiPanel() {
@@ -612,6 +786,139 @@ import {
     }
   }
 
+  function snapshotEntry(entry) {
+    return {
+      emoji: entry.emoji || '',
+      hexcode: entry.hexLower || entry.hexcode || '',
+      annotation: entry.annotation || 'emoji',
+      group: entry.group || '',
+      subgroup: entry.subgroup || '',
+      detailRoute: entry.detailRoute || '',
+      tags: Array.isArray(entry.tags) ? entry.tags.join(' ') : String(entry.tags || ''),
+      useLocalAsset: Boolean(entry.useLocalAsset),
+      baseHex: entry.baseHex || entry.hexLower || entry.hexcode || '',
+      isVariant: Boolean(entry.isVariant),
+      skintone: entry.skintone === '' || entry.skintone == null ? 0 : Number(entry.skintone) || 0,
+      skintoneBaseHex: entry.skintoneBaseHex || '',
+    };
+  }
+
+  function resolveStoredEntry(raw) {
+    if (raw && raw.detailRoute && entryByRoute.has(raw.detailRoute)) {
+      return normalizeEntry(entryByRoute.get(raw.detailRoute));
+    }
+    return normalizeEntry(raw || {});
+  }
+
+  function readFavorites() {
+    try {
+      const parsed = JSON.parse(localStorage.getItem(FAVORITE_KEY) || '[]');
+      return Array.isArray(parsed) ? parsed : [];
+    } catch {
+      return [];
+    }
+  }
+
+  function writeFavorites(items) {
+    localStorage.setItem(FAVORITE_KEY, JSON.stringify(items.slice(0, 40)));
+  }
+
+  function refreshFavoriteSet() {
+    favoriteRouteSet = new Set(readFavorites().map((item) => item?.detailRoute).filter(Boolean));
+  }
+
+  function applyFavoriteState(button) {
+    const route = button.dataset.route || '';
+    const label = button.dataset.copyLabel || 'emoji';
+    const active = route ? favoriteRouteSet.has(route) : false;
+    button.textContent = active ? '★' : '☆';
+    button.classList.toggle('is-active', active);
+    button.setAttribute('aria-pressed', active ? 'true' : 'false');
+    button.setAttribute(
+      'aria-label',
+      active ? `Remove ${label} from favorites` : `Save ${label} to favorites`
+    );
+    button.title = active ? 'Remove favorite' : 'Save favorite';
+  }
+
+  function createFavoriteButton(entry) {
+    const button = document.createElement('button');
+    button.type = 'button';
+    button.className = 'emoji-favorite';
+    button.dataset.route = entry.detailRoute || '';
+    button.dataset.hex = entry.hexLower || entry.hexcode || '';
+    button.dataset.group = entry.group || '';
+    button.dataset.subgroup = entry.subgroup || '';
+    button.dataset.emoji = entry.emoji || '';
+    button.dataset.copyLabel = entry.annotation || 'emoji';
+    applyFavoriteState(button);
+    return button;
+  }
+
+  function syncFavoriteButtons() {
+    const buttons = document.querySelectorAll('.emoji-favorite');
+    for (const button of buttons) {
+      applyFavoriteState(button);
+    }
+  }
+
+  function toggleFavoriteEntry(entryLike, source = 'manual') {
+    const detailRoute = String(entryLike?.detailRoute || '').trim();
+    if (!detailRoute) {
+      return;
+    }
+
+    const previous = readFavorites();
+    const existing = previous.find((item) => item.detailRoute === detailRoute);
+    let next;
+    let eventName;
+
+    if (existing) {
+      next = previous.filter((item) => item.detailRoute !== detailRoute);
+      eventName = 'favorite_remove';
+    } else {
+      const reference = entryByRoute.get(detailRoute) || normalizeEntry(entryLike);
+      next = [snapshotEntry(reference), ...previous.filter((item) => item.detailRoute !== detailRoute)];
+      eventName = 'favorite_add';
+    }
+
+    writeFavorites(next);
+    refreshFavoriteSet();
+    renderFavorites();
+    syncFavoriteButtons();
+
+    const normalized = entryByRoute.get(detailRoute) || normalizeEntry(entryLike);
+    track(eventName, {
+      source: window.location.pathname,
+      hex: normalized.hexLower || '',
+      group: normalized.group || 'all',
+      subgroup: normalized.subgroup || 'all',
+      format: state.copy,
+      trigger: source,
+    });
+  }
+
+  function toggleFavoriteFromButton(button, source = 'button') {
+    if (!button || !button.dataset) return;
+
+    toggleFavoriteEntry(
+      {
+        emoji: button.dataset.emoji,
+        hexcode: button.dataset.hex,
+        annotation: button.dataset.copyLabel || 'emoji',
+        group: button.dataset.group,
+        subgroup: button.dataset.subgroup,
+        detailRoute: button.dataset.route,
+        tags: '',
+        useLocalAsset: button.dataset.group !== 'component',
+        baseHex: button.dataset.hex,
+        isVariant: false,
+        skintone: 0,
+      },
+      source
+    );
+  }
+
   function readRecents() {
     try {
       const parsed = JSON.parse(localStorage.getItem(RECENT_KEY) || '[]');
@@ -641,7 +948,8 @@ import {
 
     const fragment = document.createDocumentFragment();
     for (const raw of recents) {
-      const entry = normalizeEntry(raw);
+      const entry = resolveStoredEntry(raw);
+      const display = resolveSkinToneEntry(entry);
 
       const li = document.createElement('li');
       li.className = 'emoji';
@@ -649,62 +957,132 @@ import {
       const button = document.createElement('button');
       button.type = 'button';
       button.className = 'emoji-copy';
-      button.setAttribute('aria-label', `Copy ${entry.annotation}`);
-      button.dataset.copyLabel = entry.annotation;
-      button.dataset.copyValue = formatCopyValue(state.copy, entry);
+      button.setAttribute('aria-label', `Copy ${display.annotation}`);
+      button.dataset.copyLabel = display.annotation;
+      button.dataset.copyValue = formatCopyValue(state.copy, display);
       button.dataset.copyFormat = state.copy;
-      button.dataset.emoji = entry.emoji;
-      button.dataset.hex = entry.hexLower;
-      button.dataset.group = entry.group;
-      button.dataset.subgroup = entry.subgroup;
-      button.dataset.route = entry.detailRoute;
+      button.dataset.emoji = display.emoji;
+      button.dataset.hex = display.hexLower;
+      button.dataset.group = display.group;
+      button.dataset.subgroup = display.subgroup;
+      button.dataset.route = display.detailRoute;
 
       const img = document.createElement('img');
-      const asset = resolveAsset(entry);
+      const asset = resolveAsset(display);
       img.src = asset.src;
-      img.alt = entry.annotation;
+      img.alt = display.annotation;
       img.width = 48;
       img.height = 48;
       img.loading = 'lazy';
       img.dataset.cdnSrc = asset.cdn;
-      img.dataset.hex = entry.hexLower;
+      img.dataset.hex = display.hexLower;
 
       button.appendChild(img);
 
       const divider = document.createElement('hr');
       const link = document.createElement('a');
-      link.href = `/${entry.detailRoute}`;
+      link.href = `/${display.detailRoute}`;
       const small = document.createElement('small');
-      small.textContent = entry.annotation;
+      small.textContent = display.annotation;
       link.appendChild(small);
+      const favorite = createFavoriteButton(display);
 
       li.appendChild(button);
       li.appendChild(divider);
       li.appendChild(link);
+      li.appendChild(favorite);
 
       fragment.appendChild(li);
     }
 
     recentList.appendChild(fragment);
+    syncFavoriteButtons();
+  }
+
+  function renderFavorites() {
+    if (!favoriteList) return;
+
+    const favorites = readFavorites();
+    favoriteList.innerHTML = '';
+
+    if (favorites.length === 0) {
+      const empty = document.createElement('li');
+      empty.className = 'emoji-empty';
+      empty.textContent = 'No favorites yet.';
+      favoriteList.appendChild(empty);
+      return;
+    }
+
+    const fragment = document.createDocumentFragment();
+    for (const raw of favorites) {
+      const entry = resolveStoredEntry(raw);
+      const display = resolveSkinToneEntry(entry);
+
+      const li = document.createElement('li');
+      li.className = 'emoji';
+
+      const button = document.createElement('button');
+      button.type = 'button';
+      button.className = 'emoji-copy';
+      button.setAttribute('aria-label', `Copy ${display.annotation}`);
+      button.dataset.copyLabel = display.annotation;
+      button.dataset.copyValue = formatCopyValue(state.copy, display);
+      button.dataset.copyFormat = state.copy;
+      button.dataset.emoji = display.emoji;
+      button.dataset.hex = display.hexLower;
+      button.dataset.group = display.group;
+      button.dataset.subgroup = display.subgroup;
+      button.dataset.route = display.detailRoute;
+
+      const img = document.createElement('img');
+      const asset = resolveAsset(display);
+      img.src = asset.src;
+      img.alt = display.annotation;
+      img.width = 48;
+      img.height = 48;
+      img.loading = 'lazy';
+      img.dataset.cdnSrc = asset.cdn;
+      img.dataset.hex = display.hexLower;
+      button.appendChild(img);
+
+      const divider = document.createElement('hr');
+      const link = document.createElement('a');
+      link.href = `/${display.detailRoute}`;
+      const small = document.createElement('small');
+      small.textContent = display.annotation;
+      link.appendChild(small);
+      const favorite = createFavoriteButton(display);
+
+      li.appendChild(button);
+      li.appendChild(divider);
+      li.appendChild(link);
+      li.appendChild(favorite);
+      fragment.appendChild(li);
+    }
+
+    favoriteList.appendChild(fragment);
+    syncFavoriteButtons();
   }
 
   function addRecentFromButton(button) {
     const detailRoute = button.dataset.route;
     if (!detailRoute) return;
 
-    const next = {
-      emoji: button.dataset.emoji,
-      hexcode: button.dataset.hex,
-      annotation: button.dataset.copyLabel || 'emoji',
-      group: button.dataset.group,
-      subgroup: button.dataset.subgroup,
-      detailRoute,
-      tags: '',
-      useLocalAsset: button.dataset.group !== 'component',
-      baseHex: button.dataset.hex,
-      isVariant: false,
-      skintone: 0,
-    };
+    const next = snapshotEntry(
+      entryByRoute.get(detailRoute) || {
+        emoji: button.dataset.emoji,
+        hexcode: button.dataset.hex,
+        annotation: button.dataset.copyLabel || 'emoji',
+        group: button.dataset.group,
+        subgroup: button.dataset.subgroup,
+        detailRoute,
+        tags: '',
+        useLocalAsset: button.dataset.group !== 'component',
+        baseHex: button.dataset.hex,
+        isVariant: false,
+        skintone: 0,
+      }
+    );
 
     const prev = readRecents().filter((item) => item.detailRoute !== detailRoute);
     prev.unshift(next);
@@ -718,9 +1096,35 @@ import {
       return;
     }
 
+    const activeElement = document.activeElement;
+    const activeTag = activeElement?.tagName?.toLowerCase() || '';
+    const inEditableContext =
+      activeTag === 'input' ||
+      activeTag === 'textarea' ||
+      activeTag === 'select' ||
+      Boolean(activeElement?.isContentEditable);
+
+    if (
+      event.key === '/' &&
+      !event.metaKey &&
+      !event.ctrlKey &&
+      !event.altKey &&
+      !inEditableContext
+    ) {
+      event.preventDefault();
+      searchInput.focus();
+      return;
+    }
+
+    if ((event.key === 'f' || event.key === 'F') && activeElement?.classList?.contains('emoji-copy')) {
+      event.preventDefault();
+      toggleFavoriteFromButton(activeElement, 'keyboard');
+      return;
+    }
+
     if (!currentResultButtons.length) return;
 
-    const activeIndex = currentResultButtons.indexOf(document.activeElement);
+    const activeIndex = currentResultButtons.indexOf(activeElement);
 
     if (event.key === 'ArrowRight' || event.key === 'ArrowDown') {
       const nextIndex = activeIndex < 0 ? 0 : Math.min(activeIndex + 1, currentResultButtons.length - 1);
@@ -805,6 +1209,8 @@ import {
       state = parseUiState(window.location.search, localStorage.getItem(COPY_MODE_KEY) || 'emoji');
       applyStateToControls();
       renderExplorer(false, false);
+      renderFavorites();
+      renderRecents();
     });
 
     searchInput.addEventListener('input', scheduleSearchRender);
@@ -837,12 +1243,15 @@ import {
       state.copy = copyMode.value;
       renderExplorer(true, true);
       renderRecents();
+      renderFavorites();
     });
 
     if (skinToneMode) {
       skinToneMode.addEventListener('change', () => {
         defaultSkinTone = skinToneMode.value;
         renderExplorer(true, true);
+        renderFavorites();
+        renderRecents();
       });
     }
 
@@ -887,6 +1296,22 @@ import {
     resultsList.addEventListener('keydown', handleKeyNavigation);
     document.addEventListener('keydown', handleKeyNavigation);
 
+    const favoriteClickHandler = (event) => {
+      const button = event.target.closest('.emoji-favorite');
+      if (!button) return;
+      event.preventDefault();
+      event.stopPropagation();
+      toggleFavoriteFromButton(button, 'click');
+    };
+
+    resultsList.addEventListener('click', favoriteClickHandler);
+    if (recentList) {
+      recentList.addEventListener('click', favoriteClickHandler);
+    }
+    if (favoriteList) {
+      favoriteList.addEventListener('click', favoriteClickHandler);
+    }
+
     document.addEventListener('emoji:copied', (event) => {
       const trigger = event.detail?.trigger;
       if (!trigger || !trigger.dataset || !trigger.dataset.route) {
@@ -898,10 +1323,13 @@ import {
 
   function initWithEntries(entries) {
     initializeData(entries);
+    refreshFavoriteSet();
     populateGroups();
     applyStateToControls();
     renderExplorer(false, false);
+    renderFavorites();
     renderRecents();
+    syncFavoriteButtons();
     setupInfiniteObserver();
   }
 
