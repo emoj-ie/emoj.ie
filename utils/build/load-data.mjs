@@ -206,7 +206,15 @@ function getGroupNoindex(config, groupKey) {
 }
 
 function normalizedTagList(entry) {
-  const raw = Array.isArray(entry.tags) ? entry.tags.join(',') : String(entry.tags || '');
+  const raw = [
+    Array.isArray(entry.tags) ? entry.tags.join(',') : String(entry.tags || ''),
+    Array.isArray(entry.openmoji_tags)
+      ? entry.openmoji_tags.join(',')
+      : String(entry.openmoji_tags || ''),
+    String(entry.annotation || ''),
+  ]
+    .filter(Boolean)
+    .join(',');
   const parts = raw
     .split(',')
     .map((token) => token.trim().toLowerCase())
