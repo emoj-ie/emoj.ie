@@ -1586,6 +1586,33 @@ function renderEmojiPage(
       <dt>Group</dt><dd><a href="/${escapeHtml(group.route)}">${escapeHtml(group.title)}</a></dd>
       <dt>Subgroup</dt><dd><a href="/${escapeHtml(subgroup.route)}">${escapeHtml(subgroup.title)}</a></dd>
     </dl>
+    <section class="emoji-render-health" aria-labelledby="emoji-render-health-title">
+      <h2 id="emoji-render-health-title">Render Health</h2>
+      <div class="emoji-render-grid">
+        <article
+          class="emoji-render-card"
+          data-emoji-render-status
+          data-emoji="${escapeHtml(entry.emoji)}"
+          data-hex="${escapeHtml(entry.hexLower)}"
+          data-group="${escapeHtml(entry.group)}"
+          data-subgroup="${escapeHtml(entry.subgroup)}"
+          data-route="${escapeHtml(canonicalRoute)}"
+        >
+          <p class="emoji-render-kicker">This Emoji</p>
+          <p class="emoji-render-indicator" data-emoji-render-indicator>Checking support…</p>
+          <p class="emoji-render-note" data-emoji-render-note>Detecting if your platform can draw this glyph.</p>
+        </article>
+        <article class="emoji-render-card" data-system-tofu-score>
+          <p class="emoji-render-kicker">System Tofu Score</p>
+          <p class="emoji-render-indicator" data-system-tofu-indicator>Scanning support…</p>
+          <p class="emoji-render-note" data-system-tofu-note>Lower missing count is better.</p>
+          <div class="emoji-render-progress-wrap">
+            <progress class="emoji-render-progress" data-system-tofu-progress max="100" value="0"></progress>
+            <span class="emoji-render-progress-label" data-system-tofu-progress-label>0%</span>
+          </div>
+        </article>
+      </div>
+    </section>
     <section class="emoji-context">
       <h2>Meaning And Usage</h2>
       <p>${escapeHtml(usageLine)}</p>
@@ -1665,6 +1692,7 @@ function renderEmojiPage(
     breadcrumbs: renderBreadcrumbs(crumbs),
     config,
     showHeaderSearch: true,
+    scripts: [{ src: 'emoji-diagnostics.js', defer: true }],
     jsonLd,
     pageClass: 'page-detail',
   });

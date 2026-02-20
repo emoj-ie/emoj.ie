@@ -118,6 +118,10 @@ test('emoji detail pages include context, code formats, and related links', () =
   const detail = read('emoji/grinning-face--1f600/index.html');
 
   assert.match(detail, /<section class="emoji-context">/);
+  assert.match(detail, /data-emoji-render-status/);
+  assert.match(detail, /data-system-tofu-score/);
+  assert.match(detail, /emoji-diagnostics\.js/);
+  assert.match(detail, /Lower missing count is better\./);
   assert.match(detail, /Meaning And Usage/);
   assert.match(detail, /<section class="emoji-code-grid"/);
   assert.match(detail, /Shortcode/);

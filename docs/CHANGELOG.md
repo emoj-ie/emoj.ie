@@ -147,6 +147,10 @@ All notable project updates are tracked here in human-readable form.
   - expanded burger-menu `More` links on home and non-home pages to include the same hubs
   - rebuilt `alternatives/`, `tag/`, and `search/` index pages into minimal panel-card grids
   - switched `tag/{name}` and `search/{term}` pages to panel-style emoji cards with visually hidden `h1` and reduced copy
+- Added emoji render diagnostics on detail pages:
+  - introduced per-emoji native render detection with tofu-risk messaging
+  - added system tofu score scan (dataset-wide), with progress, cached results, and "lower missing is better" guidance
+  - kept detection local on-device using canvas-based glyph signatures
 
 ### Notes
 - Phase 0 through Phase 5 are complete for the current roadmap scope.
