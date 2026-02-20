@@ -471,30 +471,6 @@ a:hover {
   display: none;
 }
 
-.home-minimal-head {
-  display: flex;
-  align-items: center;
-  flex-wrap: wrap;
-  gap: 0.6rem 0.9rem;
-}
-
-.home-title {
-  font-size: clamp(1.35rem, 2.8vw, 2rem);
-}
-
-.home-mini-tip {
-  font-size: 0.9rem;
-  color: var(--text-muted);
-  font-weight: 600;
-}
-
-.home-plain-link {
-  margin-inline-start: auto;
-  font-size: 0.88rem;
-  text-decoration: none;
-  font-weight: 700;
-}
-
 .panel-header {
   display: grid;
   gap: 0.5rem;
@@ -690,6 +666,9 @@ a:hover {
   display: flex;
   align-items: center;
   gap: 0.55rem;
+  min-height: 40px;
+  border-bottom: 2px solid color-mix(in oklab, var(--border-soft), transparent 18%);
+  padding-bottom: 0.55rem;
 }
 
 .panel-crumbs span {
@@ -697,9 +676,60 @@ a:hover {
   color: var(--text-strong);
 }
 
-#panel-home[disabled] {
+.crumb-home {
+  border: 2px solid var(--border-soft);
+  background: var(--bg-elevated);
+  color: var(--text-strong);
+  border-radius: 10px;
+  min-width: 34px;
+  height: 34px;
+  font-size: 1rem;
+  cursor: pointer;
+  box-shadow: var(--shadow-xs);
+  transition: transform 160ms ease, box-shadow 160ms ease, border-color 160ms ease;
+}
+
+.crumb-home:hover {
+  transform: translateY(-1px);
+  box-shadow: var(--shadow-sm);
+  border-color: var(--border-strong);
+}
+
+.crumb-home[disabled] {
   opacity: 0.6;
   cursor: default;
+}
+
+.crumb-separator {
+  color: var(--text-muted);
+}
+
+#panel-current {
+  font-size: 0.9rem;
+  letter-spacing: 0.01em;
+}
+
+.home-categories-link {
+  margin-inline-start: auto;
+  width: 34px;
+  height: 34px;
+  border-radius: 10px;
+  border: 2px solid var(--border-soft);
+  display: inline-grid;
+  place-items: center;
+  text-decoration: none;
+  background: color-mix(in oklab, var(--bg-soft), var(--bg-elevated) 65%);
+  color: var(--text-strong);
+  font-weight: 700;
+  box-shadow: var(--shadow-xs);
+  transition: transform 160ms ease, box-shadow 160ms ease, border-color 160ms ease;
+}
+
+.home-categories-link:hover {
+  transform: translateY(-1px);
+  box-shadow: var(--shadow-sm);
+  border-color: var(--border-strong);
+  color: var(--text-strong);
 }
 
 .panel-grid {
@@ -753,6 +783,8 @@ a:hover {
   font-weight: 800;
   text-transform: capitalize;
   letter-spacing: -0.01em;
+  line-height: 1.15;
+  font-size: 0.98rem;
 }
 
 .panel-card-meta {
@@ -760,33 +792,31 @@ a:hover {
   font-size: 0.82rem;
 }
 
-.panel-card-preview {
-  margin-top: 0.2rem;
-  display: flex;
-  align-items: center;
-  gap: 0.3rem;
-  min-height: 24px;
+.panel-card-hero {
+  display: grid;
+  place-items: center;
+  min-height: 66px;
+  margin-top: 0.25rem;
+  border: 2px solid color-mix(in oklab, var(--border-soft), transparent 12%);
+  border-radius: 12px;
+  background: color-mix(in oklab, var(--bg-elevated), var(--bg-soft) 12%);
 }
 
-.panel-card-preview-img {
-  width: 22px;
-  height: 22px;
+.panel-card-hero-img {
+  width: 56px;
+  height: 56px;
   object-fit: contain;
-  flex: 0 0 auto;
+  transition: opacity 130ms ease, transform 130ms ease;
+}
+
+.panel-card-hero-img.is-switching {
+  opacity: 0.65;
+  transform: scale(0.9);
 }
 
 .page-home .panel-grid .panel-card {
   min-height: 122px;
   align-content: space-between;
-}
-
-.page-home .panel-grid .panel-card .panel-card-preview-img {
-  width: 28px;
-  height: 28px;
-}
-
-.page-home .panel-grid .panel-card:nth-child(6n + 1) {
-  grid-column: span 2;
 }
 
 .advanced-menu {
@@ -1506,26 +1536,22 @@ kbd {
     grid-template-columns: repeat(2, minmax(0, 1fr));
   }
 
-  .home-minimal-head {
-    align-items: flex-start;
+  .panel-card {
+    min-height: 116px;
+    padding: 0.7rem;
   }
 
-  .home-plain-link {
-    margin-inline-start: 0;
+  .panel-card-title {
+    font-size: 0.92rem;
   }
 
-  .home-principle-grid {
-    grid-template-columns: 1fr;
+  .panel-card-hero {
+    min-height: 56px;
   }
 
-  .collection-stat-row {
-    gap: 0.4rem;
-  }
-
-  .quick-chip {
-    font-size: 0.8rem;
-    min-height: 32px;
-    padding-inline: 0.58rem;
+  .panel-card-hero-img {
+    width: 48px;
+    height: 48px;
   }
 
   .panel-crumbs {

@@ -88,7 +88,7 @@ async function run() {
     await categoryCards.first().click();
     await page.waitForTimeout(250);
     const panelLabelAfterCategory = (await page.locator('#panel-current').innerText()).trim();
-    assert.match(panelLabelAfterCategory, /\//, 'Expected subgroup breadcrumb after category click');
+    assert.notEqual(panelLabelAfterCategory, '⌂', 'Expected category breadcrumb after category click');
 
     const subgroupCards = page.locator('#panel-grid .panel-card');
     assert.ok((await subgroupCards.count()) > 0, 'Expected subgroup cards after category click');
@@ -99,7 +99,7 @@ async function run() {
     await page.click('#panel-home');
     await page.waitForTimeout(220);
     const panelLabelAfterHome = (await page.locator('#panel-current').innerText()).trim();
-    assert.equal(panelLabelAfterHome, 'Categories', 'All Categories control should return to category grid');
+    assert.equal(panelLabelAfterHome, '⌂', 'Home control should return to root breadcrumb');
     assert.ok(await page.isVisible('#panel-grid'), 'Panel grid should be visible again after reset');
 
     await page.click('#header-menu-toggle');

@@ -54,6 +54,13 @@ All notable project updates are tracked here in human-readable form.
   - hid favorites/recents rails until they contain emojis
   - improved mobile header/search layout to prevent overlap and wrapping issues
 - Expanded Playwright baseline coverage to assert panel-click 3-step navigation behavior.
+- Simplified landing UI further to a strict emoji-first KISS flow:
+  - removed visible explanatory heading/copy from home panel shell
+  - switched to minimal icon breadcrumb (`⌂ / ...`) with a compact category index shortcut
+  - replaced dense preview strips with one large rotating hero emoji per category/subcategory card
+  - removed card count metadata on landing panels to reduce cognitive load
+  - kept favorites/recents hidden until populated and preserved 3-click discovery flow
+- Updated UX/performance and baseline Playwright assertions to match the simplified breadcrumb and dynamic hero-card behavior.
 
 ### Notes
 - Phase 0 through Phase 5 are complete for the current roadmap scope.

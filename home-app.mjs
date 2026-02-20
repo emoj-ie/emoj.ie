@@ -164,6 +164,9 @@ function withinDistance(a, b, maxDistance = 1) {
   let currentResultButtons = [];
   let observer = null;
   let searchDebounce = null;
+  let panelCardCycleTimer = null;
+  let panelCardPreviewSerial = 0;
+  let panelCardPreviewMap = new Map();
 
   const initialCopy = localStorage.getItem(COPY_MODE_KEY) || 'emoji';
   let state = parseUiState(window.location.search, initialCopy);
@@ -422,66 +425,111 @@ function withinDistance(a, b, maxDistance = 1) {
       .filter((entry) => Boolean(entry && entry.hexLower));
   }
 
-  function createPanelCard(label, meta, previewEntries, onClick, href = '') {
-    const card = href ? document.createElement('a') : document.createElement('button');
+  function createPanelCard(label, meta, previewEntries, onClick) {
+    const card = document.createElement('button');
     card.className = 'panel-card';
-
-    if (href) {
-      card.classList.add('panel-card-link');
-      card.href = href;
-    } else {
-      card.type = 'button';
-    }
+    card.type = 'button';
 
     const title = document.createElement('span');
     title.className = 'panel-card-title';
     title.textContent = label;
 
-    const detail = document.createElement('small');
-    detail.className = 'panel-card-meta';
-    detail.textContent = meta;
-
     card.appendChild(title);
-    card.appendChild(detail);
-    if (Array.isArray(previewEntries) && previewEntries.length > 0) {
-      const previewNode = document.createElement('span');
-      previewNode.className = 'panel-card-preview';
-      previewNode.setAttribute('aria-hidden', 'true');
+    if (meta) {
+      const detail = document.createElement('small');
+      detail.className = 'panel-card-meta';
+      detail.textContent = meta;
+      card.appendChild(detail);
+    }
 
-      for (const entry of previewEntries) {
+    if (Array.isArray(previewEntries) && previewEntries.length > 0) {
+      const pool = previewEntries.filter((entry) => Boolean(entry?.hexLower));
+      if (pool.length > 0) {
+        const previewKey = String(++panelCardPreviewSerial);
+        panelCardPreviewMap.set(previewKey, pool);
+
+        const initialIndex = Math.floor(Math.random() * pool.length);
+        const initialEntry = pool[initialIndex];
+        const asset = resolveAsset(initialEntry);
+
+        const previewNode = document.createElement('span');
+        previewNode.className = 'panel-card-hero';
+        previewNode.setAttribute('aria-hidden', 'true');
+
         const previewImage = document.createElement('img');
-        const asset = resolveAsset(entry);
-        previewImage.className = 'panel-card-preview-img';
+        previewImage.className = 'panel-card-hero-img';
         previewImage.src = asset.src;
         previewImage.dataset.cdnSrc = asset.cdn;
-        previewImage.dataset.hex = entry.hexLower;
+        previewImage.dataset.hex = initialEntry.hexLower;
+        previewImage.dataset.previewKey = previewKey;
+        previewImage.dataset.previewIndex = String(initialIndex);
         previewImage.alt = '';
-        previewImage.width = 22;
-        previewImage.height = 22;
+        previewImage.width = 56;
+        previewImage.height = 56;
         previewImage.loading = 'lazy';
         previewNode.appendChild(previewImage);
+        card.appendChild(previewNode);
       }
-
-      card.appendChild(previewNode);
     }
+
     if (typeof onClick === 'function') {
       card.addEventListener('click', onClick);
     }
     return card;
   }
 
+  function stopPanelCardCycle() {
+    if (panelCardCycleTimer) {
+      window.clearInterval(panelCardCycleTimer);
+      panelCardCycleTimer = null;
+    }
+    panelCardPreviewSerial = 0;
+    panelCardPreviewMap = new Map();
+  }
+
+  function startPanelCardCycle() {
+    if (panelCardPreviewMap.size === 0) return;
+    if (window.matchMedia && window.matchMedia('(prefers-reduced-motion: reduce)').matches) return;
+
+    panelCardCycleTimer = window.setInterval(() => {
+      if (document.hidden) return;
+
+      const previewImages = panelGrid.querySelectorAll('.panel-card-hero-img[data-preview-key]');
+      for (const previewImage of previewImages) {
+        const previewKey = previewImage.dataset.previewKey || '';
+        const pool = panelCardPreviewMap.get(previewKey);
+        if (!pool || pool.length < 2) continue;
+
+        const currentIndex = Number(previewImage.dataset.previewIndex || '0');
+        const nextIndex = (currentIndex + 1) % pool.length;
+        const nextEntry = pool[nextIndex];
+        const asset = resolveAsset(nextEntry);
+
+        previewImage.classList.add('is-switching');
+        previewImage.src = asset.src;
+        previewImage.dataset.cdnSrc = asset.cdn;
+        previewImage.dataset.hex = nextEntry.hexLower;
+        previewImage.dataset.previewIndex = String(nextIndex);
+
+        window.setTimeout(() => {
+          previewImage.classList.remove('is-switching');
+        }, 150);
+      }
+    }, 2200);
+  }
+
   function updatePanelCrumbs(level) {
     if (!panelCurrent) return;
 
     if (level === 'group') {
-      panelCurrent.textContent = 'Categories';
+      panelCurrent.textContent = '⌂';
       panelHome.disabled = true;
       return;
     }
 
     panelHome.disabled = false;
     if (level === 'subgroup') {
-      panelCurrent.textContent = `${humanize(state.g)} / Subcategories`;
+      panelCurrent.textContent = `${humanize(state.g)}`;
       return;
     }
 
@@ -495,17 +543,17 @@ function withinDistance(a, b, maxDistance = 1) {
   }
 
   function renderGroupPanels() {
+    stopPanelCardCycle();
     panelGrid.hidden = false;
     panelGrid.innerHTML = '';
 
     const groups = panelSearchFilter(groupKeys);
     for (const group of groups) {
-      const subgroupCount = subgroupsByGroup.get(group)?.size || 0;
       const preview = buildPanelPreview(groupPreviewEntries.get(group));
       panelGrid.appendChild(
         createPanelCard(
           humanize(group),
-          `${subgroupCount} subcategories`,
+          '',
           preview,
           () => {
             state.g = group;
@@ -520,9 +568,11 @@ function withinDistance(a, b, maxDistance = 1) {
     resultsShell.hidden = true;
     resultsCount.textContent = `${groups.length} categor${groups.length === 1 ? 'y' : 'ies'} available.`;
     if (loadMoreButton) loadMoreButton.hidden = true;
+    startPanelCardCycle();
   }
 
   function renderSubgroupPanels() {
+    stopPanelCardCycle();
     panelGrid.hidden = false;
     panelGrid.innerHTML = '';
 
@@ -531,12 +581,11 @@ function withinDistance(a, b, maxDistance = 1) {
 
     for (const subgroup of filtered) {
       const subgroupKey = `${state.g}::${subgroup}`;
-      const count = subgroupEntryCounts.get(subgroupKey) || 0;
       const preview = buildPanelPreview(subgroupPreviewEntries.get(subgroupKey));
       panelGrid.appendChild(
         createPanelCard(
           humanize(subgroup),
-          `${count} emoji${count === 1 ? '' : 's'}`,
+          '',
           preview,
           () => {
             state.sg = subgroup;
@@ -550,6 +599,7 @@ function withinDistance(a, b, maxDistance = 1) {
     resultsShell.hidden = true;
     resultsCount.textContent = `${filtered.length} subcategor${filtered.length === 1 ? 'y' : 'ies'} in ${humanize(state.g)}.`;
     if (loadMoreButton) loadMoreButton.hidden = true;
+    startPanelCardCycle();
   }
 
   function entryToCard(entry) {
@@ -736,6 +786,7 @@ function withinDistance(a, b, maxDistance = 1) {
   }
 
   function renderEmojiPanel() {
+    stopPanelCardCycle();
     panelGrid.hidden = true;
     resultsShell.hidden = false;
     resultsList.innerHTML = '';

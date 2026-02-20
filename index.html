@@ -81,14 +81,12 @@
     
     <main id="main-content" class="page-main">
       <section class="panel-shell home-emoji-shell" aria-label="Emoji Explorer">
-    <div class="home-minimal-head">
-      <h1 class="home-title">Pick A Category</h1>
-      <p class="home-mini-tip">Category → Subcategory → Emoji</p>
-      <a class="home-plain-link" href="/category/">Open category pages</a>
-    </div>
+    <h1 class="visually-hidden">Emoji Categories</h1>
     <nav class="panel-crumbs" aria-label="Explorer Breadcrumb">
-      <button type="button" id="panel-home" class="copy-btn secondary">All Categories</button>
-      <span id="panel-current">Categories</span>
+      <button type="button" id="panel-home" class="crumb-home" aria-label="Back to categories">⌂</button>
+      <span class="crumb-separator" aria-hidden="true">/</span>
+      <span id="panel-current">⌂</span>
+      <a class="home-categories-link" href="/category/" aria-label="Open category pages">↗</a>
     </nav>
     <div id="panel-grid" class="panel-grid" data-level="group" aria-live="polite"></div>
     <section class="results-shell" aria-label="Emoji Results">

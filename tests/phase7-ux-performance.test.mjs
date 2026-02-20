@@ -15,8 +15,8 @@ test('home app uses progressive rendering and lightweight home index data', () =
   assert.match(homeApp, /home-data\.json/);
   assert.match(homeApp, /IntersectionObserver/);
   assert.match(homeApp, /appendResultChunk/);
-  assert.match(homeApp, /panel-card-preview/);
-  assert.match(homeApp, /panel-card-preview-img/);
+  assert.match(homeApp, /panel-card-hero/);
+  assert.match(homeApp, /panel-card-hero-img/);
   assert.match(homeApp, /state\.g = group;/);
   assert.match(homeApp, /state\.sg = subgroup;/);
   assert.ok(!homeApp.includes('slice(0, 400)'), 'hard 400 result cap should be removed');
@@ -41,8 +41,8 @@ test('homepage template has lazy loading controls', () => {
   assert.match(home, /id="favorite-results"/);
   assert.match(home, /id="favorites-section"[^>]*\shidden\b/);
   assert.match(home, /id="recents-section"[^>]*\shidden\b/);
-  assert.match(home, /Pick A Category/);
-  assert.match(home, /Category → Subcategory → Emoji/);
+  assert.match(home, /id="panel-current">⌂<\/span>/);
+  assert.match(home, /class="home-categories-link"/);
   assert.match(home, /href="\/category\/"/);
   assert.ok(!home.includes('id="home-quick-actions"'));
   assert.ok(!home.includes('Choose a category panel, then a subcategory, then copy emojis instantly.'));
