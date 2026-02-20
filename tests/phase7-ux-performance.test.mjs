@@ -40,6 +40,10 @@ test('homepage template has lazy loading controls', () => {
   assert.match(home, /id="results-load-more"/);
   assert.match(home, /id="results-sentinel"/);
   assert.match(home, /id="favorite-results"/);
+  assert.match(home, /id="home-quick-actions"/);
+  assert.match(home, /href="\/category\/"/);
+  assert.match(home, /href="\/search\//);
+  assert.match(home, /Press <kbd>\/<\/kbd> to focus search/);
   assert.ok(!home.includes('Choose a category panel, then a subcategory, then copy emojis instantly.'));
 });
 
@@ -96,4 +100,16 @@ test('home app includes search relevance helpers and favorites persistence', () 
   assert.match(homeApp, /withinDistance/);
   assert.match(homeApp, /favoriteEmojisV1/);
   assert.match(homeApp, /emoji-favorite/);
+});
+
+test('emoji detail pages include context, code formats, and related links', () => {
+  const detail = read('emoji/grinning-face--1f600/index.html');
+
+  assert.match(detail, /<section class="emoji-context">/);
+  assert.match(detail, /Meaning And Usage/);
+  assert.match(detail, /<section class="emoji-code-grid"/);
+  assert.match(detail, /Shortcode/);
+  assert.match(detail, /Unicode/);
+  assert.match(detail, /HTML Entity/);
+  assert.match(detail, /<section class="emoji-related">/);
 });

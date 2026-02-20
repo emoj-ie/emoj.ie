@@ -8,6 +8,7 @@ import {
   humanizeSlug,
   normalizeHex,
   routeToFile,
+  slugify,
 } from './slug.mjs';
 import { DAILY_EMOJI_EDITORIAL } from './daily-emoji-editorial.mjs';
 
@@ -302,14 +303,86 @@ function renderEmojiCard(entry, assetTemplate) {
   </li>`;
 }
 
+function parseEntryTags(entry) {
+  const raw = Array.isArray(entry.tags) ? entry.tags.join(',') : String(entry.tags || '');
+  const seen = new Set();
+  const result = [];
+
+  for (const part of raw.split(',')) {
+    const normalized = slugify(part || '');
+    if (!normalized || normalized.length < 2) continue;
+    if (!/[a-z]/.test(normalized)) continue;
+    if (seen.has(normalized)) continue;
+    seen.add(normalized);
+    result.push(normalized);
+  }
+
+  return result;
+}
+
+function unicodeCodepointLabel(hexLower) {
+  return String(hexLower || '')
+    .split('-')
+    .filter(Boolean)
+    .map((part) => `U+${String(part).toUpperCase()}`)
+    .join(' ');
+}
+
+function htmlEntityLabel(hexLower) {
+  return String(hexLower || '')
+    .split('-')
+    .filter(Boolean)
+    .map((part) => `&#x${String(part).toUpperCase()};`)
+    .join('');
+}
+
+function renderKeywordPills(tags, tagRouteKeys) {
+  const items = tags.slice(0, 8).map((tag) => {
+    const label = tag.replace(/-/g, ' ');
+    if (tagRouteKeys && tagRouteKeys.has(tag)) {
+      return `<li><a href="/tag/${tag}/">${escapeHtml(label)}</a></li>`;
+    }
+    return `<li><span>${escapeHtml(label)}</span></li>`;
+  });
+
+  return items.join('');
+}
+
+function renderRelatedEntryList(relatedEntries = []) {
+  const items = relatedEntries.slice(0, 6).map((related) => {
+    const route =
+      related.indexable && related.canonicalRoute ? related.canonicalRoute : related.detailRoute;
+    const label = humanizeSlug(related.slug || '');
+    return `<li><a href="/${route}"><span>${escapeHtml(related.emoji || '')}</span><small>${escapeHtml(
+      label
+    )}</small></a></li>`;
+  });
+
+  return items.join('');
+}
+
 function renderHomePage(model, config) {
   const groupOptions = model.groups
     .map((group) => `<option value="${escapeHtml(group.key)}">${escapeHtml(group.title)}</option>`)
+    .join('');
+  const quickTopics = Array.isArray(model.searchPages) ? model.searchPages.slice(0, 8) : [];
+  const quickTopicLinks = quickTopics
+    .map(
+      (topic) =>
+        `<a class="quick-chip topic" href="/${topic.route}">${escapeHtml(topic.title.replace(/\s+emoji$/i, ''))}</a>`
+    )
     .join('');
 
   const body = `<section class="panel-shell" aria-label="Emoji Explorer">
     <div class="panel-header">
       <h1>Find Emoji Fast</h1>
+      <p class="panel-lede">Search 4,000+ emojis by meaning, mood, category, or keyword. Copy in one click.</p>
+      <div id="home-quick-actions" class="home-quick-actions">
+        <a class="quick-chip primary" href="/category/">Browse Categories</a>
+        <a class="quick-chip secondary" href="/search/">Search Topics</a>
+        ${quickTopicLinks}
+      </div>
+      <p class="panel-tip">Tip: Press <kbd>/</kbd> to focus search. Arrow keys move results. <kbd>Enter</kbd> copies.</p>
     </div>
     <nav class="panel-crumbs" aria-label="Explorer Breadcrumb">
       <button type="button" id="panel-home" class="copy-btn secondary">All Categories</button>
@@ -867,7 +940,15 @@ function renderVariantSection(entry, variantEntries) {
   </section>`;
 }
 
-function renderEmojiPage(group, subgroup, entry, variantEntries, config, routeOverride = '') {
+function renderEmojiPage(
+  group,
+  subgroup,
+  entry,
+  variantEntries,
+  config,
+  routeOverride = '',
+  options = {}
+) {
   const imageHex = formatHexForAsset(entry.hexLower);
   const imageSrc = emojiAssetSource(entry);
   const cdnSrc = entry.cdnAssetPath || config.assets.emojiCdnTemplate.replace('{HEX}', imageHex);
@@ -878,6 +959,15 @@ function renderEmojiPage(group, subgroup, entry, variantEntries, config, routeOv
   const shareUrl = canonicalUrl;
   const label = humanizeSlug(entry.slug);
   const isCanonicalRoute = renderedRoute === canonicalRoute;
+  const tagRouteKeys = options.tagRouteKeys || new Set();
+  const relatedEntries = options.relatedEntries || [];
+  const entryTags = parseEntryTags(entry);
+  const keywordPills = renderKeywordPills(entryTags, tagRouteKeys);
+  const relatedList = renderRelatedEntryList(relatedEntries);
+  const unicodeLabel = unicodeCodepointLabel(entry.hexLower);
+  const htmlEntity = htmlEntityLabel(entry.hexLower);
+  const shortcode = `:${entry.slug}:`;
+  const usageLine = `${label} is in ${group.title} / ${subgroup.title}. Use it when you need a compact visual signal for this context.`;
 
   const body = `<article class="emoji-detail">
     <h1>${escapeHtml(label)}</h1>
@@ -922,6 +1012,37 @@ function renderEmojiPage(group, subgroup, entry, variantEntries, config, routeOv
       <dt>Canonical</dt><dd><a href="${escapeHtml(canonicalUrl)}">${escapeHtml(canonicalUrl)}</a></dd>
       <dt>Permalink</dt><dd><a href="${escapeHtml(renderedUrl)}">${escapeHtml(renderedUrl)}</a></dd>
     </dl>
+    <section class="emoji-context">
+      <h2>Meaning And Usage</h2>
+      <p>${escapeHtml(usageLine)}</p>
+      ${
+        keywordPills
+          ? `<ul class="keyword-pills" aria-label="Emoji keywords">${keywordPills}</ul>`
+          : '<p class="emoji-context-note">No curated keywords available for this emoji yet.</p>'
+      }
+    </section>
+    <section class="emoji-code-grid" aria-label="Copy and code formats">
+      <article class="emoji-code-card">
+        <h3>Shortcode</h3>
+        <code>${escapeHtml(shortcode)}</code>
+      </article>
+      <article class="emoji-code-card">
+        <h3>Unicode</h3>
+        <code>${escapeHtml(unicodeLabel)}</code>
+      </article>
+      <article class="emoji-code-card">
+        <h3>HTML Entity</h3>
+        <code>${escapeHtml(htmlEntity)}</code>
+      </article>
+    </section>
+    ${
+      relatedList
+        ? `<section class="emoji-related">
+      <h2>Related Emojis</h2>
+      <ul class="emoji-related-list">${relatedList}</ul>
+    </section>`
+        : ''
+    }
     ${renderVariantSection(entry, variantEntries)}
   </article>`;
 
@@ -1363,6 +1484,7 @@ export async function renderSite({ model, legacyRedirects, config, tempRoot }) {
     }
   }
 
+  const tagRouteKeys = new Set((model.tags || []).map((tag) => tag.key));
   const variantsByBase = new Map();
   for (const entry of model.emojiEntries) {
     if (!variantsByBase.has(entry.baseHex)) {
@@ -1384,12 +1506,23 @@ export async function renderSite({ model, legacyRedirects, config, tempRoot }) {
         coreRoutes.add(subgroup.route);
       }
 
+      const relatedPool = subgroup.emojis.filter(
+        (candidate) => candidate.indexable && !candidate.isVariant
+      );
+
       for (const entry of subgroup.emojis) {
         const variantEntries = variantsByBase.get(entry.baseHex) || [entry];
+        const relatedEntries = relatedPool
+          .filter((candidate) => candidate.hexLower !== entry.hexLower)
+          .slice(0, 6);
+
         await writeRouteHtml(
           tempRoot,
           entry.detailRoute,
-          renderEmojiPage(group, subgroup, entry, variantEntries, config, entry.detailRoute),
+          renderEmojiPage(group, subgroup, entry, variantEntries, config, entry.detailRoute, {
+            relatedEntries,
+            tagRouteKeys,
+          }),
           generatedFiles
         );
 
@@ -1400,7 +1533,10 @@ export async function renderSite({ model, legacyRedirects, config, tempRoot }) {
             await writeRouteHtml(
               tempRoot,
               entry.canonicalRoute,
-              renderEmojiPage(group, subgroup, entry, variantEntries, config, entry.canonicalRoute),
+              renderEmojiPage(group, subgroup, entry, variantEntries, config, entry.canonicalRoute, {
+                relatedEntries,
+                tagRouteKeys,
+              }),
               generatedFiles
             );
             writtenCanonicalEmojiRoutes.add(entry.canonicalRoute);
