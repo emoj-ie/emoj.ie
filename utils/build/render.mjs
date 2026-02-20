@@ -12,6 +12,63 @@ import {
 } from './slug.mjs';
 import { DAILY_EMOJI_EDITORIAL } from './daily-emoji-editorial.mjs';
 
+const COMPETITOR_ALTERNATIVES = [
+  {
+    key: 'emojipedia',
+    name: 'Emojipedia',
+    route: 'alternatives/emojipedia/',
+    whySwitch:
+      'People looking for a lighter, faster explorer often prefer a utility-first flow with less editorial overhead.',
+    emojieStrengths: [
+      'Faster copy flow with local-first recents and favorites',
+      'Cleaner category and search-topic navigation',
+      'Low-friction static pages with fewer moving parts',
+    ],
+    competitorStrengths: [
+      'Deep editorial coverage and historical context',
+      'Large documentation footprint across emoji updates',
+      'Strong brand recognition and broad backlink profile',
+    ],
+    bestFit: 'Choose emoj.ie when you need speed and focused copy workflows. Choose Emojipedia for deep reference-style reading.',
+  },
+  {
+    key: 'getemoji',
+    name: 'GetEmoji',
+    route: 'alternatives/getemoji/',
+    whySwitch:
+      'Users who outgrow a single-page copy wall often need stronger discovery, metadata depth, and structured routes.',
+    emojieStrengths: [
+      'Canonical emoji pages with context and related links',
+      'Tag, category, and curated search-topic hubs',
+      'Keyboard-friendly flow plus persistent local favorites',
+    ],
+    competitorStrengths: [
+      'Extremely simple copy-first single-page experience',
+      'Minimal learning curve for first-time visitors',
+      'Straightforward visual scanning',
+    ],
+    bestFit: 'Choose emoj.ie when you need both speed and discovery depth. Choose GetEmoji for barebones single-page copying.',
+  },
+  {
+    key: 'findemoji',
+    name: 'FindEmoji',
+    route: 'alternatives/findemoji/',
+    whySwitch:
+      'Users who prioritize predictable static speed and simple local-first behavior may prefer emoj.ie.',
+    emojieStrengths: [
+      'Static-first architecture tuned for GitHub Pages delivery',
+      'Direct category-to-subgroup-to-detail navigation model',
+      'Clear canonical and noindex controls for SEO hygiene',
+    ],
+    competitorStrengths: [
+      'Application-style interface with broad route footprint',
+      'Modern visual shell and utility-oriented interaction patterns',
+      'Useful discovery depth in category navigation',
+    ],
+    bestFit: 'Choose emoj.ie when speed, simplicity, and deterministic static behavior are your priority. Choose FindEmoji for app-like browsing preferences.',
+  },
+];
+
 function absoluteUrl(baseUrl, route = '') {
   const base = String(baseUrl).replace(/\/+$/, '');
   const cleanRoute = String(route).replace(/^\/+/, '');
@@ -388,6 +445,7 @@ function renderHomePage(model, config) {
       <div id="home-quick-actions" class="home-quick-actions">
         <a class="quick-chip primary" href="/category/">Browse Categories</a>
         <a class="quick-chip secondary" href="/search/">Search Topics</a>
+        <a class="quick-chip secondary" href="/alternatives/">Compare Sites</a>
         ${quickTopicLinks}
       </div>
       <p class="panel-tip">Tip: Press <kbd>/</kbd> to focus search. Arrow keys move results. <kbd>Enter</kbd> copies.</p>
@@ -528,6 +586,118 @@ function renderAboutPage(config) {
     showHeaderSearch: true,
     jsonLd: [breadcrumbSchema(config.site.baseUrl, crumbs, canonicalUrl)],
     pageClass: 'page-about',
+  });
+}
+
+function renderAlternativeIndexPage(config) {
+  const items = COMPETITOR_ALTERNATIVES.map(
+    (item) =>
+      `<li><a href="/${item.route}"><span>${escapeHtml(item.name)} alternative</span><small>Comparison and fit guidance</small></a></li>`
+  ).join('');
+
+  const body = `<section class="group">
+    <h1>Emoji Site Alternatives</h1>
+    <p>Compare emoj.ie against popular emoji tools and choose the best fit for your workflow.</p>
+    <ul class="group-link-list">${items}</ul>
+  </section>`;
+
+  const canonicalUrl = absoluteUrl(config.site.baseUrl, 'alternatives/');
+  const crumbs = [
+    { label: 'Home', href: '/' },
+    { label: 'Alternatives' },
+  ];
+
+  const jsonLd = [
+    {
+      '@context': 'https://schema.org',
+      '@type': 'CollectionPage',
+      name: 'Emoji Site Alternatives',
+      url: canonicalUrl,
+      description: 'Compare emoj.ie with other emoji tools.',
+      isPartOf: {
+        '@type': 'WebSite',
+        name: config.site.title,
+        url: absoluteUrl(config.site.baseUrl, ''),
+      },
+    },
+    breadcrumbSchema(config.site.baseUrl, crumbs, canonicalUrl),
+  ];
+
+  return renderLayout({
+    route: 'alternatives/',
+    title: 'Emoji Site Alternatives',
+    description: 'Compare emoj.ie with other emoji tools and pick the best fit.',
+    canonicalUrl,
+    robots: '',
+    body,
+    breadcrumbs: renderBreadcrumbs(crumbs),
+    config,
+    showHeaderSearch: true,
+    jsonLd,
+    pageClass: 'page-alternatives-index',
+  });
+}
+
+function renderAlternativePage(item, config) {
+  const strengthList = item.emojieStrengths
+    .map((point) => `<li>${escapeHtml(point)}</li>`)
+    .join('');
+  const competitorList = item.competitorStrengths
+    .map((point) => `<li>${escapeHtml(point)}</li>`)
+    .join('');
+
+  const body = `<article class="about-page">
+    <h1>emoj.ie vs ${escapeHtml(item.name)}</h1>
+    <p>${escapeHtml(item.whySwitch)}</p>
+    <section class="emoji-context">
+      <h2>Where emoj.ie wins</h2>
+      <ul class="variant-list">${strengthList}</ul>
+    </section>
+    <section class="emoji-context">
+      <h2>Where ${escapeHtml(item.name)} wins</h2>
+      <ul class="variant-list">${competitorList}</ul>
+    </section>
+    <section class="emoji-context">
+      <h2>Best fit by use case</h2>
+      <p>${escapeHtml(item.bestFit)}</p>
+    </section>
+  </article>`;
+
+  const canonicalUrl = absoluteUrl(config.site.baseUrl, item.route);
+  const crumbs = [
+    { label: 'Home', href: '/' },
+    { label: 'Alternatives', href: '/alternatives/' },
+    { label: `${item.name} alternative` },
+  ];
+
+  const jsonLd = [
+    {
+      '@context': 'https://schema.org',
+      '@type': 'WebPage',
+      name: `emoj.ie vs ${item.name}`,
+      url: canonicalUrl,
+      description: item.whySwitch,
+      isPartOf: {
+        '@type': 'WebSite',
+        name: config.site.title,
+        url: absoluteUrl(config.site.baseUrl, ''),
+      },
+    },
+    breadcrumbSchema(config.site.baseUrl, crumbs, canonicalUrl),
+  ];
+
+  return renderLayout({
+    route: item.route,
+    title: `emoj.ie vs ${item.name}`,
+    description: item.whySwitch,
+    canonicalUrl,
+    robots: '',
+    body,
+    breadcrumbs: renderBreadcrumbs(crumbs),
+    config,
+    showHeaderSearch: true,
+    jsonLd,
+    pageClass: 'page-alternative',
   });
 }
 
@@ -1409,6 +1579,19 @@ export async function renderSite({ model, legacyRedirects, config, tempRoot }) {
   if (config.indexing?.includeAboutPage) {
     await writeRouteHtml(tempRoot, 'about/', renderAboutPage(config), generatedFiles);
     coreRoutes.add('about/');
+  }
+
+  await writeRouteHtml(
+    tempRoot,
+    'alternatives/',
+    renderAlternativeIndexPage(config),
+    generatedFiles
+  );
+  coreRoutes.add('alternatives/');
+
+  for (const item of COMPETITOR_ALTERNATIVES) {
+    await writeRouteHtml(tempRoot, item.route, renderAlternativePage(item, config), generatedFiles);
+    coreRoutes.add(item.route);
   }
 
   const groupByKey = new Map((model.groups || []).map((group) => [group.key, group]));

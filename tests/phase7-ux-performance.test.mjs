@@ -43,6 +43,7 @@ test('homepage template has lazy loading controls', () => {
   assert.match(home, /id="home-quick-actions"/);
   assert.match(home, /href="\/category\/"/);
   assert.match(home, /href="\/search\//);
+  assert.match(home, /href="\/alternatives\/"/);
   assert.match(home, /Press <kbd>\/<\/kbd> to focus search/);
   assert.ok(!home.includes('Choose a category panel, then a subcategory, then copy emojis instantly.'));
 });

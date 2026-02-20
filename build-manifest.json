@@ -1,7 +1,7 @@
 {
   "version": 1,
   "generatedAt": "2025-01-21T17:31:06.093Z",
-  "buildHash": "d31f965a88b1af31",
+  "buildHash": "27ea6e2e5bd0b9c8",
   "managedRoots": [
     "about",
     "activities",
@@ -29,8 +29,8 @@
     "groups": 12,
     "emojis": 4284,
     "redirects": 4193,
-    "files": 10809,
-    "coreRoutes": 248,
+    "files": 10813,
+    "coreRoutes": 252,
     "emojiRoutes": 2062
   },
   "files": [
@@ -211,6 +211,10 @@
     "activities/sport/tennis/index.html",
     "activities/sport/volleyball--1f3d0/index.html",
     "activities/sport/volleyball/index.html",
+    "alternatives/emojipedia/index.html",
+    "alternatives/findemoji/index.html",
+    "alternatives/getemoji/index.html",
+    "alternatives/index.html",
     "animals-nature/animal-amphibian/frog--1f438/index.html",
     "animals-nature/animal-amphibian/frog/index.html",
     "animals-nature/animal-amphibian/index.html",

@@ -26,6 +26,8 @@ function assertMetaSet(html, filePath) {
 test('sample templates have complete meta tags and schema payloads', () => {
   const samples = [
     ['index.html', ['Organization', 'WebSite']],
+    ['alternatives/index.html', ['CollectionPage', 'BreadcrumbList']],
+    ['alternatives/emojipedia/index.html', ['WebPage', 'BreadcrumbList']],
     ['category/smileys-emotion/index.html', ['CollectionPage', 'BreadcrumbList']],
     ['smileys-emotion/index.html', ['CollectionPage', 'BreadcrumbList']],
     ['search/index.html', ['CollectionPage', 'BreadcrumbList']],
@@ -75,14 +77,17 @@ test('sitemap excludes noindex component pages and variant emoji detail pages', 
 test('emoji sitemap uses canonical short emoji routes and core sitemap includes category/search/tag routes', () => {
   const coreSitemap = read('sitemap-core.xml');
   const emojiSitemap = read('sitemap-emoji.xml');
+  const alternativesIndex = read('alternatives/index.html');
   const categoryIndex = read('category/index.html');
   const searchIndex = read('search/index.html');
   const tagIndex = read('tag/index.html');
 
   assert.match(emojiSitemap, /https:\/\/emoj\.ie\/emoji\/[a-z0-9-]+--[a-f0-9-]+\//i);
+  assert.match(coreSitemap, /https:\/\/emoj\.ie\/alternatives\//);
   assert.match(coreSitemap, /https:\/\/emoj\.ie\/category\//);
   assert.match(coreSitemap, /https:\/\/emoj\.ie\/search\//);
   assert.match(coreSitemap, /https:\/\/emoj\.ie\/tag\//);
+  assert.match(alternativesIndex, /<h1>Emoji Site Alternatives<\/h1>/);
   assert.match(categoryIndex, /<h1>Emoji Categories<\/h1>/);
   assert.match(searchIndex, /<h1>Emoji Search Topics<\/h1>/);
   assert.match(tagIndex, /<h1>Emoji Tags<\/h1>/);
