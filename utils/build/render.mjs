@@ -264,7 +264,7 @@ function renderAnalyticsScript(config) {
 function renderGlobalAdvancedMenu() {
   return `<aside id="global-advanced-menu" class="advanced-menu advanced-menu-global" hidden>
     <div class="advanced-header">
-      <h2>Quick Options</h2>
+      <h2>Options</h2>
       <button type="button" id="global-advanced-close" class="copy-btn secondary">Close</button>
     </div>
     <div class="advanced-grid">
@@ -624,7 +624,7 @@ function renderHomePage(model, config) {
 
   <aside id="advanced-menu" class="advanced-menu" hidden>
     <div class="advanced-header">
-      <h2>Advanced Options</h2>
+      <h2>Options</h2>
       <button type="button" id="advanced-close" class="copy-btn secondary">Close</button>
     </div>
     <div class="advanced-grid">
@@ -675,6 +675,14 @@ function renderHomePage(model, config) {
         </button>
       </div>
     </div>
+    <details class="advanced-disclosure">
+      <summary>More</summary>
+      <div class="advanced-link-list">
+        <a class="copy-btn secondary" href="/search/">Search Topics</a>
+        <a class="copy-btn secondary" href="/tag/">Tags</a>
+        <a class="copy-btn secondary" href="/alternatives/">Compare Sites</a>
+      </div>
+    </details>
     <button type="button" id="clear-filters" class="copy-btn secondary advanced-clear">Reset Selection</button>
   </aside>
   <button type="button" id="advanced-backdrop" class="advanced-backdrop" hidden tabindex="-1" aria-hidden="true"></button>
@@ -780,25 +788,16 @@ function renderAboutPage(model, config) {
     },
   ];
 
-  const creditsMarkup = creditsProjects
-    .map(
-      (project) =>
-        `<p><a href="${escapeHtml(project.url)}" target="_blank" rel="noopener noreferrer">${escapeHtml(
-          project.icon
-        )} ${escapeHtml(project.name)}</a> · ${escapeHtml(project.role)}</p>`
-    )
-    .join('');
-
-  const creditsLinksMarkup = creditsProjects
-    .map(
-      (project) => `<li>
-        <a href="${escapeHtml(project.url)}" target="_blank" rel="noopener noreferrer">
-          <strong>${escapeHtml(project.icon)} ${escapeHtml(project.name)}</strong>
-          <span>${escapeHtml(project.role)}</span>
-        </a>
-      </li>`
-    )
-    .join('');
+  const buildCreditsRun = (runNumber) =>
+    `<p class="credits-run-marker"><span data-credits-run-marker data-credits-run="${runNumber}" aria-hidden="true">✨</span></p>${creditsProjects
+      .map(
+        (project) =>
+          `<p class="credits-line"><a href="${escapeHtml(project.url)}" target="_blank" rel="noopener noreferrer">${escapeHtml(
+            project.icon
+          )} ${escapeHtml(project.name)}</a> · ${escapeHtml(project.role)}</p>`
+      )
+      .join('')}`;
+  const creditsMarkup = [1, 2, 3].map((runNumber) => buildCreditsRun(runNumber)).join('');
 
   const starterEntries = [];
   const starterHex = new Set();
@@ -846,20 +845,18 @@ function renderAboutPage(model, config) {
     <p class="about-one-liner">emoj.ie is the short URL for finding and copying emojis fast.</p>
     <section class="about-card about-playground" aria-labelledby="about-playground-title">
       <div class="about-playground-head">
-        <h2 id="about-playground-title">Shuffle Emojis</h2>
-        <button type="button" id="about-shuffle" class="copy-btn secondary">🔀 Shuffle</button>
+        <h2 id="about-playground-title" class="visually-hidden">Shuffle Emojis</h2>
+        <button type="button" id="about-shuffle" class="copy-btn secondary" title="Shuffle emojis" aria-label="Shuffle emojis">🔀</button>
       </div>
-      <p class="about-playground-note">Tap any tile to open. Use ⧉ to copy.</p>
       <ul id="about-emoji-wall" class="emoji-list emoji-list-panel about-emoji-wall" aria-live="polite">${starterWallMarkup}</ul>
     </section>
     <section class="about-card about-credits-crawl" aria-labelledby="about-credits-title">
-      <h2 id="about-credits-title">Credits Galaxy</h2>
+      <h2 id="about-credits-title">Credits</h2>
       <div class="credits-crawl-scene" aria-hidden="true">
         <div class="credits-crawl-track">
           ${creditsMarkup}
         </div>
       </div>
-      <ul class="about-credits-links">${creditsLinksMarkup}</ul>
       <p class="visually-hidden">${escapeHtml(
         creditsProjects.map((project) => `${project.name}. ${project.role}`).join('. ')
       )}</p>

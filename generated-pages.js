@@ -462,6 +462,54 @@
       });
   }
 
+  function initAboutCreditsCrawl() {
+    if (!document.body.classList.contains('page-about')) {
+      return;
+    }
+
+    var trackNode = document.querySelector('.credits-crawl-track');
+    if (!trackNode) {
+      return;
+    }
+
+    var markerNodes = Array.from(trackNode.querySelectorAll('[data-credits-run-marker]'));
+    if (!markerNodes.length) {
+      return;
+    }
+
+    var markerEmoji = ['✨', '🌟', '⭐', '💫', '🌠', '🪐', '🚀', '🛰️', '☄️', '🔭'];
+
+    function pickMarker(excluded) {
+      if (!markerEmoji.length) {
+        return '✨';
+      }
+
+      if (markerEmoji.length === 1) {
+        return markerEmoji[0];
+      }
+
+      var next = markerEmoji[Math.floor(Math.random() * markerEmoji.length)];
+      if (excluded && markerEmoji.length > 1) {
+        var guard = 0;
+        while (next === excluded && guard < 6) {
+          next = markerEmoji[Math.floor(Math.random() * markerEmoji.length)];
+          guard += 1;
+        }
+      }
+      return next;
+    }
+
+    function refreshRunMarkers() {
+      markerNodes.forEach(function (node) {
+        var previous = (node.textContent || '').trim();
+        node.textContent = pickMarker(previous);
+      });
+    }
+
+    refreshRunMarkers();
+    trackNode.addEventListener('animationiteration', refreshRunMarkers);
+  }
+
   function initGlobalHeaderMenu() {
     if (document.body.classList.contains('page-home')) {
       return;
@@ -706,6 +754,7 @@
   initThemeToggle();
   applyDailyLogoEmoji();
   initAboutPlayground();
+  initAboutCreditsCrawl();
   initGlobalHeaderMenu();
   initStaticPanelCardCycle();
 })();

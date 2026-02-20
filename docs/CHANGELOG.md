@@ -133,6 +133,15 @@ All notable project updates are tracked here in human-readable form.
   - moved copy to dedicated top-right `⧉` control and made card body open emoji detail pages
   - changed shuffle source to live emoji entries (`home-data.json`) so About uses the same dataset as browse pages
   - refreshed credits as linked, in-use tooling only, with new-tab links and enhanced visual presentation
+- Audited menu and About consistency across generated pages:
+  - normalized burger menu title copy to `Options` on home and non-home surfaces
+  - aligned menu structure by adding the same `More` link section to the home menu
+  - removed visible About helper copy (`Shuffle Emojis`, `Tap any tile...`) while keeping accessibility labels
+  - renamed `Credits Galaxy` to `Credits`, centered heading, strengthened crawl background, and removed duplicate credits card list
+- Made credits crawl more memorable and clearly looped:
+  - duplicated credits run blocks and added per-run bookmark markers in markup
+  - randomized bookmark emojis on load and on every crawl `animationiteration` cycle
+  - kept credits crawl infinite while preserving text-link-only attribution style
 
 ### Notes
 - Phase 0 through Phase 5 are complete for the current roadmap scope.
