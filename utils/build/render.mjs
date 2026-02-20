@@ -297,12 +297,19 @@ function renderGlobalAdvancedMenu() {
           data-theme-toggle
           data-theme-preference="system"
         >
-          <span class="theme-toggle-glyph" aria-hidden="true">◐</span>
+          <span class="theme-toggle-glyph" aria-hidden="true">🖥</span>
           <span class="theme-toggle-label">Theme: System</span>
         </button>
       </div>
     </div>
-    <a class="copy-btn secondary" href="/">Open Full Explorer</a>
+    <details class="advanced-disclosure">
+      <summary>More</summary>
+      <div class="advanced-link-list">
+        <a class="copy-btn secondary" href="/search/">Search Topics</a>
+        <a class="copy-btn secondary" href="/tag/">Tags</a>
+        <a class="copy-btn secondary" href="/alternatives/">Compare Sites</a>
+      </div>
+    </details>
   </aside>
   <button type="button" id="global-advanced-backdrop" class="advanced-backdrop" hidden tabindex="-1" aria-hidden="true"></button>`;
 }
@@ -463,23 +470,55 @@ function pickPanelPreviewEntry(entries = []) {
   return entries.find((entry) => Boolean(entry?.hexLower)) || null;
 }
 
-function renderPanelCardLink({ title, href, previewEntry, assetTemplate }) {
+function serializePanelPreviewSequence(entries, assetTemplate, limit = 8) {
+  const uniqueEntries = [];
+  const seenHex = new Set();
+
+  for (const entry of entries || []) {
+    if (!entry?.hexLower) continue;
+    if (seenHex.has(entry.hexLower)) continue;
+    seenHex.add(entry.hexLower);
+    uniqueEntries.push(entry);
+    if (uniqueEntries.length >= limit) break;
+  }
+
+  if (uniqueEntries.length < 2) {
+    return '';
+  }
+
+  return uniqueEntries
+    .map((entry) => {
+      const imageHex = formatHexForAsset(entry.hexLower);
+      const src = emojiAssetSource(entry);
+      const cdnSrc = entry.cdnAssetPath || assetTemplate.replace('{HEX}', imageHex);
+      return [src, cdnSrc, entry.hexLower].map((value) => encodeURIComponent(String(value))).join('|');
+    })
+    .join(';');
+}
+
+function renderPanelCardLink({ title, href, previewEntry, previewEntries = [], assetTemplate }) {
   let heroMarkup = '<span class="panel-card-hero-fallback" aria-hidden="true">🙂</span>';
+  const representative = previewEntry?.emoji ? `${previewEntry.emoji} ` : '';
+  const titleText = `${representative}${title}`;
 
   if (previewEntry) {
     const imageHex = formatHexForAsset(previewEntry.hexLower);
     const src = emojiAssetSource(previewEntry);
     const cdnSrc = previewEntry.cdnAssetPath || assetTemplate.replace('{HEX}', imageHex);
+    const previewSeq = serializePanelPreviewSequence(previewEntries, assetTemplate);
+    const previewData = previewSeq
+      ? ` data-preview-seq="${escapeHtml(previewSeq)}" data-preview-index="0"`
+      : '';
 
     heroMarkup = `<img class="panel-card-hero-img" src="${escapeHtml(src)}" data-cdn-src="${escapeHtml(
       cdnSrc
-    )}" data-hex="${escapeHtml(previewEntry.hexLower)}" alt="" width="56" height="56" loading="lazy" />`;
+    )}" data-hex="${escapeHtml(previewEntry.hexLower)}"${previewData} alt="" width="56" height="56" loading="lazy" />`;
   }
 
   return `<a class="panel-card panel-card-link" href="/${escapeHtml(href)}" aria-label="Open ${escapeHtml(
     title
   )}">
-    <span class="panel-card-title">${escapeHtml(title)}</span>
+    <span class="panel-card-title">${escapeHtml(titleText)}</span>
     <span class="panel-card-hero" aria-hidden="true">${heroMarkup}</span>
   </a>`;
 }
@@ -616,7 +655,7 @@ function renderHomePage(model, config) {
           data-theme-toggle
           data-theme-preference="system"
         >
-          <span class="theme-toggle-glyph" aria-hidden="true">◐</span>
+          <span class="theme-toggle-glyph" aria-hidden="true">🖥</span>
           <span class="theme-toggle-label">Theme: System</span>
         </button>
       </div>
@@ -927,6 +966,7 @@ function renderCategoryIndexPage(categories, config) {
         title: category.title,
         href: category.route,
         previewEntry,
+        previewEntries: allEntries,
         assetTemplate: config.assets.emojiCdnTemplate,
       });
     })
@@ -1225,6 +1265,7 @@ function renderGroupPage(group, config, options = {}) {
         title: subgroup.title,
         href: subgroup.route,
         previewEntry: pickPanelPreviewEntry(subgroup.emojis),
+        previewEntries: subgroup.emojis,
         assetTemplate: config.assets.emojiCdnTemplate,
       })
     )

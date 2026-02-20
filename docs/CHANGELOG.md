@@ -109,6 +109,12 @@ All notable project updates are tracked here in human-readable form.
   - removed detail-page `Emoji Detail` badge and explanatory helper line to reduce UI noise
   - replaced ambiguous dual-visual hero with explicit copy surfaces (`Emoji` and `Artwork URL`)
   - removed user-facing Canonical/Permalink rows from detail metadata and kept concise Group/Subgroup links
+- Refined card grid, menu, and card-title behavior for cleaner navigation:
+  - enforced fixed card-column rhythm (`12 / 6 / 4 / 3 / 2 / 1`) across card-grid subpages, including subgroup emoji card grids
+  - added static representative emoji prefixes before card titles on home and category card surfaces
+  - enabled rotating hero emoji previews on static category/subcategory card pages (not only home)
+  - removed confusing `Open Full Explorer` quick-menu jump and replaced it with an in-menu collapsible `More` section
+  - improved theme state icons to clearer `System / Light / Dark` glyphs in both home and global quick menus
 
 ### Notes
 - Phase 0 through Phase 5 are complete for the current roadmap scope.

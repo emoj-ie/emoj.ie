@@ -439,9 +439,13 @@ function withinDistance(a, b, maxDistance = 1) {
     card.className = 'panel-card';
     card.type = 'button';
 
+    const representativeEmoji =
+      Array.isArray(previewEntries) && previewEntries.length > 0 && previewEntries[0]?.emoji
+        ? `${previewEntries[0].emoji} `
+        : '';
     const title = document.createElement('span');
     title.className = 'panel-card-title';
-    title.textContent = label;
+    title.textContent = `${representativeEmoji}${label}`;
 
     card.appendChild(title);
     if (meta) {
