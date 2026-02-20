@@ -240,6 +240,17 @@
     <h2>Recently Copied</h2>
     <ul id="recent-results" class="emoji-list" aria-label="Recently copied emojis"></ul>
   </section>
+
+  <section id="tofu-score-home" class="recent-section tofu-score-home" data-tofu-score-root data-tofu-context="home">
+    <h2>System Emoji Support</h2>
+    <p class="tofu-score-indicator" data-tofu-indicator>Detecting system emoji support…</p>
+    <p class="tofu-score-note" data-tofu-note>Runs locally after the page settles. Lower missing count is better.</p>
+    <div class="tofu-score-progress-wrap">
+      <progress class="tofu-score-progress" data-tofu-progress max="100" value="0"></progress>
+      <span class="tofu-score-progress-label" data-tofu-progress-label>0%</span>
+    </div>
+    <a class="copy-btn secondary tofu-score-link" href="/tofu/">View Score Details</a>
+  </section>
     </main>
     
     <footer>
@@ -255,5 +266,6 @@
     <div id="live-region" aria-live="polite" aria-atomic="true" style="position:absolute;left:-9999px;top:auto;width:1px;height:1px;overflow:hidden;"></div>
     <script src="generated-pages.js" defer></script>
     <script src="home-app.mjs" type="module" defer></script>
+    <script src="emoji-diagnostics.js" defer></script>
   </body>
 </html>

@@ -23,6 +23,7 @@ test('home app uses progressive rendering and path-first navigation from home', 
     /window\.location\.assign\(\s*`\/\$\{encodeURIComponent\(state\.g\)\}\/\$\{encodeURIComponent\(subgroup\)\}\/`\s*\)/
   );
   assert.match(homeApp, /window\.location\.replace\(target\)/);
+  assert.match(homeApp, /home:data-ready/);
   assert.ok(!homeApp.includes('slice(0, 400)'), 'hard 400 result cap should be removed');
 });
 
@@ -51,6 +52,9 @@ test('homepage template has lazy loading controls', () => {
   assert.match(home, /id="favorite-results"/);
   assert.match(home, /id="favorites-section"[^>]*\shidden\b/);
   assert.match(home, /id="recents-section"[^>]*\shidden\b/);
+  assert.match(home, /id="tofu-score-home"/);
+  assert.match(home, /data-tofu-score-root/);
+  assert.match(home, /emoji-diagnostics\.js/);
   assert.ok(!home.includes('id="panel-home"'));
   assert.ok(!home.includes('id="panel-current"'));
   assert.ok(!home.includes('home-categories-link'));
@@ -118,14 +122,22 @@ test('emoji detail pages include context, code formats, and related links', () =
   const detail = read('emoji/grinning-face--1f600/index.html');
 
   assert.match(detail, /<section class="emoji-context">/);
-  assert.match(detail, /data-emoji-render-status/);
-  assert.match(detail, /data-system-tofu-score/);
-  assert.match(detail, /emoji-diagnostics\.js/);
-  assert.match(detail, /Lower missing count is better\./);
+  assert.ok(!detail.includes('data-emoji-render-status'));
+  assert.ok(!detail.includes('data-system-tofu-score'));
+  assert.ok(!detail.includes('emoji-diagnostics.js'));
   assert.match(detail, /Meaning And Usage/);
   assert.match(detail, /<section class="emoji-code-grid"/);
   assert.match(detail, /Shortcode/);
   assert.match(detail, /Unicode/);
   assert.match(detail, /HTML Entity/);
   assert.match(detail, /<section class="emoji-related">/);
+});
+
+test('tofu diagnostics page is generated with rerun controls', () => {
+  const tofu = read('tofu/index.html');
+
+  assert.match(tofu, /data-tofu-score-root/);
+  assert.match(tofu, /data-tofu-rerun/);
+  assert.match(tofu, /data-tofu-user-agent/);
+  assert.match(tofu, /emoji-diagnostics\.js/);
 });

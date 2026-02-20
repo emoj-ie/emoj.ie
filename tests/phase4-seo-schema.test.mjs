@@ -26,6 +26,7 @@ function assertMetaSet(html, filePath) {
 test('sample templates have complete meta tags and schema payloads', () => {
   const samples = [
     ['index.html', ['Organization', 'WebSite']],
+    ['tofu/index.html', ['WebPage', 'BreadcrumbList']],
     ['alternatives/index.html', ['CollectionPage', 'BreadcrumbList']],
     ['alternatives/emojipedia/index.html', ['WebPage', 'BreadcrumbList']],
     ['smileys-emotion/index.html', ['CollectionPage', 'BreadcrumbList']],
@@ -82,12 +83,14 @@ test('emoji sitemap uses canonical short emoji routes and core sitemap includes 
   const categoryAliasIndex = read('category/index.html');
   const searchIndex = read('search/index.html');
   const tagIndex = read('tag/index.html');
+  const tofuIndex = read('tofu/index.html');
 
   assert.match(emojiSitemap, /https:\/\/emoj\.ie\/emoji\/[a-z0-9-]+--[a-f0-9-]+\//i);
   assert.match(coreSitemap, /https:\/\/emoj\.ie\/alternatives\//);
   assert.match(coreSitemap, /https:\/\/emoj\.ie\/smileys-emotion\//);
   assert.match(coreSitemap, /https:\/\/emoj\.ie\/search\//);
   assert.match(coreSitemap, /https:\/\/emoj\.ie\/tag\//);
+  assert.match(coreSitemap, /https:\/\/emoj\.ie\/tofu\//);
   assert.match(alternativesIndex, /<h1\b[^>]*>Emoji Site Alternatives<\/h1>/);
   assert.match(categoryAliasIndex, /<meta http-equiv="refresh" content="0; url=https:\/\/emoj\.ie\/"/);
   assert.match(searchIndex, /<h1\b[^>]*>Emoji Search Topics<\/h1>/);
@@ -96,6 +99,7 @@ test('emoji sitemap uses canonical short emoji routes and core sitemap includes 
   assert.match(tagIndex, /class="panel-grid panel-grid-balanced"/);
   assert.ok(!searchIndex.includes('group-link-list'));
   assert.ok(!tagIndex.includes('group-link-list'));
+  assert.match(tofuIndex, /data-tofu-score-root/);
 });
 
 test('legacy detail route points canonical to short emoji route', () => {

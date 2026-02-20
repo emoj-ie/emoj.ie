@@ -147,10 +147,13 @@ All notable project updates are tracked here in human-readable form.
   - expanded burger-menu `More` links on home and non-home pages to include the same hubs
   - rebuilt `alternatives/`, `tag/`, and `search/` index pages into minimal panel-card grids
   - switched `tag/{name}` and `search/{term}` pages to panel-style emoji cards with visually hidden `h1` and reduced copy
-- Added emoji render diagnostics on detail pages:
-  - introduced per-emoji native render detection with tofu-risk messaging
-  - added system tofu score scan (dataset-wide), with progress, cached results, and "lower missing is better" guidance
-  - kept detection local on-device using canvas-based glyph signatures
+- Reworked tofu diagnostics into a homepage + dedicated score flow:
+  - removed tofu widgets from emoji detail pages
+  - added homepage tofu score panel (after emoji rails) and linked detail page at `/tofu/`
+  - switched detector to canvas-compare against replacement glyph (`�`) with chunked full-set scoring and cache reuse
+- Refined About credits crawl interaction and art direction:
+  - pause crawl animation on hover and touch
+  - replaced heavy background with a simpler, subtle emoji-space wallpaper for better readability
 
 ### Notes
 - Phase 0 through Phase 5 are complete for the current roadmap scope.

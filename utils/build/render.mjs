@@ -719,6 +719,17 @@ function renderHomePage(model, config) {
   <section id="recents-section" class="recent-section" hidden>
     <h2>Recently Copied</h2>
     <ul id="recent-results" class="emoji-list" aria-label="Recently copied emojis"></ul>
+  </section>
+
+  <section id="tofu-score-home" class="recent-section tofu-score-home" data-tofu-score-root data-tofu-context="home">
+    <h2>System Emoji Support</h2>
+    <p class="tofu-score-indicator" data-tofu-indicator>Detecting system emoji support…</p>
+    <p class="tofu-score-note" data-tofu-note>Runs locally after the page settles. Lower missing count is better.</p>
+    <div class="tofu-score-progress-wrap">
+      <progress class="tofu-score-progress" data-tofu-progress max="100" value="0"></progress>
+      <span class="tofu-score-progress-label" data-tofu-progress-label>0%</span>
+    </div>
+    <a class="copy-btn secondary tofu-score-link" href="/tofu/">View Score Details</a>
   </section>`;
 
   const homeUrl = absoluteUrl(config.site.baseUrl, '');
@@ -754,7 +765,10 @@ function renderHomePage(model, config) {
     config,
     showHeaderSearch: true,
     showMenuToggle: true,
-    scripts: [{ src: 'home-app.mjs', type: 'module', defer: true }],
+    scripts: [
+      { src: 'home-app.mjs', type: 'module', defer: true },
+      { src: 'emoji-diagnostics.js', defer: true },
+    ],
     jsonLd: homeJsonLd,
     pageClass: 'page-home',
   });
@@ -877,6 +891,7 @@ function renderAboutPage(model, config) {
     <section class="about-card about-credits-crawl" aria-labelledby="about-credits-title">
       <h2 id="about-credits-title">Credits</h2>
       <div class="credits-crawl-scene" aria-hidden="true">
+        <div class="credits-wallpaper" aria-hidden="true"></div>
         <div class="credits-crawl-track">
           ${creditsMarkup}
         </div>
@@ -905,6 +920,67 @@ function renderAboutPage(model, config) {
     showHeaderSearch: true,
     jsonLd: [breadcrumbSchema(config.site.baseUrl, crumbs, canonicalUrl)],
     pageClass: 'page-about',
+  });
+}
+
+function renderTofuPage(config) {
+  const body = `<article class="group tofu-page">
+    <h1 class="visually-hidden">Emoji Tofu Score</h1>
+    <section class="emoji-render-card tofu-page-score" data-tofu-score-root data-tofu-context="tofu">
+      <p class="emoji-render-kicker">System Tofu Score</p>
+      <p class="emoji-render-indicator" data-tofu-indicator>Detecting system emoji support…</p>
+      <p class="emoji-render-note" data-tofu-note>Runs locally in your browser. Lower missing count is better.</p>
+      <div class="emoji-render-progress-wrap">
+        <progress class="emoji-render-progress" data-tofu-progress max="100" value="0"></progress>
+        <span class="emoji-render-progress-label" data-tofu-progress-label>0%</span>
+      </div>
+      <div class="tofu-page-actions">
+        <button type="button" class="copy-btn secondary" data-tofu-rerun>Run Again</button>
+      </div>
+    </section>
+    <section class="about-card tofu-page-info">
+      <h2>How it works</h2>
+      <p>The checker draws each emoji to canvas and compares it against the replacement glyph (<code>�</code>).</p>
+      <p>Score = missing glyphs / total scanned. Lower is better.</p>
+      <p data-tofu-user-agent></p>
+    </section>
+  </article>`;
+
+  const canonicalUrl = absoluteUrl(config.site.baseUrl, 'tofu/');
+  const crumbs = [
+    { label: 'Home', href: '/' },
+    { label: 'Tofu Score' },
+  ];
+
+  const jsonLd = [
+    {
+      '@context': 'https://schema.org',
+      '@type': 'WebPage',
+      name: 'Emoji Tofu Score',
+      url: canonicalUrl,
+      description: 'Check emoji render coverage and tofu score on your system.',
+      isPartOf: {
+        '@type': 'WebSite',
+        name: config.site.title,
+        url: absoluteUrl(config.site.baseUrl, ''),
+      },
+    },
+    breadcrumbSchema(config.site.baseUrl, crumbs, canonicalUrl),
+  ];
+
+  return renderLayout({
+    route: 'tofu/',
+    title: 'Emoji Tofu Score',
+    description: 'Check emoji render coverage and tofu score on your system.',
+    canonicalUrl,
+    robots: '',
+    body,
+    breadcrumbs: renderBreadcrumbs(crumbs),
+    config,
+    showHeaderSearch: true,
+    scripts: [{ src: 'emoji-diagnostics.js', defer: true }],
+    jsonLd,
+    pageClass: 'page-tofu',
   });
 }
 
@@ -1586,33 +1662,6 @@ function renderEmojiPage(
       <dt>Group</dt><dd><a href="/${escapeHtml(group.route)}">${escapeHtml(group.title)}</a></dd>
       <dt>Subgroup</dt><dd><a href="/${escapeHtml(subgroup.route)}">${escapeHtml(subgroup.title)}</a></dd>
     </dl>
-    <section class="emoji-render-health" aria-labelledby="emoji-render-health-title">
-      <h2 id="emoji-render-health-title">Render Health</h2>
-      <div class="emoji-render-grid">
-        <article
-          class="emoji-render-card"
-          data-emoji-render-status
-          data-emoji="${escapeHtml(entry.emoji)}"
-          data-hex="${escapeHtml(entry.hexLower)}"
-          data-group="${escapeHtml(entry.group)}"
-          data-subgroup="${escapeHtml(entry.subgroup)}"
-          data-route="${escapeHtml(canonicalRoute)}"
-        >
-          <p class="emoji-render-kicker">This Emoji</p>
-          <p class="emoji-render-indicator" data-emoji-render-indicator>Checking support…</p>
-          <p class="emoji-render-note" data-emoji-render-note>Detecting if your platform can draw this glyph.</p>
-        </article>
-        <article class="emoji-render-card" data-system-tofu-score>
-          <p class="emoji-render-kicker">System Tofu Score</p>
-          <p class="emoji-render-indicator" data-system-tofu-indicator>Scanning support…</p>
-          <p class="emoji-render-note" data-system-tofu-note>Lower missing count is better.</p>
-          <div class="emoji-render-progress-wrap">
-            <progress class="emoji-render-progress" data-system-tofu-progress max="100" value="0"></progress>
-            <span class="emoji-render-progress-label" data-system-tofu-progress-label>0%</span>
-          </div>
-        </article>
-      </div>
-    </section>
     <section class="emoji-context">
       <h2>Meaning And Usage</h2>
       <p>${escapeHtml(usageLine)}</p>
@@ -1692,7 +1741,6 @@ function renderEmojiPage(
     breadcrumbs: renderBreadcrumbs(crumbs),
     config,
     showHeaderSearch: true,
-    scripts: [{ src: 'emoji-diagnostics.js', defer: true }],
     jsonLd,
     pageClass: 'page-detail',
   });
@@ -2005,6 +2053,9 @@ export async function renderSite({ model, legacyRedirects, config, tempRoot }) {
     await writeRouteHtml(tempRoot, 'about/', renderAboutPage(model, config), generatedFiles);
     coreRoutes.add('about/');
   }
+
+  await writeRouteHtml(tempRoot, 'tofu/', renderTofuPage(config), generatedFiles);
+  coreRoutes.add('tofu/');
 
   await writeRouteHtml(
     tempRoot,

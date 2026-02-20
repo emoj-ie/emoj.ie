@@ -1387,6 +1387,17 @@ function withinDistance(a, b, maxDistance = 1) {
     renderRecents();
     syncFavoriteButtons();
     setupInfiniteObserver();
+
+    window.setTimeout(() => {
+      document.dispatchEvent(
+        new CustomEvent('home:data-ready', {
+          detail: {
+            total: allEntries.length,
+            base: baseEntries.length,
+          },
+        })
+      );
+    }, 120);
   }
 
   function loadData() {

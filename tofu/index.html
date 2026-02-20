@@ -1,0 +1,158 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Emoji Tofu Score | emoj.ie</title>
+    <meta name="description" content="Check emoji render coverage and tofu score on your system." />
+    <link rel="canonical" href="https://emoj.ie/tofu/" />
+    
+    <meta property="og:type" content="website" />
+    <meta property="og:title" content="Emoji Tofu Score | emoj.ie" />
+    <meta property="og:description" content="Check emoji render coverage and tofu score on your system." />
+    <meta property="og:url" content="https://emoj.ie/tofu/" />
+    <meta property="og:image" content="https://emoj.ie/android-chrome-512x512.png" />
+    <meta name="twitter:card" content="summary_large_image" />
+    <meta name="twitter:title" content="Emoji Tofu Score | emoj.ie" />
+    <meta name="twitter:description" content="Check emoji render coverage and tofu score on your system." />
+    <meta name="twitter:image" content="https://emoj.ie/android-chrome-512x512.png" />
+    <link rel="preconnect" href="https://cdn.jsdelivr.net" crossorigin />
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Bricolage+Grotesque:wght@500;600;700;800&family=Instrument+Sans:wght@400;500;600;700&family=IBM+Plex+Mono:wght@400;500&display=swap" />
+    <link rel="icon" href="../favicon.ico" type="image/x-icon" />
+    <link rel="stylesheet" href="../style.css" />
+    <script defer data-domain="emoj.ie" src="https://plausible.io/js/script.js"></script>
+    <script type="application/ld+json">{"@context":"https://schema.org","@type":"WebPage","name":"Emoji Tofu Score","url":"https://emoj.ie/tofu/","description":"Check emoji render coverage and tofu score on your system.","isPartOf":{"@type":"WebSite","name":"emoj.ie","url":"https://emoj.ie/"}}</script>
+    <script type="application/ld+json">{"@context":"https://schema.org","@type":"BreadcrumbList","itemListElement":[{"@type":"ListItem","position":1,"name":"Home","item":"https://emoj.ie/"},{"@type":"ListItem","position":2,"name":"Tofu Score","item":"https://emoj.ie/tofu/"}]}</script>
+  </head>
+  <body class="page-tofu">
+    <a href="#main-content" class="skip-link">Skip To Main Content</a>
+    <div class="page-glow" aria-hidden="true"></div>
+    <header class="header">
+      <div class="header-container">
+        <a href="../" class="logo" aria-label="emoj.ie home">
+          <span class="logo-badge" aria-hidden="true">
+            <img
+              class="logo-emoji"
+              data-logo-emoji-image
+              src="/assets/emoji/base/1F600.svg"
+              data-cdn-src="https://cdn.jsdelivr.net/npm/openmoji@15.1.0/color/svg/1F600.svg"
+              alt=""
+              width="30"
+              height="30"
+              loading="eager"
+              decoding="async"
+            />
+            <span class="logo-emoji-fallback" data-logo-emoji-fallback>😀</span>
+          </span>
+          <span class="logo-wordmark">emoj.ie</span>
+        </a>
+        <form class="header-search" action="../" method="get" role="search">
+        <label for="search" class="visually-hidden">Search Emojis</label>
+        <span class="header-search-icon" aria-hidden="true">⌕</span>
+        <input id="search" name="q" type="search" autocomplete="off" placeholder="Search by emoji, meaning, or keyword…" />
+      </form>
+        <button
+        type="button"
+        id="header-menu-toggle"
+        class="header-menu-toggle"
+        aria-label="Open advanced options"
+        aria-controls="global-advanced-menu"
+        aria-expanded="false"
+      >
+        <span></span><span></span><span></span>
+      </button>
+      </div>
+    </header>
+    <nav class="breadcrumbs" aria-label="Breadcrumb"><a href="/">Home</a> / <span>Tofu Score</span></nav>
+    <main id="main-content" class="page-main">
+      <article class="group tofu-page">
+    <h1 class="visually-hidden">Emoji Tofu Score</h1>
+    <section class="emoji-render-card tofu-page-score" data-tofu-score-root data-tofu-context="tofu">
+      <p class="emoji-render-kicker">System Tofu Score</p>
+      <p class="emoji-render-indicator" data-tofu-indicator>Detecting system emoji support…</p>
+      <p class="emoji-render-note" data-tofu-note>Runs locally in your browser. Lower missing count is better.</p>
+      <div class="emoji-render-progress-wrap">
+        <progress class="emoji-render-progress" data-tofu-progress max="100" value="0"></progress>
+        <span class="emoji-render-progress-label" data-tofu-progress-label>0%</span>
+      </div>
+      <div class="tofu-page-actions">
+        <button type="button" class="copy-btn secondary" data-tofu-rerun>Run Again</button>
+      </div>
+    </section>
+    <section class="about-card tofu-page-info">
+      <h2>How it works</h2>
+      <p>The checker draws each emoji to canvas and compares it against the replacement glyph (<code>�</code>).</p>
+      <p>Score = missing glyphs / total scanned. Lower is better.</p>
+      <p data-tofu-user-agent></p>
+    </section>
+  </article>
+    </main>
+    <aside id="global-advanced-menu" class="advanced-menu advanced-menu-global" hidden>
+    <div class="advanced-header">
+      <h2>Options</h2>
+      <button type="button" id="global-advanced-close" class="copy-btn secondary">Close</button>
+    </div>
+    <div class="advanced-grid">
+      <div class="control-group">
+        <label for="global-copy-mode">Default Copy Format</label>
+        <select id="global-copy-mode" aria-label="Select default copy format">
+          <option value="emoji">Emoji</option>
+          <option value="unicode">Unicode Hex</option>
+          <option value="html">HTML Entity</option>
+          <option value="shortcode">Shortcode</option>
+        </select>
+      </div>
+      <div class="control-group">
+        <label for="global-skin-tone-mode">Default Skin Tone</label>
+        <select id="global-skin-tone-mode" aria-label="Select default skin tone">
+          <option value="5">Dark</option>
+          <option value="4">Medium-Dark</option>
+          <option value="3">Medium</option>
+          <option value="2">Medium-Light</option>
+          <option value="1">Light</option>
+          <option value="0">Yellow</option>
+        </select>
+      </div>
+      <div class="control-group">
+        <label for="global-theme-toggle">Theme</label>
+        <button
+          type="button"
+          id="global-theme-toggle"
+          class="copy-btn secondary menu-theme-toggle"
+          data-theme-toggle
+          data-theme-preference="system"
+        >
+          <span class="theme-toggle-glyph" aria-hidden="true">🖥</span>
+          <span class="theme-toggle-label">Theme: System</span>
+        </button>
+      </div>
+    </div>
+    <details class="advanced-disclosure">
+      <summary>More</summary>
+      <div class="advanced-link-list">
+        <a class="copy-btn secondary" href="/">Home</a>
+        <a class="copy-btn secondary" href="/search/">Search Topics</a>
+        <a class="copy-btn secondary" href="/tag/">Tags</a>
+        <a class="copy-btn secondary" href="/alternatives/">Compare Sites</a>
+        <a class="copy-btn secondary" href="/about/">About</a>
+      </div>
+    </details>
+  </aside>
+  <button type="button" id="global-advanced-backdrop" class="advanced-backdrop" hidden tabindex="-1" aria-hidden="true"></button>
+    <footer>
+      <nav class="footer-links" aria-label="Footer">
+        <a href="/">Home</a>
+        <a href="/search/">Search Topics</a>
+        <a href="/tag/">Tags</a>
+        <a href="/alternatives/">Compare Sites</a>
+        <a href="/about/">About</a>
+      </nav>
+      <p>© 2026 emoj.ie</p>
+    </footer>
+    <div id="live-region" aria-live="polite" aria-atomic="true" style="position:absolute;left:-9999px;top:auto;width:1px;height:1px;overflow:hidden;"></div>
+    <script src="../generated-pages.js" defer></script>
+    <script src="../emoji-diagnostics.js" defer></script>
+  </body>
+</html>

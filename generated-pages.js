@@ -476,6 +476,7 @@
     if (!markerNodes.length) {
       return;
     }
+    var sceneNode = trackNode.closest('.credits-crawl-scene');
 
     var markerEmoji = ['✨', '🌟', '⭐', '💫', '🌠', '🪐', '🚀', '🛰️', '☄️', '🔭'];
 
@@ -508,6 +509,23 @@
 
     refreshRunMarkers();
     trackNode.addEventListener('animationiteration', refreshRunMarkers);
+
+    if (sceneNode) {
+      var pauseTimer = null;
+      sceneNode.addEventListener('pointerdown', function (event) {
+        if (!event || (event.pointerType !== 'touch' && event.pointerType !== 'pen')) {
+          return;
+        }
+
+        sceneNode.classList.add('is-paused');
+        if (pauseTimer) {
+          window.clearTimeout(pauseTimer);
+        }
+        pauseTimer = window.setTimeout(function () {
+          sceneNode.classList.remove('is-paused');
+        }, 2600);
+      });
+    }
   }
 
   function initGlobalHeaderMenu() {
