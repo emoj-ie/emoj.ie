@@ -3,60 +3,79 @@
 Last updated: 2026-02-20
 
 ## Launch Goal
-- Position `emoj.ie` as the fastest and most beautiful way to find, copy, and understand emojis.
+- Position `emoj.ie` as the fastest and most distinctive emoji workflow site for search, copy, and reuse.
 
-## Positioning
+## Positioning Spine
 - Core line: `Find the right emoji in seconds. Copy it once. Reuse it instantly.`
-- Differentiators:
-  - local-first recents + favorites,
-  - smarter relevance (synonyms + typo tolerance),
-  - canonical emoji pages and tag hubs for deep discovery,
-  - system-aware theme with polished light and dark UX.
+- Supporting proof:
+  - Local-first recents + favorites (no account required)
+  - Ranked search (synonyms + typo tolerance)
+  - Useful indexable routes (`/emoji`, `/category`, `/tag`, `/search`, `/alternatives`)
+  - Distinctive, high-contrast visual language in light and dark themes
+
+## Launch Narrative (Use This Order)
+1. The problem: emoji discovery is either fast-but-shallow or rich-but-slow.
+2. The approach: static-first speed + quality route architecture + local workflow memory.
+3. The outcomes: faster copy loops, better confidence on meaning, less repeat search.
+4. The proof: test gates, route depth, and visible workflow demos.
 
 ## Audience Segments
-- Daily chat/social users who need speed.
-- Creators and community managers who need expressive discovery.
-- SEO users searching for emoji meanings and related emojis.
+- Daily writers, chat-heavy users, and social managers who care about speed.
+- Creators who need related options and meaning context before publishing.
+- Organic search users looking for emoji meaning, categories, and alternatives.
+
+## Conversion Events To Watch
+- `copy`
+- `search`
+- `filter`
+- `favorite_add` / `favorite_remove`
+- `recent_reuse`
+- `share`
+- `theme_toggle`
+
+## Success Targets (First 14 Days)
+- Increase `copy` events per session by >= 15%.
+- Increase `favorite_add` rate by >= 20%.
+- Keep baseline quality gates at 100% pass rate before every release.
+- Grow organic entrances to `/emoji/*`, `/category/*`, and `/alternatives/*`.
 
 ## Rollout Timeline
 1. T-7 days
-   - Final regression pass.
-   - Capture screenshots and short demo clips.
-   - Prepare launch posts and changelog summary.
+   - Final regression pass and artifact checks
+   - Capture fresh screenshots and short workflow clips
+   - Finalize launch copy and social calendar
 2. T-2 days
-   - Soft announce to existing audience.
-   - Monitor analytics event integrity.
+   - Soft publish to existing audience and gather UX feedback
+   - Verify analytics event integrity in production
 3. Launch day
-   - Publish update notes and social posts.
-   - Push screenshots/GIF clips.
-   - Engage with comments and questions for 24h.
-4. T+3 days
-   - Publish follow-up improvements and top usage insights.
+   - Publish release notes + changelog summary
+   - Publish social assets across X, LinkedIn, and Reddit
+   - Engage in comments for 24h and collect objections
+4. T+3 to T+14
+   - Post 3 focused follow-up demos (search quality, favorites loop, alternatives pages)
+   - Ship fast fixes for repeated feedback points
 
-## Channel Plan
-- X/Twitter: short launch thread + 2 follow-up clips.
-- LinkedIn: product update post focused on UX and build quality.
-- Reddit (relevant communities): practical announcement with feature list.
-- Indie directories / launch communities: concise listing and visuals.
+## Channel Strategy (ORB)
+- Owned:
+  - Website changelog update
+  - Email/newsletter note
+  - On-site release summary block
+- Rented:
+  - X thread + follow-up clips
+  - LinkedIn launch post + case-study follow-up
+  - Reddit practical launch post in relevant communities
+- Borrowed:
+  - Founder network reposts
+  - Newsletter swaps with productivity/creator communities
 
-## ORB Distribution Mix
-- Owned: docs changelog, website release note, email/newsletter.
-- Rented: X, LinkedIn, Reddit posts and short clips.
-- Borrowed: newsletter swaps, founder shout-outs, and niche community reposts.
+## Asset Checklist
+- [ ] 6 updated screenshots (home, detail, categories, alternatives, light, dark)
+- [ ] 3 short demo clips (<= 20s)
+- [ ] 50-word and 150-word product summaries
+- [ ] Social copy pack for X/LinkedIn/Reddit
+- [ ] Press-kit folder with logo + screenshots + descriptors
 
-## Demo Clip Ideas
-- `5-second copy`: query -> result -> copy -> paste.
-- `Favorite loop`: star emoji, reload, reuse.
-- `Theme cycle`: system default + toggle behavior.
-- `Explorer flow`: category -> tag -> canonical emoji page.
-
-## Press Kit Basics
-- Logo files (`logo.svg`, PNG variants).
-- 6 screenshots (home, search, favorites, detail page, tag page, dark mode).
-- 1 short product description (50 words).
-- 1 long product description (150 words).
-
-## Release Runbook (Final)
+## Release Runbook
 1. Preflight
    - `npm run build`
    - `npm test`
@@ -66,24 +85,19 @@ Last updated: 2026-02-20
    - `npm run test:playwright-baseline`
    - `npm run test:lighthouse-budget`
 2. Artifact checks
-   - verify `sitemap.xml`, `sitemap-core.xml`, `sitemap-emoji.xml`, and `robots.txt`
-   - verify canonical links on sample pages (`/emoji/*`, `/category/*`, `/search/*`, `/tag/*`, `/alternatives/*`)
+   - Validate `sitemap.xml`, `sitemap-core.xml`, `sitemap-emoji.xml`, `robots.txt`
+   - Validate canonical tags on sample `/emoji`, `/category`, `/search`, `/tag`, `/alternatives` pages
 3. Publish
-   - push `main` to GitHub Pages source branch
-   - wait for Pages build completion
-   - smoke-check home + representative routes on production
+   - Push to `main` (GitHub Pages source)
+   - Wait for Pages build completion
+   - Run production smoke checks on representative routes
 4. Rollback (if needed)
-   - revert to previous known-good commit
-   - rebuild and redeploy
-   - re-validate sitemap and canonical tags on production
+   - Revert to previous known-good commit
+   - Rebuild/redeploy
+   - Revalidate sitemap + canonical tags
 
-## Release Checklist
-- [x] `npm run build`
-- [x] `npm test`
-- [x] `npm run lint:links`
-- [x] `npm run test:a11y-smoke`
-- [x] `npm run test:playwright-smoke`
-- [x] `npm run test:playwright-baseline`
-- [x] `npm run test:lighthouse-budget`
-- [ ] Confirm sitemap and canonical routes in production
-- [ ] Publish launch + social posts
+## Post-Launch Review
+- What messages produced the highest `copy` and `favorite_add` lift?
+- Which traffic source drove the highest-quality sessions?
+- Which page templates had high bounce + low copy rates?
+- Which objections repeated most in comments/feedback?

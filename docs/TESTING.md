@@ -17,6 +17,7 @@ Last updated: 2026-02-20
 - Keep tests scoped to user-visible behavior, not implementation details.
 - Execute tests against local static server to mirror GitHub Pages behavior.
 - Keep test setup minimal and avoid heavyweight custom harnesses.
+- Use screenshot sweeps during major design passes to catch visual regressions on home/detail/about/alternatives routes.
 
 ## Coverage Matrix (Initial)
 | Journey | Current Coverage | Planned Coverage |
@@ -50,3 +51,12 @@ Last updated: 2026-02-20
 
 ## Assumptions
 - Existing Node test suite stays in place; Playwright coverage will be additive.
+
+## Latest Full Regression (2026-02-20)
+- `npm run build`
+- `npm test`
+- `npm run lint:links`
+- `npm run test:a11y-smoke`
+- `npm run test:playwright-smoke`
+- `npm run test:playwright-baseline`
+- `npm run test:lighthouse-budget`

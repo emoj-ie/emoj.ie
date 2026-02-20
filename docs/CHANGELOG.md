@@ -41,6 +41,13 @@ All notable project updates are tracked here in human-readable form.
 - Added launch planning docs:
   - `docs/LAUNCH.md`
   - `docs/SOCIAL.md`
+- Performed a full quality-recovery pass on UI/UX and messaging:
+  - redesigned visual system to stronger high-contrast brutalist/editorial style
+  - rebuilt homepage hierarchy with proof panel and principle cards
+  - expanded About page into architecture, quality, and data sections
+  - expanded alternatives pages with switch signals, fit guidance, and migration steps
+  - improved detail-page copy and added shortcode quick-copy action
+- Updated accessibility test matcher to detect `<h1>` tags with attributes (`/<h1\\b/`).
 
 ### Notes
 - Phase 0 through Phase 5 are complete for the current roadmap scope.

@@ -51,6 +51,11 @@ Last updated: 2026-02-20
 - Enrich data pipeline with additional open sources (Unicode data + CLDR keywords + optional Twemoji metadata mapping).
 - Capture competitor-intent queries with honest alternatives/comparison pages.
 
+## Applied In Current Release
+- Alternatives pages were expanded from short summaries into decision-oriented comparison pages (switch signals, fit guidance, migration steps).
+- Visual direction shifted to a stronger high-contrast brutalist/editorial system to avoid generic utility-site aesthetics.
+- Collection and detail pages now include clearer utility framing before listings to better match search intent and improve on-page clarity.
+
 ## Backlog Candidates
 - [x] Sync opportunities to prioritized backlog in `docs/PROJECT.md`.
 - [x] Add relevance scoring model (exact > prefix > token > fuzzy) for home search.

@@ -64,6 +64,14 @@ Last updated: 2026-02-20
 - Category description: `Browse {Category Name} emojis with clear labels and fast copy actions.`
 - Tag title: `{Tag Name} Emojis To Copy And Use | emoj.ie`
 - Tag description: `Explore {Tag Name} emojis with context and related options.`
+- Alternatives title: `emoj.ie vs {Competitor}: Which Emoji Tool Fits Your Workflow?`
+- Alternatives description: `Compare strengths, tradeoffs, and migration steps for {Competitor}.`
+
+## Template Utility Requirements (Current)
+- Home: clear speed-value proposition, proof chips, and immediate CTA paths.
+- Category/Tag/Search hubs: include utility framing + route-specific stats before listings.
+- Emoji detail: include copy actions, usage context, and related links.
+- Alternatives pages: include switch signals, side-by-side strengths, fit guidance, and migration checklist.
 
 ## Content Quality Guardrails
 - No doorway pages

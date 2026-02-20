@@ -40,6 +40,7 @@ Last updated: 2026-02-20
 - Curated, high-quality detail/context pages for SEO and user confidence.
 - Distinctive brutalist-inspired design that remains highly accessible.
 - Honest competitor comparison pages for switch-intent SEO (`/alternatives/*`).
+- Decision-oriented alternative pages with switch signals + migration guidance.
 
 ## 7) Objections And Responses
 - Objection: "All emoji sites are the same."
