@@ -110,11 +110,11 @@ async function run() {
     );
     await subgroupLinks.first().click();
     await page.waitForURL(/\/[^/]+\/[^/]+\/$/, { timeout: 10000 });
-    await page.waitForSelector('.subgroup .emoji-copy', { timeout: 10000 });
+    await page.waitForSelector('.subgroup .panel-emoji-copy', { timeout: 10000 });
     const subgroupCrumbs = await page.locator('.breadcrumbs').innerText();
     assert.match(subgroupCrumbs, /^Home\s*\/\s*[A-Z]/);
 
-    const filteredButtons = page.locator('.subgroup .emoji-copy');
+    const filteredButtons = page.locator('.subgroup .panel-emoji-copy');
     const filteredCount = await filteredButtons.count();
     assert.ok(filteredCount > 0, 'Expected emoji results on subgroup page');
 

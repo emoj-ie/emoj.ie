@@ -102,6 +102,13 @@ All notable project updates are tracked here in human-readable form.
   - kept `/category/` and `/category/*` as compatibility aliases with canonical/noindex behavior
   - removed the extra `Categories` breadcrumb node and enforced Capital Case breadcrumb labels
   - removed visible subgroup heading above emoji lists so breadcrumb context carries the label
+- Completed subgroup/detail UX cleanup for faster, clearer interaction:
+  - switched subgroup emoji results from legacy list cards to panel-style cards matching top-level category design
+  - added subtle per-card copy control while keeping one-click navigation to emoji detail pages
+  - hid visible group and emoji-detail `h1` headings while preserving semantic `h1` for SEO/screen readers
+  - removed detail-page `Emoji Detail` badge and explanatory helper line to reduce UI noise
+  - replaced ambiguous dual-visual hero with explicit copy surfaces (`Emoji` and `Artwork URL`)
+  - removed user-facing Canonical/Permalink rows from detail metadata and kept concise Group/Subgroup links
 
 ### Notes
 - Phase 0 through Phase 5 are complete for the current roadmap scope.

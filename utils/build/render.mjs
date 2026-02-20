@@ -409,6 +409,48 @@ function renderEmojiCard(entry, assetTemplate) {
   </li>`;
 }
 
+function renderEmojiPanelCard(entry, assetTemplate) {
+  const imageHex = formatHexForAsset(entry.hexLower);
+  const src = emojiAssetSource(entry);
+  const cdnSrc = entry.cdnAssetPath || assetTemplate.replace('{HEX}', imageHex);
+  const label = humanizeSlug(entry.slug);
+  const targetRoute =
+    entry.indexable && entry.canonicalRoute ? entry.canonicalRoute : entry.detailRoute;
+  const detailHref = `/${targetRoute}`;
+
+  return `<li class="emoji emoji-panel-item">
+    <article class="panel-card panel-emoji-card">
+      <a class="panel-emoji-open" href="${escapeHtml(detailHref)}" title="${escapeHtml(label)}">
+        <span class="panel-card-title panel-emoji-title">${escapeHtml(label)}</span>
+        <span class="panel-card-hero" aria-hidden="true">
+          <img class="panel-card-hero-img" src="${escapeHtml(src)}" alt="${escapeHtml(
+    label
+  )}" width="56" height="56" loading="lazy" data-cdn-src="${escapeHtml(cdnSrc)}" data-hex="${escapeHtml(
+    entry.hexLower
+  )}" />
+        </span>
+      </a>
+      <button
+        type="button"
+        class="panel-emoji-copy"
+        data-copy-value="${escapeHtml(entry.emoji)}"
+        data-copy-label="${escapeHtml(label)}"
+        data-copy-format="emoji"
+        data-emoji="${escapeHtml(entry.emoji)}"
+        data-hex="${escapeHtml(entry.hexLower)}"
+        data-group="${escapeHtml(entry.group)}"
+        data-subgroup="${escapeHtml(entry.subgroup)}"
+        data-route="${escapeHtml(entry.detailRoute)}"
+        aria-label="Copy ${escapeHtml(label)} emoji"
+        title="Copy ${escapeHtml(label)}"
+      >
+        <span aria-hidden="true">⧉</span>
+        <span class="visually-hidden">Copy ${escapeHtml(label)}</span>
+      </button>
+    </article>
+  </li>`;
+}
+
 function pickPanelPreviewEntry(entries = []) {
   for (const entry of entries) {
     if (!entry) continue;
@@ -1189,7 +1231,7 @@ function renderGroupPage(group, config, options = {}) {
     .join('');
 
   const body = `<section class="panel-shell home-emoji-shell">
-    <h1>${escapeHtml(group.title)}</h1>
+    <h1 class="visually-hidden">${escapeHtml(group.title)}</h1>
     <div class="panel-grid panel-grid-balanced">${subgroupCards}</div>
   </section>`;
 
@@ -1229,7 +1271,7 @@ function renderGroupPage(group, config, options = {}) {
 
 function renderSubgroupPage(group, subgroup, config, options = {}) {
   const emojiList = subgroup.emojis
-    .map((emoji) => renderEmojiCard(emoji, config.assets.emojiCdnTemplate))
+    .map((emoji) => renderEmojiPanelCard(emoji, config.assets.emojiCdnTemplate))
     .join('');
 
   const renderedRoute = ensureTrailingSlash(options.route || subgroup.route);
@@ -1242,7 +1284,7 @@ function renderSubgroupPage(group, subgroup, config, options = {}) {
   const pageClass = options.pageClass || 'page-subgroup';
   const body = `<section class="subgroup">
     <h1 class="visually-hidden">${escapeHtml(subgroup.title)} Emojis</h1>
-    <ul class="emoji-list">${emojiList}</ul>
+    <ul class="emoji-list emoji-list-panel">${emojiList}</ul>
   </section>`;
 
   const categoryRoute = group.route;
@@ -1327,8 +1369,10 @@ function renderEmojiPage(
   const renderedRoute = ensureTrailingSlash(routeOverride || entry.detailRoute);
   const canonicalRoute = ensureTrailingSlash(entry.canonicalRoute || entry.detailRoute);
   const canonicalUrl = absoluteUrl(config.site.baseUrl, canonicalRoute);
-  const renderedUrl = absoluteUrl(config.site.baseUrl, renderedRoute);
   const shareUrl = canonicalUrl;
+  const artworkCopyUrl = /^https?:\/\//i.test(imageSrc)
+    ? imageSrc
+    : absoluteUrl(config.site.baseUrl, String(imageSrc).replace(/^\/+/, ''));
   const label = humanizeSlug(entry.slug);
   const isCanonicalRoute = renderedRoute === canonicalRoute;
   const tagRouteKeys = options.tagRouteKeys || new Set();
@@ -1355,34 +1399,62 @@ function renderEmojiPage(
       : '<li>General chat and status updates</li>';
 
   const body = `<article class="emoji-detail">
-    <p class="collection-kicker">Emoji Detail</p>
-    <h1>${escapeHtml(label)}</h1>
-    <p class="emoji-detail-lede">Copy the emoji, inspect code formats, and check related options before you publish.</p>
-    <section class="emoji-hero-panel">
-      <p class="emoji-detail-hero">${escapeHtml(entry.emoji)}</p>
-      <p class="emoji-detail-art">
-        <img src="${escapeHtml(imageSrc)}" alt="${escapeHtml(label)}" width="96" height="96" loading="eager" data-cdn-src="${escapeHtml(cdnSrc)}" data-hex="${escapeHtml(entry.hexLower)}" />
-      </p>
+    <h1 class="visually-hidden">${escapeHtml(label)}</h1>
+    <p class="emoji-detail-title" aria-hidden="true">${escapeHtml(label)}</p>
+    <section class="emoji-hero-panel" aria-label="Copy emoji and artwork">
+      <button
+        type="button"
+        class="emoji-source-copy"
+        data-copy-value="${escapeHtml(entry.emoji)}"
+        data-copy-label="${escapeHtml(label)}"
+        data-copy-format="emoji"
+        data-emoji="${escapeHtml(entry.emoji)}"
+        data-hex="${escapeHtml(entry.hexLower)}"
+        data-group="${escapeHtml(entry.group)}"
+        data-subgroup="${escapeHtml(entry.subgroup)}"
+        data-route="${escapeHtml(canonicalRoute)}"
+        aria-label="Copy ${escapeHtml(label)} emoji"
+      >
+        <span class="emoji-source-label">Emoji</span>
+        <span class="emoji-detail-hero" aria-hidden="true">${escapeHtml(entry.emoji)}</span>
+        <span class="emoji-source-hint">Click to copy emoji</span>
+      </button>
+      <button
+        type="button"
+        class="emoji-source-copy"
+        data-copy-value="${escapeHtml(artworkCopyUrl)}"
+        data-copy-label="${escapeHtml(label)} artwork URL"
+        data-copy-format="image-url"
+        data-emoji="${escapeHtml(entry.emoji)}"
+        data-hex="${escapeHtml(entry.hexLower)}"
+        data-group="${escapeHtml(entry.group)}"
+        data-subgroup="${escapeHtml(entry.subgroup)}"
+        data-route="${escapeHtml(canonicalRoute)}"
+        aria-label="Copy ${escapeHtml(label)} artwork URL"
+      >
+        <span class="emoji-source-label">Artwork URL</span>
+        <span class="emoji-detail-art" aria-hidden="true">
+          <img src="${escapeHtml(imageSrc)}" alt="${escapeHtml(label)} artwork" width="96" height="96" loading="eager" data-cdn-src="${escapeHtml(
+    cdnSrc
+  )}" data-hex="${escapeHtml(entry.hexLower)}" />
+        </span>
+        <span class="emoji-source-hint">Click to copy URL</span>
+      </button>
       <div class="emoji-actions">
-        <button
-          type="button"
-          class="copy-btn"
-          data-copy-value="${escapeHtml(entry.emoji)}"
-          data-copy-label="${escapeHtml(label)}"
-          data-copy-format="emoji"
-          data-emoji="${escapeHtml(entry.emoji)}"
-          data-hex="${escapeHtml(entry.hexLower)}"
-          data-group="${escapeHtml(entry.group)}"
-          data-subgroup="${escapeHtml(entry.subgroup)}"
-          data-route="${escapeHtml(canonicalRoute)}"
-        >Copy Emoji</button>
         <button type="button" class="copy-btn secondary" data-copy-value="${escapeHtml(
-          entry.hexLower
-        )}" data-copy-label="${escapeHtml(label)} hex code" data-copy-format="unicode" data-hex="${escapeHtml(
+          unicodeLabel
+        )}" data-copy-label="${escapeHtml(label)} unicode" data-copy-format="unicode" data-hex="${escapeHtml(
           entry.hexLower
         )}" data-group="${escapeHtml(entry.group)}" data-subgroup="${escapeHtml(
           entry.subgroup
-        )}" data-route="${escapeHtml(canonicalRoute)}">Copy Hex</button>
+        )}" data-route="${escapeHtml(canonicalRoute)}">Copy Unicode</button>
+        <button type="button" class="copy-btn secondary" data-copy-value="${escapeHtml(
+          htmlEntity
+        )}" data-copy-label="${escapeHtml(label)} html entity" data-copy-format="html" data-hex="${escapeHtml(
+          entry.hexLower
+        )}" data-group="${escapeHtml(entry.group)}" data-subgroup="${escapeHtml(
+          entry.subgroup
+        )}" data-route="${escapeHtml(canonicalRoute)}">Copy HTML</button>
         <button type="button" class="copy-btn secondary" data-copy-value="${escapeHtml(
           shortcode
         )}" data-copy-label="${escapeHtml(label)} shortcode" data-copy-format="shortcode" data-hex="${escapeHtml(
@@ -1401,10 +1473,8 @@ function renderEmojiPage(
     </section>
     <dl class="emoji-meta">
       <dt>Unicode</dt><dd><code>${escapeHtml(entry.hexLower)}</code></dd>
-      <dt>Group</dt><dd>${escapeHtml(group.title)}</dd>
-      <dt>Subgroup</dt><dd>${escapeHtml(subgroup.title)}</dd>
-      <dt>Canonical</dt><dd><a href="${escapeHtml(canonicalUrl)}">${escapeHtml(canonicalUrl)}</a></dd>
-      <dt>Permalink</dt><dd><a href="${escapeHtml(renderedUrl)}">${escapeHtml(renderedUrl)}</a></dd>
+      <dt>Group</dt><dd><a href="/${escapeHtml(group.route)}">${escapeHtml(group.title)}</a></dd>
+      <dt>Subgroup</dt><dd><a href="/${escapeHtml(subgroup.route)}">${escapeHtml(subgroup.title)}</a></dd>
     </dl>
     <section class="emoji-context">
       <h2>Meaning And Usage</h2>

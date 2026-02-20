@@ -102,7 +102,7 @@ Last updated: 2026-02-20
 - [x] Show breadcrumbs on category/subcategory pages while keeping home breadcrumb-free.
 - [x] Keep the category -> subcategory -> emoji flow in <= 3 clicks.
 - [x] Replace preview strips with one large dynamic emoji per landing card.
-- [x] Canonicalize subgroup routes to `/category/{group}/{subgroup}/` and keep legacy subgroup routes non-indexed.
+- [x] Canonicalize subgroup routes to `/{group}/{subgroup}/` and keep `/category/*` legacy routes non-indexed.
 - [x] Flatten canonical browse routes to `/{group}/` and `/{group}/{subgroup}/`; keep `/category/*` as non-index legacy aliases.
 - [x] Keep favorites/recents hidden until data exists.
 - [x] Re-run full quality gates (build, tests, links, a11y, Playwright, Lighthouse).
@@ -169,7 +169,7 @@ Last updated: 2026-02-20
 | 2026-02-20 | Keep privacy analytics, no required account system | Supports measurement while preserving low-friction local-first experience. |
 | 2026-02-20 | Preserve theme toggle and system-default theme behavior | Explicit user requirement for high-quality light and dark experiences. |
 | 2026-02-20 | Defer PWA install UX in current release scope | Keeps delivery focused on UX/SEO route quality and avoids near-term complexity. |
-| 2026-02-20 | Make `/category/*` the canonical browse route layer | Enables consistent hub architecture and avoids duplicate indexable group pages. |
+| 2026-02-20 | Use flat canonical browse routes (`/{group}/`, `/{group}/{subgroup}/`) with `/category/*` compatibility aliases | Keeps browse URLs clean for users and preserves backward compatibility for old links. |
 | 2026-02-20 | Generate curated indexable `/search/*` pages only above quality thresholds | Captures search intent without thin-route spam. |
 | 2026-02-20 | Keep optional account/sync work out of scope for this cycle | Preserves local-first behavior and avoids non-essential infrastructure cost. |
 | 2026-02-20 | Enrich detail pages with meaning, keyword pills, code formats, and related links | Improves utility for learning and copy confidence without adding backend complexity. |
@@ -183,7 +183,7 @@ Last updated: 2026-02-20
 | 2026-02-20 | Reduce landing chrome to minimal breadcrumb plus dynamic hero emoji cards | Keeps first paint focused on emoji graphics and lowers cognitive friction on mobile. |
 | 2026-02-20 | Reframe About page around short, user-facing copy plus interactive emoji wall | Keeps brand story useful while adding playful, copyable value instead of static text blocks. |
 | 2026-02-20 | Enforce single-line header and path-first home navigation | Keeps mobile header stable, reduces visual noise, and avoids URL-param state clutter. |
-| 2026-02-20 | Canonicalize subcategory URLs to `/category/{group}/{subgroup}/` with legacy non-indexed fallbacks | Prevents duplicate route surfaces and aligns breadcrumb + sitemap architecture to one browse path. |
+| 2026-02-20 | Canonicalize subcategory URLs to `/{group}/{subgroup}/` with `/category/*` non-indexed fallbacks | Prevents duplicate route surfaces and aligns breadcrumb + sitemap architecture to one browse path. |
 | 2026-02-20 | Keep category/subcategory views minimal and reserve richer context for emoji detail pages | Maintains KISS browsing UX while preserving depth on individual emoji pages. |
 | 2026-02-20 | Keep canonical emoji detail URLs under `/emoji/{slug--hex}/` while retaining group/subgroup detail aliases | Maintains stable URLs if taxonomy changes and avoids canonical churn across re-grouping. |
 | 2026-02-20 | Use flat canonical browse paths (`/{group}/`, `/{group}/{subgroup}/`) and keep `/category/*` as compatibility aliases | Removes unnecessary path depth, keeps URLs cleaner for users, and preserves backward compatibility via canonical/noindex controls. |
