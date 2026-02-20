@@ -81,6 +81,17 @@ All notable project updates are tracked here in human-readable form.
   - centered card titles/labels for cleaner visual rhythm
   - fixed long emoji names overflowing card bounds by switching to 2-line clamped labels
   - added hover/title access to full emoji names when labels are truncated
+- Unified category/subcategory browse routing into a single canonical path model:
+  - canonicalized subgroup routes to `/category/{group}/{subgroup}/`
+  - generated legacy subgroup routes as `noindex,follow` fallbacks with canonical links
+  - updated home category/subcategory interactions to navigate by path (not in-page pseudo-routing)
+  - added breadcrumbs on category and subcategory pages (`Home / Categories / ...`) while keeping home breadcrumb-free
+- Simplified category/subcategory templates to minimal browse-first layouts:
+  - removed verbose category/subcategory explanatory copy
+  - kept compact counts + direct emoji links for faster scan/click behavior
+- Updated quality tests for the new browse architecture:
+  - adjusted phase-7 assertions to expect path-first navigation and minimal category copy
+  - updated baseline Playwright e2e flow to validate canonical path transitions and breadcrumb visibility
 
 ### Notes
 - Phase 0 through Phase 5 are complete for the current roadmap scope.

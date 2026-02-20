@@ -1141,15 +1141,10 @@ function renderGroupPage(group, config, options = {}) {
       const emojiList = preview
         .map((emoji) => renderEmojiCard(emoji, config.assets.emojiCdnTemplate))
         .join('');
-      const remaining = subgroup.emojis.length - preview.length;
-      const previewMeta = remaining > 0
-        ? `<p class="subgroup-meta">Showing ${preview.length} of ${subgroup.emojis.length}. <a href="/${subgroup.route}">Open full collection</a>.</p>`
-        : `<p class="subgroup-meta">${subgroup.emojis.length} emoji${subgroup.emojis.length === 1 ? '' : 's'} in this collection.</p>`;
 
       return `<section class="subgroup">
         <h2><a href="/${subgroup.route}">${escapeHtml(subgroup.title)}</a></h2>
-        <p>${escapeHtml(subgroup.description)}</p>
-        ${previewMeta}
+        <p class="subgroup-meta">${subgroup.emojis.length} emoji${subgroup.emojis.length === 1 ? '' : 's'}.</p>
         <ul class="emoji-list">${emojiList}</ul>
       </section>`;
     })
@@ -1161,15 +1156,8 @@ function renderGroupPage(group, config, options = {}) {
   );
 
   const body = `<section class="group">
-    <p class="collection-kicker">Category</p>
     <h1>${escapeHtml(group.title)}</h1>
-    <p>${escapeHtml(group.description)} Jump into any subcategory to narrow intent quickly.</p>
-    <div class="collection-stat-row">
-      <span><strong>${subgroupCount}</strong> subcategories</span>
-      <span><strong>${emojiCount.toLocaleString('en-US')}</strong> total emojis</span>
-      <span><strong>Preview-first</strong> navigation</span>
-    </div>
-    <hr class="group-divider" />
+    <p class="subgroup-meta">${subgroupCount} subcategories, ${emojiCount.toLocaleString('en-US')} emojis.</p>
     ${subgroupSections}
   </section>`;
 
@@ -1207,25 +1195,29 @@ function renderGroupPage(group, config, options = {}) {
   });
 }
 
-function renderSubgroupPage(group, subgroup, config) {
+function renderSubgroupPage(group, subgroup, config, options = {}) {
   const emojiList = subgroup.emojis
     .map((emoji) => renderEmojiCard(emoji, config.assets.emojiCdnTemplate))
     .join('');
 
+  const renderedRoute = ensureTrailingSlash(options.route || subgroup.route);
+  const canonicalRoute = ensureTrailingSlash(options.canonicalRoute || subgroup.route);
+  const canonicalUrl = absoluteUrl(config.site.baseUrl, canonicalRoute);
+  const description = options.description || `Explore ${subgroup.title} emojis in ${group.title}.`;
+  const isCanonicalRoute = renderedRoute === canonicalRoute;
+  const robots =
+    subgroup.noindex || options.forceNoindex || !isCanonicalRoute ? 'noindex,follow' : '';
+  const pageClass = options.pageClass || 'page-subgroup';
   const body = `<section class="subgroup">
-    <p class="collection-kicker">Subcategory</p>
     <h1>${escapeHtml(subgroup.title)}</h1>
-    <p>${escapeHtml(subgroup.description)} Copy fast, then open individual emoji pages for meaning and variants.</p>
-    <p class="subgroup-meta">${subgroup.emojis.length} emoji${subgroup.emojis.length === 1 ? '' : 's'} in this collection.</p>
+    <p class="subgroup-meta">${subgroup.emojis.length} emoji${subgroup.emojis.length === 1 ? '' : 's'}.</p>
     <ul class="emoji-list">${emojiList}</ul>
   </section>`;
 
-  const canonicalUrl = absoluteUrl(config.site.baseUrl, subgroup.route);
-  const description = `Explore ${subgroup.title} emojis in ${group.title}.`;
-  const robots = subgroup.noindex ? 'noindex,follow' : '';
   const categoryRoute = group.categoryRoute || group.route;
-  const crumbs = [
+  const crumbs = options.breadcrumbs || [
     { label: 'Home', href: '/' },
+    { label: 'Categories', href: '/category/' },
     { label: group.title, href: `/${categoryRoute}` },
     { label: subgroup.title },
   ];
@@ -1247,7 +1239,7 @@ function renderSubgroupPage(group, subgroup, config) {
   ];
 
   return renderLayout({
-    route: subgroup.route,
+    route: renderedRoute,
     title: `${subgroup.title} Emojis`,
     description,
     canonicalUrl,
@@ -1257,7 +1249,7 @@ function renderSubgroupPage(group, subgroup, config) {
     config,
     showHeaderSearch: true,
     jsonLd,
-    pageClass: 'page-subgroup',
+    pageClass,
   });
 }
 
@@ -1890,6 +1882,20 @@ export async function renderSite({ model, legacyRedirects, config, tempRoot }) {
 
       if (!subgroup.noindex) {
         coreRoutes.add(subgroup.route);
+      }
+
+      if (subgroup.legacyRoute && subgroup.legacyRoute !== subgroup.route) {
+        await writeRouteHtml(
+          tempRoot,
+          subgroup.legacyRoute,
+          renderSubgroupPage(group, subgroup, config, {
+            route: subgroup.legacyRoute,
+            canonicalRoute: subgroup.route,
+            forceNoindex: true,
+            pageClass: 'page-subgroup-legacy',
+          }),
+          generatedFiles
+        );
       }
 
       const relatedPool = subgroup.emojis.filter(

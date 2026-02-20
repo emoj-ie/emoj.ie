@@ -31,7 +31,7 @@ test('sample templates have complete meta tags and schema payloads', () => {
     ['category/smileys-emotion/index.html', ['CollectionPage', 'BreadcrumbList']],
     ['smileys-emotion/index.html', ['CollectionPage', 'BreadcrumbList']],
     ['search/index.html', ['CollectionPage', 'BreadcrumbList']],
-    ['smileys-emotion/face-smiling/index.html', ['CollectionPage', 'BreadcrumbList']],
+    ['category/smileys-emotion/face-smiling/index.html', ['CollectionPage', 'BreadcrumbList']],
     ['smileys-emotion/face-smiling/grinning-face--1f600/index.html', ['WebPage', 'DefinedTerm', 'BreadcrumbList']],
   ];
 
@@ -125,6 +125,22 @@ test('legacy group route is canonicalized to category route', () => {
   assert.ok(!categoryPage.includes('noindex,follow'));
 });
 
+test('legacy subgroup route is canonicalized to category subgroup route', () => {
+  const legacySubgroupPage = read('smileys-emotion/face-smiling/index.html');
+  const canonicalSubgroupPage = read('category/smileys-emotion/face-smiling/index.html');
+
+  assert.match(
+    legacySubgroupPage,
+    /<link rel="canonical" href="https:\/\/emoj\.ie\/category\/smileys-emotion\/face-smiling\/"/
+  );
+  assert.match(legacySubgroupPage, /<meta name="robots" content="noindex,follow"/);
+  assert.match(
+    canonicalSubgroupPage,
+    /<link rel="canonical" href="https:\/\/emoj\.ie\/category\/smileys-emotion\/face-smiling\/"/
+  );
+  assert.ok(!canonicalSubgroupPage.includes('noindex,follow'));
+});
+
 test('curated search pages are generated with canonical metadata', () => {
   const searchIndex = read('search/index.html');
   const match = searchIndex.match(/href="\/(search\/[a-z0-9-]+\/)"/i);
@@ -157,7 +173,7 @@ test('internal link graph connects home -> category -> subgroup -> emoji -> rela
   const categoryRoute = categoryMatch[1];
 
   const categoryPage = read(`${categoryRoute}index.html`);
-  const subgroupMatch = categoryPage.match(/href="\/([a-z0-9-]+\/[a-z0-9-]+\/)"/i);
+  const subgroupMatch = categoryPage.match(/href="\/(category\/[a-z0-9-]+\/[a-z0-9-]+\/)"/i);
   assert.ok(subgroupMatch, 'expected subgroup links from category page');
   const subgroupRoute = subgroupMatch[1];
 

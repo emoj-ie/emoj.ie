@@ -9,7 +9,7 @@ function read(filePath) {
   return fs.readFileSync(path.join(root, filePath), 'utf8');
 }
 
-test('home app uses progressive rendering and lightweight home index data', () => {
+test('home app uses progressive rendering and path-first navigation from home', () => {
   const homeApp = read('home-app.mjs');
 
   assert.match(homeApp, /home-data\.json/);
@@ -17,8 +17,12 @@ test('home app uses progressive rendering and lightweight home index data', () =
   assert.match(homeApp, /appendResultChunk/);
   assert.match(homeApp, /panel-card-hero/);
   assert.match(homeApp, /panel-card-hero-img/);
-  assert.match(homeApp, /state\.g = group;/);
-  assert.match(homeApp, /state\.sg = subgroup;/);
+  assert.match(homeApp, /window\.location\.assign\(`\/category\/\$\{encodeURIComponent\(group\)\}\/`\)/);
+  assert.match(
+    homeApp,
+    /window\.location\.assign\(\s*`\/category\/\$\{encodeURIComponent\(state\.g\)\}\/\$\{encodeURIComponent\(subgroup\)\}\/`\s*\)/
+  );
+  assert.match(homeApp, /window\.location\.replace\(target\)/);
   assert.ok(!homeApp.includes('slice(0, 400)'), 'hard 400 result cap should be removed');
 });
 
@@ -89,12 +93,13 @@ test('daily emoji schedule exists for all days of year', () => {
   assert.equal(shamrockDay.hexcode, '2618', `expected shamrock on 03-17, got ${shamrockDay.hexcode}`);
 });
 
-test('heavy group page uses preview copy that points users to subgroup pages', () => {
-  const peopleBodyPage = read('people-body/index.html');
-  assert.match(peopleBodyPage, /Open full collection/);
+test('canonical category page is minimal and links directly to canonical subgroup routes', () => {
+  const peopleBodyPage = read('category/people-body/index.html');
+  assert.ok(!peopleBodyPage.includes('Open full collection'));
+  assert.match(peopleBodyPage, /\/category\/people-body\/person-sport\//);
 
-  const fileSize = fs.statSync(path.join(root, 'people-body/index.html')).size;
-  assert.ok(fileSize < 1200000, `expected people-body page < 1.2MB, got ${fileSize} bytes`);
+  const fileSize = fs.statSync(path.join(root, 'category/people-body/index.html')).size;
+  assert.ok(fileSize < 1200000, `expected category page < 1.2MB, got ${fileSize} bytes`);
 });
 
 test('home app includes search relevance helpers and favorites persistence', () => {

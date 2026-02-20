@@ -547,10 +547,7 @@ function withinDistance(a, b, maxDistance = 1) {
           '',
           preview,
           () => {
-            state.g = group;
-            state.sg = '';
-            applyStateToControls();
-            renderExplorer(true, true);
+            window.location.assign(`/category/${encodeURIComponent(group)}/`);
           }
         )
       );
@@ -579,9 +576,9 @@ function withinDistance(a, b, maxDistance = 1) {
           '',
           preview,
           () => {
-            state.sg = subgroup;
-            applyStateToControls();
-            renderExplorer(true, true);
+            window.location.assign(
+              `/category/${encodeURIComponent(state.g)}/${encodeURIComponent(subgroup)}/`
+            );
           }
         )
       );
@@ -1280,6 +1277,10 @@ function withinDistance(a, b, maxDistance = 1) {
     }
 
     groupFilter.addEventListener('change', () => {
+      if (groupFilter.value) {
+        window.location.assign(`/category/${encodeURIComponent(groupFilter.value)}/`);
+        return;
+      }
       state.g = groupFilter.value;
       state.sg = '';
       populateSubgroups(state.g);
@@ -1287,6 +1288,12 @@ function withinDistance(a, b, maxDistance = 1) {
     });
 
     subgroupFilter.addEventListener('change', () => {
+      if (state.g && subgroupFilter.value) {
+        window.location.assign(
+          `/category/${encodeURIComponent(state.g)}/${encodeURIComponent(subgroupFilter.value)}/`
+        );
+        return;
+      }
       state.sg = subgroupFilter.value;
       renderExplorer(true, true);
     });

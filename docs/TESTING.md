@@ -26,23 +26,21 @@ Last updated: 2026-02-20
 | Search query filters results | full (unit + baseline Playwright) | maintain |
 | Copy emoji to clipboard | full (baseline Playwright) | maintain |
 | Keyboard navigation in results/grid | full (baseline Playwright + unit) | maintain |
-| Recents persistence (local storage) | full (baseline Playwright) | maintain |
-| Favorites persistence (local storage) | full (baseline Playwright + unit) | maintain |
+| Recents persistence (local storage) | partial (unit/home-script behavior) | add cross-route e2e coverage in a future slice |
+| Favorites persistence (local storage) | partial (unit/home-script behavior) | add cross-route e2e coverage in a future slice |
 | Theme toggle and system default behavior | full (baseline Playwright + unit) | maintain |
-| Category/subcategory filters | full (baseline Playwright + unit) | maintain |
+| Category/subcategory navigation | full (baseline Playwright + unit) | maintain |
 | SEO routes metadata/sitemap | full (unit + integration: emoji/category/search/tag/alternatives + robots + link graph) | maintain |
 | Accessibility smoke | present | broaden with keyboard + focus coverage |
 
 ## Baseline E2E Cases (Planned)
-- [x] Search for a term and verify result count changes.
-- [x] Copy an emoji and verify success signal.
-- [x] Copy mode switching updates copied payload format.
-- [x] Category and subcategory filtering narrows results.
+- [x] Home loads category cards and advanced menu controls.
+- [x] Category card click navigates to canonical `/category/{group}/` route.
+- [x] Category page exposes subgroup links on canonical `/category/{group}/{subgroup}/` routes.
+- [x] Category and subcategory pages show breadcrumb context (`Home / Categories / ...`).
+- [x] Copying from subgroup emoji list triggers toast + clipboard payload.
 - [x] Keyboard arrow navigation moves focus between emoji buttons.
-- [x] Recent list updates after copy and survives page reload.
-- [x] Theme mode toggles and persists setting.
-- [x] Favorites updates and survives page reload.
-- [x] Category card -> subgroup card -> emoji list flow works without route navigation.
+- [x] Theme mode toggles and persists setting after returning to home.
 
 ## SEO Regression Coverage (Current)
 - `tests/phase4-seo-schema.test.mjs` validates metadata + schema on sample pages.
