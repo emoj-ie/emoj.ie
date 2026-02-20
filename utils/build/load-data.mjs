@@ -494,8 +494,8 @@ export async function loadEmojiModel({ rootDir, config }) {
     const subgroupEntries = Object.entries(subgroupObject)
       .sort(([a], [b]) => compareKeys(a, b))
       .map(([subgroupKey]) => {
-        const subgroupRoute = ensureTrailingSlash(`category/${groupKey}/${subgroupKey}`);
-        const subgroupLegacyRoute = ensureTrailingSlash(`${groupKey}/${subgroupKey}`);
+        const subgroupRoute = ensureTrailingSlash(`${groupKey}/${subgroupKey}`);
+        const subgroupLegacyRoute = ensureTrailingSlash(`category/${groupKey}/${subgroupKey}`);
         const subgroupEmojis = subgroupEntryLookup.get(`${groupKey}::${subgroupKey}`) || [];
 
         return {
@@ -526,9 +526,9 @@ export async function loadEmojiModel({ rootDir, config }) {
   const categories = groups.map((group) => ({
     key: group.key,
     title: group.title,
-    route: group.categoryRoute,
-    file: routeToFile(group.categoryRoute),
-    legacyRoute: group.route,
+    route: group.route,
+    file: routeToFile(group.route),
+    legacyRoute: group.categoryRoute,
     noindex: group.noindex,
     description: group.description,
     subgroups: group.subgroups,

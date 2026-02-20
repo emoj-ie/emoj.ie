@@ -168,12 +168,12 @@ function withinDistance(a, b, maxDistance = 1) {
   const initialCopy = localStorage.getItem(COPY_MODE_KEY) || 'emoji';
   const parsedState = parseUiState(window.location.search, initialCopy);
   if (parsedState.g && parsedState.sg) {
-    const target = `/category/${encodeURIComponent(parsedState.g)}/${encodeURIComponent(parsedState.sg)}/`;
+    const target = `/${encodeURIComponent(parsedState.g)}/${encodeURIComponent(parsedState.sg)}/`;
     window.location.replace(target);
     return;
   }
   if (parsedState.g) {
-    const target = `/category/${encodeURIComponent(parsedState.g)}/`;
+    const target = `/${encodeURIComponent(parsedState.g)}/`;
     window.location.replace(target);
     return;
   }
@@ -547,7 +547,7 @@ function withinDistance(a, b, maxDistance = 1) {
           '',
           preview,
           () => {
-            window.location.assign(`/category/${encodeURIComponent(group)}/`);
+            window.location.assign(`/${encodeURIComponent(group)}/`);
           }
         )
       );
@@ -577,7 +577,7 @@ function withinDistance(a, b, maxDistance = 1) {
           preview,
           () => {
             window.location.assign(
-              `/category/${encodeURIComponent(state.g)}/${encodeURIComponent(subgroup)}/`
+              `/${encodeURIComponent(state.g)}/${encodeURIComponent(subgroup)}/`
             );
           }
         )
@@ -1278,7 +1278,7 @@ function withinDistance(a, b, maxDistance = 1) {
 
     groupFilter.addEventListener('change', () => {
       if (groupFilter.value) {
-        window.location.assign(`/category/${encodeURIComponent(groupFilter.value)}/`);
+        window.location.assign(`/${encodeURIComponent(groupFilter.value)}/`);
         return;
       }
       state.g = groupFilter.value;
@@ -1290,7 +1290,7 @@ function withinDistance(a, b, maxDistance = 1) {
     subgroupFilter.addEventListener('change', () => {
       if (state.g && subgroupFilter.value) {
         window.location.assign(
-          `/category/${encodeURIComponent(state.g)}/${encodeURIComponent(subgroupFilter.value)}/`
+          `/${encodeURIComponent(state.g)}/${encodeURIComponent(subgroupFilter.value)}/`
         );
         return;
       }

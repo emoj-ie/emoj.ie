@@ -11,6 +11,36 @@
     <priority>0.8</priority>
   </url>
   <url>
+    <loc>https://emoj.ie/activities/</loc>
+    <lastmod>2025-01-21T17:31:06.093Z</lastmod>
+    <priority>0.8</priority>
+  </url>
+  <url>
+    <loc>https://emoj.ie/activities/arts-crafts/</loc>
+    <lastmod>2025-01-21T17:31:06.093Z</lastmod>
+    <priority>0.8</priority>
+  </url>
+  <url>
+    <loc>https://emoj.ie/activities/award-medal/</loc>
+    <lastmod>2025-01-21T17:31:06.093Z</lastmod>
+    <priority>0.8</priority>
+  </url>
+  <url>
+    <loc>https://emoj.ie/activities/event/</loc>
+    <lastmod>2025-01-21T17:31:06.093Z</lastmod>
+    <priority>0.8</priority>
+  </url>
+  <url>
+    <loc>https://emoj.ie/activities/game/</loc>
+    <lastmod>2025-01-21T17:31:06.093Z</lastmod>
+    <priority>0.8</priority>
+  </url>
+  <url>
+    <loc>https://emoj.ie/activities/sport/</loc>
+    <lastmod>2025-01-21T17:31:06.093Z</lastmod>
+    <priority>0.8</priority>
+  </url>
+  <url>
     <loc>https://emoj.ie/alternatives/</loc>
     <lastmod>2025-01-21T17:31:06.093Z</lastmod>
     <priority>0.8</priority>
@@ -31,662 +61,407 @@
     <priority>0.8</priority>
   </url>
   <url>
-    <loc>https://emoj.ie/category/</loc>
+    <loc>https://emoj.ie/animals-nature/</loc>
     <lastmod>2025-01-21T17:31:06.093Z</lastmod>
     <priority>0.8</priority>
   </url>
   <url>
-    <loc>https://emoj.ie/category/activities/</loc>
+    <loc>https://emoj.ie/animals-nature/animal-amphibian/</loc>
     <lastmod>2025-01-21T17:31:06.093Z</lastmod>
     <priority>0.8</priority>
   </url>
   <url>
-    <loc>https://emoj.ie/category/activities/arts-crafts/</loc>
+    <loc>https://emoj.ie/animals-nature/animal-bird/</loc>
     <lastmod>2025-01-21T17:31:06.093Z</lastmod>
     <priority>0.8</priority>
   </url>
   <url>
-    <loc>https://emoj.ie/category/activities/award-medal/</loc>
+    <loc>https://emoj.ie/animals-nature/animal-bug/</loc>
     <lastmod>2025-01-21T17:31:06.093Z</lastmod>
     <priority>0.8</priority>
   </url>
   <url>
-    <loc>https://emoj.ie/category/activities/event/</loc>
+    <loc>https://emoj.ie/animals-nature/animal-mammal/</loc>
     <lastmod>2025-01-21T17:31:06.093Z</lastmod>
     <priority>0.8</priority>
   </url>
   <url>
-    <loc>https://emoj.ie/category/activities/game/</loc>
+    <loc>https://emoj.ie/animals-nature/animal-marine/</loc>
     <lastmod>2025-01-21T17:31:06.093Z</lastmod>
     <priority>0.8</priority>
   </url>
   <url>
-    <loc>https://emoj.ie/category/activities/sport/</loc>
+    <loc>https://emoj.ie/animals-nature/animal-reptile/</loc>
     <lastmod>2025-01-21T17:31:06.093Z</lastmod>
     <priority>0.8</priority>
   </url>
   <url>
-    <loc>https://emoj.ie/category/animals-nature/</loc>
+    <loc>https://emoj.ie/animals-nature/plant-flower/</loc>
     <lastmod>2025-01-21T17:31:06.093Z</lastmod>
     <priority>0.8</priority>
   </url>
   <url>
-    <loc>https://emoj.ie/category/animals-nature/animal-amphibian/</loc>
+    <loc>https://emoj.ie/animals-nature/plant-other/</loc>
     <lastmod>2025-01-21T17:31:06.093Z</lastmod>
     <priority>0.8</priority>
   </url>
   <url>
-    <loc>https://emoj.ie/category/animals-nature/animal-bird/</loc>
+    <loc>https://emoj.ie/extras-openmoji/</loc>
     <lastmod>2025-01-21T17:31:06.093Z</lastmod>
     <priority>0.8</priority>
   </url>
   <url>
-    <loc>https://emoj.ie/category/animals-nature/animal-bug/</loc>
+    <loc>https://emoj.ie/extras-openmoji/animals-nature/</loc>
     <lastmod>2025-01-21T17:31:06.093Z</lastmod>
     <priority>0.8</priority>
   </url>
   <url>
-    <loc>https://emoj.ie/category/animals-nature/animal-mammal/</loc>
+    <loc>https://emoj.ie/extras-openmoji/brand/</loc>
     <lastmod>2025-01-21T17:31:06.093Z</lastmod>
     <priority>0.8</priority>
   </url>
   <url>
-    <loc>https://emoj.ie/category/animals-nature/animal-marine/</loc>
+    <loc>https://emoj.ie/extras-openmoji/climate-environment/</loc>
     <lastmod>2025-01-21T17:31:06.093Z</lastmod>
     <priority>0.8</priority>
   </url>
   <url>
-    <loc>https://emoj.ie/category/animals-nature/animal-reptile/</loc>
+    <loc>https://emoj.ie/extras-openmoji/emergency/</loc>
     <lastmod>2025-01-21T17:31:06.093Z</lastmod>
     <priority>0.8</priority>
   </url>
   <url>
-    <loc>https://emoj.ie/category/animals-nature/plant-flower/</loc>
+    <loc>https://emoj.ie/extras-openmoji/flags/</loc>
     <lastmod>2025-01-21T17:31:06.093Z</lastmod>
     <priority>0.8</priority>
   </url>
   <url>
-    <loc>https://emoj.ie/category/animals-nature/plant-other/</loc>
+    <loc>https://emoj.ie/extras-openmoji/food-drink/</loc>
     <lastmod>2025-01-21T17:31:06.093Z</lastmod>
     <priority>0.8</priority>
   </url>
   <url>
-    <loc>https://emoj.ie/category/extras-openmoji/</loc>
+    <loc>https://emoj.ie/extras-openmoji/gardening/</loc>
     <lastmod>2025-01-21T17:31:06.093Z</lastmod>
     <priority>0.8</priority>
   </url>
   <url>
-    <loc>https://emoj.ie/category/extras-openmoji/animals-nature/</loc>
+    <loc>https://emoj.ie/extras-openmoji/healthcare/</loc>
     <lastmod>2025-01-21T17:31:06.093Z</lastmod>
     <priority>0.8</priority>
   </url>
   <url>
-    <loc>https://emoj.ie/category/extras-openmoji/brand/</loc>
+    <loc>https://emoj.ie/extras-openmoji/interaction/</loc>
     <lastmod>2025-01-21T17:31:06.093Z</lastmod>
     <priority>0.8</priority>
   </url>
   <url>
-    <loc>https://emoj.ie/category/extras-openmoji/climate-environment/</loc>
+    <loc>https://emoj.ie/extras-openmoji/objects/</loc>
     <lastmod>2025-01-21T17:31:06.093Z</lastmod>
     <priority>0.8</priority>
   </url>
   <url>
-    <loc>https://emoj.ie/category/extras-openmoji/emergency/</loc>
+    <loc>https://emoj.ie/extras-openmoji/people/</loc>
     <lastmod>2025-01-21T17:31:06.093Z</lastmod>
     <priority>0.8</priority>
   </url>
   <url>
-    <loc>https://emoj.ie/category/extras-openmoji/flags/</loc>
+    <loc>https://emoj.ie/extras-openmoji/smileys-emotion/</loc>
     <lastmod>2025-01-21T17:31:06.093Z</lastmod>
     <priority>0.8</priority>
   </url>
   <url>
-    <loc>https://emoj.ie/category/extras-openmoji/food-drink/</loc>
+    <loc>https://emoj.ie/extras-openmoji/symbol-other/</loc>
     <lastmod>2025-01-21T17:31:06.093Z</lastmod>
     <priority>0.8</priority>
   </url>
   <url>
-    <loc>https://emoj.ie/category/extras-openmoji/gardening/</loc>
+    <loc>https://emoj.ie/extras-openmoji/symbols/</loc>
     <lastmod>2025-01-21T17:31:06.093Z</lastmod>
     <priority>0.8</priority>
   </url>
   <url>
-    <loc>https://emoj.ie/category/extras-openmoji/healthcare/</loc>
+    <loc>https://emoj.ie/extras-openmoji/technology/</loc>
     <lastmod>2025-01-21T17:31:06.093Z</lastmod>
     <priority>0.8</priority>
   </url>
   <url>
-    <loc>https://emoj.ie/category/extras-openmoji/interaction/</loc>
+    <loc>https://emoj.ie/extras-openmoji/travel-places/</loc>
     <lastmod>2025-01-21T17:31:06.093Z</lastmod>
     <priority>0.8</priority>
   </url>
   <url>
-    <loc>https://emoj.ie/category/extras-openmoji/objects/</loc>
+    <loc>https://emoj.ie/extras-openmoji/ui-element/</loc>
     <lastmod>2025-01-21T17:31:06.093Z</lastmod>
     <priority>0.8</priority>
   </url>
   <url>
-    <loc>https://emoj.ie/category/extras-openmoji/people/</loc>
+    <loc>https://emoj.ie/extras-unicode/</loc>
     <lastmod>2025-01-21T17:31:06.093Z</lastmod>
     <priority>0.8</priority>
   </url>
   <url>
-    <loc>https://emoj.ie/category/extras-openmoji/smileys-emotion/</loc>
+    <loc>https://emoj.ie/extras-unicode/food-drink/</loc>
     <lastmod>2025-01-21T17:31:06.093Z</lastmod>
     <priority>0.8</priority>
   </url>
   <url>
-    <loc>https://emoj.ie/category/extras-openmoji/symbol-other/</loc>
+    <loc>https://emoj.ie/extras-unicode/regional-indicator/</loc>
     <lastmod>2025-01-21T17:31:06.093Z</lastmod>
     <priority>0.8</priority>
   </url>
   <url>
-    <loc>https://emoj.ie/category/extras-openmoji/symbols/</loc>
+    <loc>https://emoj.ie/extras-unicode/subdivision-flag/</loc>
     <lastmod>2025-01-21T17:31:06.093Z</lastmod>
     <priority>0.8</priority>
   </url>
   <url>
-    <loc>https://emoj.ie/category/extras-openmoji/technology/</loc>
+    <loc>https://emoj.ie/extras-unicode/symbol-other/</loc>
     <lastmod>2025-01-21T17:31:06.093Z</lastmod>
     <priority>0.8</priority>
   </url>
   <url>
-    <loc>https://emoj.ie/category/extras-openmoji/travel-places/</loc>
+    <loc>https://emoj.ie/flags/</loc>
     <lastmod>2025-01-21T17:31:06.093Z</lastmod>
     <priority>0.8</priority>
   </url>
   <url>
-    <loc>https://emoj.ie/category/extras-openmoji/ui-element/</loc>
+    <loc>https://emoj.ie/flags/country-flag/</loc>
     <lastmod>2025-01-21T17:31:06.093Z</lastmod>
     <priority>0.8</priority>
   </url>
   <url>
-    <loc>https://emoj.ie/category/extras-unicode/</loc>
+    <loc>https://emoj.ie/flags/flag/</loc>
     <lastmod>2025-01-21T17:31:06.093Z</lastmod>
     <priority>0.8</priority>
   </url>
   <url>
-    <loc>https://emoj.ie/category/extras-unicode/food-drink/</loc>
+    <loc>https://emoj.ie/flags/subdivision-flag/</loc>
     <lastmod>2025-01-21T17:31:06.093Z</lastmod>
     <priority>0.8</priority>
   </url>
   <url>
-    <loc>https://emoj.ie/category/extras-unicode/regional-indicator/</loc>
+    <loc>https://emoj.ie/food-drink/</loc>
     <lastmod>2025-01-21T17:31:06.093Z</lastmod>
     <priority>0.8</priority>
   </url>
   <url>
-    <loc>https://emoj.ie/category/extras-unicode/subdivision-flag/</loc>
+    <loc>https://emoj.ie/food-drink/dishware/</loc>
     <lastmod>2025-01-21T17:31:06.093Z</lastmod>
     <priority>0.8</priority>
   </url>
   <url>
-    <loc>https://emoj.ie/category/extras-unicode/symbol-other/</loc>
+    <loc>https://emoj.ie/food-drink/drink/</loc>
     <lastmod>2025-01-21T17:31:06.093Z</lastmod>
     <priority>0.8</priority>
   </url>
   <url>
-    <loc>https://emoj.ie/category/flags/</loc>
+    <loc>https://emoj.ie/food-drink/food-asian/</loc>
     <lastmod>2025-01-21T17:31:06.093Z</lastmod>
     <priority>0.8</priority>
   </url>
   <url>
-    <loc>https://emoj.ie/category/flags/country-flag/</loc>
+    <loc>https://emoj.ie/food-drink/food-fruit/</loc>
     <lastmod>2025-01-21T17:31:06.093Z</lastmod>
     <priority>0.8</priority>
   </url>
   <url>
-    <loc>https://emoj.ie/category/flags/flag/</loc>
+    <loc>https://emoj.ie/food-drink/food-marine/</loc>
     <lastmod>2025-01-21T17:31:06.093Z</lastmod>
     <priority>0.8</priority>
   </url>
   <url>
-    <loc>https://emoj.ie/category/flags/subdivision-flag/</loc>
+    <loc>https://emoj.ie/food-drink/food-prepared/</loc>
     <lastmod>2025-01-21T17:31:06.093Z</lastmod>
     <priority>0.8</priority>
   </url>
   <url>
-    <loc>https://emoj.ie/category/food-drink/</loc>
+    <loc>https://emoj.ie/food-drink/food-sweet/</loc>
     <lastmod>2025-01-21T17:31:06.093Z</lastmod>
     <priority>0.8</priority>
   </url>
   <url>
-    <loc>https://emoj.ie/category/food-drink/dishware/</loc>
+    <loc>https://emoj.ie/food-drink/food-vegetable/</loc>
     <lastmod>2025-01-21T17:31:06.093Z</lastmod>
     <priority>0.8</priority>
   </url>
   <url>
-    <loc>https://emoj.ie/category/food-drink/drink/</loc>
+    <loc>https://emoj.ie/objects/</loc>
     <lastmod>2025-01-21T17:31:06.093Z</lastmod>
     <priority>0.8</priority>
   </url>
   <url>
-    <loc>https://emoj.ie/category/food-drink/food-asian/</loc>
+    <loc>https://emoj.ie/objects/book-paper/</loc>
     <lastmod>2025-01-21T17:31:06.093Z</lastmod>
     <priority>0.8</priority>
   </url>
   <url>
-    <loc>https://emoj.ie/category/food-drink/food-fruit/</loc>
+    <loc>https://emoj.ie/objects/clothing/</loc>
     <lastmod>2025-01-21T17:31:06.093Z</lastmod>
     <priority>0.8</priority>
   </url>
   <url>
-    <loc>https://emoj.ie/category/food-drink/food-marine/</loc>
+    <loc>https://emoj.ie/objects/computer/</loc>
     <lastmod>2025-01-21T17:31:06.093Z</lastmod>
     <priority>0.8</priority>
   </url>
   <url>
-    <loc>https://emoj.ie/category/food-drink/food-prepared/</loc>
+    <loc>https://emoj.ie/objects/household/</loc>
     <lastmod>2025-01-21T17:31:06.093Z</lastmod>
     <priority>0.8</priority>
   </url>
   <url>
-    <loc>https://emoj.ie/category/food-drink/food-sweet/</loc>
+    <loc>https://emoj.ie/objects/light-video/</loc>
     <lastmod>2025-01-21T17:31:06.093Z</lastmod>
     <priority>0.8</priority>
   </url>
   <url>
-    <loc>https://emoj.ie/category/food-drink/food-vegetable/</loc>
+    <loc>https://emoj.ie/objects/lock/</loc>
     <lastmod>2025-01-21T17:31:06.093Z</lastmod>
     <priority>0.8</priority>
   </url>
   <url>
-    <loc>https://emoj.ie/category/objects/</loc>
+    <loc>https://emoj.ie/objects/mail/</loc>
     <lastmod>2025-01-21T17:31:06.093Z</lastmod>
     <priority>0.8</priority>
   </url>
   <url>
-    <loc>https://emoj.ie/category/objects/book-paper/</loc>
+    <loc>https://emoj.ie/objects/medical/</loc>
     <lastmod>2025-01-21T17:31:06.093Z</lastmod>
     <priority>0.8</priority>
   </url>
   <url>
-    <loc>https://emoj.ie/category/objects/clothing/</loc>
+    <loc>https://emoj.ie/objects/money/</loc>
     <lastmod>2025-01-21T17:31:06.093Z</lastmod>
     <priority>0.8</priority>
   </url>
   <url>
-    <loc>https://emoj.ie/category/objects/computer/</loc>
+    <loc>https://emoj.ie/objects/music/</loc>
     <lastmod>2025-01-21T17:31:06.093Z</lastmod>
     <priority>0.8</priority>
   </url>
   <url>
-    <loc>https://emoj.ie/category/objects/household/</loc>
+    <loc>https://emoj.ie/objects/musical-instrument/</loc>
     <lastmod>2025-01-21T17:31:06.093Z</lastmod>
     <priority>0.8</priority>
   </url>
   <url>
-    <loc>https://emoj.ie/category/objects/light-video/</loc>
+    <loc>https://emoj.ie/objects/office/</loc>
     <lastmod>2025-01-21T17:31:06.093Z</lastmod>
     <priority>0.8</priority>
   </url>
   <url>
-    <loc>https://emoj.ie/category/objects/lock/</loc>
+    <loc>https://emoj.ie/objects/other-object/</loc>
     <lastmod>2025-01-21T17:31:06.093Z</lastmod>
     <priority>0.8</priority>
   </url>
   <url>
-    <loc>https://emoj.ie/category/objects/mail/</loc>
+    <loc>https://emoj.ie/objects/phone/</loc>
     <lastmod>2025-01-21T17:31:06.093Z</lastmod>
     <priority>0.8</priority>
   </url>
   <url>
-    <loc>https://emoj.ie/category/objects/medical/</loc>
+    <loc>https://emoj.ie/objects/science/</loc>
     <lastmod>2025-01-21T17:31:06.093Z</lastmod>
     <priority>0.8</priority>
   </url>
   <url>
-    <loc>https://emoj.ie/category/objects/money/</loc>
+    <loc>https://emoj.ie/objects/sound/</loc>
     <lastmod>2025-01-21T17:31:06.093Z</lastmod>
     <priority>0.8</priority>
   </url>
   <url>
-    <loc>https://emoj.ie/category/objects/music/</loc>
+    <loc>https://emoj.ie/objects/tool/</loc>
     <lastmod>2025-01-21T17:31:06.093Z</lastmod>
     <priority>0.8</priority>
   </url>
   <url>
-    <loc>https://emoj.ie/category/objects/musical-instrument/</loc>
+    <loc>https://emoj.ie/objects/writing/</loc>
     <lastmod>2025-01-21T17:31:06.093Z</lastmod>
     <priority>0.8</priority>
   </url>
   <url>
-    <loc>https://emoj.ie/category/objects/office/</loc>
+    <loc>https://emoj.ie/people-body/</loc>
     <lastmod>2025-01-21T17:31:06.093Z</lastmod>
     <priority>0.8</priority>
   </url>
   <url>
-    <loc>https://emoj.ie/category/objects/other-object/</loc>
+    <loc>https://emoj.ie/people-body/body-parts/</loc>
     <lastmod>2025-01-21T17:31:06.093Z</lastmod>
     <priority>0.8</priority>
   </url>
   <url>
-    <loc>https://emoj.ie/category/objects/phone/</loc>
+    <loc>https://emoj.ie/people-body/family/</loc>
     <lastmod>2025-01-21T17:31:06.093Z</lastmod>
     <priority>0.8</priority>
   </url>
   <url>
-    <loc>https://emoj.ie/category/objects/science/</loc>
+    <loc>https://emoj.ie/people-body/hand-fingers-closed/</loc>
     <lastmod>2025-01-21T17:31:06.093Z</lastmod>
     <priority>0.8</priority>
   </url>
   <url>
-    <loc>https://emoj.ie/category/objects/sound/</loc>
+    <loc>https://emoj.ie/people-body/hand-fingers-open/</loc>
     <lastmod>2025-01-21T17:31:06.093Z</lastmod>
     <priority>0.8</priority>
   </url>
   <url>
-    <loc>https://emoj.ie/category/objects/tool/</loc>
+    <loc>https://emoj.ie/people-body/hand-fingers-partial/</loc>
     <lastmod>2025-01-21T17:31:06.093Z</lastmod>
     <priority>0.8</priority>
   </url>
   <url>
-    <loc>https://emoj.ie/category/objects/writing/</loc>
+    <loc>https://emoj.ie/people-body/hand-prop/</loc>
     <lastmod>2025-01-21T17:31:06.093Z</lastmod>
     <priority>0.8</priority>
   </url>
   <url>
-    <loc>https://emoj.ie/category/people-body/</loc>
+    <loc>https://emoj.ie/people-body/hand-single-finger/</loc>
     <lastmod>2025-01-21T17:31:06.093Z</lastmod>
     <priority>0.8</priority>
   </url>
   <url>
-    <loc>https://emoj.ie/category/people-body/body-parts/</loc>
+    <loc>https://emoj.ie/people-body/hands/</loc>
     <lastmod>2025-01-21T17:31:06.093Z</lastmod>
     <priority>0.8</priority>
   </url>
   <url>
-    <loc>https://emoj.ie/category/people-body/family/</loc>
+    <loc>https://emoj.ie/people-body/person-activity/</loc>
     <lastmod>2025-01-21T17:31:06.093Z</lastmod>
     <priority>0.8</priority>
   </url>
   <url>
-    <loc>https://emoj.ie/category/people-body/hand-fingers-closed/</loc>
+    <loc>https://emoj.ie/people-body/person-fantasy/</loc>
     <lastmod>2025-01-21T17:31:06.093Z</lastmod>
     <priority>0.8</priority>
   </url>
   <url>
-    <loc>https://emoj.ie/category/people-body/hand-fingers-open/</loc>
+    <loc>https://emoj.ie/people-body/person-gesture/</loc>
     <lastmod>2025-01-21T17:31:06.093Z</lastmod>
     <priority>0.8</priority>
   </url>
   <url>
-    <loc>https://emoj.ie/category/people-body/hand-fingers-partial/</loc>
+    <loc>https://emoj.ie/people-body/person-resting/</loc>
     <lastmod>2025-01-21T17:31:06.093Z</lastmod>
     <priority>0.8</priority>
   </url>
   <url>
-    <loc>https://emoj.ie/category/people-body/hand-prop/</loc>
+    <loc>https://emoj.ie/people-body/person-role/</loc>
     <lastmod>2025-01-21T17:31:06.093Z</lastmod>
     <priority>0.8</priority>
   </url>
   <url>
-    <loc>https://emoj.ie/category/people-body/hand-single-finger/</loc>
+    <loc>https://emoj.ie/people-body/person-sport/</loc>
     <lastmod>2025-01-21T17:31:06.093Z</lastmod>
     <priority>0.8</priority>
   </url>
   <url>
-    <loc>https://emoj.ie/category/people-body/hands/</loc>
+    <loc>https://emoj.ie/people-body/person-symbol/</loc>
     <lastmod>2025-01-21T17:31:06.093Z</lastmod>
     <priority>0.8</priority>
   </url>
   <url>
-    <loc>https://emoj.ie/category/people-body/person-activity/</loc>
-    <lastmod>2025-01-21T17:31:06.093Z</lastmod>
-    <priority>0.8</priority>
-  </url>
-  <url>
-    <loc>https://emoj.ie/category/people-body/person-fantasy/</loc>
-    <lastmod>2025-01-21T17:31:06.093Z</lastmod>
-    <priority>0.8</priority>
-  </url>
-  <url>
-    <loc>https://emoj.ie/category/people-body/person-gesture/</loc>
-    <lastmod>2025-01-21T17:31:06.093Z</lastmod>
-    <priority>0.8</priority>
-  </url>
-  <url>
-    <loc>https://emoj.ie/category/people-body/person-resting/</loc>
-    <lastmod>2025-01-21T17:31:06.093Z</lastmod>
-    <priority>0.8</priority>
-  </url>
-  <url>
-    <loc>https://emoj.ie/category/people-body/person-role/</loc>
-    <lastmod>2025-01-21T17:31:06.093Z</lastmod>
-    <priority>0.8</priority>
-  </url>
-  <url>
-    <loc>https://emoj.ie/category/people-body/person-sport/</loc>
-    <lastmod>2025-01-21T17:31:06.093Z</lastmod>
-    <priority>0.8</priority>
-  </url>
-  <url>
-    <loc>https://emoj.ie/category/people-body/person-symbol/</loc>
-    <lastmod>2025-01-21T17:31:06.093Z</lastmod>
-    <priority>0.8</priority>
-  </url>
-  <url>
-    <loc>https://emoj.ie/category/people-body/person/</loc>
-    <lastmod>2025-01-21T17:31:06.093Z</lastmod>
-    <priority>0.8</priority>
-  </url>
-  <url>
-    <loc>https://emoj.ie/category/smileys-emotion/</loc>
-    <lastmod>2025-01-21T17:31:06.093Z</lastmod>
-    <priority>0.8</priority>
-  </url>
-  <url>
-    <loc>https://emoj.ie/category/smileys-emotion/cat-face/</loc>
-    <lastmod>2025-01-21T17:31:06.093Z</lastmod>
-    <priority>0.8</priority>
-  </url>
-  <url>
-    <loc>https://emoj.ie/category/smileys-emotion/emotion/</loc>
-    <lastmod>2025-01-21T17:31:06.093Z</lastmod>
-    <priority>0.8</priority>
-  </url>
-  <url>
-    <loc>https://emoj.ie/category/smileys-emotion/face-affection/</loc>
-    <lastmod>2025-01-21T17:31:06.093Z</lastmod>
-    <priority>0.8</priority>
-  </url>
-  <url>
-    <loc>https://emoj.ie/category/smileys-emotion/face-concerned/</loc>
-    <lastmod>2025-01-21T17:31:06.093Z</lastmod>
-    <priority>0.8</priority>
-  </url>
-  <url>
-    <loc>https://emoj.ie/category/smileys-emotion/face-costume/</loc>
-    <lastmod>2025-01-21T17:31:06.093Z</lastmod>
-    <priority>0.8</priority>
-  </url>
-  <url>
-    <loc>https://emoj.ie/category/smileys-emotion/face-glasses/</loc>
-    <lastmod>2025-01-21T17:31:06.093Z</lastmod>
-    <priority>0.8</priority>
-  </url>
-  <url>
-    <loc>https://emoj.ie/category/smileys-emotion/face-hand/</loc>
-    <lastmod>2025-01-21T17:31:06.093Z</lastmod>
-    <priority>0.8</priority>
-  </url>
-  <url>
-    <loc>https://emoj.ie/category/smileys-emotion/face-hat/</loc>
-    <lastmod>2025-01-21T17:31:06.093Z</lastmod>
-    <priority>0.8</priority>
-  </url>
-  <url>
-    <loc>https://emoj.ie/category/smileys-emotion/face-negative/</loc>
-    <lastmod>2025-01-21T17:31:06.093Z</lastmod>
-    <priority>0.8</priority>
-  </url>
-  <url>
-    <loc>https://emoj.ie/category/smileys-emotion/face-neutral-skeptical/</loc>
-    <lastmod>2025-01-21T17:31:06.093Z</lastmod>
-    <priority>0.8</priority>
-  </url>
-  <url>
-    <loc>https://emoj.ie/category/smileys-emotion/face-sleepy/</loc>
-    <lastmod>2025-01-21T17:31:06.093Z</lastmod>
-    <priority>0.8</priority>
-  </url>
-  <url>
-    <loc>https://emoj.ie/category/smileys-emotion/face-smiling/</loc>
-    <lastmod>2025-01-21T17:31:06.093Z</lastmod>
-    <priority>0.8</priority>
-  </url>
-  <url>
-    <loc>https://emoj.ie/category/smileys-emotion/face-tongue/</loc>
-    <lastmod>2025-01-21T17:31:06.093Z</lastmod>
-    <priority>0.8</priority>
-  </url>
-  <url>
-    <loc>https://emoj.ie/category/smileys-emotion/face-unwell/</loc>
-    <lastmod>2025-01-21T17:31:06.093Z</lastmod>
-    <priority>0.8</priority>
-  </url>
-  <url>
-    <loc>https://emoj.ie/category/smileys-emotion/heart/</loc>
-    <lastmod>2025-01-21T17:31:06.093Z</lastmod>
-    <priority>0.8</priority>
-  </url>
-  <url>
-    <loc>https://emoj.ie/category/smileys-emotion/monkey-face/</loc>
-    <lastmod>2025-01-21T17:31:06.093Z</lastmod>
-    <priority>0.8</priority>
-  </url>
-  <url>
-    <loc>https://emoj.ie/category/symbols/</loc>
-    <lastmod>2025-01-21T17:31:06.093Z</lastmod>
-    <priority>0.8</priority>
-  </url>
-  <url>
-    <loc>https://emoj.ie/category/symbols/alphanum/</loc>
-    <lastmod>2025-01-21T17:31:06.093Z</lastmod>
-    <priority>0.8</priority>
-  </url>
-  <url>
-    <loc>https://emoj.ie/category/symbols/arrow/</loc>
-    <lastmod>2025-01-21T17:31:06.093Z</lastmod>
-    <priority>0.8</priority>
-  </url>
-  <url>
-    <loc>https://emoj.ie/category/symbols/av-symbol/</loc>
-    <lastmod>2025-01-21T17:31:06.093Z</lastmod>
-    <priority>0.8</priority>
-  </url>
-  <url>
-    <loc>https://emoj.ie/category/symbols/currency/</loc>
-    <lastmod>2025-01-21T17:31:06.093Z</lastmod>
-    <priority>0.8</priority>
-  </url>
-  <url>
-    <loc>https://emoj.ie/category/symbols/gender/</loc>
-    <lastmod>2025-01-21T17:31:06.093Z</lastmod>
-    <priority>0.8</priority>
-  </url>
-  <url>
-    <loc>https://emoj.ie/category/symbols/geometric/</loc>
-    <lastmod>2025-01-21T17:31:06.093Z</lastmod>
-    <priority>0.8</priority>
-  </url>
-  <url>
-    <loc>https://emoj.ie/category/symbols/keycap/</loc>
-    <lastmod>2025-01-21T17:31:06.093Z</lastmod>
-    <priority>0.8</priority>
-  </url>
-  <url>
-    <loc>https://emoj.ie/category/symbols/math/</loc>
-    <lastmod>2025-01-21T17:31:06.093Z</lastmod>
-    <priority>0.8</priority>
-  </url>
-  <url>
-    <loc>https://emoj.ie/category/symbols/other-symbol/</loc>
-    <lastmod>2025-01-21T17:31:06.093Z</lastmod>
-    <priority>0.8</priority>
-  </url>
-  <url>
-    <loc>https://emoj.ie/category/symbols/punctuation/</loc>
-    <lastmod>2025-01-21T17:31:06.093Z</lastmod>
-    <priority>0.8</priority>
-  </url>
-  <url>
-    <loc>https://emoj.ie/category/symbols/religion/</loc>
-    <lastmod>2025-01-21T17:31:06.093Z</lastmod>
-    <priority>0.8</priority>
-  </url>
-  <url>
-    <loc>https://emoj.ie/category/symbols/transport-sign/</loc>
-    <lastmod>2025-01-21T17:31:06.093Z</lastmod>
-    <priority>0.8</priority>
-  </url>
-  <url>
-    <loc>https://emoj.ie/category/symbols/warning/</loc>
-    <lastmod>2025-01-21T17:31:06.093Z</lastmod>
-    <priority>0.8</priority>
-  </url>
-  <url>
-    <loc>https://emoj.ie/category/symbols/zodiac/</loc>
-    <lastmod>2025-01-21T17:31:06.093Z</lastmod>
-    <priority>0.8</priority>
-  </url>
-  <url>
-    <loc>https://emoj.ie/category/travel-places/</loc>
-    <lastmod>2025-01-21T17:31:06.093Z</lastmod>
-    <priority>0.8</priority>
-  </url>
-  <url>
-    <loc>https://emoj.ie/category/travel-places/hotel/</loc>
-    <lastmod>2025-01-21T17:31:06.093Z</lastmod>
-    <priority>0.8</priority>
-  </url>
-  <url>
-    <loc>https://emoj.ie/category/travel-places/place-building/</loc>
-    <lastmod>2025-01-21T17:31:06.093Z</lastmod>
-    <priority>0.8</priority>
-  </url>
-  <url>
-    <loc>https://emoj.ie/category/travel-places/place-geographic/</loc>
-    <lastmod>2025-01-21T17:31:06.093Z</lastmod>
-    <priority>0.8</priority>
-  </url>
-  <url>
-    <loc>https://emoj.ie/category/travel-places/place-map/</loc>
-    <lastmod>2025-01-21T17:31:06.093Z</lastmod>
-    <priority>0.8</priority>
-  </url>
-  <url>
-    <loc>https://emoj.ie/category/travel-places/place-other/</loc>
-    <lastmod>2025-01-21T17:31:06.093Z</lastmod>
-    <priority>0.8</priority>
-  </url>
-  <url>
-    <loc>https://emoj.ie/category/travel-places/place-religious/</loc>
-    <lastmod>2025-01-21T17:31:06.093Z</lastmod>
-    <priority>0.8</priority>
-  </url>
-  <url>
-    <loc>https://emoj.ie/category/travel-places/sky-weather/</loc>
-    <lastmod>2025-01-21T17:31:06.093Z</lastmod>
-    <priority>0.8</priority>
-  </url>
-  <url>
-    <loc>https://emoj.ie/category/travel-places/time/</loc>
-    <lastmod>2025-01-21T17:31:06.093Z</lastmod>
-    <priority>0.8</priority>
-  </url>
-  <url>
-    <loc>https://emoj.ie/category/travel-places/transport-air/</loc>
-    <lastmod>2025-01-21T17:31:06.093Z</lastmod>
-    <priority>0.8</priority>
-  </url>
-  <url>
-    <loc>https://emoj.ie/category/travel-places/transport-ground/</loc>
-    <lastmod>2025-01-21T17:31:06.093Z</lastmod>
-    <priority>0.8</priority>
-  </url>
-  <url>
-    <loc>https://emoj.ie/category/travel-places/transport-water/</loc>
+    <loc>https://emoj.ie/people-body/person/</loc>
     <lastmod>2025-01-21T17:31:06.093Z</lastmod>
     <priority>0.8</priority>
   </url>
@@ -772,6 +547,166 @@
   </url>
   <url>
     <loc>https://emoj.ie/search/work/</loc>
+    <lastmod>2025-01-21T17:31:06.093Z</lastmod>
+    <priority>0.8</priority>
+  </url>
+  <url>
+    <loc>https://emoj.ie/smileys-emotion/</loc>
+    <lastmod>2025-01-21T17:31:06.093Z</lastmod>
+    <priority>0.8</priority>
+  </url>
+  <url>
+    <loc>https://emoj.ie/smileys-emotion/cat-face/</loc>
+    <lastmod>2025-01-21T17:31:06.093Z</lastmod>
+    <priority>0.8</priority>
+  </url>
+  <url>
+    <loc>https://emoj.ie/smileys-emotion/emotion/</loc>
+    <lastmod>2025-01-21T17:31:06.093Z</lastmod>
+    <priority>0.8</priority>
+  </url>
+  <url>
+    <loc>https://emoj.ie/smileys-emotion/face-affection/</loc>
+    <lastmod>2025-01-21T17:31:06.093Z</lastmod>
+    <priority>0.8</priority>
+  </url>
+  <url>
+    <loc>https://emoj.ie/smileys-emotion/face-concerned/</loc>
+    <lastmod>2025-01-21T17:31:06.093Z</lastmod>
+    <priority>0.8</priority>
+  </url>
+  <url>
+    <loc>https://emoj.ie/smileys-emotion/face-costume/</loc>
+    <lastmod>2025-01-21T17:31:06.093Z</lastmod>
+    <priority>0.8</priority>
+  </url>
+  <url>
+    <loc>https://emoj.ie/smileys-emotion/face-glasses/</loc>
+    <lastmod>2025-01-21T17:31:06.093Z</lastmod>
+    <priority>0.8</priority>
+  </url>
+  <url>
+    <loc>https://emoj.ie/smileys-emotion/face-hand/</loc>
+    <lastmod>2025-01-21T17:31:06.093Z</lastmod>
+    <priority>0.8</priority>
+  </url>
+  <url>
+    <loc>https://emoj.ie/smileys-emotion/face-hat/</loc>
+    <lastmod>2025-01-21T17:31:06.093Z</lastmod>
+    <priority>0.8</priority>
+  </url>
+  <url>
+    <loc>https://emoj.ie/smileys-emotion/face-negative/</loc>
+    <lastmod>2025-01-21T17:31:06.093Z</lastmod>
+    <priority>0.8</priority>
+  </url>
+  <url>
+    <loc>https://emoj.ie/smileys-emotion/face-neutral-skeptical/</loc>
+    <lastmod>2025-01-21T17:31:06.093Z</lastmod>
+    <priority>0.8</priority>
+  </url>
+  <url>
+    <loc>https://emoj.ie/smileys-emotion/face-sleepy/</loc>
+    <lastmod>2025-01-21T17:31:06.093Z</lastmod>
+    <priority>0.8</priority>
+  </url>
+  <url>
+    <loc>https://emoj.ie/smileys-emotion/face-smiling/</loc>
+    <lastmod>2025-01-21T17:31:06.093Z</lastmod>
+    <priority>0.8</priority>
+  </url>
+  <url>
+    <loc>https://emoj.ie/smileys-emotion/face-tongue/</loc>
+    <lastmod>2025-01-21T17:31:06.093Z</lastmod>
+    <priority>0.8</priority>
+  </url>
+  <url>
+    <loc>https://emoj.ie/smileys-emotion/face-unwell/</loc>
+    <lastmod>2025-01-21T17:31:06.093Z</lastmod>
+    <priority>0.8</priority>
+  </url>
+  <url>
+    <loc>https://emoj.ie/smileys-emotion/heart/</loc>
+    <lastmod>2025-01-21T17:31:06.093Z</lastmod>
+    <priority>0.8</priority>
+  </url>
+  <url>
+    <loc>https://emoj.ie/smileys-emotion/monkey-face/</loc>
+    <lastmod>2025-01-21T17:31:06.093Z</lastmod>
+    <priority>0.8</priority>
+  </url>
+  <url>
+    <loc>https://emoj.ie/symbols/</loc>
+    <lastmod>2025-01-21T17:31:06.093Z</lastmod>
+    <priority>0.8</priority>
+  </url>
+  <url>
+    <loc>https://emoj.ie/symbols/alphanum/</loc>
+    <lastmod>2025-01-21T17:31:06.093Z</lastmod>
+    <priority>0.8</priority>
+  </url>
+  <url>
+    <loc>https://emoj.ie/symbols/arrow/</loc>
+    <lastmod>2025-01-21T17:31:06.093Z</lastmod>
+    <priority>0.8</priority>
+  </url>
+  <url>
+    <loc>https://emoj.ie/symbols/av-symbol/</loc>
+    <lastmod>2025-01-21T17:31:06.093Z</lastmod>
+    <priority>0.8</priority>
+  </url>
+  <url>
+    <loc>https://emoj.ie/symbols/currency/</loc>
+    <lastmod>2025-01-21T17:31:06.093Z</lastmod>
+    <priority>0.8</priority>
+  </url>
+  <url>
+    <loc>https://emoj.ie/symbols/gender/</loc>
+    <lastmod>2025-01-21T17:31:06.093Z</lastmod>
+    <priority>0.8</priority>
+  </url>
+  <url>
+    <loc>https://emoj.ie/symbols/geometric/</loc>
+    <lastmod>2025-01-21T17:31:06.093Z</lastmod>
+    <priority>0.8</priority>
+  </url>
+  <url>
+    <loc>https://emoj.ie/symbols/keycap/</loc>
+    <lastmod>2025-01-21T17:31:06.093Z</lastmod>
+    <priority>0.8</priority>
+  </url>
+  <url>
+    <loc>https://emoj.ie/symbols/math/</loc>
+    <lastmod>2025-01-21T17:31:06.093Z</lastmod>
+    <priority>0.8</priority>
+  </url>
+  <url>
+    <loc>https://emoj.ie/symbols/other-symbol/</loc>
+    <lastmod>2025-01-21T17:31:06.093Z</lastmod>
+    <priority>0.8</priority>
+  </url>
+  <url>
+    <loc>https://emoj.ie/symbols/punctuation/</loc>
+    <lastmod>2025-01-21T17:31:06.093Z</lastmod>
+    <priority>0.8</priority>
+  </url>
+  <url>
+    <loc>https://emoj.ie/symbols/religion/</loc>
+    <lastmod>2025-01-21T17:31:06.093Z</lastmod>
+    <priority>0.8</priority>
+  </url>
+  <url>
+    <loc>https://emoj.ie/symbols/transport-sign/</loc>
+    <lastmod>2025-01-21T17:31:06.093Z</lastmod>
+    <priority>0.8</priority>
+  </url>
+  <url>
+    <loc>https://emoj.ie/symbols/warning/</loc>
+    <lastmod>2025-01-21T17:31:06.093Z</lastmod>
+    <priority>0.8</priority>
+  </url>
+  <url>
+    <loc>https://emoj.ie/symbols/zodiac/</loc>
     <lastmod>2025-01-21T17:31:06.093Z</lastmod>
     <priority>0.8</priority>
   </url>
@@ -1257,6 +1192,66 @@
   </url>
   <url>
     <loc>https://emoj.ie/tag/zodiac/</loc>
+    <lastmod>2025-01-21T17:31:06.093Z</lastmod>
+    <priority>0.8</priority>
+  </url>
+  <url>
+    <loc>https://emoj.ie/travel-places/</loc>
+    <lastmod>2025-01-21T17:31:06.093Z</lastmod>
+    <priority>0.8</priority>
+  </url>
+  <url>
+    <loc>https://emoj.ie/travel-places/hotel/</loc>
+    <lastmod>2025-01-21T17:31:06.093Z</lastmod>
+    <priority>0.8</priority>
+  </url>
+  <url>
+    <loc>https://emoj.ie/travel-places/place-building/</loc>
+    <lastmod>2025-01-21T17:31:06.093Z</lastmod>
+    <priority>0.8</priority>
+  </url>
+  <url>
+    <loc>https://emoj.ie/travel-places/place-geographic/</loc>
+    <lastmod>2025-01-21T17:31:06.093Z</lastmod>
+    <priority>0.8</priority>
+  </url>
+  <url>
+    <loc>https://emoj.ie/travel-places/place-map/</loc>
+    <lastmod>2025-01-21T17:31:06.093Z</lastmod>
+    <priority>0.8</priority>
+  </url>
+  <url>
+    <loc>https://emoj.ie/travel-places/place-other/</loc>
+    <lastmod>2025-01-21T17:31:06.093Z</lastmod>
+    <priority>0.8</priority>
+  </url>
+  <url>
+    <loc>https://emoj.ie/travel-places/place-religious/</loc>
+    <lastmod>2025-01-21T17:31:06.093Z</lastmod>
+    <priority>0.8</priority>
+  </url>
+  <url>
+    <loc>https://emoj.ie/travel-places/sky-weather/</loc>
+    <lastmod>2025-01-21T17:31:06.093Z</lastmod>
+    <priority>0.8</priority>
+  </url>
+  <url>
+    <loc>https://emoj.ie/travel-places/time/</loc>
+    <lastmod>2025-01-21T17:31:06.093Z</lastmod>
+    <priority>0.8</priority>
+  </url>
+  <url>
+    <loc>https://emoj.ie/travel-places/transport-air/</loc>
+    <lastmod>2025-01-21T17:31:06.093Z</lastmod>
+    <priority>0.8</priority>
+  </url>
+  <url>
+    <loc>https://emoj.ie/travel-places/transport-ground/</loc>
+    <lastmod>2025-01-21T17:31:06.093Z</lastmod>
+    <priority>0.8</priority>
+  </url>
+  <url>
+    <loc>https://emoj.ie/travel-places/transport-water/</loc>
     <lastmod>2025-01-21T17:31:06.093Z</lastmod>
     <priority>0.8</priority>
   </url>

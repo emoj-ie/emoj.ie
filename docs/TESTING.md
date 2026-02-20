@@ -30,23 +30,23 @@ Last updated: 2026-02-20
 | Favorites persistence (local storage) | partial (unit/home-script behavior) | add cross-route e2e coverage in a future slice |
 | Theme toggle and system default behavior | full (baseline Playwright + unit) | maintain |
 | Category/subcategory navigation | full (baseline Playwright + unit) | maintain |
-| SEO routes metadata/sitemap | full (unit + integration: emoji/category/search/tag/alternatives + robots + link graph) | maintain |
+| SEO routes metadata/sitemap | full (unit + integration: emoji/group/subgroup/search/tag/alternatives + robots + link graph) | maintain |
 | Accessibility smoke | present | broaden with keyboard + focus coverage |
 
 ## Baseline E2E Cases (Planned)
 - [x] Home loads category cards and advanced menu controls.
-- [x] Category card click navigates to canonical `/category/{group}/` route.
-- [x] Category page exposes subgroup links on canonical `/category/{group}/{subgroup}/` routes.
-- [x] Category and subcategory pages show breadcrumb context (`Home / Categories / ...`).
+- [x] Category card click navigates to canonical `/{group}/` route.
+- [x] Category page exposes subgroup links on canonical `/{group}/{subgroup}/` routes.
+- [x] Category and subcategory pages show breadcrumb context in Capital Case (`Home / Group / Subgroup`).
 - [x] Copying from subgroup emoji list triggers toast + clipboard payload.
 - [x] Keyboard arrow navigation moves focus between emoji buttons.
 - [x] Theme mode toggles and persists setting after returning to home.
 
 ## SEO Regression Coverage (Current)
 - `tests/phase4-seo-schema.test.mjs` validates metadata + schema on sample pages.
-- Validates sitemap inclusion/exclusion rules for canonical emoji/category/search/tag/alternatives routes.
+- Validates sitemap inclusion/exclusion rules for canonical emoji/group/subgroup/search/tag/alternatives routes.
 - Validates legacy detail and legacy group routes canonicalize to current canonical URLs with `noindex,follow`.
-- Validates `robots.txt` policy and internal link graph continuity (home -> category -> subgroup -> emoji -> related).
+- Validates `robots.txt` policy and internal link graph continuity (group -> subgroup -> emoji -> related, with home rendering category cards client-side).
 
 ## Assumptions
 - Existing Node test suite stays in place; Playwright coverage will be additive.

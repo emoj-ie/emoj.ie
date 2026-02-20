@@ -17,10 +17,10 @@ test('home app uses progressive rendering and path-first navigation from home', 
   assert.match(homeApp, /appendResultChunk/);
   assert.match(homeApp, /panel-card-hero/);
   assert.match(homeApp, /panel-card-hero-img/);
-  assert.match(homeApp, /window\.location\.assign\(`\/category\/\$\{encodeURIComponent\(group\)\}\/`\)/);
+  assert.match(homeApp, /window\.location\.assign\(`\/\$\{encodeURIComponent\(group\)\}\/`\)/);
   assert.match(
     homeApp,
-    /window\.location\.assign\(\s*`\/category\/\$\{encodeURIComponent\(state\.g\)\}\/\$\{encodeURIComponent\(subgroup\)\}\/`\s*\)/
+    /window\.location\.assign\(\s*`\/\$\{encodeURIComponent\(state\.g\)\}\/\$\{encodeURIComponent\(subgroup\)\}\/`\s*\)/
   );
   assert.match(homeApp, /window\.location\.replace\(target\)/);
   assert.ok(!homeApp.includes('slice(0, 400)'), 'hard 400 result cap should be removed');
@@ -94,11 +94,11 @@ test('daily emoji schedule exists for all days of year', () => {
 });
 
 test('canonical category page is minimal and links directly to canonical subgroup routes', () => {
-  const peopleBodyPage = read('category/people-body/index.html');
+  const peopleBodyPage = read('people-body/index.html');
   assert.ok(!peopleBodyPage.includes('Open full collection'));
-  assert.match(peopleBodyPage, /\/category\/people-body\/person-sport\//);
+  assert.match(peopleBodyPage, /\/people-body\/person-sport\//);
 
-  const fileSize = fs.statSync(path.join(root, 'category/people-body/index.html')).size;
+  const fileSize = fs.statSync(path.join(root, 'people-body/index.html')).size;
   assert.ok(fileSize < 1200000, `expected category page < 1.2MB, got ${fileSize} bytes`);
 });
 

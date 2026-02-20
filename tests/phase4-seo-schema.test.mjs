@@ -28,9 +28,10 @@ test('sample templates have complete meta tags and schema payloads', () => {
     ['index.html', ['Organization', 'WebSite']],
     ['alternatives/index.html', ['CollectionPage', 'BreadcrumbList']],
     ['alternatives/emojipedia/index.html', ['WebPage', 'BreadcrumbList']],
-    ['category/smileys-emotion/index.html', ['CollectionPage', 'BreadcrumbList']],
     ['smileys-emotion/index.html', ['CollectionPage', 'BreadcrumbList']],
+    ['category/smileys-emotion/index.html', ['CollectionPage', 'BreadcrumbList']],
     ['search/index.html', ['CollectionPage', 'BreadcrumbList']],
+    ['smileys-emotion/face-smiling/index.html', ['CollectionPage', 'BreadcrumbList']],
     ['category/smileys-emotion/face-smiling/index.html', ['CollectionPage', 'BreadcrumbList']],
     ['smileys-emotion/face-smiling/grinning-face--1f600/index.html', ['WebPage', 'DefinedTerm', 'BreadcrumbList']],
   ];
@@ -74,21 +75,21 @@ test('sitemap excludes noindex component pages and variant emoji detail pages', 
   assert.ok(!emojiSitemap.includes(variantUrl));
 });
 
-test('emoji sitemap uses canonical short emoji routes and core sitemap includes category/search/tag routes', () => {
+test('emoji sitemap uses canonical short emoji routes and core sitemap includes primary group/search/tag routes', () => {
   const coreSitemap = read('sitemap-core.xml');
   const emojiSitemap = read('sitemap-emoji.xml');
   const alternativesIndex = read('alternatives/index.html');
-  const categoryIndex = read('category/index.html');
+  const categoryAliasIndex = read('category/index.html');
   const searchIndex = read('search/index.html');
   const tagIndex = read('tag/index.html');
 
   assert.match(emojiSitemap, /https:\/\/emoj\.ie\/emoji\/[a-z0-9-]+--[a-f0-9-]+\//i);
   assert.match(coreSitemap, /https:\/\/emoj\.ie\/alternatives\//);
-  assert.match(coreSitemap, /https:\/\/emoj\.ie\/category\//);
+  assert.match(coreSitemap, /https:\/\/emoj\.ie\/smileys-emotion\//);
   assert.match(coreSitemap, /https:\/\/emoj\.ie\/search\//);
   assert.match(coreSitemap, /https:\/\/emoj\.ie\/tag\//);
   assert.match(alternativesIndex, /<h1>Emoji Site Alternatives<\/h1>/);
-  assert.match(categoryIndex, /<h1>Emoji Categories<\/h1>/);
+  assert.match(categoryAliasIndex, /<meta http-equiv="refresh" content="0; url=https:\/\/emoj\.ie\/"/);
   assert.match(searchIndex, /<h1>Emoji Search Topics<\/h1>/);
   assert.match(tagIndex, /<h1>Emoji Tags<\/h1>/);
 });
@@ -109,34 +110,34 @@ test('legacy detail route points canonical to short emoji route', () => {
   assert.ok(!canonicalRoutePage.includes('noindex,follow'));
 });
 
-test('legacy group route is canonicalized to category route', () => {
-  const legacyGroupPage = read('smileys-emotion/index.html');
-  const categoryPage = read('category/smileys-emotion/index.html');
+test('category-prefixed group route is canonicalized to primary group route', () => {
+  const legacyGroupPage = read('category/smileys-emotion/index.html');
+  const canonicalGroupPage = read('smileys-emotion/index.html');
 
   assert.match(
     legacyGroupPage,
-    /<link rel="canonical" href="https:\/\/emoj\.ie\/category\/smileys-emotion\/"/
+    /<link rel="canonical" href="https:\/\/emoj\.ie\/smileys-emotion\/"/
   );
   assert.match(legacyGroupPage, /<meta name="robots" content="noindex,follow"/);
   assert.match(
-    categoryPage,
-    /<link rel="canonical" href="https:\/\/emoj\.ie\/category\/smileys-emotion\/"/
+    canonicalGroupPage,
+    /<link rel="canonical" href="https:\/\/emoj\.ie\/smileys-emotion\/"/
   );
-  assert.ok(!categoryPage.includes('noindex,follow'));
+  assert.ok(!canonicalGroupPage.includes('noindex,follow'));
 });
 
-test('legacy subgroup route is canonicalized to category subgroup route', () => {
-  const legacySubgroupPage = read('smileys-emotion/face-smiling/index.html');
-  const canonicalSubgroupPage = read('category/smileys-emotion/face-smiling/index.html');
+test('category-prefixed subgroup route is canonicalized to primary subgroup route', () => {
+  const legacySubgroupPage = read('category/smileys-emotion/face-smiling/index.html');
+  const canonicalSubgroupPage = read('smileys-emotion/face-smiling/index.html');
 
   assert.match(
     legacySubgroupPage,
-    /<link rel="canonical" href="https:\/\/emoj\.ie\/category\/smileys-emotion\/face-smiling\/"/
+    /<link rel="canonical" href="https:\/\/emoj\.ie\/smileys-emotion\/face-smiling\/"/
   );
   assert.match(legacySubgroupPage, /<meta name="robots" content="noindex,follow"/);
   assert.match(
     canonicalSubgroupPage,
-    /<link rel="canonical" href="https:\/\/emoj\.ie\/category\/smileys-emotion\/face-smiling\/"/
+    /<link rel="canonical" href="https:\/\/emoj\.ie\/smileys-emotion\/face-smiling\/"/
   );
   assert.ok(!canonicalSubgroupPage.includes('noindex,follow'));
 });
@@ -163,17 +164,15 @@ test('robots policy is present and points crawlers to sitemap index', () => {
   assert.match(robots, /^Sitemap:\s*https:\/\/emoj\.ie\/sitemap\.xml$/m);
 });
 
-test('internal link graph connects home -> category -> subgroup -> emoji -> related', () => {
+test('internal link graph connects group -> subgroup -> emoji -> related', () => {
   const home = read('index.html');
-  assert.match(home, /href="\/category\/"/);
+  assert.match(home, /id="panel-grid"/);
+  assert.match(home, /home-app\.mjs/);
 
-  const categoryIndex = read('category/index.html');
-  const categoryMatch = categoryIndex.match(/href="\/(category\/[a-z0-9-]+\/)"/i);
-  assert.ok(categoryMatch, 'expected at least one category link');
-  const categoryRoute = categoryMatch[1];
+  const categoryRoute = 'smileys-emotion/';
 
   const categoryPage = read(`${categoryRoute}index.html`);
-  const subgroupMatch = categoryPage.match(/href="\/(category\/[a-z0-9-]+\/[a-z0-9-]+\/)"/i);
+  const subgroupMatch = categoryPage.match(/href="\/([a-z0-9-]+\/[a-z0-9-]+\/)"/i);
   assert.ok(subgroupMatch, 'expected subgroup links from category page');
   const subgroupRoute = subgroupMatch[1];
 

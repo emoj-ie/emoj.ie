@@ -97,6 +97,11 @@ All notable project updates are tracked here in human-readable form.
   - redesigned `/category/{group}/` to use the same panel-card treatment for subcategory selection
   - kept `/category/{group}/{subgroup}/` focused on direct emoji results for the final click
 - Updated baseline Playwright selectors to validate subgroup navigation via panel cards on category pages.
+- Simplified browse URL architecture and breadcrumb copy:
+  - switched canonical browse routes from `/category/*` to flat `/{group}/` and `/{group}/{subgroup}/`
+  - kept `/category/` and `/category/*` as compatibility aliases with canonical/noindex behavior
+  - removed the extra `Categories` breadcrumb node and enforced Capital Case breadcrumb labels
+  - removed visible subgroup heading above emoji lists so breadcrumb context carries the label
 
 ### Notes
 - Phase 0 through Phase 5 are complete for the current roadmap scope.

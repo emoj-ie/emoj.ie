@@ -89,32 +89,30 @@ async function run() {
     const categoryCards = page.locator('#panel-grid .panel-card');
     assert.ok((await categoryCards.count()) >= 10, 'Expected category cards on landing view');
     await categoryCards.first().click();
-    await page.waitForURL(/\/category\/[^/]+\/$/, { timeout: 10000 });
+    await page.waitForURL(/\/[^/]+\/$/, { timeout: 10000 });
     await page.waitForSelector('.breadcrumbs', { timeout: 10000 });
     const categoryPath = new URL(page.url()).pathname;
     assert.match(
       categoryPath,
-      /^\/category\/[^/]+\/$/,
+      /^\/[^/]+\/$/,
       'Category card should navigate to canonical category path'
     );
     const categoryCrumbs = await page.locator('.breadcrumbs').innerText();
-    assert.match(categoryCrumbs, /Home/);
-    assert.match(categoryCrumbs, /Categories/);
+    assert.match(categoryCrumbs, /^Home\s*\/\s*[A-Z]/);
 
     const subgroupLinks = page.locator('.panel-grid .panel-card-link');
     assert.ok((await subgroupLinks.count()) > 0, 'Expected subgroup links on category page');
     const firstSubgroupHref = (await subgroupLinks.first().getAttribute('href')) || '';
     assert.match(
       firstSubgroupHref,
-      /^\/category\/[^/]+\/[^/]+\/$/,
+      /^\/[^/]+\/[^/]+\/$/,
       'Subgroup link should use canonical category/subcategory route'
     );
     await subgroupLinks.first().click();
-    await page.waitForURL(/\/category\/[^/]+\/[^/]+\/$/, { timeout: 10000 });
+    await page.waitForURL(/\/[^/]+\/[^/]+\/$/, { timeout: 10000 });
     await page.waitForSelector('.subgroup .emoji-copy', { timeout: 10000 });
     const subgroupCrumbs = await page.locator('.breadcrumbs').innerText();
-    assert.match(subgroupCrumbs, /Home/);
-    assert.match(subgroupCrumbs, /Categories/);
+    assert.match(subgroupCrumbs, /^Home\s*\/\s*[A-Z]/);
 
     const filteredButtons = page.locator('.subgroup .emoji-copy');
     const filteredCount = await filteredButtons.count();

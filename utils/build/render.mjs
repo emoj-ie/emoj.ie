@@ -117,6 +117,20 @@ function absoluteUrl(baseUrl, route = '') {
   return `${base}/${cleanRoute}`;
 }
 
+function toTitleCase(value = '') {
+  return String(value)
+    .replace(/-/g, ' ')
+    .replace(/\s+/g, ' ')
+    .trim()
+    .split(' ')
+    .filter(Boolean)
+    .map((part) => {
+      if (!part) return part;
+      return part[0].toUpperCase() + part.slice(1);
+    })
+    .join(' ');
+}
+
 function toAssetUrl(baseUrl, assetPath) {
   if (/^https?:\/\//i.test(assetPath)) {
     return assetPath;
@@ -135,10 +149,11 @@ function renderBreadcrumbs(items) {
   const html = items
     .map((item, index) => {
       const last = index === items.length - 1;
+      const label = toTitleCase(item.label);
       if (last || !item.href) {
-        return `<span>${escapeHtml(item.label)}</span>`;
+        return `<span>${escapeHtml(label)}</span>`;
       }
-      return `<a href="${escapeHtml(item.href)}">${escapeHtml(item.label)}</a>`;
+      return `<a href="${escapeHtml(item.href)}">${escapeHtml(label)}</a>`;
     })
     .join(' / ');
 
@@ -157,7 +172,7 @@ function breadcrumbSchema(baseUrl, crumbs, canonicalUrl) {
     itemListElement: crumbs.map((crumb, index) => ({
       '@type': 'ListItem',
       position: index + 1,
-      name: crumb.label,
+      name: toTitleCase(crumb.label),
       item: crumb.href
         ? absoluteUrl(baseUrl, String(crumb.href).replace(/^\//, ''))
         : canonicalUrl,
@@ -500,7 +515,6 @@ function renderHomePage(model, config) {
 
   const body = `<section class="panel-shell home-emoji-shell" aria-label="Emoji Explorer">
     <h1 class="visually-hidden">Emoji Categories</h1>
-    <a id="home-category-index-link" class="visually-hidden" href="/category/">Browse category pages</a>
     <div id="panel-grid" class="panel-grid" data-level="group" aria-live="polite"></div>
     <section class="results-shell" aria-label="Emoji Results">
       <div class="results-toolbar">
@@ -699,7 +713,7 @@ function renderAboutPage(config) {
     </section>
     <div class="about-cta-row">
       <a class="copy-btn" href="/">Browse emojis</a>
-      <a class="copy-btn secondary" href="/category/">Open categories</a>
+      <a class="copy-btn secondary" href="/">Open categories</a>
     </div>
   </article>`;
 
@@ -1227,15 +1241,13 @@ function renderSubgroupPage(group, subgroup, config, options = {}) {
     subgroup.noindex || options.forceNoindex || !isCanonicalRoute ? 'noindex,follow' : '';
   const pageClass = options.pageClass || 'page-subgroup';
   const body = `<section class="subgroup">
-    <h1>${escapeHtml(subgroup.title)}</h1>
-    <p class="subgroup-meta">${subgroup.emojis.length} emoji${subgroup.emojis.length === 1 ? '' : 's'}.</p>
+    <h1 class="visually-hidden">${escapeHtml(subgroup.title)} Emojis</h1>
     <ul class="emoji-list">${emojiList}</ul>
   </section>`;
 
-  const categoryRoute = group.categoryRoute || group.route;
+  const categoryRoute = group.route;
   const crumbs = options.breadcrumbs || [
     { label: 'Home', href: '/' },
-    { label: 'Categories', href: '/category/' },
     { label: group.title, href: `/${categoryRoute}` },
     { label: subgroup.title },
   ];
@@ -1431,7 +1443,7 @@ function renderEmojiPage(
 
   const robots = entry.noindex || !isCanonicalRoute ? 'noindex,follow' : '';
   const description = `${label} emoji. Copy ${label} instantly.`;
-  const categoryRoute = group.categoryRoute || group.route;
+  const categoryRoute = group.route;
   const crumbs = [
     { label: 'Home', href: '/' },
     { label: group.title, href: `/${categoryRoute}` },
@@ -1805,10 +1817,9 @@ export async function renderSite({ model, legacyRedirects, config, tempRoot }) {
     await writeRouteHtml(
       tempRoot,
       'category/',
-      renderCategoryIndexPage(model.categories, config),
+      renderRedirectPage('category/', '', config),
       generatedFiles
     );
-    coreRoutes.add('category/');
 
     for (const category of model.categories) {
       const group = groupByKey.get(category.key);
@@ -1816,7 +1827,6 @@ export async function renderSite({ model, legacyRedirects, config, tempRoot }) {
 
       const canonicalCrumbs = [
         { label: 'Home', href: '/' },
-        { label: 'Categories', href: '/category/' },
         { label: category.title },
       ];
 
