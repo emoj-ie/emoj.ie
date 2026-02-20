@@ -714,9 +714,76 @@ function renderHomePage(model, config) {
 }
 
 function renderAboutPage(config) {
-  const body = `<article class="about-page about-page-min">
+  const creditsLines = [
+    'OPEN SOURCE CREDITS',
+    'OpenMoji - emoji artwork - CC BY-SA 4.0',
+    'Unicode Emoji + CLDR - emoji data and names',
+    'Google Fonts - Bricolage Grotesque, Instrument Sans, IBM Plex Mono',
+    'Plausible - privacy-friendly analytics (optional)',
+    'Playwright - end-to-end testing',
+    'Node.js - static build tooling',
+    'Made possible by open source.',
+  ];
+
+  const creditsMarkup = creditsLines
+    .map((line) => `<p>${escapeHtml(line)}</p>`)
+    .join('');
+
+  const starterWall = [
+    ['😀', 'grinning face'],
+    ['😎', 'smiling face with sunglasses'],
+    ['🤖', 'robot'],
+    ['🎉', 'party popper'],
+    ['🚀', 'rocket'],
+    ['🌈', 'rainbow'],
+    ['🧠', 'brain'],
+    ['🍕', 'pizza'],
+    ['⚽', 'soccer ball'],
+    ['🎧', 'headphones'],
+    ['🦊', 'fox'],
+    ['💡', 'light bulb'],
+  ];
+
+  const starterWallMarkup = starterWall
+    .map(
+      ([emoji, label]) => `<li class="about-emoji-item">
+        <button
+          type="button"
+          class="panel-card about-emoji-card"
+          data-copy-value="${escapeHtml(emoji)}"
+          data-copy-label="${escapeHtml(label)}"
+          data-copy-format="emoji"
+          aria-label="Copy ${escapeHtml(label)} emoji"
+        >
+          <span class="panel-card-title">${escapeHtml(emoji)} ${escapeHtml(label)}</span>
+          <span class="panel-card-hero" aria-hidden="true">
+            <span class="about-emoji-glyph">${escapeHtml(emoji)}</span>
+          </span>
+        </button>
+      </li>`
+    )
+    .join('');
+
+  const body = `<article class="about-page about-page-fun">
     <h1 class="visually-hidden">About emoj.ie</h1>
-    <p>emoj.ie is a short, memorable URL for finding and copying emojis fast.</p>
+    <p class="about-one-liner">emoj.ie is the short URL for finding and copying emojis fast.</p>
+    <section class="about-card about-playground" aria-labelledby="about-playground-title">
+      <div class="about-playground-head">
+        <h2 id="about-playground-title">Shuffle Emojis</h2>
+        <button type="button" id="about-shuffle" class="copy-btn secondary">Shuffle</button>
+      </div>
+      <p class="about-playground-note">Tap any tile to copy.</p>
+      <ul id="about-emoji-wall" class="panel-grid about-emoji-wall" aria-live="polite">${starterWallMarkup}</ul>
+    </section>
+    <section class="about-card about-credits-crawl" aria-labelledby="about-credits-title">
+      <h2 id="about-credits-title">Credits</h2>
+      <div class="credits-crawl-scene" aria-hidden="true">
+        <div class="credits-crawl-track">
+          ${creditsMarkup}
+        </div>
+      </div>
+      <p class="visually-hidden">${escapeHtml(creditsLines.join('. '))}</p>
+    </section>
   </article>`;
 
   const canonicalUrl = absoluteUrl(config.site.baseUrl, 'about/');
@@ -728,7 +795,7 @@ function renderAboutPage(config) {
   return renderLayout({
     route: 'about/',
     title: 'About emoj.ie',
-    description: 'emoj.ie is a short, memorable URL for finding and copying emojis fast.',
+    description: 'emoj.ie is the short URL for finding and copying emojis fast.',
     canonicalUrl,
     robots: '',
     body,

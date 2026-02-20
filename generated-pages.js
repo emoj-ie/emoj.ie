@@ -300,24 +300,31 @@
 
         var label = item.annotation || 'emoji';
         var li = document.createElement('li');
+        li.className = 'about-emoji-item';
         var button = document.createElement('button');
         button.type = 'button';
-        button.className = 'about-emoji-chip';
+        button.className = 'panel-card about-emoji-card';
         button.setAttribute('data-copy-value', item.emoji);
         button.setAttribute('data-copy-label', label);
         button.setAttribute('data-copy-format', 'emoji');
         button.setAttribute('aria-label', 'Copy ' + label + ' emoji');
+
+        var title = document.createElement('span');
+        title.className = 'panel-card-title';
+        title.textContent = item.emoji + ' ' + label;
+
+        var hero = document.createElement('span');
+        hero.className = 'panel-card-hero';
+        hero.setAttribute('aria-hidden', 'true');
 
         var glyph = document.createElement('span');
         glyph.className = 'about-emoji-glyph';
         glyph.setAttribute('aria-hidden', 'true');
         glyph.textContent = item.emoji;
 
-        var small = document.createElement('small');
-        small.textContent = label;
-
-        button.appendChild(glyph);
-        button.appendChild(small);
+        hero.appendChild(glyph);
+        button.appendChild(title);
+        button.appendChild(hero);
         li.appendChild(button);
         wall.appendChild(li);
       });

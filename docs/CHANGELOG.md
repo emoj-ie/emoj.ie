@@ -119,6 +119,11 @@ All notable project updates are tracked here in human-readable form.
   - removed the inner framed box around card emojis and increased emoji size for clearer scanability
   - kept emoji glyphs centered on the horizontal axis across card surfaces
   - reduced `/about/` to a single-line statement focused on the `emoj.ie` URL/value
+- Added a playful About experience while keeping KISS behavior:
+  - restored shuffleable random emoji tiles using the same `panel-card` UI language as the rest of the product
+  - made About tiles fully tap/click copyable via existing copy event wiring
+  - introduced a Star Wars-style open-source credits crawl (dependency-free CSS animation)
+  - kept helper copy minimal (`Tap any tile to copy.`) to preserve scan-first simplicity
 
 ### Notes
 - Phase 0 through Phase 5 are complete for the current roadmap scope.

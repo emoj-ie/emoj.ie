@@ -1633,6 +1633,17 @@ ol.story-list {
   gap: 0.86rem;
 }
 
+.about-page-fun {
+  gap: 1rem;
+}
+
+.about-one-liner {
+  margin: 0;
+  text-align: center;
+  font-size: 1.05rem;
+  color: var(--text-body);
+}
+
 .about-lede {
   max-width: 72ch;
   font-size: 1.02rem;
@@ -1731,65 +1742,114 @@ ol.story-list {
   gap: 0.72rem;
 }
 
-.about-playground-head p {
-  margin: 0.25rem 0 0;
+.about-playground-note {
+  margin: 0;
+  color: var(--text-muted);
+  font-size: 0.88rem;
 }
 
 .about-emoji-wall {
   list-style: none;
   margin: 0;
   padding: 0;
-  display: grid;
-  gap: 0.58rem;
-  grid-template-columns: repeat(auto-fill, minmax(104px, 1fr));
 }
 
-.about-emoji-chip {
+.about-emoji-item {
+  list-style: none;
+}
+
+.about-emoji-card {
   width: 100%;
-  min-height: 98px;
-  border-radius: 16px;
-  border: 2px solid var(--border-soft);
-  background: color-mix(in oklab, var(--bg-elevated), #ffffff 6%);
-  box-shadow: var(--shadow-xs);
-  display: grid;
-  justify-items: center;
-  align-content: center;
-  gap: 0.35rem;
-  padding: 0.42rem;
-  cursor: pointer;
-  transition: transform 150ms ease, box-shadow 150ms ease, border-color 150ms ease;
+  min-height: 126px;
+  align-content: space-between;
 }
 
-.about-emoji-chip:hover {
-  transform: translateY(-2px) rotate(-1deg);
-  border-color: var(--border-strong);
-  box-shadow: var(--shadow-sm);
+.about-emoji-card .panel-card-title {
+  font-size: 0.84rem;
+  min-height: 2.4em;
+  text-transform: none;
 }
 
-.about-emoji-chip small {
-  color: var(--text-body);
-  font-size: 0.74rem;
-  line-height: 1.2;
-  text-transform: lowercase;
-  max-width: 11ch;
-  white-space: nowrap;
-  overflow: hidden;
-  text-overflow: ellipsis;
+.about-emoji-card .panel-card-hero {
+  min-height: 74px;
+  margin-top: 0;
 }
 
 .about-emoji-glyph {
-  font-size: 2rem;
+  font-size: 2.4rem;
   line-height: 1;
 }
 
-.about-emoji-wall.is-refreshing .about-emoji-chip {
+.about-emoji-wall.is-refreshing .about-emoji-card {
   animation: about-chip-enter 260ms ease;
 }
 
-.about-cta-row {
-  display: flex;
-  flex-wrap: wrap;
-  gap: 0.6rem;
+.about-credits-crawl {
+  overflow: hidden;
+}
+
+.credits-crawl-scene {
+  position: relative;
+  min-height: 300px;
+  border-radius: var(--radius-md);
+  border: 2px solid var(--border-soft);
+  overflow: hidden;
+  background:
+    radial-gradient(circle at 20% 20%, color-mix(in oklab, var(--brand-secondary), transparent 68%), transparent 52%),
+    radial-gradient(circle at 80% 10%, color-mix(in oklab, var(--accent), transparent 78%), transparent 45%),
+    linear-gradient(180deg, color-mix(in oklab, #041126, var(--bg-elevated) 45%), color-mix(in oklab, #000000, var(--bg-elevated) 76%));
+  perspective: 420px;
+}
+
+.credits-crawl-scene::before,
+.credits-crawl-scene::after {
+  content: '';
+  position: absolute;
+  left: 0;
+  right: 0;
+  pointer-events: none;
+  z-index: 2;
+}
+
+.credits-crawl-scene::before {
+  top: 0;
+  height: 26%;
+  background: linear-gradient(180deg, color-mix(in oklab, var(--bg-elevated), transparent 6%), transparent);
+}
+
+.credits-crawl-scene::after {
+  bottom: 0;
+  height: 22%;
+  background: linear-gradient(0deg, color-mix(in oklab, var(--bg-elevated), transparent 8%), transparent);
+}
+
+.credits-crawl-track {
+  position: absolute;
+  left: 50%;
+  width: min(86%, 560px);
+  display: grid;
+  gap: 0.65rem;
+  text-align: center;
+  color: #f6d25f;
+  font-family: var(--font-display);
+  font-weight: 700;
+  letter-spacing: 0.03em;
+  text-transform: uppercase;
+  text-shadow: 0 0 10px rgba(246, 210, 95, 0.25);
+  transform-origin: 50% 100%;
+  transform: translateX(-50%) translateY(92%) rotateX(24deg);
+  animation: credits-crawl 26s linear infinite;
+}
+
+.credits-crawl-track p {
+  margin: 0;
+  font-size: clamp(0.88rem, 1.8vw, 1.12rem);
+  line-height: 1.35;
+}
+
+.credits-crawl-track p:first-child {
+  font-size: clamp(1rem, 2.2vw, 1.36rem);
+  letter-spacing: 0.08em;
 }
 
 @keyframes about-chip-enter {
@@ -1801,6 +1861,16 @@ ol.story-list {
   to {
     transform: translateY(0) scale(1);
     opacity: 1;
+  }
+}
+
+@keyframes credits-crawl {
+  from {
+    transform: translateX(-50%) translateY(92%) rotateX(24deg);
+  }
+
+  to {
+    transform: translateX(-50%) translateY(-250%) rotateX(24deg);
   }
 }
 
@@ -2004,8 +2074,8 @@ kbd {
     font-size: 1.36rem;
   }
 
-  .about-emoji-chip {
-    min-height: 88px;
+  .about-emoji-card {
+    min-height: 112px;
   }
 
   .about-emoji-glyph {
