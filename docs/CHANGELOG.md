@@ -73,6 +73,10 @@ All notable project updates are tracked here in human-readable form.
   - removed visible homepage breadcrumb and category-arrow chrome
   - removed `g/sg` query-param navigation on home and redirected legacy links to path routes
   - fixed emoji-of-day display reliability by rendering logo emoji as image assets (with fallback)
+- Tuned homepage layout and header ergonomics:
+  - enforced divisor-only category grid columns on home (`12 / 6 / 4 / 3 / 2 / 1`) to avoid uneven rows
+  - pinned the burger control to the right edge of the header
+  - moved search icon to the right side inside the input to prevent placeholder overlap
 
 ### Notes
 - Phase 0 through Phase 5 are complete for the current roadmap scope.

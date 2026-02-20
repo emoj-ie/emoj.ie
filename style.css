@@ -329,12 +329,13 @@ a:hover {
 
 .header-search input {
   width: 100%;
-  padding-left: 2.2rem;
+  padding-left: 0.9rem;
+  padding-right: 2.2rem;
 }
 
 .header-search-icon {
   position: absolute;
-  left: 0.76rem;
+  right: 0.76rem;
   top: 50%;
   transform: translateY(-50%);
   color: var(--text-muted);
@@ -350,6 +351,7 @@ a:hover {
   width: 46px;
   min-width: 46px;
   height: 46px;
+  margin-inline-start: auto;
   border: 2px solid var(--border-soft);
   border-radius: 10px;
   background: var(--bg-elevated);
@@ -860,6 +862,40 @@ a:hover {
 .page-home .panel-grid .panel-card {
   min-height: 122px;
   align-content: space-between;
+}
+
+.page-home #panel-grid {
+  grid-template-columns: repeat(6, minmax(0, 1fr));
+}
+
+@media (min-width: 2300px) {
+  .page-home #panel-grid {
+    grid-template-columns: repeat(12, minmax(0, 1fr));
+  }
+}
+
+@media (max-width: 1480px) {
+  .page-home #panel-grid {
+    grid-template-columns: repeat(4, minmax(0, 1fr));
+  }
+}
+
+@media (max-width: 1160px) {
+  .page-home #panel-grid {
+    grid-template-columns: repeat(3, minmax(0, 1fr));
+  }
+}
+
+@media (max-width: 860px) {
+  .page-home #panel-grid {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+  }
+}
+
+@media (max-width: 560px) {
+  .page-home #panel-grid {
+    grid-template-columns: 1fr;
+  }
 }
 
 .advanced-menu {
