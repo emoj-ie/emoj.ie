@@ -17,7 +17,11 @@
     "lint:links": "node utils/qa/check-links.mjs",
     "test:a11y-smoke": "node --test tests/phase3-accessibility-style.test.mjs",
     "test:playwright-smoke": "node utils/qa/playwright-smoke.mjs",
+    "test:playwright-baseline": "node utils/qa/playwright-baseline.mjs",
     "test:lighthouse-budget": "node utils/qa/lighthouse-budget.mjs",
     "test:phase6": "node --test tests/phase6-analytics-ci.test.mjs"
+  },
+  "devDependencies": {
+    "playwright": "^1.58.2"
   }
 }
