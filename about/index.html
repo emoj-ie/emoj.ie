@@ -19,7 +19,7 @@
     <link rel="preconnect" href="https://cdn.jsdelivr.net" crossorigin />
     <link rel="preconnect" href="https://fonts.googleapis.com" />
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
-    <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Outfit:wght@400;500;600;700;800&family=Space+Grotesk:wght@500;600;700&display=swap" />
+    <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Bricolage+Grotesque:wght@500;600;700;800&family=Instrument+Sans:wght@400;500;600;700&family=IBM+Plex+Mono:wght@400;500&display=swap" />
     <link rel="icon" href="../favicon.ico" type="image/x-icon" />
     <link rel="stylesheet" href="../style.css" />
     <script defer data-domain="emoj.ie" src="https://plausible.io/js/script.js"></script>
@@ -48,12 +48,12 @@
               data-logo-emoji
               aria-hidden="true"
             >😀</text>
-            <text x="76" y="42" font-family="Space Grotesk, Outfit, sans-serif" font-size="30" font-weight="700" fill="currentColor">emoj.ie</text>
+            <text x="76" y="42" font-family="Bricolage Grotesque, Instrument Sans, sans-serif" font-size="30" font-weight="700" fill="currentColor">emoj.ie</text>
           </svg>
         </a>
         <form class="header-search" action="../" method="get" role="search">
         <label for="search" class="visually-hidden">Search Emojis</label>
-        <input id="search" name="q" type="search" autocomplete="off" placeholder="Search emojis…" />
+        <input id="search" name="q" type="search" autocomplete="off" placeholder="Search by emoji, meaning, or keyword" />
         <button type="submit">Search</button>
       </form>
         <button
@@ -80,12 +80,37 @@
     <nav class="breadcrumbs" aria-label="Breadcrumb"><a href="/">Home</a> / <span>About</span></nav>
     <main id="main-content" class="page-main">
       <article class="about-page">
+    <p class="collection-kicker">About</p>
     <h1>About emoj.ie</h1>
-    <p>emoj.ie is a fast, static emoji explorer focused on reliable search, ergonomic copy workflows, and durable URL structure.</p>
-    <h2>Data Source</h2>
-    <p>Emoji data and artwork are sourced from the OpenMoji project under CC BY-SA 4.0.</p>
-    <h2>Contact</h2>
-    <p><a href="mailto:info@emoj.ie">info@emoj.ie</a></p>
+    <p class="about-lede">emoj.ie is a static-first emoji site designed for fast copy workflows, clear discovery, and local-first persistence.</p>
+    <section class="about-grid">
+      <section class="about-card">
+        <h2>What We Optimize</h2>
+        <ul class="story-list">
+          <li>Find and copy the right emoji in seconds.</li>
+          <li>Reduce repeat search work with local favorites and recents.</li>
+          <li>Publish indexable routes that are genuinely useful.</li>
+        </ul>
+      </section>
+      <section class="about-card">
+        <h2>How It Is Built</h2>
+        <ul class="story-list">
+          <li>Static-first generation for predictable speed on GitHub Pages.</li>
+          <li>Plain HTML/CSS/JS architecture with lightweight client logic.</li>
+          <li>Automated QA coverage across build, accessibility, links, and e2e.</li>
+        </ul>
+      </section>
+      <section class="about-card">
+        <h2>Data And License</h2>
+        <p>Emoji data and artwork are sourced from the OpenMoji project under CC BY-SA 4.0.</p>
+        <p>Keyword enrichment comes from open metadata fields in the source dataset.</p>
+      </section>
+      <section class="about-card">
+        <h2>Contact</h2>
+        <p>Questions, ideas, or partnerships:</p>
+        <p><a href="mailto:info@emoj.ie">info@emoj.ie</a></p>
+      </section>
+    </section>
   </article>
     </main>
     <aside id="global-advanced-menu" class="advanced-menu advanced-menu-global" hidden>

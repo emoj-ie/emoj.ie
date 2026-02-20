@@ -28,9 +28,9 @@ test('key templates include skip link and heading hierarchy anchor', () => {
   assert.match(group, /class="skip-link"/);
   assert.match(detail, /class="skip-link"/);
 
-  assert.match(home, /<h1>/);
-  assert.match(group, /<h1>/);
-  assert.match(detail, /<h1>/);
+  assert.match(home, /<h1\b/);
+  assert.match(group, /<h1\b/);
+  assert.match(detail, /<h1\b/);
 });
 
 test('sampled generated HTML avoids inline onclick and includes image dimensions', () => {

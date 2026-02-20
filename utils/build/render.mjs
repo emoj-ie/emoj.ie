@@ -18,7 +18,12 @@ const COMPETITOR_ALTERNATIVES = [
     name: 'Emojipedia',
     route: 'alternatives/emojipedia/',
     whySwitch:
-      'People looking for a lighter, faster explorer often prefer a utility-first flow with less editorial overhead.',
+      'People looking for a faster copy workflow and less reading overhead usually compare emoj.ie with Emojipedia.',
+    switchSignals: [
+      'You need to copy emojis quickly during writing, chat, or social publishing.',
+      'You want keyboard-led navigation and low-friction favorites/recents.',
+      'You care more about execution speed than long editorial history pages.',
+    ],
     emojieStrengths: [
       'Faster copy flow with local-first recents and favorites',
       'Cleaner category and search-topic navigation',
@@ -29,14 +34,27 @@ const COMPETITOR_ALTERNATIVES = [
       'Large documentation footprint across emoji updates',
       'Strong brand recognition and broad backlink profile',
     ],
-    bestFit: 'Choose emoj.ie when you need speed and focused copy workflows. Choose Emojipedia for deep reference-style reading.',
+    bestForEmojie:
+      'Choose emoj.ie when your goal is fast discovery, copy reliability, and repeat usage with local memory.',
+    bestForCompetitor:
+      'Choose Emojipedia when you want richer editorial explainers and historical release context.',
+    migrationPlan: [
+      'Save your most-used emojis in emoj.ie favorites.',
+      'Use category and tag hubs to rebuild your recurring workflow in under five minutes.',
+      'Keep Emojipedia open only for deep-reference sessions.',
+    ],
   },
   {
     key: 'getemoji',
     name: 'GetEmoji',
     route: 'alternatives/getemoji/',
     whySwitch:
-      'Users who outgrow a single-page copy wall often need stronger discovery, metadata depth, and structured routes.',
+      'Users who outgrow a single-page copy wall often compare emoj.ie against GetEmoji for stronger discovery depth.',
+    switchSignals: [
+      'You still need one-click copy, but also want better route-level navigation.',
+      'You want emoji detail pages with meaning, codes, and related suggestions.',
+      'You want categories, tags, and curated search topics in one place.',
+    ],
     emojieStrengths: [
       'Canonical emoji pages with context and related links',
       'Tag, category, and curated search-topic hubs',
@@ -47,14 +65,27 @@ const COMPETITOR_ALTERNATIVES = [
       'Minimal learning curve for first-time visitors',
       'Straightforward visual scanning',
     ],
-    bestFit: 'Choose emoj.ie when you need both speed and discovery depth. Choose GetEmoji for barebones single-page copying.',
+    bestForEmojie:
+      'Choose emoj.ie when you need speed plus guided discovery and reusable workflows.',
+    bestForCompetitor:
+      'Choose GetEmoji when you only need quick one-off copy from a single long page.',
+    migrationPlan: [
+      'Start with the search bar and saved favorites to replicate your fastest copy flow.',
+      'Use category pages when search feels too broad.',
+      'Switch copy mode once and keep it persistent for future sessions.',
+    ],
   },
   {
     key: 'findemoji',
     name: 'FindEmoji',
     route: 'alternatives/findemoji/',
     whySwitch:
-      'Users who prioritize predictable static speed and simple local-first behavior may prefer emoj.ie.',
+      'Users comparing app-like emoji explorers often evaluate emoj.ie for static speed and deterministic behavior.',
+    switchSignals: [
+      'You prefer static reliability over heavier app shells.',
+      'You want route clarity for SEO, bookmarking, and shareability.',
+      'You want local-first behavior without account dependency.',
+    ],
     emojieStrengths: [
       'Static-first architecture tuned for GitHub Pages delivery',
       'Direct category-to-subgroup-to-detail navigation model',
@@ -65,7 +96,15 @@ const COMPETITOR_ALTERNATIVES = [
       'Modern visual shell and utility-oriented interaction patterns',
       'Useful discovery depth in category navigation',
     ],
-    bestFit: 'Choose emoj.ie when speed, simplicity, and deterministic static behavior are your priority. Choose FindEmoji for app-like browsing preferences.',
+    bestForEmojie:
+      'Choose emoj.ie when you prioritize predictable speed, low complexity, and static-hosting reliability.',
+    bestForCompetitor:
+      'Choose FindEmoji when you prefer an application-style browsing environment.',
+    migrationPlan: [
+      'Use the same search terms and compare result quality side by side.',
+      'Pin recurring emojis in favorites to remove repeated search work.',
+      'Switch to category/tag routes for focused exploration.',
+    ],
   },
 ];
 
@@ -161,7 +200,7 @@ function renderHeader({
   const search = showSearch
     ? `<form class="header-search" action="${prefix}" method="get" role="search">
         <label for="search" class="visually-hidden">Search Emojis</label>
-        <input id="search" name="q" type="search" autocomplete="off" placeholder="Search emojis…" />
+        <input id="search" name="q" type="search" autocomplete="off" placeholder="Search by emoji, meaning, or keyword" />
         <button type="submit">Search</button>
       </form>`
     : '';
@@ -186,7 +225,7 @@ function renderHeader({
               data-logo-emoji
               aria-hidden="true"
             >😀</text>
-            <text x="76" y="42" font-family="Space Grotesk, Outfit, sans-serif" font-size="30" font-weight="700" fill="currentColor">emoj.ie</text>
+            <text x="76" y="42" font-family="Bricolage Grotesque, Instrument Sans, sans-serif" font-size="30" font-weight="700" fill="currentColor">emoj.ie</text>
           </svg>
         </a>
         ${search}
@@ -305,7 +344,7 @@ function renderLayout({
     <link rel="preconnect" href="https://cdn.jsdelivr.net" crossorigin />
     <link rel="preconnect" href="https://fonts.googleapis.com" />
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
-    <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Outfit:wght@400;500;600;700;800&family=Space+Grotesk:wght@500;600;700&display=swap" />
+    <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Bricolage+Grotesque:wght@500;600;700;800&family=Instrument+Sans:wght@400;500;600;700&family=IBM+Plex+Mono:wght@400;500&display=swap" />
     <link rel="icon" href="${prefix}favicon.ico" type="image/x-icon" />
     <link rel="stylesheet" href="${prefix}style.css" />
     ${renderAnalyticsScript(config)}
@@ -437,18 +476,54 @@ function renderHomePage(model, config) {
         `<a class="quick-chip topic" href="/${topic.route}">${escapeHtml(topic.title.replace(/\s+emoji$/i, ''))}</a>`
     )
     .join('');
+  const totalEmojis = model.emojiEntries.filter((entry) => entry.indexable && !entry.isVariant).length;
+  const totalCategories = model.categories?.filter((category) => !category.noindex).length || 0;
+  const totalTags = model.tags?.length || 0;
+  const totalSearchTopics = model.searchPages?.length || 0;
 
   const body = `<section class="panel-shell" aria-label="Emoji Explorer">
-    <div class="panel-header">
-      <h1>Find Emoji Fast</h1>
-      <p class="panel-lede">Search 4,000+ emojis by meaning, mood, category, or keyword. Copy in one click.</p>
-      <div id="home-quick-actions" class="home-quick-actions">
-        <a class="quick-chip primary" href="/category/">Browse Categories</a>
-        <a class="quick-chip secondary" href="/search/">Search Topics</a>
-        <a class="quick-chip secondary" href="/alternatives/">Compare Sites</a>
-        ${quickTopicLinks}
+    <div class="panel-header home-hero">
+      <div class="home-copy-stack">
+        <p class="home-kicker">Local-First Emoji Utility</p>
+        <h1 class="home-headline">Find, Copy, And Reuse The Right Emoji In Seconds</h1>
+        <p class="panel-lede">Built for speed-first writing workflows: instant search, keyboard-first navigation, and persistent recents/favorites that stay on your device.</p>
+        <div class="home-stat-row" aria-label="Explorer stats">
+          <span><strong>${totalEmojis.toLocaleString('en-US')}</strong> indexable emojis</span>
+          <span><strong>${totalCategories}</strong> category hubs</span>
+          <span><strong>${totalTags}</strong> tag routes</span>
+          <span><strong>${totalSearchTopics}</strong> curated search topics</span>
+        </div>
+        <div id="home-quick-actions" class="home-quick-actions">
+          <a class="quick-chip primary" href="/category/">Browse Categories</a>
+          <a class="quick-chip secondary" href="/search/">Search Topics</a>
+          <a class="quick-chip secondary" href="/alternatives/">Compare Sites</a>
+          ${quickTopicLinks}
+        </div>
+        <p class="panel-tip">Tip: Press <kbd>/</kbd> to focus search. Arrow keys move results. <kbd>Enter</kbd> copies.</p>
       </div>
-      <p class="panel-tip">Tip: Press <kbd>/</kbd> to focus search. Arrow keys move results. <kbd>Enter</kbd> copies.</p>
+      <aside class="home-proof-panel" aria-label="Why emoj.ie">
+        <h2>Why emoj.ie wins daily use</h2>
+        <ul class="home-proof-list">
+          <li><strong>Speed first:</strong> result-heavy pages stay responsive with progressive rendering.</li>
+          <li><strong>Copy precision:</strong> emoji, Unicode, HTML entity, or shortcode output.</li>
+          <li><strong>Local memory:</strong> favorites and recents persist without an account.</li>
+          <li><strong>SEO quality:</strong> category, tag, and topic routes with canonical controls.</li>
+        </ul>
+      </aside>
+    </div>
+    <div class="home-principle-grid" aria-label="Product principles">
+      <article class="home-principle-card">
+        <h2>Instant Discovery</h2>
+        <p>Search by meaning, keyword, and synonym to cut decision time.</p>
+      </article>
+      <article class="home-principle-card">
+        <h2>Confident Usage</h2>
+        <p>Open any emoji page for meaning, keyword tags, and related options.</p>
+      </article>
+      <article class="home-principle-card">
+        <h2>Workflow Memory</h2>
+        <p>Your recurring emoji set is always one click away in favorites and recents.</p>
+      </article>
     </div>
     <nav class="panel-crumbs" aria-label="Explorer Breadcrumb">
       <button type="button" id="panel-home" class="copy-btn secondary">All Categories</button>
@@ -560,12 +635,37 @@ function renderHomePage(model, config) {
 
 function renderAboutPage(config) {
   const body = `<article class="about-page">
+    <p class="collection-kicker">About</p>
     <h1>About emoj.ie</h1>
-    <p>emoj.ie is a fast, static emoji explorer focused on reliable search, ergonomic copy workflows, and durable URL structure.</p>
-    <h2>Data Source</h2>
-    <p>Emoji data and artwork are sourced from the OpenMoji project under CC BY-SA 4.0.</p>
-    <h2>Contact</h2>
-    <p><a href="mailto:info@emoj.ie">info@emoj.ie</a></p>
+    <p class="about-lede">emoj.ie is a static-first emoji site designed for fast copy workflows, clear discovery, and local-first persistence.</p>
+    <section class="about-grid">
+      <section class="about-card">
+        <h2>What We Optimize</h2>
+        <ul class="story-list">
+          <li>Find and copy the right emoji in seconds.</li>
+          <li>Reduce repeat search work with local favorites and recents.</li>
+          <li>Publish indexable routes that are genuinely useful.</li>
+        </ul>
+      </section>
+      <section class="about-card">
+        <h2>How It Is Built</h2>
+        <ul class="story-list">
+          <li>Static-first generation for predictable speed on GitHub Pages.</li>
+          <li>Plain HTML/CSS/JS architecture with lightweight client logic.</li>
+          <li>Automated QA coverage across build, accessibility, links, and e2e.</li>
+        </ul>
+      </section>
+      <section class="about-card">
+        <h2>Data And License</h2>
+        <p>Emoji data and artwork are sourced from the OpenMoji project under CC BY-SA 4.0.</p>
+        <p>Keyword enrichment comes from open metadata fields in the source dataset.</p>
+      </section>
+      <section class="about-card">
+        <h2>Contact</h2>
+        <p>Questions, ideas, or partnerships:</p>
+        <p><a href="mailto:info@emoj.ie">info@emoj.ie</a></p>
+      </section>
+    </section>
   </article>`;
 
   const canonicalUrl = absoluteUrl(config.site.baseUrl, 'about/');
@@ -592,12 +692,18 @@ function renderAboutPage(config) {
 function renderAlternativeIndexPage(config) {
   const items = COMPETITOR_ALTERNATIVES.map(
     (item) =>
-      `<li><a href="/${item.route}"><span>${escapeHtml(item.name)} alternative</span><small>Comparison and fit guidance</small></a></li>`
+      `<li><a href="/${item.route}"><span>${escapeHtml(item.name)} alternative</span><small>Use-case fit, strengths, and migration checklist</small></a></li>`
   ).join('');
 
   const body = `<section class="group">
+    <p class="collection-kicker">Competitor Alternatives</p>
     <h1>Emoji Site Alternatives</h1>
-    <p>Compare emoj.ie against popular emoji tools and choose the best fit for your workflow.</p>
+    <p>Compare emoj.ie against popular emoji tools with honest strengths, tradeoffs, and best-fit guidance.</p>
+    <div class="collection-stat-row">
+      <span><strong>${COMPETITOR_ALTERNATIVES.length}</strong> comparison pages</span>
+      <span><strong>4</strong> fit dimensions per page</span>
+      <span><strong>0</strong> fluff claims</span>
+    </div>
     <ul class="group-link-list">${items}</ul>
   </section>`;
 
@@ -639,27 +745,45 @@ function renderAlternativeIndexPage(config) {
 }
 
 function renderAlternativePage(item, config) {
+  const switchSignals = item.switchSignals
+    .map((point) => `<li>${escapeHtml(point)}</li>`)
+    .join('');
   const strengthList = item.emojieStrengths
     .map((point) => `<li>${escapeHtml(point)}</li>`)
     .join('');
   const competitorList = item.competitorStrengths
     .map((point) => `<li>${escapeHtml(point)}</li>`)
     .join('');
+  const migrationSteps = (item.migrationPlan || [])
+    .map((point) => `<li>${escapeHtml(point)}</li>`)
+    .join('');
 
   const body = `<article class="about-page">
+    <p class="collection-kicker">Comparison</p>
     <h1>emoj.ie vs ${escapeHtml(item.name)}</h1>
-    <p>${escapeHtml(item.whySwitch)}</p>
-    <section class="emoji-context">
-      <h2>Where emoj.ie wins</h2>
-      <ul class="variant-list">${strengthList}</ul>
+    <p class="about-lede">${escapeHtml(item.whySwitch)}</p>
+    <section class="about-card">
+      <h2>Switch Signals</h2>
+      <ul class="story-list">${switchSignals}</ul>
     </section>
-    <section class="emoji-context">
-      <h2>Where ${escapeHtml(item.name)} wins</h2>
-      <ul class="variant-list">${competitorList}</ul>
+    <section class="about-grid">
+      <section class="about-card">
+        <h2>Where emoj.ie wins</h2>
+        <ul class="story-list">${strengthList}</ul>
+      </section>
+      <section class="about-card">
+        <h2>Where ${escapeHtml(item.name)} wins</h2>
+        <ul class="story-list">${competitorList}</ul>
+      </section>
     </section>
-    <section class="emoji-context">
-      <h2>Best fit by use case</h2>
-      <p>${escapeHtml(item.bestFit)}</p>
+    <section class="about-card">
+      <h2>Best-Fit Guidance</h2>
+      <p><strong>Choose emoj.ie:</strong> ${escapeHtml(item.bestForEmojie || '')}</p>
+      <p><strong>Choose ${escapeHtml(item.name)}:</strong> ${escapeHtml(item.bestForCompetitor || '')}</p>
+    </section>
+    <section class="about-card">
+      <h2>Migration In 3 Steps</h2>
+      <ol class="story-list ordered">${migrationSteps}</ol>
     </section>
   </article>`;
 
@@ -709,10 +833,20 @@ function renderCategoryIndexPage(categories, config) {
         `<li><a href="/${category.route}"><span>${escapeHtml(category.title)}</span><small>${category.subgroups.length} subcategories</small></a></li>`
     )
     .join('');
+  const visibleCategories = categories.slice(0, 40).length;
+  const totalSubgroups = categories
+    .slice(0, 40)
+    .reduce((sum, category) => sum + Number(category.subgroups?.length || 0), 0);
 
   const body = `<section class="group">
+    <p class="collection-kicker">Category Directory</p>
     <h1>Emoji Categories</h1>
-    <p>Browse emoji categories to jump into focused subcategory collections.</p>
+    <p>Browse category hubs to move from broad intent to exact emoji selections with fewer clicks.</p>
+    <div class="collection-stat-row">
+      <span><strong>${visibleCategories}</strong> top-level categories</span>
+      <span><strong>${totalSubgroups}</strong> indexed subcategories</span>
+      <span><strong>Keyboard-ready</strong> copy workflow</span>
+    </div>
     <ul class="group-link-list">${items}</ul>
   </section>`;
 
@@ -761,10 +895,21 @@ function renderTagIndexPage(tags, config) {
         `<li><a href="/${tag.route}"><span>${escapeHtml(tag.title)}</span><small>${tag.emojis.length} emojis</small></a></li>`
     )
     .join('');
+  const visibleTags = tags.slice(0, 260);
+  const totalTagCoverage = visibleTags.reduce(
+    (sum, tag) => sum + Number(tag.emojis?.length || 0),
+    0
+  );
 
   const body = `<section class="group">
+    <p class="collection-kicker">Tag Directory</p>
     <h1>Emoji Tags</h1>
-    <p>Browse curated emoji tags to find related emojis faster.</p>
+    <p>Use tags when you know the vibe but not the exact emoji. Each tag groups meaning-adjacent options.</p>
+    <div class="collection-stat-row">
+      <span><strong>${visibleTags.length}</strong> curated tags</span>
+      <span><strong>${totalTagCoverage.toLocaleString('en-US')}</strong> tag-to-emoji links</span>
+      <span><strong>Meaning-driven</strong> discovery</span>
+    </div>
     <ul class="group-link-list">${items}</ul>
   </section>`;
 
@@ -812,8 +957,9 @@ function renderTagPage(tag, config) {
     .join('');
 
   const body = `<section class="subgroup">
+    <p class="collection-kicker">Tag Collection</p>
     <h1>${escapeHtml(tag.title)} emojis</h1>
-    <p>${escapeHtml(tag.description)}</p>
+    <p>${escapeHtml(tag.description)} This set is tuned for fast copy and adjacent idea discovery.</p>
     <p class="subgroup-meta">${tag.emojis.length} emoji${tag.emojis.length === 1 ? '' : 's'} tagged with ${escapeHtml(
       tag.title
     )}.</p>
@@ -866,10 +1012,21 @@ function renderSearchIndexPage(searchPages, config) {
         `<li><a href="/${searchPage.route}"><span>${escapeHtml(searchPage.title)}</span><small>${searchPage.emojis.length} matches</small></a></li>`
     )
     .join('');
+  const visibleTopics = searchPages.slice(0, 80);
+  const totalTopicCoverage = visibleTopics.reduce(
+    (sum, topic) => sum + Number(topic.emojis?.length || 0),
+    0
+  );
 
   const body = `<section class="group">
+    <p class="collection-kicker">Search Topic Directory</p>
     <h1>Emoji Search Topics</h1>
-    <p>Browse curated search themes built from emoji meanings, tags, and real usage intent.</p>
+    <p>Browse curated intent clusters built from emoji meanings, tags, and real search language.</p>
+    <div class="collection-stat-row">
+      <span><strong>${visibleTopics.length}</strong> curated search topics</span>
+      <span><strong>${totalTopicCoverage.toLocaleString('en-US')}</strong> topic-to-emoji links</span>
+      <span><strong>Intent-matched</strong> exploration</span>
+    </div>
     <ul class="group-link-list">${items}</ul>
   </section>`;
 
@@ -917,8 +1074,9 @@ function renderSearchPage(searchPage, config) {
     .join('');
 
   const body = `<section class="subgroup">
+    <p class="collection-kicker">Search Topic</p>
     <h1>${escapeHtml(searchPage.title)}</h1>
-    <p>${escapeHtml(searchPage.description)}</p>
+    <p>${escapeHtml(searchPage.description)} Copy fast, then branch into related options below.</p>
     <p class="subgroup-meta">${searchPage.emojis.length} emoji${searchPage.emojis.length === 1 ? '' : 's'} matched this curated search topic.</p>
     <ul class="emoji-list">${emojiList}</ul>
   </section>`;
@@ -994,10 +1152,21 @@ function renderGroupPage(group, config, options = {}) {
       </section>`;
     })
     .join('');
+  const subgroupCount = group.subgroups.length;
+  const emojiCount = group.subgroups.reduce(
+    (sum, subgroup) => sum + Number(subgroup.emojis?.length || 0),
+    0
+  );
 
   const body = `<section class="group">
+    <p class="collection-kicker">Category</p>
     <h1>${escapeHtml(group.title)}</h1>
-    <p>${escapeHtml(group.description)}</p>
+    <p>${escapeHtml(group.description)} Jump into any subcategory to narrow intent quickly.</p>
+    <div class="collection-stat-row">
+      <span><strong>${subgroupCount}</strong> subcategories</span>
+      <span><strong>${emojiCount.toLocaleString('en-US')}</strong> total emojis</span>
+      <span><strong>Preview-first</strong> navigation</span>
+    </div>
     <hr class="group-divider" />
     ${subgroupSections}
   </section>`;
@@ -1042,8 +1211,9 @@ function renderSubgroupPage(group, subgroup, config) {
     .join('');
 
   const body = `<section class="subgroup">
+    <p class="collection-kicker">Subcategory</p>
     <h1>${escapeHtml(subgroup.title)}</h1>
-    <p>${escapeHtml(subgroup.description)}</p>
+    <p>${escapeHtml(subgroup.description)} Copy fast, then open individual emoji pages for meaning and variants.</p>
     <p class="subgroup-meta">${subgroup.emojis.length} emoji${subgroup.emojis.length === 1 ? '' : 's'} in this collection.</p>
     <ul class="emoji-list">${emojiList}</ul>
   </section>`;
@@ -1145,10 +1315,25 @@ function renderEmojiPage(
   const unicodeLabel = unicodeCodepointLabel(entry.hexLower);
   const htmlEntity = htmlEntityLabel(entry.hexLower);
   const shortcode = `:${entry.slug}:`;
-  const usageLine = `${label} is in ${group.title} / ${subgroup.title}. Use it when you need a compact visual signal for this context.`;
+  const topKeywords = entryTags.slice(0, 3).map((token) => token.replace(/-/g, ' '));
+  const keywordHint =
+    topKeywords.length > 0
+      ? `It is most often used around ${topKeywords.join(', ')} contexts.`
+      : 'It is commonly used as a visual shortcut in conversation.';
+  const usageLine = `${label} belongs to ${group.title} / ${subgroup.title}. ${keywordHint}`;
+  const usagePrompts = topKeywords.slice(0, 3).map((keyword) => {
+    const sentenceKeyword = keyword.charAt(0).toUpperCase() + keyword.slice(1);
+    return `${sentenceKeyword} posts and reactions`;
+  });
+  const promptList =
+    usagePrompts.length > 0
+      ? usagePrompts.map((prompt) => `<li>${escapeHtml(prompt)}</li>`).join('')
+      : '<li>General chat and status updates</li>';
 
   const body = `<article class="emoji-detail">
+    <p class="collection-kicker">Emoji Detail</p>
     <h1>${escapeHtml(label)}</h1>
+    <p class="emoji-detail-lede">Copy the emoji, inspect code formats, and check related options before you publish.</p>
     <section class="emoji-hero-panel">
       <p class="emoji-detail-hero">${escapeHtml(entry.emoji)}</p>
       <p class="emoji-detail-art">
@@ -1174,6 +1359,13 @@ function renderEmojiPage(
         )}" data-group="${escapeHtml(entry.group)}" data-subgroup="${escapeHtml(
           entry.subgroup
         )}" data-route="${escapeHtml(canonicalRoute)}">Copy Hex</button>
+        <button type="button" class="copy-btn secondary" data-copy-value="${escapeHtml(
+          shortcode
+        )}" data-copy-label="${escapeHtml(label)} shortcode" data-copy-format="shortcode" data-hex="${escapeHtml(
+          entry.hexLower
+        )}" data-group="${escapeHtml(entry.group)}" data-subgroup="${escapeHtml(
+          entry.subgroup
+        )}" data-route="${escapeHtml(canonicalRoute)}">Copy Shortcode</button>
         <button type="button" class="copy-btn secondary" data-share-url="${escapeHtml(
           shareUrl
         )}" data-route="${escapeHtml(canonicalRoute)}" data-hex="${escapeHtml(
@@ -1193,6 +1385,7 @@ function renderEmojiPage(
     <section class="emoji-context">
       <h2>Meaning And Usage</h2>
       <p>${escapeHtml(usageLine)}</p>
+      <ul class="story-list compact">${promptList}</ul>
       ${
         keywordPills
           ? `<ul class="keyword-pills" aria-label="Emoji keywords">${keywordPills}</ul>`

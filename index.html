@@ -19,7 +19,7 @@
     <link rel="preconnect" href="https://cdn.jsdelivr.net" crossorigin />
     <link rel="preconnect" href="https://fonts.googleapis.com" />
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
-    <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Outfit:wght@400;500;600;700;800&family=Space+Grotesk:wght@500;600;700&display=swap" />
+    <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Bricolage+Grotesque:wght@500;600;700;800&family=Instrument+Sans:wght@400;500;600;700&family=IBM+Plex+Mono:wght@400;500&display=swap" />
     <link rel="icon" href="favicon.ico" type="image/x-icon" />
     <link rel="stylesheet" href="style.css" />
     <script defer data-domain="emoj.ie" src="https://plausible.io/js/script.js"></script>
@@ -49,12 +49,12 @@
               data-logo-emoji
               aria-hidden="true"
             >😀</text>
-            <text x="76" y="42" font-family="Space Grotesk, Outfit, sans-serif" font-size="30" font-weight="700" fill="currentColor">emoj.ie</text>
+            <text x="76" y="42" font-family="Bricolage Grotesque, Instrument Sans, sans-serif" font-size="30" font-weight="700" fill="currentColor">emoj.ie</text>
           </svg>
         </a>
         <form class="header-search" action="" method="get" role="search">
         <label for="search" class="visually-hidden">Search Emojis</label>
-        <input id="search" name="q" type="search" autocomplete="off" placeholder="Search emojis…" />
+        <input id="search" name="q" type="search" autocomplete="off" placeholder="Search by emoji, meaning, or keyword" />
         <button type="submit">Search</button>
       </form>
         <button
@@ -81,16 +81,48 @@
     
     <main id="main-content" class="page-main">
       <section class="panel-shell" aria-label="Emoji Explorer">
-    <div class="panel-header">
-      <h1>Find Emoji Fast</h1>
-      <p class="panel-lede">Search 4,000+ emojis by meaning, mood, category, or keyword. Copy in one click.</p>
-      <div id="home-quick-actions" class="home-quick-actions">
-        <a class="quick-chip primary" href="/category/">Browse Categories</a>
-        <a class="quick-chip secondary" href="/search/">Search Topics</a>
-        <a class="quick-chip secondary" href="/alternatives/">Compare Sites</a>
-        <a class="quick-chip topic" href="/search/fire/">Fire</a><a class="quick-chip topic" href="/search/love/">Love</a><a class="quick-chip topic" href="/search/money/">Money</a><a class="quick-chip topic" href="/search/music/">Music</a><a class="quick-chip topic" href="/search/party/">Party</a><a class="quick-chip topic" href="/search/stars/">Star</a><a class="quick-chip topic" href="/search/weather/">Weather</a><a class="quick-chip topic" href="/search/work/">Work</a>
+    <div class="panel-header home-hero">
+      <div class="home-copy-stack">
+        <p class="home-kicker">Local-First Emoji Utility</p>
+        <h1 class="home-headline">Find, Copy, And Reuse The Right Emoji In Seconds</h1>
+        <p class="panel-lede">Built for speed-first writing workflows: instant search, keyboard-first navigation, and persistent recents/favorites that stay on your device.</p>
+        <div class="home-stat-row" aria-label="Explorer stats">
+          <span><strong>2,062</strong> indexable emojis</span>
+          <span><strong>11</strong> category hubs</span>
+          <span><strong>96</strong> tag routes</span>
+          <span><strong>16</strong> curated search topics</span>
+        </div>
+        <div id="home-quick-actions" class="home-quick-actions">
+          <a class="quick-chip primary" href="/category/">Browse Categories</a>
+          <a class="quick-chip secondary" href="/search/">Search Topics</a>
+          <a class="quick-chip secondary" href="/alternatives/">Compare Sites</a>
+          <a class="quick-chip topic" href="/search/fire/">Fire</a><a class="quick-chip topic" href="/search/love/">Love</a><a class="quick-chip topic" href="/search/money/">Money</a><a class="quick-chip topic" href="/search/music/">Music</a><a class="quick-chip topic" href="/search/party/">Party</a><a class="quick-chip topic" href="/search/stars/">Star</a><a class="quick-chip topic" href="/search/weather/">Weather</a><a class="quick-chip topic" href="/search/work/">Work</a>
+        </div>
+        <p class="panel-tip">Tip: Press <kbd>/</kbd> to focus search. Arrow keys move results. <kbd>Enter</kbd> copies.</p>
       </div>
-      <p class="panel-tip">Tip: Press <kbd>/</kbd> to focus search. Arrow keys move results. <kbd>Enter</kbd> copies.</p>
+      <aside class="home-proof-panel" aria-label="Why emoj.ie">
+        <h2>Why emoj.ie wins daily use</h2>
+        <ul class="home-proof-list">
+          <li><strong>Speed first:</strong> result-heavy pages stay responsive with progressive rendering.</li>
+          <li><strong>Copy precision:</strong> emoji, Unicode, HTML entity, or shortcode output.</li>
+          <li><strong>Local memory:</strong> favorites and recents persist without an account.</li>
+          <li><strong>SEO quality:</strong> category, tag, and topic routes with canonical controls.</li>
+        </ul>
+      </aside>
+    </div>
+    <div class="home-principle-grid" aria-label="Product principles">
+      <article class="home-principle-card">
+        <h2>Instant Discovery</h2>
+        <p>Search by meaning, keyword, and synonym to cut decision time.</p>
+      </article>
+      <article class="home-principle-card">
+        <h2>Confident Usage</h2>
+        <p>Open any emoji page for meaning, keyword tags, and related options.</p>
+      </article>
+      <article class="home-principle-card">
+        <h2>Workflow Memory</h2>
+        <p>Your recurring emoji set is always one click away in favorites and recents.</p>
+      </article>
     </div>
     <nav class="panel-crumbs" aria-label="Explorer Breadcrumb">
       <button type="button" id="panel-home" class="copy-btn secondary">All Categories</button>
