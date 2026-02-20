@@ -416,7 +416,7 @@ function renderEmojiCard(entry, assetTemplate) {
   </li>`;
 }
 
-function renderEmojiPanelCard(entry, assetTemplate) {
+function renderEmojiPanelCard(entry, assetTemplate, options = {}) {
   const imageHex = formatHexForAsset(entry.hexLower);
   const src = emojiAssetSource(entry);
   const cdnSrc = entry.cdnAssetPath || assetTemplate.replace('{HEX}', imageHex);
@@ -424,9 +424,13 @@ function renderEmojiPanelCard(entry, assetTemplate) {
   const targetRoute =
     entry.indexable && entry.canonicalRoute ? entry.canonicalRoute : entry.detailRoute;
   const detailHref = `/${targetRoute}`;
+  const itemClass = ['emoji', 'emoji-panel-item', options.itemClass || ''].filter(Boolean).join(' ');
+  const cardClass = ['panel-card', 'panel-emoji-card', options.cardClass || '']
+    .filter(Boolean)
+    .join(' ');
 
-  return `<li class="emoji emoji-panel-item">
-    <article class="panel-card panel-emoji-card">
+  return `<li class="${escapeHtml(itemClass)}">
+    <article class="${escapeHtml(cardClass)}">
       <a class="panel-emoji-open" href="${escapeHtml(detailHref)}" title="${escapeHtml(label)}">
         <span class="panel-card-title panel-emoji-title">${escapeHtml(label)}</span>
         <span class="panel-card-hero" aria-hidden="true">
@@ -724,54 +728,116 @@ function renderHomePage(model, config) {
   });
 }
 
-function renderAboutPage(config) {
-  const creditsLines = [
-    'OPEN SOURCE CREDITS',
-    'OpenMoji - emoji artwork - CC BY-SA 4.0',
-    'Unicode Emoji + CLDR - emoji data and names',
-    'Google Fonts - Bricolage Grotesque, Instrument Sans, IBM Plex Mono',
-    'Plausible - privacy-friendly analytics (optional)',
-    'Playwright - end-to-end testing',
-    'Node.js - static build tooling',
-    'Made possible by open source.',
+function renderAboutPage(model, config) {
+  const creditsProjects = [
+    {
+      name: 'OpenMoji',
+      url: 'https://openmoji.org',
+      role: 'Emoji artwork and source dataset',
+      icon: '🎨',
+    },
+    {
+      name: 'Unicode',
+      url: 'https://unicode.org/emoji/charts/full-emoji-list.html',
+      role: 'Emoji standard and codepoints',
+      icon: '🔤',
+    },
+    {
+      name: 'Google Fonts',
+      url: 'https://fonts.google.com',
+      role: 'Bricolage Grotesque, Instrument Sans, IBM Plex Mono',
+      icon: '🔡',
+    },
+    {
+      name: 'jsDelivr',
+      url: 'https://www.jsdelivr.com',
+      role: 'CDN fallback for emoji assets',
+      icon: '🌐',
+    },
+    {
+      name: 'Plausible Analytics',
+      url: 'https://plausible.io',
+      role: 'Privacy-friendly analytics',
+      icon: '📈',
+    },
+    {
+      name: 'Playwright',
+      url: 'https://playwright.dev',
+      role: 'Browser automation and QA',
+      icon: '🧪',
+    },
+    {
+      name: 'Node.js',
+      url: 'https://nodejs.org',
+      role: 'Static build pipeline',
+      icon: '⚙️',
+    },
+    {
+      name: 'GitHub Pages',
+      url: 'https://pages.github.com',
+      role: 'Static site hosting',
+      icon: '🚀',
+    },
   ];
 
-  const creditsMarkup = creditsLines
-    .map((line) => `<p>${escapeHtml(line)}</p>`)
+  const creditsMarkup = creditsProjects
+    .map(
+      (project) =>
+        `<p><a href="${escapeHtml(project.url)}" target="_blank" rel="noopener noreferrer">${escapeHtml(
+          project.icon
+        )} ${escapeHtml(project.name)}</a> · ${escapeHtml(project.role)}</p>`
+    )
     .join('');
 
-  const starterWall = [
-    ['😀', 'grinning face'],
-    ['😎', 'smiling face with sunglasses'],
-    ['🤖', 'robot'],
-    ['🎉', 'party popper'],
-    ['🚀', 'rocket'],
-    ['🌈', 'rainbow'],
-    ['🧠', 'brain'],
-    ['🍕', 'pizza'],
-    ['⚽', 'soccer ball'],
-    ['🎧', 'headphones'],
-    ['🦊', 'fox'],
-    ['💡', 'light bulb'],
-  ];
-
-  const starterWallMarkup = starterWall
+  const creditsLinksMarkup = creditsProjects
     .map(
-      ([emoji, label]) => `<li class="about-emoji-item">
-        <button
-          type="button"
-          class="panel-card about-emoji-card"
-          data-copy-value="${escapeHtml(emoji)}"
-          data-copy-label="${escapeHtml(label)}"
-          data-copy-format="emoji"
-          aria-label="Copy ${escapeHtml(label)} emoji"
-        >
-          <span class="panel-card-title">${escapeHtml(emoji)} ${escapeHtml(label)}</span>
-          <span class="panel-card-hero" aria-hidden="true">
-            <span class="about-emoji-glyph">${escapeHtml(emoji)}</span>
-          </span>
-        </button>
+      (project) => `<li>
+        <a href="${escapeHtml(project.url)}" target="_blank" rel="noopener noreferrer">
+          <strong>${escapeHtml(project.icon)} ${escapeHtml(project.name)}</strong>
+          <span>${escapeHtml(project.role)}</span>
+        </a>
       </li>`
+    )
+    .join('');
+
+  const starterEntries = [];
+  const starterHex = new Set();
+
+  for (const group of model.groups || []) {
+    let selected = null;
+    for (const subgroup of group.subgroups || []) {
+      selected = pickPanelPreviewEntry(subgroup.emojis || []);
+      if (selected) break;
+    }
+
+    if (selected && !starterHex.has(selected.hexLower)) {
+      starterHex.add(selected.hexLower);
+      starterEntries.push(selected);
+    }
+
+    if (starterEntries.length >= 12) {
+      break;
+    }
+  }
+
+  if (starterEntries.length < 12) {
+    for (const entry of model.emojiEntries || []) {
+      if (!entry?.hexLower) continue;
+      if (entry.noindex || entry.isVariant) continue;
+      if (starterHex.has(entry.hexLower)) continue;
+      starterHex.add(entry.hexLower);
+      starterEntries.push(entry);
+      if (starterEntries.length >= 12) break;
+    }
+  }
+
+  const starterWallMarkup = starterEntries
+    .slice(0, 12)
+    .map((entry) =>
+      renderEmojiPanelCard(entry, config.assets.emojiCdnTemplate, {
+        itemClass: 'about-emoji-item',
+        cardClass: 'about-emoji-card',
+      })
     )
     .join('');
 
@@ -781,19 +847,22 @@ function renderAboutPage(config) {
     <section class="about-card about-playground" aria-labelledby="about-playground-title">
       <div class="about-playground-head">
         <h2 id="about-playground-title">Shuffle Emojis</h2>
-        <button type="button" id="about-shuffle" class="copy-btn secondary">Shuffle</button>
+        <button type="button" id="about-shuffle" class="copy-btn secondary">🔀 Shuffle</button>
       </div>
-      <p class="about-playground-note">Tap any tile to copy.</p>
-      <ul id="about-emoji-wall" class="panel-grid about-emoji-wall" aria-live="polite">${starterWallMarkup}</ul>
+      <p class="about-playground-note">Tap any tile to open. Use ⧉ to copy.</p>
+      <ul id="about-emoji-wall" class="emoji-list emoji-list-panel about-emoji-wall" aria-live="polite">${starterWallMarkup}</ul>
     </section>
     <section class="about-card about-credits-crawl" aria-labelledby="about-credits-title">
-      <h2 id="about-credits-title">Credits</h2>
+      <h2 id="about-credits-title">Credits Galaxy</h2>
       <div class="credits-crawl-scene" aria-hidden="true">
         <div class="credits-crawl-track">
           ${creditsMarkup}
         </div>
       </div>
-      <p class="visually-hidden">${escapeHtml(creditsLines.join('. '))}</p>
+      <ul class="about-credits-links">${creditsLinksMarkup}</ul>
+      <p class="visually-hidden">${escapeHtml(
+        creditsProjects.map((project) => `${project.name}. ${project.role}`).join('. ')
+      )}</p>
     </section>
   </article>`;
 
@@ -1904,7 +1973,7 @@ export async function renderSite({ model, legacyRedirects, config, tempRoot }) {
   }
 
   if (config.indexing?.includeAboutPage) {
-    await writeRouteHtml(tempRoot, 'about/', renderAboutPage(config), generatedFiles);
+    await writeRouteHtml(tempRoot, 'about/', renderAboutPage(model, config), generatedFiles);
     coreRoutes.add('about/');
   }
 

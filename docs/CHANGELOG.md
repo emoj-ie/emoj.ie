@@ -128,6 +128,11 @@ All notable project updates are tracked here in human-readable form.
   - server-rendered 12 homepage panel-card skeletons before data hydration
   - aligned skeleton geometry to final category card layout for stable first paint
   - hid results shell by default on home and only show it when needed
+- Upgraded About shuffle + credits UX:
+  - switched shuffle tiles to the same subcategory card pattern (`panel-emoji-card`)
+  - moved copy to dedicated top-right `⧉` control and made card body open emoji detail pages
+  - changed shuffle source to live emoji entries (`home-data.json`) so About uses the same dataset as browse pages
+  - refreshed credits as linked, in-use tooling only, with new-tab links and enhanced visual presentation
 
 ### Notes
 - Phase 0 through Phase 5 are complete for the current roadmap scope.

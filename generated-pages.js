@@ -271,22 +271,73 @@
       return;
     }
 
-    var pool = [
-      { emoji: '😀', annotation: 'grinning face' },
-      { emoji: '😎', annotation: 'smiling face with sunglasses' },
-      { emoji: '🤖', annotation: 'robot' },
-      { emoji: '🎉', annotation: 'party popper' },
-      { emoji: '🚀', annotation: 'rocket' },
-      { emoji: '🌈', annotation: 'rainbow' },
-      { emoji: '🧠', annotation: 'brain' },
-      { emoji: '🍕', annotation: 'pizza' },
-      { emoji: '⚽', annotation: 'soccer ball' },
-      { emoji: '🎧', annotation: 'headphones' },
-      { emoji: '🦊', annotation: 'fox' },
-      { emoji: '💡', annotation: 'light bulb' },
-      { emoji: '✨', annotation: 'sparkles' },
-      { emoji: '🌟', annotation: 'glowing star' },
-    ];
+    function normalizePoolRow(raw) {
+      if (!raw || !raw.emoji) {
+        return null;
+      }
+
+      var detailRoute = String(raw.detailRoute || '')
+        .replace(/^\/+/, '')
+        .trim();
+      if (!detailRoute) {
+        return null;
+      }
+
+      var hex = String(raw.hexLower || raw.hexcode || '')
+        .toLowerCase()
+        .trim();
+      if (!hex) {
+        return null;
+      }
+
+      return {
+        emoji: String(raw.emoji || ''),
+        annotation: String(raw.annotation || 'emoji').trim() || 'emoji',
+        detailRoute: detailRoute,
+        hex: hex,
+        group: String(raw.group || ''),
+        subgroup: String(raw.subgroup || ''),
+      };
+    }
+
+    function assetForHex(hex) {
+      var upperHex = String(hex || '').toUpperCase();
+      return {
+        src: '/assets/emoji/base/' + upperHex + '.svg',
+        cdn: 'https://cdn.jsdelivr.net/npm/openmoji@15.1.0/color/svg/' + upperHex + '.svg',
+      };
+    }
+
+    function buildPoolFromRows(rows) {
+      if (!Array.isArray(rows)) {
+        return [];
+      }
+
+      var seenRoutes = new Set();
+      var nextPool = [];
+      rows.forEach(function (row) {
+        if (!row || row.noindex || row.isVariant) return;
+        var normalized = normalizePoolRow(row);
+        if (!normalized) return;
+        if (seenRoutes.has(normalized.detailRoute)) return;
+        seenRoutes.add(normalized.detailRoute);
+        nextPool.push(normalized);
+      });
+      return nextPool;
+    }
+
+    var pool = buildPoolFromRows(
+      Array.from(wall.querySelectorAll('.panel-emoji-copy')).map(function (button) {
+        return {
+          emoji: button.getAttribute('data-emoji') || '',
+          annotation: button.getAttribute('data-copy-label') || '',
+          detailRoute: button.getAttribute('data-route') || '',
+          hexcode: button.getAttribute('data-hex') || '',
+          group: button.getAttribute('data-group') || '',
+          subgroup: button.getAttribute('data-subgroup') || '',
+        };
+      })
+    );
 
     function renderWall() {
       var picks = pickRandomSubset(pool, 12);
@@ -299,33 +350,72 @@
         if (!item || !item.emoji) return;
 
         var label = item.annotation || 'emoji';
+        var route = String(item.detailRoute || '')
+          .replace(/^\/+/, '')
+          .trim();
+        if (!route) return;
+        var href = '/' + route;
+        var asset = assetForHex(item.hex);
+
         var li = document.createElement('li');
-        li.className = 'about-emoji-item';
-        var button = document.createElement('button');
-        button.type = 'button';
-        button.className = 'panel-card about-emoji-card';
-        button.setAttribute('data-copy-value', item.emoji);
-        button.setAttribute('data-copy-label', label);
-        button.setAttribute('data-copy-format', 'emoji');
-        button.setAttribute('aria-label', 'Copy ' + label + ' emoji');
+        li.className = 'emoji emoji-panel-item about-emoji-item';
+
+        var card = document.createElement('article');
+        card.className = 'panel-card panel-emoji-card about-emoji-card';
+
+        var link = document.createElement('a');
+        link.className = 'panel-emoji-open';
+        link.href = href;
+        link.title = label;
 
         var title = document.createElement('span');
-        title.className = 'panel-card-title';
-        title.textContent = item.emoji + ' ' + label;
+        title.className = 'panel-card-title panel-emoji-title';
+        title.textContent = label;
 
         var hero = document.createElement('span');
         hero.className = 'panel-card-hero';
         hero.setAttribute('aria-hidden', 'true');
 
-        var glyph = document.createElement('span');
-        glyph.className = 'about-emoji-glyph';
-        glyph.setAttribute('aria-hidden', 'true');
-        glyph.textContent = item.emoji;
+        var img = document.createElement('img');
+        img.className = 'panel-card-hero-img';
+        img.src = asset.src;
+        img.setAttribute('data-cdn-src', asset.cdn);
+        img.setAttribute('data-hex', item.hex || '');
+        img.alt = label;
+        img.width = 56;
+        img.height = 56;
+        img.loading = 'lazy';
 
-        hero.appendChild(glyph);
-        button.appendChild(title);
-        button.appendChild(hero);
-        li.appendChild(button);
+        var copy = document.createElement('button');
+        copy.type = 'button';
+        copy.className = 'panel-emoji-copy';
+        copy.setAttribute('data-copy-value', item.emoji);
+        copy.setAttribute('data-copy-label', label);
+        copy.setAttribute('data-copy-format', 'emoji');
+        copy.setAttribute('data-emoji', item.emoji);
+        copy.setAttribute('data-hex', item.hex || '');
+        copy.setAttribute('data-group', item.group || '');
+        copy.setAttribute('data-subgroup', item.subgroup || '');
+        copy.setAttribute('data-route', route);
+        copy.setAttribute('aria-label', 'Copy ' + label + ' emoji');
+        copy.title = 'Copy ' + label;
+
+        var copyGlyph = document.createElement('span');
+        copyGlyph.setAttribute('aria-hidden', 'true');
+        copyGlyph.textContent = '⧉';
+
+        var copyLabel = document.createElement('span');
+        copyLabel.className = 'visually-hidden';
+        copyLabel.textContent = 'Copy ' + label;
+
+        hero.appendChild(img);
+        link.appendChild(title);
+        link.appendChild(hero);
+        copy.appendChild(copyGlyph);
+        copy.appendChild(copyLabel);
+        card.appendChild(link);
+        card.appendChild(copy);
+        li.appendChild(card);
         wall.appendChild(li);
       });
 
@@ -341,36 +431,34 @@
       });
     });
 
-    fetch('/daily-emoji.json')
+    fetch('/home-data.json')
       .then(function (response) {
-        if (!response.ok) {
-          throw new Error('daily emoji unavailable');
-        }
+        if (!response.ok) throw new Error('home data unavailable');
         return response.json();
       })
       .then(function (rows) {
-        if (!Array.isArray(rows)) {
-          return;
-        }
-
-        var nextPool = rows
-          .filter(function (item) {
-            return item && item.emoji;
-          })
-          .map(function (item) {
-            return {
-              emoji: item.emoji,
-              annotation: item.annotation || 'emoji',
-            };
-          });
-
+        var nextPool = buildPoolFromRows(rows);
         if (nextPool.length >= 12) {
           pool = nextPool;
           renderWall();
         }
       })
       .catch(function () {
-        // Keep fallback pool.
+        fetch('/daily-emoji.json')
+          .then(function (response) {
+            if (!response.ok) throw new Error('daily emoji unavailable');
+            return response.json();
+          })
+          .then(function (rows) {
+            var nextPool = buildPoolFromRows(rows);
+            if (nextPool.length >= 12) {
+              pool = nextPool;
+              renderWall();
+            }
+          })
+          .catch(function () {
+            // Keep starter pool from static markup.
+          });
       });
   }
 
