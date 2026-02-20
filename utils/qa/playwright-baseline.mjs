@@ -83,6 +83,25 @@ async function run() {
     const toggledThemePreference = (await page.getAttribute('#theme-toggle', 'data-theme-preference')) || '';
     assert.notEqual(toggledThemePreference, initialThemePreference, 'Theme toggle should cycle preference');
 
+    const categoryCards = page.locator('#panel-grid .panel-card');
+    assert.ok((await categoryCards.count()) >= 10, 'Expected category cards on landing view');
+    await categoryCards.first().click();
+    await page.waitForTimeout(250);
+    const panelLabelAfterCategory = (await page.locator('#panel-current').innerText()).trim();
+    assert.match(panelLabelAfterCategory, /\//, 'Expected subgroup breadcrumb after category click');
+
+    const subgroupCards = page.locator('#panel-grid .panel-card');
+    assert.ok((await subgroupCards.count()) > 0, 'Expected subgroup cards after category click');
+    await subgroupCards.first().click();
+    await page.waitForSelector('#home-results .emoji-copy', { timeout: 20000 });
+    assert.ok(await page.isHidden('#panel-grid'), 'Panel grid should hide when viewing emoji list');
+
+    await page.click('#panel-home');
+    await page.waitForTimeout(220);
+    const panelLabelAfterHome = (await page.locator('#panel-current').innerText()).trim();
+    assert.equal(panelLabelAfterHome, 'Categories', 'All Categories control should return to category grid');
+    assert.ok(await page.isVisible('#panel-grid'), 'Panel grid should be visible again after reset');
+
     await page.click('#header-menu-toggle');
     await page.waitForSelector('#advanced-menu:not([hidden])', { timeout: 5000 });
     await page.selectOption('#group-filter', 'smileys-emotion');

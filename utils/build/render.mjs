@@ -469,61 +469,12 @@ function renderHomePage(model, config) {
   const groupOptions = model.groups
     .map((group) => `<option value="${escapeHtml(group.key)}">${escapeHtml(group.title)}</option>`)
     .join('');
-  const quickTopics = Array.isArray(model.searchPages) ? model.searchPages.slice(0, 8) : [];
-  const quickTopicLinks = quickTopics
-    .map(
-      (topic) =>
-        `<a class="quick-chip topic" href="/${topic.route}">${escapeHtml(topic.title.replace(/\s+emoji$/i, ''))}</a>`
-    )
-    .join('');
-  const totalEmojis = model.emojiEntries.filter((entry) => entry.indexable && !entry.isVariant).length;
-  const totalCategories = model.categories?.filter((category) => !category.noindex).length || 0;
-  const totalTags = model.tags?.length || 0;
-  const totalSearchTopics = model.searchPages?.length || 0;
 
-  const body = `<section class="panel-shell" aria-label="Emoji Explorer">
-    <div class="panel-header home-hero">
-      <div class="home-copy-stack">
-        <p class="home-kicker">Local-First Emoji Utility</p>
-        <h1 class="home-headline">Find, Copy, And Reuse The Right Emoji In Seconds</h1>
-        <p class="panel-lede">Built for speed-first writing workflows: instant search, keyboard-first navigation, and persistent recents/favorites that stay on your device.</p>
-        <div class="home-stat-row" aria-label="Explorer stats">
-          <span><strong>${totalEmojis.toLocaleString('en-US')}</strong> indexable emojis</span>
-          <span><strong>${totalCategories}</strong> category hubs</span>
-          <span><strong>${totalTags}</strong> tag routes</span>
-          <span><strong>${totalSearchTopics}</strong> curated search topics</span>
-        </div>
-        <div id="home-quick-actions" class="home-quick-actions">
-          <a class="quick-chip primary" href="/category/">Browse Categories</a>
-          <a class="quick-chip secondary" href="/search/">Search Topics</a>
-          <a class="quick-chip secondary" href="/alternatives/">Compare Sites</a>
-          ${quickTopicLinks}
-        </div>
-        <p class="panel-tip">Tip: Press <kbd>/</kbd> to focus search. Arrow keys move results. <kbd>Enter</kbd> copies.</p>
-      </div>
-      <aside class="home-proof-panel" aria-label="Why emoj.ie">
-        <h2>Why emoj.ie wins daily use</h2>
-        <ul class="home-proof-list">
-          <li><strong>Speed first:</strong> result-heavy pages stay responsive with progressive rendering.</li>
-          <li><strong>Copy precision:</strong> emoji, Unicode, HTML entity, or shortcode output.</li>
-          <li><strong>Local memory:</strong> favorites and recents persist without an account.</li>
-          <li><strong>SEO quality:</strong> category, tag, and topic routes with canonical controls.</li>
-        </ul>
-      </aside>
-    </div>
-    <div class="home-principle-grid" aria-label="Product principles">
-      <article class="home-principle-card">
-        <h2>Instant Discovery</h2>
-        <p>Search by meaning, keyword, and synonym to cut decision time.</p>
-      </article>
-      <article class="home-principle-card">
-        <h2>Confident Usage</h2>
-        <p>Open any emoji page for meaning, keyword tags, and related options.</p>
-      </article>
-      <article class="home-principle-card">
-        <h2>Workflow Memory</h2>
-        <p>Your recurring emoji set is always one click away in favorites and recents.</p>
-      </article>
+  const body = `<section class="panel-shell home-emoji-shell" aria-label="Emoji Explorer">
+    <div class="home-minimal-head">
+      <h1 class="home-title">Pick A Category</h1>
+      <p class="home-mini-tip">Category → Subcategory → Emoji</p>
+      <a class="home-plain-link" href="/category/">Open category pages</a>
     </div>
     <nav class="panel-crumbs" aria-label="Explorer Breadcrumb">
       <button type="button" id="panel-home" class="copy-btn secondary">All Categories</button>
@@ -584,12 +535,12 @@ function renderHomePage(model, config) {
   </aside>
   <button type="button" id="advanced-backdrop" class="advanced-backdrop" hidden tabindex="-1" aria-hidden="true"></button>
 
-  <section class="recent-section">
+  <section id="favorites-section" class="recent-section" hidden>
     <h2>Favorites</h2>
     <ul id="favorite-results" class="emoji-list" aria-label="Favorite emojis"></ul>
   </section>
 
-  <section class="recent-section">
+  <section id="recents-section" class="recent-section" hidden>
     <h2>Recently Copied</h2>
     <ul id="recent-results" class="emoji-list" aria-label="Recently copied emojis"></ul>
   </section>`;

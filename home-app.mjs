@@ -117,6 +117,8 @@ function withinDistance(a, b, maxDistance = 1) {
   const resultsSentinel = document.getElementById('results-sentinel');
   const loadMoreButton = document.getElementById('results-load-more');
 
+  const favoritesSection = document.getElementById('favorites-section');
+  const recentsSection = document.getElementById('recents-section');
   const favoriteList = document.getElementById('favorite-results');
   const recentList = document.getElementById('recent-results');
 
@@ -505,8 +507,12 @@ function withinDistance(a, b, maxDistance = 1) {
           humanize(group),
           `${subgroupCount} subcategories`,
           preview,
-          null,
-          `/category/${group}/`
+          () => {
+            state.g = group;
+            state.sg = '';
+            applyStateToControls();
+            renderExplorer(true, true);
+          }
         )
       );
     }
@@ -532,8 +538,11 @@ function withinDistance(a, b, maxDistance = 1) {
           humanize(subgroup),
           `${count} emoji${count === 1 ? '' : 's'}`,
           preview,
-          null,
-          `/${state.g}/${subgroup}/`
+          () => {
+            state.sg = subgroup;
+            applyStateToControls();
+            renderExplorer(true, true);
+          }
         )
       );
     }
@@ -945,12 +954,11 @@ function withinDistance(a, b, maxDistance = 1) {
     recentList.innerHTML = '';
 
     if (recents.length === 0) {
-      const empty = document.createElement('li');
-      empty.className = 'emoji-empty';
-      empty.textContent = 'No recent emojis yet.';
-      recentList.appendChild(empty);
+      if (recentsSection) recentsSection.hidden = true;
       return;
     }
+
+    if (recentsSection) recentsSection.hidden = false;
 
     const fragment = document.createDocumentFragment();
     for (const raw of recents) {
@@ -1012,12 +1020,11 @@ function withinDistance(a, b, maxDistance = 1) {
     favoriteList.innerHTML = '';
 
     if (favorites.length === 0) {
-      const empty = document.createElement('li');
-      empty.className = 'emoji-empty';
-      empty.textContent = 'No favorites yet.';
-      favoriteList.appendChild(empty);
+      if (favoritesSection) favoritesSection.hidden = true;
       return;
     }
+
+    if (favoritesSection) favoritesSection.hidden = false;
 
     const fragment = document.createDocumentFragment();
     for (const raw of favorites) {

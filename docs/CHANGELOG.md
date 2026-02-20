@@ -48,6 +48,12 @@ All notable project updates are tracked here in human-readable form.
   - expanded alternatives pages with switch signals, fit guidance, and migration steps
   - improved detail-page copy and added shortcode quick-copy action
 - Updated accessibility test matcher to detect `<h1>` tags with attributes (`/<h1\\b/`).
+- Simplified homepage to an emoji-first flow:
+  - removed heavy explanatory copy from landing experience
+  - defaulted landing to 12 category cards with in-page category -> subgroup -> emoji navigation
+  - hid favorites/recents rails until they contain emojis
+  - improved mobile header/search layout to prevent overlap and wrapping issues
+- Expanded Playwright baseline coverage to assert panel-click 3-step navigation behavior.
 
 ### Notes
 - Phase 0 through Phase 5 are complete for the current roadmap scope.

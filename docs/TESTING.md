@@ -42,6 +42,7 @@ Last updated: 2026-02-20
 - [x] Recent list updates after copy and survives page reload.
 - [x] Theme mode toggles and persists setting.
 - [x] Favorites updates and survives page reload.
+- [x] Category card -> subgroup card -> emoji list flow works without route navigation.
 
 ## SEO Regression Coverage (Current)
 - `tests/phase4-seo-schema.test.mjs` validates metadata + schema on sample pages.
