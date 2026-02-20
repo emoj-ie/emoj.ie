@@ -92,6 +92,11 @@ All notable project updates are tracked here in human-readable form.
 - Updated quality tests for the new browse architecture:
   - adjusted phase-7 assertions to expect path-first navigation and minimal category copy
   - updated baseline Playwright e2e flow to validate canonical path transitions and breadcrumb visibility
+- Unified visual card language across browse hubs:
+  - redesigned `/category/` to use the same panel-card treatment as homepage category cards
+  - redesigned `/category/{group}/` to use the same panel-card treatment for subcategory selection
+  - kept `/category/{group}/{subgroup}/` focused on direct emoji results for the final click
+- Updated baseline Playwright selectors to validate subgroup navigation via panel cards on category pages.
 
 ### Notes
 - Phase 0 through Phase 5 are complete for the current roadmap scope.

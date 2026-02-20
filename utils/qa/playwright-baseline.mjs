@@ -101,7 +101,7 @@ async function run() {
     assert.match(categoryCrumbs, /Home/);
     assert.match(categoryCrumbs, /Categories/);
 
-    const subgroupLinks = page.locator('.group .subgroup h2 a');
+    const subgroupLinks = page.locator('.panel-grid .panel-card-link');
     assert.ok((await subgroupLinks.count()) > 0, 'Expected subgroup links on category page');
     const firstSubgroupHref = (await subgroupLinks.first().getAttribute('href')) || '';
     assert.match(

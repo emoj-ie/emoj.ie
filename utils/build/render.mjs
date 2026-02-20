@@ -394,6 +394,39 @@ function renderEmojiCard(entry, assetTemplate) {
   </li>`;
 }
 
+function pickPanelPreviewEntry(entries = []) {
+  for (const entry of entries) {
+    if (!entry) continue;
+    if (entry.noindex) continue;
+    if (entry.isVariant) continue;
+    if (!entry.hexLower) continue;
+    return entry;
+  }
+
+  return entries.find((entry) => Boolean(entry?.hexLower)) || null;
+}
+
+function renderPanelCardLink({ title, href, previewEntry, assetTemplate }) {
+  let heroMarkup = '<span class="panel-card-hero-fallback" aria-hidden="true">🙂</span>';
+
+  if (previewEntry) {
+    const imageHex = formatHexForAsset(previewEntry.hexLower);
+    const src = emojiAssetSource(previewEntry);
+    const cdnSrc = previewEntry.cdnAssetPath || assetTemplate.replace('{HEX}', imageHex);
+
+    heroMarkup = `<img class="panel-card-hero-img" src="${escapeHtml(src)}" data-cdn-src="${escapeHtml(
+      cdnSrc
+    )}" data-hex="${escapeHtml(previewEntry.hexLower)}" alt="" width="56" height="56" loading="lazy" />`;
+  }
+
+  return `<a class="panel-card panel-card-link" href="/${escapeHtml(href)}" aria-label="Open ${escapeHtml(
+    title
+  )}">
+    <span class="panel-card-title">${escapeHtml(title)}</span>
+    <span class="panel-card-hero" aria-hidden="true">${heroMarkup}</span>
+  </a>`;
+}
+
 function parseEntryTags(entry) {
   const raw = [
     Array.isArray(entry.tags) ? entry.tags.join(',') : String(entry.tags || ''),
@@ -828,28 +861,24 @@ function renderAlternativePage(item, config) {
 }
 
 function renderCategoryIndexPage(categories, config) {
-  const items = categories
+  const cards = categories
     .slice(0, 40)
-    .map(
-      (category) =>
-        `<li><a href="/${category.route}"><span>${escapeHtml(category.title)}</span><small>${category.subgroups.length} subcategories</small></a></li>`
-    )
-    .join('');
-  const visibleCategories = categories.slice(0, 40).length;
-  const totalSubgroups = categories
-    .slice(0, 40)
-    .reduce((sum, category) => sum + Number(category.subgroups?.length || 0), 0);
+    .map((category) => {
+      const allEntries = category.subgroups.flatMap((subgroup) => subgroup.emojis || []);
+      const previewEntry = pickPanelPreviewEntry(allEntries);
 
-  const body = `<section class="group">
-    <p class="collection-kicker">Category Directory</p>
+      return renderPanelCardLink({
+        title: category.title,
+        href: category.route,
+        previewEntry,
+        assetTemplate: config.assets.emojiCdnTemplate,
+      });
+    })
+    .join('');
+
+  const body = `<section class="panel-shell home-emoji-shell">
     <h1>Emoji Categories</h1>
-    <p>Browse category hubs to move from broad intent to exact emoji selections with fewer clicks.</p>
-    <div class="collection-stat-row">
-      <span><strong>${visibleCategories}</strong> top-level categories</span>
-      <span><strong>${totalSubgroups}</strong> indexed subcategories</span>
-      <span><strong>Keyboard-ready</strong> copy workflow</span>
-    </div>
-    <ul class="group-link-list">${items}</ul>
+    <div class="panel-grid panel-grid-balanced">${cards}</div>
   </section>`;
 
   const canonicalUrl = absoluteUrl(config.site.baseUrl, 'category/');
@@ -1134,31 +1163,20 @@ function renderGroupPage(group, config, options = {}) {
   const introLabel = options.introLabel || group.title;
   const description =
     options.description || `Browse ${introLabel} emojis and copy them instantly.`;
-  const previewLimit = Math.max(8, Number(config.ui?.groupPreviewLimit || 24));
-  const subgroupSections = group.subgroups
-    .map((subgroup) => {
-      const preview = subgroup.emojis.slice(0, previewLimit);
-      const emojiList = preview
-        .map((emoji) => renderEmojiCard(emoji, config.assets.emojiCdnTemplate))
-        .join('');
-
-      return `<section class="subgroup">
-        <h2><a href="/${subgroup.route}">${escapeHtml(subgroup.title)}</a></h2>
-        <p class="subgroup-meta">${subgroup.emojis.length} emoji${subgroup.emojis.length === 1 ? '' : 's'}.</p>
-        <ul class="emoji-list">${emojiList}</ul>
-      </section>`;
-    })
+  const subgroupCards = group.subgroups
+    .map((subgroup) =>
+      renderPanelCardLink({
+        title: subgroup.title,
+        href: subgroup.route,
+        previewEntry: pickPanelPreviewEntry(subgroup.emojis),
+        assetTemplate: config.assets.emojiCdnTemplate,
+      })
+    )
     .join('');
-  const subgroupCount = group.subgroups.length;
-  const emojiCount = group.subgroups.reduce(
-    (sum, subgroup) => sum + Number(subgroup.emojis?.length || 0),
-    0
-  );
 
-  const body = `<section class="group">
+  const body = `<section class="panel-shell home-emoji-shell">
     <h1>${escapeHtml(group.title)}</h1>
-    <p class="subgroup-meta">${subgroupCount} subcategories, ${emojiCount.toLocaleString('en-US')} emojis.</p>
-    ${subgroupSections}
+    <div class="panel-grid panel-grid-balanced">${subgroupCards}</div>
   </section>`;
 
   const robots =

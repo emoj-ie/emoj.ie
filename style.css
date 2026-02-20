@@ -786,6 +786,10 @@ a:hover {
   z-index: 1;
 }
 
+.panel-grid-balanced {
+  grid-template-columns: repeat(6, minmax(0, 1fr));
+}
+
 .panel-card {
   border: 3px solid var(--border-soft);
   background: color-mix(in oklab, var(--bg-elevated), var(--bg-soft) 28%);
@@ -864,7 +868,17 @@ a:hover {
   transform: scale(0.9);
 }
 
+.panel-card-hero-fallback {
+  font-size: 2rem;
+  line-height: 1;
+}
+
 .page-home .panel-grid .panel-card {
+  min-height: 122px;
+  align-content: space-between;
+}
+
+.panel-grid-balanced .panel-card {
   min-height: 122px;
   align-content: space-between;
 }
@@ -877,10 +891,18 @@ a:hover {
   .page-home #panel-grid {
     grid-template-columns: repeat(12, minmax(0, 1fr));
   }
+
+  .panel-grid-balanced {
+    grid-template-columns: repeat(12, minmax(0, 1fr));
+  }
 }
 
 @media (max-width: 1480px) {
   .page-home #panel-grid {
+    grid-template-columns: repeat(4, minmax(0, 1fr));
+  }
+
+  .panel-grid-balanced {
     grid-template-columns: repeat(4, minmax(0, 1fr));
   }
 }
@@ -889,16 +911,28 @@ a:hover {
   .page-home #panel-grid {
     grid-template-columns: repeat(3, minmax(0, 1fr));
   }
+
+  .panel-grid-balanced {
+    grid-template-columns: repeat(3, minmax(0, 1fr));
+  }
 }
 
 @media (max-width: 860px) {
   .page-home #panel-grid {
     grid-template-columns: repeat(2, minmax(0, 1fr));
   }
+
+  .panel-grid-balanced {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+  }
 }
 
 @media (max-width: 560px) {
   .page-home #panel-grid {
+    grid-template-columns: 1fr;
+  }
+
+  .panel-grid-balanced {
     grid-template-columns: 1fr;
   }
 }
