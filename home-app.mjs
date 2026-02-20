@@ -5,7 +5,6 @@ import {
   humanize,
   normalizeHex,
   parseUiState,
-  toSearchParams,
 } from './home-utils.mjs';
 
 const SEARCH_SYNONYMS = Object.freeze({
@@ -108,8 +107,6 @@ function withinDistance(a, b, maxDistance = 1) {
   const clearButton = document.getElementById('clear-filters');
 
   const panelGrid = document.getElementById('panel-grid');
-  const panelHome = document.getElementById('panel-home');
-  const panelCurrent = document.getElementById('panel-current');
 
   const resultsShell = document.querySelector('.results-shell');
   const resultsCount = document.getElementById('results-count');
@@ -169,7 +166,24 @@ function withinDistance(a, b, maxDistance = 1) {
   let panelCardPreviewMap = new Map();
 
   const initialCopy = localStorage.getItem(COPY_MODE_KEY) || 'emoji';
-  let state = parseUiState(window.location.search, initialCopy);
+  const parsedState = parseUiState(window.location.search, initialCopy);
+  if (parsedState.g && parsedState.sg) {
+    const target = `/category/${encodeURIComponent(parsedState.g)}/${encodeURIComponent(parsedState.sg)}/`;
+    window.location.replace(target);
+    return;
+  }
+  if (parsedState.g) {
+    const target = `/category/${encodeURIComponent(parsedState.g)}/`;
+    window.location.replace(target);
+    return;
+  }
+
+  let state = {
+    q: parsedState.q,
+    g: '',
+    sg: '',
+    copy: initialCopy,
+  };
   let defaultSkinTone = localStorage.getItem(SKIN_TONE_KEY) || '0';
 
   if (!['0', '1', '2', '3', '4', '5'].includes(defaultSkinTone)) {
@@ -344,17 +358,12 @@ function withinDistance(a, b, maxDistance = 1) {
     return toneMap.get(defaultSkinTone) || baseEntry;
   }
 
-  function persistState(pushHistory = true) {
+  function persistState() {
     localStorage.setItem(COPY_MODE_KEY, state.copy);
     localStorage.setItem(SKIN_TONE_KEY, defaultSkinTone);
 
-    const query = toSearchParams(state);
-    const target = query ? `?${query}` : window.location.pathname;
-
-    if (pushHistory) {
-      window.history.pushState({}, '', target);
-    } else {
-      window.history.replaceState({}, '', target);
+    if (window.location.search) {
+      window.history.replaceState({}, '', window.location.pathname);
     }
   }
 
@@ -516,24 +525,6 @@ function withinDistance(a, b, maxDistance = 1) {
         }, 150);
       }
     }, 2200);
-  }
-
-  function updatePanelCrumbs(level) {
-    if (!panelCurrent) return;
-
-    if (level === 'group') {
-      panelCurrent.textContent = '⌂';
-      panelHome.disabled = true;
-      return;
-    }
-
-    panelHome.disabled = false;
-    if (level === 'subgroup') {
-      panelCurrent.textContent = `${humanize(state.g)}`;
-      return;
-    }
-
-    panelCurrent.textContent = `${humanize(state.g)} / ${humanize(state.sg)}`;
   }
 
   function panelSearchFilter(values) {
@@ -831,11 +822,10 @@ function withinDistance(a, b, maxDistance = 1) {
     }
   }
 
-  function renderExplorer(pushHistory = true, emit = false) {
-    persistState(pushHistory);
+  function renderExplorer(_pushHistory = true, emit = false) {
+    persistState();
 
     const level = currentLevel();
-    updatePanelCrumbs(level);
 
     if (level === 'group') {
       renderGroupPanels();
@@ -1269,14 +1259,6 @@ function withinDistance(a, b, maxDistance = 1) {
   function bindInteractions() {
     const searchForm = searchInput.closest('form');
 
-    window.addEventListener('popstate', () => {
-      state = parseUiState(window.location.search, localStorage.getItem(COPY_MODE_KEY) || 'emoji');
-      applyStateToControls();
-      renderExplorer(false, false);
-      renderFavorites();
-      renderRecents();
-    });
-
     searchInput.addEventListener('input', scheduleSearchRender);
     searchInput.addEventListener('change', () => {
       state.q = searchInput.value.trim();
@@ -1322,13 +1304,6 @@ function withinDistance(a, b, maxDistance = 1) {
     clearButton.addEventListener('click', () => {
       state = { q: '', g: '', sg: '', copy: state.copy };
       searchInput.value = '';
-      applyStateToControls();
-      renderExplorer(true, true);
-    });
-
-    panelHome.addEventListener('click', () => {
-      state.g = '';
-      state.sg = '';
       applyStateToControls();
       renderExplorer(true, true);
     });

@@ -26,13 +26,17 @@ test('logo picker resolves daily emoji by month-day key', () => {
   const globalScript = read('generated-pages.js');
   assert.match(globalScript, /getMonthDayKey/);
   assert.match(globalScript, /row\.monthDay === monthDay/);
+  assert.match(globalScript, /\/assets\/emoji\/base\//);
+  assert.match(globalScript, /data-logo-emoji-image/);
 });
 
 test('homepage template has lazy loading controls', () => {
   const home = read('index.html');
 
   assert.match(home, /id="header-menu-toggle"/);
-  assert.match(home, /id="theme-toggle"/);
+  assert.match(home, /class="header-search-icon"/);
+  assert.ok(!home.includes('id="theme-toggle"'));
+  assert.ok(!home.includes('<button type="submit">Search</button>'));
   assert.match(home, /id="advanced-menu"[^>]*\shidden\b/);
   assert.match(home, /id="advanced-backdrop"[^>]*\shidden\b/);
   assert.match(home, /id="panel-grid"/);
@@ -41,9 +45,9 @@ test('homepage template has lazy loading controls', () => {
   assert.match(home, /id="favorite-results"/);
   assert.match(home, /id="favorites-section"[^>]*\shidden\b/);
   assert.match(home, /id="recents-section"[^>]*\shidden\b/);
-  assert.match(home, /id="panel-current">⌂<\/span>/);
-  assert.match(home, /class="home-categories-link"/);
-  assert.match(home, /href="\/category\/"/);
+  assert.ok(!home.includes('id="panel-home"'));
+  assert.ok(!home.includes('id="panel-current"'));
+  assert.ok(!home.includes('home-categories-link'));
   assert.ok(!home.includes('id="home-quick-actions"'));
   assert.ok(!home.includes('Choose a category panel, then a subcategory, then copy emojis instantly.'));
 });

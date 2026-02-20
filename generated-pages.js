@@ -96,6 +96,12 @@
     document.documentElement.setAttribute('data-theme', theme);
   }
 
+  function preferenceLabel(preference) {
+    if (preference === 'dark') return 'Dark';
+    if (preference === 'light') return 'Light';
+    return 'System';
+  }
+
   function updateThemeToggleButton(button, preference, theme) {
     if (!button) return;
 
@@ -111,18 +117,25 @@
     }
 
     button.setAttribute('data-theme-preference', preference);
-    button.setAttribute('aria-label', `Theme: ${preference} (${theme}). Activate to switch.`);
-    button.setAttribute('title', `Theme: ${preference} (${theme})`);
+    button.setAttribute('aria-label', `Theme: ${preferenceLabel(preference)} (${theme}). Activate to switch.`);
+    button.setAttribute('title', `Theme: ${preferenceLabel(preference)} (${theme})`);
+
+    const labelNode = button.querySelector('.theme-toggle-label');
+    if (labelNode) {
+      labelNode.textContent = `Theme: ${preferenceLabel(preference)}`;
+    }
   }
 
   function initThemeToggle() {
-    const button = document.getElementById('theme-toggle');
+    const buttons = Array.from(document.querySelectorAll('[data-theme-toggle]'));
     let preference = readThemePreference();
 
     function applyTheme() {
       const theme = resolveTheme(preference);
       setDocumentTheme(theme);
-      updateThemeToggleButton(button, preference, theme);
+      buttons.forEach(function (button) {
+        updateThemeToggleButton(button, preference, theme);
+      });
       return theme;
     }
 
@@ -143,20 +156,22 @@
       }
     }
 
-    if (!button) {
+    if (!buttons.length) {
       return;
     }
 
-    button.addEventListener('click', function () {
-      const currentIndex = THEME_SEQUENCE.indexOf(preference);
-      preference = THEME_SEQUENCE[(currentIndex + 1) % THEME_SEQUENCE.length];
-      localStorage.setItem(THEME_PREFERENCE_KEY, preference);
+    buttons.forEach(function (button) {
+      button.addEventListener('click', function () {
+        const currentIndex = THEME_SEQUENCE.indexOf(preference);
+        preference = THEME_SEQUENCE[(currentIndex + 1) % THEME_SEQUENCE.length];
+        localStorage.setItem(THEME_PREFERENCE_KEY, preference);
 
-      const theme = applyTheme();
-      track('theme_toggle', {
-        source: window.location.pathname,
-        preference: preference,
-        theme: theme,
+        const theme = applyTheme();
+        track('theme_toggle', {
+          source: window.location.pathname,
+          preference: preference,
+          theme: theme,
+        });
       });
     });
   }
@@ -194,8 +209,9 @@
   }
 
   function applyDailyLogoEmoji() {
-    var emojiNode = document.querySelector('[data-logo-emoji]');
-    if (!emojiNode) {
+    var imageNode = document.querySelector('[data-logo-emoji-image]');
+    var fallbackNode = document.querySelector('[data-logo-emoji-fallback]');
+    if (!imageNode && !fallbackNode) {
       return;
     }
 
@@ -220,8 +236,19 @@
           return;
         }
 
-        emojiNode.textContent = selected.emoji;
-        var logoLink = emojiNode.closest('.logo');
+        if (fallbackNode) {
+          fallbackNode.textContent = selected.emoji;
+        }
+
+        if (imageNode && selected.hexcode) {
+          var upperHex = String(selected.hexcode).toUpperCase();
+          var localSrc = '/assets/emoji/base/' + upperHex + '.svg';
+          var cdnSrc = 'https://cdn.jsdelivr.net/npm/openmoji@15.1.0/color/svg/' + upperHex + '.svg';
+          imageNode.src = localSrc;
+          imageNode.setAttribute('data-cdn-src', cdnSrc);
+        }
+
+        var logoLink = (imageNode || fallbackNode).closest('.logo');
         if (logoLink) {
           var label = selected.annotation || 'Emoji of the day';
           logoLink.setAttribute('title', 'Emoji of the day: ' + label);

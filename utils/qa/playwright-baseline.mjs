@@ -77,18 +77,21 @@ async function run() {
     await page.goto(BASE_URL, { waitUntil: 'networkidle' });
     await page.waitForSelector('#panel-grid .panel-card, #panel-grid .panel-card-link', { timeout: 20000 });
 
-    const initialThemePreference = (await page.getAttribute('#theme-toggle', 'data-theme-preference')) || 'system';
-    await page.click('#theme-toggle');
+    await page.click('#header-menu-toggle');
+    await page.waitForSelector('#advanced-menu:not([hidden])', { timeout: 5000 });
+    const initialThemePreference = (await page.getAttribute('#advanced-theme-toggle', 'data-theme-preference')) || 'system';
+    await page.click('#advanced-theme-toggle');
     await page.waitForTimeout(120);
-    const toggledThemePreference = (await page.getAttribute('#theme-toggle', 'data-theme-preference')) || '';
+    const toggledThemePreference = (await page.getAttribute('#advanced-theme-toggle', 'data-theme-preference')) || '';
+    await page.click('#advanced-close');
     assert.notEqual(toggledThemePreference, initialThemePreference, 'Theme toggle should cycle preference');
 
     const categoryCards = page.locator('#panel-grid .panel-card');
     assert.ok((await categoryCards.count()) >= 10, 'Expected category cards on landing view');
     await categoryCards.first().click();
     await page.waitForTimeout(250);
-    const panelLabelAfterCategory = (await page.locator('#panel-current').innerText()).trim();
-    assert.notEqual(panelLabelAfterCategory, '⌂', 'Expected category breadcrumb after category click');
+    const selectedGroup = await page.inputValue('#group-filter');
+    assert.ok(selectedGroup.length > 0, 'Expected category selection after category click');
 
     const subgroupCards = page.locator('#panel-grid .panel-card');
     assert.ok((await subgroupCards.count()) > 0, 'Expected subgroup cards after category click');
@@ -96,10 +99,11 @@ async function run() {
     await page.waitForSelector('#home-results .emoji-copy', { timeout: 20000 });
     assert.ok(await page.isHidden('#panel-grid'), 'Panel grid should hide when viewing emoji list');
 
-    await page.click('#panel-home');
+    await page.click('#header-menu-toggle');
+    await page.waitForSelector('#advanced-menu:not([hidden])', { timeout: 5000 });
+    await page.click('#clear-filters');
     await page.waitForTimeout(220);
-    const panelLabelAfterHome = (await page.locator('#panel-current').innerText()).trim();
-    assert.equal(panelLabelAfterHome, '⌂', 'Home control should return to root breadcrumb');
+    await page.click('#advanced-close');
     assert.ok(await page.isVisible('#panel-grid'), 'Panel grid should be visible again after reset');
 
     await page.click('#header-menu-toggle');
@@ -162,8 +166,11 @@ async function run() {
 
     await page.reload({ waitUntil: 'networkidle' });
     await page.waitForSelector('#recent-results .emoji-copy, #recent-results .emoji-empty', { timeout: 10000 });
-    const storedThemePreference = (await page.getAttribute('#theme-toggle', 'data-theme-preference')) || '';
+    await page.click('#header-menu-toggle');
+    await page.waitForSelector('#advanced-menu:not([hidden])', { timeout: 5000 });
+    const storedThemePreference = (await page.getAttribute('#advanced-theme-toggle', 'data-theme-preference')) || '';
     assert.equal(storedThemePreference, toggledThemePreference, 'Theme preference should persist after reload');
+    await page.click('#advanced-close');
     const recentReloadCount = await page.locator('#recent-results .emoji-copy').count();
     assert.ok(recentReloadCount > 0, 'Expected recents persistence after reload');
     const favoritesReloadCount = await page.locator('#favorite-results .emoji-copy').count();

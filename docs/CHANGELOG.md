@@ -66,6 +66,13 @@ All notable project updates are tracked here in human-readable form.
   - added a playful interactive emoji wall (shuffle + tap-to-copy)
   - added direct About CTAs to browse emojis and category hubs
   - kept implementation dependency-free and static-host friendly
+- Refined header/navigation and home-state behavior for simpler UX:
+  - removed header search button and switched to icon-in-input + Enter submit behavior
+  - kept header to a strict single row on mobile by collapsing controls into burger menus
+  - moved theme switching into advanced menus (`Theme: System/Light/Dark`) instead of top bar
+  - removed visible homepage breadcrumb and category-arrow chrome
+  - removed `g/sg` query-param navigation on home and redirected legacy links to path routes
+  - fixed emoji-of-day display reliability by rendering logo emoji as image assets (with fallback)
 
 ### Notes
 - Phase 0 through Phase 5 are complete for the current roadmap scope.
