@@ -2,6 +2,28 @@
 
 All notable project updates are tracked here in human-readable form.
 
+## 2026-02-21
+### Changed
+- Hardened build determinism and cache invalidation:
+  - build hash now derives from generated output content + config inputs (not only grouped data mtime/content)
+  - manifest generation timestamp now reflects actual build time
+- Reduced duplicate detail rendering:
+  - legacy canonical detail aliases now ship as lightweight redirect stubs to `/emoji/*`
+  - canonical emoji pages remain full detail documents
+- Reduced duplicate runtime payload usage:
+  - added `about-data.json` for About shuffle pool
+  - added `tofu-data.json` for tofu diagnostics scan pool
+  - tofu diagnostics now reuses in-memory home payload when available before fetching
+- Improved large-route performance:
+  - subgroup/search/tag emoji grids now render an initial server chunk and progressively hydrate remaining cards client-side
+  - added progressive load controls + sentinel hydration on generated pages
+- Improved route discoverability and consistency:
+  - added `Tofu Score` link to shared burger menus and footer navigation
+- Hardened representative title emoji filtering:
+  - now excludes replacement characters, non-characters, and control codepoints in addition to private-use ranges
+- Upgraded performance gate:
+  - `utils/qa/lighthouse-budget.mjs` now enforces static file budgets plus runtime vitals budgets (FCP/LCP/CLS/DOM complete) on representative routes using Playwright
+
 ## 2026-02-20
 ### Added
 - Initial planning and governance docs:

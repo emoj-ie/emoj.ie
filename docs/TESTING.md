@@ -1,6 +1,6 @@
 # Testing Strategy
 
-Last updated: 2026-02-20
+Last updated: 2026-02-21
 
 ## Quality Gates
 - `npm run build:check` passes
@@ -9,6 +9,10 @@ Last updated: 2026-02-20
 - `npm run test:a11y-smoke` passes
 - `npm run test:playwright-smoke` passes
 - `npm run test:lighthouse-budget` passes
+
+`test:lighthouse-budget` now enforces both:
+- static asset byte budgets
+- runtime page vitals budgets (FCP/LCP/CLS/DOM complete) on representative routes via Playwright
 
 ## Playwright Strategy
 - Add baseline end-to-end tests for current critical journeys before UX refactors.
@@ -51,7 +55,7 @@ Last updated: 2026-02-20
 ## Assumptions
 - Existing Node test suite stays in place; Playwright coverage will be additive.
 
-## Latest Full Regression (2026-02-20)
+## Latest Full Regression (2026-02-21)
 - `npm run build`
 - `npm test`
 - `npm run lint:links`

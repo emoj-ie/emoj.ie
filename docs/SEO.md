@@ -1,6 +1,6 @@
 # SEO Strategy And Programmatic Plan
 
-Last updated: 2026-02-20
+Last updated: 2026-02-21
 
 ## Objectives
 - Capture high-intent emoji search demand with useful, non-thin pages.
@@ -10,7 +10,9 @@ Last updated: 2026-02-20
 
 ## Planned Page Types
 - [x] `/emoji/{slug}` canonical detail routes with meaning, keywords, variants, and related emojis
-- [x] `/category/{name}` category hubs with descriptive context and browse UX
+- [x] `/{group}` canonical category hubs (card-first, minimal copy)
+- [x] `/{group}/{subgroup}` canonical subgroup pages (card-first browse and copy)
+- [x] `/category/*` compatibility aliases with canonical + `noindex,follow`
 - [x] `/tag/{tag}` tag hubs with curated explanations
 - [x] `/search/{term}` pages only when quality threshold and uniqueness are met
 - [x] `/alternatives/{competitor}` pages for competitor-intent comparisons
@@ -22,8 +24,10 @@ Last updated: 2026-02-20
 | Home | 1 | Static template | self-canonical | index | existing |
 | Core routes | 252 | generated | self-canonical | mixed | from `sitemap-core.xml` |
 | Emoji detail routes | 2062 | `home-data.json` + sources | canonical to `/emoji/*` routes | index/noindex split | from `sitemap-emoji.xml` |
-| Category routes | 13 (index + 12 groups) | grouped data | self-canonical | index/noindex split | canonical browse layer implemented |
-| Subcategory routes | 120+ | grouped data | self-canonical | index/noindex split | existing |
+| Category routes | 12 | grouped data | canonical `/{group}/` | index/noindex split | homepage is primary category entry point |
+| Subcategory routes | 120+ | grouped data | canonical `/{group}/{subgroup}/` | index/noindex split | progressive list hydration for heavier routes |
+| Legacy detail aliases | 2062+ | generated | canonical to `/emoji/*` | noindex | lightweight redirect stubs (not full duplicate detail pages) |
+| Legacy category aliases | 120+ | generated | canonical to flat browse routes | noindex | `/category/*` compatibility layer |
 | Tag routes | 97 (incl. index) | derived tags (`tags`, `openmoji_tags`, annotations) | self-canonical | index | expanded via enrichment baseline |
 | Search term routes | 17 (index + 16 curated terms) | curated keyword topics + tags + annotations | self-canonical | index | quality-threshold gated generation |
 | Competitor alternatives | 4 (index + 3 pages) | curated editorial comparisons | self-canonical | index | implemented |
@@ -35,7 +39,7 @@ Last updated: 2026-02-20
 - [x] Confirm `robots.txt` policy and no accidental blocks
 - [x] Add tests for metadata presence and sitemap validity
 - [x] Add validation for canonical `/emoji/{slug}` alias behavior and redirect health
-- [x] Add validation for canonical `/category/{name}` alias behavior
+- [x] Add validation for canonical browse alias behavior (`/category/*` -> flat routes)
 - [x] Add validation for curated `/search/{term}` route generation and metadata
 - [x] Add internal link graph checks (home -> category -> subcategory -> detail -> related)
 
@@ -46,12 +50,13 @@ Last updated: 2026-02-20
 - No pages generated only from keyword permutations without unique utility.
 
 ## Route Strategy (Draft)
-- Keep existing stable detail routes to preserve backlink equity.
-- Add canonical short emoji route (`/emoji/{slug}--{hex}`) while preserving legacy detail routes for compatibility.
-- Add canonical category route (`/category/{name}`) while preserving legacy group routes as noindex aliases.
-- Add tag pages from curated taxonomy (not raw every-token generation).
-- Generate only curated, high-quality search-topic pages under `/search/{term}` with minimum match and diversity thresholds.
-- Add competitor alternatives index and comparison pages under `/alternatives/*` with honest fit guidance.
+- Keep canonical emoji detail routes under `/emoji/{slug}--{hex}`.
+- Preserve legacy detail routes (`/{group}/{subgroup}/{slug}--{hex}`) as lightweight redirect aliases to canonical emoji pages.
+- Keep canonical browse routes flat at `/{group}/` and `/{group}/{subgroup}/`.
+- Preserve `/category/*` URLs as compatibility aliases (`noindex,follow`, canonical to flat browse paths).
+- Generate tag pages from curated taxonomy (not raw every-token generation).
+- Generate curated search-topic pages under `/search/{term}` with minimum match/diversity thresholds.
+- Keep competitor alternatives index and comparison pages under `/alternatives/*` with fit-first guidance.
 
 ## Indexing Policy
 - `robots.txt` allows crawling and points to `https://emoj.ie/sitemap.xml`.
@@ -68,10 +73,10 @@ Last updated: 2026-02-20
 - Alternatives description: `Compare strengths, tradeoffs, and migration steps for {Competitor}.`
 
 ## Template Utility Requirements (Current)
-- Home: clear speed-value proposition, proof chips, and immediate CTA paths.
-- Category/Tag/Search hubs: include utility framing + route-specific stats before listings.
-- Emoji detail: include copy actions, usage context, and related links.
-- Alternatives pages: include switch signals, side-by-side strengths, fit guidance, and migration checklist.
+- Home: emoji-first 12-card category grid with minimal chrome and fast path into subcategories.
+- Category/Tag/Search/Subcategory hubs: card-first browse and copy with progressive hydration for heavier collections.
+- Emoji detail: copy actions, usage context, and related links.
+- Alternatives pages: switch signals, side-by-side strengths, fit guidance, and migration checklist.
 
 ## Content Quality Guardrails
 - No doorway pages

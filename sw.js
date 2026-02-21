@@ -1,4 +1,4 @@
-const CACHE_NAME = 'emojie-6419152731d36d21';
+const CACHE_NAME = 'emojie-abd6fa229b44f14b';
 const CORE_ASSETS = [
   '/',
   '/index.html',
