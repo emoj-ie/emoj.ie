@@ -22,7 +22,7 @@ test('style rules avoid transition-all and outline-none anti-patterns', () => {
 test('key templates include skip link and heading hierarchy anchor', () => {
   const home = read('index.html');
   const group = read('smileys-emotion/index.html');
-  const detail = read('smileys-emotion/face-smiling/grinning-face--1f600/index.html');
+  const detail = read('emoji/grinning-face--1f600/index.html');
 
   assert.match(home, /class="skip-link"/);
   assert.match(group, /class="skip-link"/);

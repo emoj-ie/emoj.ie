@@ -2242,19 +2242,30 @@ export async function renderSite({ model, legacyRedirects, config, tempRoot }) {
         const relatedEntries = relatedPool
           .filter((candidate) => candidate.hexLower !== entry.hexLower)
           .slice(0, 6);
+        const detailMatchesCanonical = entry.detailRoute === entry.canonicalRoute;
+        const shouldRenderDetailPage = detailMatchesCanonical || !entry.indexable;
 
-        await writeRouteHtml(
-          tempRoot,
-          entry.detailRoute,
-          renderEmojiPage(group, subgroup, entry, variantEntries, config, entry.detailRoute, {
-            relatedEntries,
-            tagRouteKeys,
-          }),
-          generatedFiles
-        );
+        if (shouldRenderDetailPage) {
+          await writeRouteHtml(
+            tempRoot,
+            entry.detailRoute,
+            renderEmojiPage(group, subgroup, entry, variantEntries, config, entry.detailRoute, {
+              relatedEntries,
+              tagRouteKeys,
+            }),
+            generatedFiles
+          );
+        } else {
+          await writeRouteHtml(
+            tempRoot,
+            entry.detailRoute,
+            renderRedirectPage(entry.detailRoute, entry.canonicalRoute, config),
+            generatedFiles
+          );
+        }
 
         if (entry.indexable) {
-          if (entry.canonicalRoute === entry.detailRoute) {
+          if (detailMatchesCanonical) {
             writtenCanonicalEmojiRoutes.add(entry.canonicalRoute);
           } else if (!writtenCanonicalEmojiRoutes.has(entry.canonicalRoute)) {
             await writeRouteHtml(

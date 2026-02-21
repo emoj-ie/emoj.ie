@@ -28,7 +28,7 @@ test('local base emoji asset directory exists with substantial coverage', () => 
 });
 
 test('base emoji pages prefer local asset path with CDN fallback metadata', () => {
-  const page = read('smileys-emotion/face-smiling/grinning-face--1f600/index.html');
+  const page = read('emoji/grinning-face--1f600/index.html');
   assert.match(page, /\/assets\/emoji\/base\/1F600\.svg/);
   assert.match(page, /data-cdn-src="https:\/\/cdn\.jsdelivr\.net\//);
 });

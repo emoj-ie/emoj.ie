@@ -34,7 +34,7 @@ test('sample templates have complete meta tags and schema payloads', () => {
     ['search/index.html', ['CollectionPage', 'BreadcrumbList']],
     ['smileys-emotion/face-smiling/index.html', ['CollectionPage', 'BreadcrumbList']],
     ['category/smileys-emotion/face-smiling/index.html', ['CollectionPage', 'BreadcrumbList']],
-    ['smileys-emotion/face-smiling/grinning-face--1f600/index.html', ['WebPage', 'DefinedTerm', 'BreadcrumbList']],
+    ['emoji/grinning-face--1f600/index.html', ['WebPage', 'DefinedTerm', 'BreadcrumbList']],
   ];
 
   for (const [filePath, schemaTypes] of samples) {
@@ -109,9 +109,14 @@ test('legacy detail route points canonical to short emoji route', () => {
 
   assert.match(
     legacyRoutePage,
+    /<meta http-equiv="refresh" content="0; url=https:\/\/emoj\.ie\/emoji\/grinning-face--1f600\/"/
+  );
+  assert.match(
+    legacyRoutePage,
     /<link rel="canonical" href="https:\/\/emoj\.ie\/emoji\/grinning-face--1f600\/"/
   );
   assert.match(legacyRoutePage, /<meta name="robots" content="noindex,follow"/);
+  assert.ok(!legacyRoutePage.includes('"@type":"DefinedTerm"'));
   assert.match(
     canonicalRoutePage,
     /<link rel="canonical" href="https:\/\/emoj\.ie\/emoji\/grinning-face--1f600\/"/

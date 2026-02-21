@@ -69,6 +69,26 @@ function buildHash(parts) {
   return hash.digest('hex').slice(0, 16);
 }
 
+async function buildFileContentHash(rootDir, files, seedParts = []) {
+  const hash = crypto.createHash('sha256');
+  for (const part of seedParts) {
+    hash.update(String(part));
+    hash.update('\n');
+  }
+
+  const stableFiles = stableList(files);
+  for (const file of stableFiles) {
+    const filePath = path.join(rootDir, file);
+    const content = await fs.readFile(filePath);
+    hash.update(file);
+    hash.update('\n');
+    hash.update(content);
+    hash.update('\n');
+  }
+
+  return hash.digest('hex');
+}
+
 function formatProgressBar(current, total, width = 28) {
   const normalizedTotal = Math.max(1, total);
   const ratio = Math.min(1, Math.max(0, current / normalizedTotal));
@@ -157,11 +177,8 @@ async function main() {
 
   verifyRenderResult(renderResult);
 
-  const [groupedDataStat, groupedDataContents] = await Promise.all([
-    fs.stat(model.groupedDataPath),
-    fs.readFile(model.groupedDataPath, 'utf8'),
-  ]);
-  const timestamp = new Date(Math.floor(groupedDataStat.mtimeMs)).toISOString();
+  const groupedDataContents = await fs.readFile(model.groupedDataPath, 'utf8');
+  const timestamp = new Date().toISOString();
   const groupedDataHash = buildHash([groupedDataContents]);
 
   advancePhase('Building sitemap files');
@@ -213,20 +230,24 @@ async function main() {
     config.build.sitemapEmoji,
     config.build.sitemapIndex,
     config.build.robots || 'robots.txt',
-    'sw.js',
   ]);
 
-  const buildHashValue = buildHash([
+  const preSwHash = await buildFileContentHash(tempRoot, generatedFileList, [
     groupedDataHash,
     JSON.stringify(config.indexing || {}),
     JSON.stringify(config.redirects || {}),
+  ]);
+
+  const buildHashValue = buildHash([
+    preSwHash,
     ...managedRoots,
-    ...generatedFileList,
   ]);
 
   advancePhase('Generating service worker and manifest');
   const swContent = buildServiceWorker({ buildHash: buildHashValue });
   await writeTextFile(tempRoot, 'sw.js', swContent);
+  generatedFileList.push('sw.js');
+  generatedFileList.sort((a, b) => a.localeCompare(b));
 
   const manifest = {
     version: 1,
