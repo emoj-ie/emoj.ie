@@ -1533,6 +1533,12 @@ ol.story-list {
   font-size: clamp(2.2rem, 4.5vw, 4rem);
 }
 
+.emoji-detail-hero img {
+  width: 96px;
+  height: 96px;
+  object-fit: contain;
+}
+
 .emoji-detail-art {
   background: var(--bg-elevated);
 }
@@ -1722,6 +1728,15 @@ ol.story-list {
 
 .tofu-page-info p {
   margin: 0;
+}
+
+.tofu-missing-shell {
+  display: grid;
+  gap: 0.75rem;
+}
+
+.tofu-missing-shell .panel-emoji-card {
+  min-height: 132px;
 }
 
 .emoji-context {
@@ -2013,7 +2028,11 @@ ol.story-list {
   border-radius: var(--radius-md);
   border: 2px solid var(--border-soft);
   overflow: hidden;
-  background: linear-gradient(180deg, #101a30 0%, #0b1226 55%, #070d1a 100%);
+  background:
+    radial-gradient(circle at 18% 24%, rgba(96, 142, 255, 0.22), transparent 36%),
+    radial-gradient(circle at 76% 12%, rgba(176, 118, 255, 0.18), transparent 42%),
+    radial-gradient(circle at 48% 78%, rgba(112, 212, 255, 0.16), transparent 45%),
+    linear-gradient(180deg, #0d1730 0%, #091127 54%, #050a17 100%);
   perspective: 420px;
   box-shadow: inset 0 0 24px rgba(0, 0, 0, 0.34);
 }
@@ -2026,16 +2045,28 @@ ol.story-list {
 }
 
 .credits-wallpaper::before {
-  content: '🌌 ✨ 🪐 ⭐ ☄️ 🌙 ✨ 🌌 ⭐ 🪐 ✨ ☄️ 🌙 ✨ \A ⭐ 🪐 ✨ 🌌 ☄️ 🌙 ✨ ⭐ 🪐 ✨ 🌌 ☄️ \A 🌙 ✨ 🌌 ⭐ 🪐 ✨ ☄️ 🌙 ✨ 🌌 ⭐ 🪐 ✨';
+  content: '';
   position: absolute;
-  inset: -14% -8%;
-  white-space: pre;
-  line-height: 2.1;
-  letter-spacing: 0.52rem;
-  font-size: clamp(0.92rem, 1.6vw, 1.18rem);
-  opacity: 0.14;
-  color: #eaf1ff;
-  transform: rotate(-7deg) scale(1.06);
+  inset: 0;
+  background:
+    radial-gradient(circle at 20% 30%, rgba(255, 255, 255, 0.18) 0 1px, transparent 2px),
+    radial-gradient(circle at 70% 20%, rgba(255, 255, 255, 0.15) 0 1px, transparent 2px),
+    radial-gradient(circle at 40% 70%, rgba(255, 255, 255, 0.14) 0 1px, transparent 2px),
+    radial-gradient(circle at 82% 64%, rgba(255, 255, 255, 0.12) 0 1px, transparent 2px);
+  opacity: 0.65;
+}
+
+.credits-star {
+  position: absolute;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  color: rgba(240, 247, 255, 0.9);
+  transform: translate(-50%, -50%);
+  animation: credits-star-float var(--dur, 6.8s) ease-in-out infinite;
+  animation-delay: var(--delay, 0s);
+  filter: drop-shadow(0 0 8px rgba(186, 208, 255, 0.32));
+  user-select: none;
 }
 
 .about-credits-crawl h2 {
@@ -2079,7 +2110,7 @@ ol.story-list {
   text-shadow: 0 0 10px rgba(255, 227, 154, 0.28);
   transform-origin: 50% 100%;
   transform: translateX(-50%) translateY(92%) rotateX(24deg);
-  animation: credits-crawl 24s linear infinite;
+  animation: credits-crawl 18s linear infinite;
 }
 
 .credits-crawl-scene:hover .credits-crawl-track,
@@ -2140,11 +2171,24 @@ ol.story-list {
 
 @keyframes credits-crawl {
   from {
-    transform: translateX(-50%) translateY(92%) rotateX(24deg);
+    transform: translateX(-50%) translateY(78%) rotateX(24deg);
   }
 
   to {
-    transform: translateX(-50%) translateY(-250%) rotateX(24deg);
+    transform: translateX(-50%) translateY(-188%) rotateX(24deg);
+  }
+}
+
+@keyframes credits-star-float {
+  0%,
+  100% {
+    opacity: 0.32;
+    transform: translate(-50%, -50%) scale(0.92);
+  }
+
+  50% {
+    opacity: 0.78;
+    transform: translate(-50%, -50%) scale(1.16);
   }
 }
 

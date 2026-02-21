@@ -876,7 +876,7 @@ function renderAboutPage(model, config) {
           )} ${escapeHtml(project.name)}</a> · ${escapeHtml(project.role)}</p>`
       )
       .join('')}`;
-  const creditsMarkup = [1, 2, 3].map((runNumber) => buildCreditsRun(runNumber)).join('');
+  const creditsMarkup = [1, 2, 3, 4, 5, 6].map((runNumber) => buildCreditsRun(runNumber)).join('');
 
   const starterEntries = [];
   const starterHex = new Set();
@@ -978,6 +978,12 @@ function renderTofuPage(config) {
       <div class="tofu-page-actions">
         <button type="button" class="copy-btn secondary" data-tofu-rerun>Run Again</button>
       </div>
+    </section>
+    <section class="results-shell tofu-missing-shell" data-tofu-missing-shell hidden>
+      <div class="results-toolbar">
+        <p class="results-count" data-tofu-missing-count>Missing emoji list will appear after scan.</p>
+      </div>
+      <ul class="emoji-list emoji-list-panel" data-tofu-missing-list></ul>
     </section>
     <section class="about-card tofu-page-info">
       <h2>How it works</h2>
@@ -1782,6 +1788,7 @@ function renderEmojiPage(
     breadcrumbs: renderBreadcrumbs(crumbs),
     config,
     showHeaderSearch: true,
+    scripts: [{ src: 'detail-page.js', defer: true }],
     jsonLd,
     pageClass: 'page-detail',
   });

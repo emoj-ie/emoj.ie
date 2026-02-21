@@ -159,6 +159,13 @@ All notable project updates are tracked here in human-readable form.
   - bumped tofu cache key/version so stale 100% readings are invalidated
   - kept Favorites and Recently Copied rails mounted from first paint with stable empty states to prevent tofu panel layout jumps
   - filtered panel title-prefix emoji to skip private-use codepoints that commonly render as tofu
+- Added missing-glyph recovery and path-aware navigation context:
+  - `/tofu/` now renders the full missing-emoji set as OpenMoji card tiles with copy + detail links
+  - detail pages now auto-swap tofu glyphs to OpenMoji artwork in the emoji hero tile while preserving copy behavior
+  - breadcrumb context is now remembered from the previous route (for example `Tags` path into detail pages)
+- Refined credits crawl density and starfield behavior:
+  - increased crawl content cadence and loop density to reduce dead air between credits text runs
+  - replaced static wallpaper rows with randomized emoji star nodes for a more dynamic but readable backdrop
 
 ### Notes
 - Phase 0 through Phase 5 are complete for the current roadmap scope.

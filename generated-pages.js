@@ -1,6 +1,7 @@
 (function () {
   const THEME_PREFERENCE_KEY = 'themePreference';
   const THEME_SEQUENCE = ['system', 'light', 'dark'];
+  const DETAIL_TRAIL_STORAGE_KEY = 'emojiDetailTrailV1';
 
   function pickRandomSubset(items, limit) {
     var source = Array.isArray(items) ? items.slice() : [];
@@ -22,6 +23,89 @@
     }
 
     window.plausible(eventName, { props: props || {} });
+  }
+
+  function toTitleCaseLabel(value) {
+    return String(value || '')
+      .replace(/[-_]+/g, ' ')
+      .replace(/\s+/g, ' ')
+      .trim()
+      .split(' ')
+      .filter(Boolean)
+      .map(function (part) {
+        if (!part) return part;
+        return part.charAt(0).toUpperCase() + part.slice(1);
+      })
+      .join(' ');
+  }
+
+  function normalizePathname(pathname) {
+    var value = String(pathname || '/').split('#')[0].split('?')[0] || '/';
+    if (!value.startsWith('/')) {
+      value = '/' + value;
+    }
+    value = value.replace(/\/{2,}/g, '/');
+    if (value.length > 1 && !value.endsWith('/')) {
+      value += '/';
+    }
+    return value;
+  }
+
+  function isDetailPath(pathname) {
+    return /--[0-9a-f][0-9a-f-]*\/?$/i.test(String(pathname || ''));
+  }
+
+  function readBreadcrumbTrailFromPage() {
+    var breadcrumbNav = document.querySelector('nav.breadcrumbs');
+    if (!breadcrumbNav) {
+      return [];
+    }
+
+    var items = Array.from(breadcrumbNav.querySelectorAll('a, span'))
+      .map(function (node) {
+        var label = toTitleCaseLabel(node.textContent || '');
+        if (!label) return null;
+        if (node.tagName === 'A') {
+          var href = node.getAttribute('href') || '';
+          return {
+            label: label,
+            href: href,
+          };
+        }
+        return {
+          label: label,
+        };
+      })
+      .filter(Boolean);
+
+    while (items.length > 0 && !items[items.length - 1].href) {
+      items.pop();
+    }
+
+    return items;
+  }
+
+  function captureDetailTrail(targetPath) {
+    if (!targetPath) {
+      return;
+    }
+
+    var trail = readBreadcrumbTrailFromPage();
+    if (!trail.length) {
+      return;
+    }
+
+    var payload = {
+      path: normalizePathname(targetPath),
+      trail: trail,
+      savedAt: Date.now(),
+    };
+
+    try {
+      sessionStorage.setItem(DETAIL_TRAIL_STORAGE_KEY, JSON.stringify(payload));
+    } catch {
+      // Ignore storage failures.
+    }
   }
 
   function analyticsContext(element, defaultFormat) {
@@ -477,8 +561,31 @@
       return;
     }
     var sceneNode = trackNode.closest('.credits-crawl-scene');
+    var wallpaperNode = sceneNode ? sceneNode.querySelector('.credits-wallpaper') : null;
 
     var markerEmoji = ['✨', '🌟', '⭐', '💫', '🌠', '🪐', '🚀', '🛰️', '☄️', '🔭'];
+    var starEmoji = ['✨', '⭐', '🌟', '💫', '🪐', '🌙', '☄️', '🛰️', '🚀'];
+
+    function renderWallpaperStars() {
+      if (!wallpaperNode) {
+        return;
+      }
+
+      wallpaperNode.replaceChildren();
+      var starCount = 46;
+      for (var i = 0; i < starCount; i += 1) {
+        var node = document.createElement('span');
+        node.className = 'credits-star';
+        node.textContent = starEmoji[Math.floor(Math.random() * starEmoji.length)];
+        node.style.left = (3 + Math.random() * 94).toFixed(3) + '%';
+        node.style.top = (4 + Math.random() * 92).toFixed(3) + '%';
+        node.style.fontSize = (0.64 + Math.random() * 0.92).toFixed(3) + 'rem';
+        node.style.opacity = (0.2 + Math.random() * 0.55).toFixed(3);
+        node.style.setProperty('--delay', '-' + (Math.random() * 6).toFixed(3) + 's');
+        node.style.setProperty('--dur', (4.8 + Math.random() * 6.4).toFixed(3) + 's');
+        wallpaperNode.appendChild(node);
+      }
+    }
 
     function pickMarker(excluded) {
       if (!markerEmoji.length) {
@@ -508,6 +615,7 @@
     }
 
     refreshRunMarkers();
+    renderWallpaperStars();
     trackNode.addEventListener('animationiteration', refreshRunMarkers);
 
     if (sceneNode) {
@@ -676,6 +784,34 @@
   }
 
   document.addEventListener('click', function (event) {
+    var navigationLink = event.target.closest('a[href]');
+    if (navigationLink) {
+      if (
+        event.button === 0 &&
+        !event.metaKey &&
+        !event.ctrlKey &&
+        !event.shiftKey &&
+        !event.altKey &&
+        (!navigationLink.target || navigationLink.target === '_self') &&
+        !navigationLink.hasAttribute('download')
+      ) {
+        var href = navigationLink.getAttribute('href') || '';
+        if (href && !href.startsWith('#') && !href.startsWith('mailto:') && !href.startsWith('javascript:')) {
+          try {
+            var resolved = new URL(href, window.location.origin);
+            if (resolved.origin === window.location.origin) {
+              var targetPath = normalizePathname(resolved.pathname);
+              if (isDetailPath(targetPath)) {
+                captureDetailTrail(targetPath);
+              }
+            }
+          } catch {
+            // Ignore invalid href values.
+          }
+        }
+      }
+    }
+
     const shareButton = event.target.closest('[data-share-url]');
     if (shareButton) {
       const shareUrl = shareButton.getAttribute('data-share-url');

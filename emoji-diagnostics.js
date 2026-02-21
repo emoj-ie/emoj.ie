@@ -157,9 +157,163 @@
       pool.push({
         emoji: String(row.emoji),
         hex: hex,
+        annotation: String(row.annotation || '').trim(),
+        detailRoute: String(row.detailRoute || '')
+          .replace(/^\/+/, '')
+          .trim(),
+        group: String(row.group || '').trim(),
+        subgroup: String(row.subgroup || '').trim(),
+        useLocalAsset: Boolean(row.useLocalAsset),
+        cdnAssetPath: String(row.cdnAssetPath || '').trim(),
       });
     });
     return pool;
+  }
+
+  function normalizeRoute(route) {
+    var value = String(route || '').replace(/^\/+/, '').trim();
+    if (!value) return '';
+    return value.endsWith('/') ? value : value + '/';
+  }
+
+  function toTitle(value) {
+    return String(value || '')
+      .replace(/[-_]+/g, ' ')
+      .replace(/\s+/g, ' ')
+      .trim()
+      .split(' ')
+      .filter(Boolean)
+      .map(function (part) {
+        if (!part) return part;
+        return part.charAt(0).toUpperCase() + part.slice(1);
+      })
+      .join(' ');
+  }
+
+  function guessLabel(row) {
+    var annotation = String(row && row.annotation ? row.annotation : '').trim();
+    if (annotation) return annotation;
+    var route = normalizeRoute(row && row.detailRoute);
+    if (!route) return 'emoji';
+    var parts = route.split('/').filter(Boolean);
+    var slug = parts.length ? parts[parts.length - 1] : route;
+    var withoutHex = slug.replace(/--[0-9a-f][0-9a-f-]*$/i, '');
+    return toTitle(withoutHex) || 'emoji';
+  }
+
+  function assetForRow(row) {
+    var upperHex = String(row && row.hex ? row.hex : '').toUpperCase();
+    var localSrc = '/assets/emoji/base/' + upperHex + '.svg';
+    var cdnSrc =
+      String(row && row.cdnAssetPath ? row.cdnAssetPath : '') ||
+      'https://cdn.jsdelivr.net/npm/openmoji@15.1.0/color/svg/' + upperHex + '.svg';
+    var useLocal = Boolean(row && row.useLocalAsset) && String(row.group || '').toLowerCase() !== 'component';
+    return {
+      src: useLocal ? localSrc : cdnSrc,
+      cdn: cdnSrc,
+    };
+  }
+
+  function createMissingCardItem(row) {
+    var label = guessLabel(row);
+    var route = normalizeRoute(row.detailRoute);
+    var asset = assetForRow(row);
+
+    var li = document.createElement('li');
+    li.className = 'emoji emoji-panel-item';
+
+    var card = document.createElement('article');
+    card.className = 'panel-card panel-emoji-card';
+
+    var link = document.createElement('a');
+    link.className = 'panel-emoji-open';
+    link.href = '/' + route;
+    link.title = label;
+
+    var title = document.createElement('span');
+    title.className = 'panel-card-title panel-emoji-title';
+    title.textContent = label;
+
+    var hero = document.createElement('span');
+    hero.className = 'panel-card-hero';
+    hero.setAttribute('aria-hidden', 'true');
+
+    var image = document.createElement('img');
+    image.className = 'panel-card-hero-img';
+    image.src = asset.src;
+    image.alt = label;
+    image.width = 56;
+    image.height = 56;
+    image.loading = 'lazy';
+    image.setAttribute('data-cdn-src', asset.cdn);
+    image.setAttribute('data-hex', String(row.hex || ''));
+
+    var copy = document.createElement('button');
+    copy.type = 'button';
+    copy.className = 'panel-emoji-copy';
+    copy.setAttribute('data-copy-value', String(row.emoji || ''));
+    copy.setAttribute('data-copy-label', label);
+    copy.setAttribute('data-copy-format', 'emoji');
+    copy.setAttribute('data-emoji', String(row.emoji || ''));
+    copy.setAttribute('data-hex', String(row.hex || ''));
+    copy.setAttribute('data-group', String(row.group || ''));
+    copy.setAttribute('data-subgroup', String(row.subgroup || ''));
+    copy.setAttribute('data-route', route);
+    copy.setAttribute('aria-label', 'Copy ' + label + ' emoji');
+    copy.title = 'Copy ' + label;
+
+    var copyGlyph = document.createElement('span');
+    copyGlyph.setAttribute('aria-hidden', 'true');
+    copyGlyph.textContent = '⧉';
+
+    var copyLabel = document.createElement('span');
+    copyLabel.className = 'visually-hidden';
+    copyLabel.textContent = 'Copy ' + label;
+
+    hero.appendChild(image);
+    link.appendChild(title);
+    link.appendChild(hero);
+    copy.appendChild(copyGlyph);
+    copy.appendChild(copyLabel);
+    card.appendChild(link);
+    card.appendChild(copy);
+    li.appendChild(card);
+
+    return li;
+  }
+
+  function renderMissingList(missingRows, total) {
+    var shell = document.querySelector('[data-tofu-missing-shell]');
+    var list = document.querySelector('[data-tofu-missing-list]');
+    var count = document.querySelector('[data-tofu-missing-count]');
+    if (!shell || !list || !count) {
+      return;
+    }
+
+    list.innerHTML = '';
+    var safeTotal = Math.max(0, Number(total) || 0);
+    var safeMissing = Array.isArray(missingRows) ? missingRows.length : 0;
+    count.textContent =
+      safeMissing.toLocaleString() +
+      ' missing emoji ' +
+      (safeTotal ? 'out of ' + safeTotal.toLocaleString() + ' scanned.' : 'detected.');
+
+    if (!safeMissing) {
+      var empty = document.createElement('li');
+      empty.className = 'emoji-empty';
+      empty.textContent = 'No missing glyphs detected on this system.';
+      list.appendChild(empty);
+      shell.hidden = false;
+      return;
+    }
+
+    var fragment = document.createDocumentFragment();
+    missingRows.forEach(function (row) {
+      if (!row || !row.detailRoute || !row.hex) return;
+      fragment.appendChild(createMissingCardItem(row));
+    });
+    list.appendChild(fragment);
+    shell.hidden = false;
   }
 
   function readCache() {
@@ -288,12 +442,16 @@
     var opts = options || {};
     var force = Boolean(opts.force);
     var source = opts.source || 'unknown';
+    var includeMissingList = Boolean(opts.includeMissingList);
     var detector = createEmojiSupportDetector();
     if (!detector) {
       setState(roots, 'is-error');
       setIndicator(roots, 'Tofu score unavailable');
       setNote(roots, 'Canvas emoji detection is unavailable in this browser.');
       setProgress(roots, 0);
+      if (includeMissingList) {
+        renderMissingList([], 0);
+      }
       return Promise.resolve();
     }
 
@@ -301,6 +459,9 @@
       var cached = readCache();
       if (cached) {
         renderSummary(roots, cached.total, cached.missing, true);
+        if (includeMissingList) {
+          renderMissingList([], cached.total);
+        }
         track('emoji_tofu_score_ready', {
           source: source,
           total: String(cached.total),
@@ -322,6 +483,7 @@
           var total = pool.length;
           var missing = 0;
           var index = 0;
+          var missingRows = includeMissingList ? [] : null;
 
           function step(deadline) {
             var processed = 0;
@@ -341,6 +503,9 @@
 
               if (!detector(row.emoji)) {
                 missing += 1;
+                if (missingRows) {
+                  missingRows.push(row);
+                }
               }
 
               if (processed >= 120) {
@@ -361,6 +526,9 @@
 
             writeCache(total, missing);
             renderSummary(roots, total, missing, false);
+            if (includeMissingList) {
+              renderMissingList(missingRows, total);
+            }
             track('emoji_tofu_score_ready', {
               source: source,
               total: String(total),
@@ -378,6 +546,9 @@
         setIndicator(roots, 'Tofu score unavailable');
         setNote(roots, 'Could not load emoji data for scoring on this visit.');
         setProgress(roots, 0);
+        if (includeMissingList) {
+          renderMissingList([], 0);
+        }
       });
   }
 
@@ -387,6 +558,10 @@
       return;
     }
 
+    var includeMissingList = roots.some(function (root) {
+      return String(root.getAttribute('data-tofu-context') || '').toLowerCase() === 'tofu';
+    });
+
     setUserAgent();
 
     var running = false;
@@ -395,7 +570,16 @@
         return;
       }
       running = true;
-      runScoreScan(roots, options).finally(function () {
+      var opts = options || {};
+      runScoreScan(
+        roots,
+        Object.assign(
+          {
+            includeMissingList: includeMissingList,
+          },
+          opts
+        )
+      ).finally(function () {
         running = false;
       });
     }
@@ -413,7 +597,10 @@
       hasStarted = true;
       window.setTimeout(function () {
         idle(function () {
-          safeRun({ force: false, source: source || window.location.pathname });
+          safeRun({
+            force: includeMissingList ? true : false,
+            source: source || window.location.pathname,
+          });
         }, 260);
       }, 420);
     }

@@ -33,6 +33,15 @@ test('logo picker resolves daily emoji by month-day key', () => {
   assert.match(globalScript, /row\.monthDay === monthDay/);
   assert.match(globalScript, /\/assets\/emoji\/base\//);
   assert.match(globalScript, /data-logo-emoji-image/);
+  assert.match(globalScript, /DETAIL_TRAIL_STORAGE_KEY/);
+  assert.match(globalScript, /captureDetailTrail/);
+});
+
+test('detail enhancement script applies path breadcrumbs and emoji fallback', () => {
+  const detailScript = read('detail-page.js');
+  assert.match(detailScript, /applyStoredDetailTrail/);
+  assert.match(detailScript, /initDetailEmojiFallback/);
+  assert.match(detailScript, /emoji_render_fallback/);
 });
 
 test('homepage template has lazy loading controls', () => {
@@ -127,6 +136,7 @@ test('emoji detail pages include context, code formats, and related links', () =
   assert.ok(!detail.includes('data-emoji-render-status'));
   assert.ok(!detail.includes('data-system-tofu-score'));
   assert.ok(!detail.includes('emoji-diagnostics.js'));
+  assert.match(detail, /detail-page\.js/);
   assert.match(detail, /Meaning And Usage/);
   assert.match(detail, /<section class="emoji-code-grid"/);
   assert.match(detail, /Shortcode/);
@@ -141,5 +151,8 @@ test('tofu diagnostics page is generated with rerun controls', () => {
   assert.match(tofu, /data-tofu-score-root/);
   assert.match(tofu, /data-tofu-rerun/);
   assert.match(tofu, /data-tofu-user-agent/);
+  assert.match(tofu, /data-tofu-missing-shell/);
+  assert.match(tofu, /data-tofu-missing-list/);
+  assert.match(tofu, /data-tofu-missing-count/);
   assert.match(tofu, /emoji-diagnostics\.js/);
 });

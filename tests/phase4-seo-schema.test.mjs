@@ -100,6 +100,7 @@ test('emoji sitemap uses canonical short emoji routes and core sitemap includes 
   assert.ok(!searchIndex.includes('group-link-list'));
   assert.ok(!tagIndex.includes('group-link-list'));
   assert.match(tofuIndex, /data-tofu-score-root/);
+  assert.match(tofuIndex, /data-tofu-missing-list/);
 });
 
 test('legacy detail route points canonical to short emoji route', () => {
