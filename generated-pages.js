@@ -344,6 +344,219 @@
       });
   }
 
+  function normalizeRoute(route) {
+    var value = String(route || '')
+      .replace(/^\/+/, '')
+      .trim();
+    if (!value) return '';
+    return value.endsWith('/') ? value : value + '/';
+  }
+
+  function labelFromRoute(route) {
+    var normalized = normalizeRoute(route);
+    if (!normalized) return 'emoji';
+    var parts = normalized.split('/').filter(Boolean);
+    if (!parts.length) return 'emoji';
+    var slug = parts[parts.length - 1].replace(/--[0-9a-f][0-9a-f-]*$/i, '');
+    return toTitleCaseLabel(slug) || 'emoji';
+  }
+
+  function progressiveAssetForRow(row) {
+    var hex = String(row && row.hex ? row.hex : '').toUpperCase();
+    var fallbackCdn =
+      String(row && row.cdnAssetPath ? row.cdnAssetPath : '') ||
+      'https://cdn.jsdelivr.net/npm/openmoji@15.1.0/color/svg/' + hex + '.svg';
+    var useLocal = Boolean(row && row.useLocalAsset) && String(row.group || '').toLowerCase() !== 'component';
+    return {
+      src: useLocal ? '/assets/emoji/base/' + hex + '.svg' : fallbackCdn,
+      cdn: fallbackCdn,
+    };
+  }
+
+  function createProgressiveEmojiItem(row) {
+    var label = String(row && row.label ? row.label : '').trim() || labelFromRoute(row.detailRoute || row.targetRoute);
+    var targetRoute = normalizeRoute(row.targetRoute || row.detailRoute);
+    var detailRoute = normalizeRoute(row.detailRoute || row.targetRoute);
+    var emojiValue = String(row && row.emoji ? row.emoji : '');
+    var hex = String(row && row.hex ? row.hex : '').toLowerCase();
+    var group = String(row && row.group ? row.group : '');
+    var subgroup = String(row && row.subgroup ? row.subgroup : '');
+    var asset = progressiveAssetForRow(row || {});
+
+    var li = document.createElement('li');
+    li.className = 'emoji emoji-panel-item';
+
+    var card = document.createElement('article');
+    card.className = 'panel-card panel-emoji-card';
+
+    var link = document.createElement('a');
+    link.className = 'panel-emoji-open';
+    link.href = '/' + targetRoute;
+    link.title = label;
+
+    var title = document.createElement('span');
+    title.className = 'panel-card-title panel-emoji-title';
+    title.textContent = label;
+
+    var hero = document.createElement('span');
+    hero.className = 'panel-card-hero';
+    hero.setAttribute('aria-hidden', 'true');
+
+    var image = document.createElement('img');
+    image.className = 'panel-card-hero-img';
+    image.src = asset.src;
+    image.setAttribute('data-cdn-src', asset.cdn);
+    image.setAttribute('data-hex', hex);
+    image.alt = label;
+    image.width = 56;
+    image.height = 56;
+    image.loading = 'lazy';
+
+    var copy = document.createElement('button');
+    copy.type = 'button';
+    copy.className = 'panel-emoji-copy';
+    copy.setAttribute('data-copy-value', emojiValue);
+    copy.setAttribute('data-copy-label', label);
+    copy.setAttribute('data-copy-format', 'emoji');
+    copy.setAttribute('data-emoji', emojiValue);
+    copy.setAttribute('data-hex', hex);
+    copy.setAttribute('data-group', group);
+    copy.setAttribute('data-subgroup', subgroup);
+    copy.setAttribute('data-route', detailRoute || targetRoute);
+    copy.setAttribute('aria-label', 'Copy ' + label + ' emoji');
+    copy.title = 'Copy ' + label;
+
+    var copyGlyph = document.createElement('span');
+    copyGlyph.setAttribute('aria-hidden', 'true');
+    copyGlyph.textContent = '⧉';
+
+    var copyLabel = document.createElement('span');
+    copyLabel.className = 'visually-hidden';
+    copyLabel.textContent = 'Copy ' + label;
+
+    hero.appendChild(image);
+    link.appendChild(title);
+    link.appendChild(hero);
+    copy.appendChild(copyGlyph);
+    copy.appendChild(copyLabel);
+    card.appendChild(link);
+    card.appendChild(copy);
+    li.appendChild(card);
+
+    return li;
+  }
+
+  function initProgressiveEmojiLists() {
+    var roots = Array.from(document.querySelectorAll('[data-progressive-emoji-root]'));
+    if (!roots.length) {
+      return;
+    }
+
+    roots.forEach(function (root) {
+      var list = root.querySelector('[data-progressive-emoji-list]');
+      var payloadNode = root.querySelector('[data-progressive-emoji-data]');
+      if (!list || !payloadNode) {
+        return;
+      }
+
+      var rows = [];
+      try {
+        rows = JSON.parse(payloadNode.textContent || '[]');
+      } catch {
+        rows = [];
+      }
+      if (!Array.isArray(rows) || rows.length === 0) {
+        payloadNode.remove();
+        return;
+      }
+
+      payloadNode.remove();
+
+      var toolbar = root.querySelector('[data-progressive-emoji-toolbar]');
+      var countNode = root.querySelector('[data-progressive-emoji-count]');
+      var loadButton = root.querySelector('[data-progressive-emoji-load]');
+      var sentinel = root.querySelector('[data-progressive-emoji-sentinel]');
+      var chunk = Number.parseInt(list.getAttribute('data-progressive-chunk') || '96', 10);
+      if (!Number.isFinite(chunk) || chunk < 12) {
+        chunk = 96;
+      }
+
+      var total = Number.parseInt(list.getAttribute('data-progressive-total') || '0', 10);
+      if (!Number.isFinite(total) || total < 1) {
+        total = list.children.length + rows.length;
+      }
+
+      var rendered = Number.parseInt(list.getAttribute('data-progressive-rendered') || '0', 10);
+      if (!Number.isFinite(rendered) || rendered < 1) {
+        rendered = list.children.length;
+      }
+
+      var cursor = 0;
+      var observer = null;
+
+      function updateState() {
+        if (countNode) {
+          countNode.textContent =
+            'Showing ' + rendered.toLocaleString() + ' of ' + total.toLocaleString() + ' emojis.';
+        }
+
+        var hasRemaining = cursor < rows.length;
+        if (loadButton) {
+          loadButton.hidden = !hasRemaining;
+        }
+        if (toolbar) {
+          toolbar.hidden = false;
+        }
+        if (!hasRemaining && observer) {
+          observer.disconnect();
+          observer = null;
+        }
+      }
+
+      function appendChunk() {
+        var fragment = document.createDocumentFragment();
+        var appended = 0;
+        while (cursor < rows.length && appended < chunk) {
+          fragment.appendChild(createProgressiveEmojiItem(rows[cursor]));
+          cursor += 1;
+          appended += 1;
+        }
+        if (appended > 0) {
+          list.appendChild(fragment);
+          rendered += appended;
+        }
+        updateState();
+      }
+
+      if (loadButton) {
+        loadButton.addEventListener('click', function () {
+          appendChunk();
+          track('collection_load_more', {
+            source: window.location.pathname,
+          });
+        });
+      }
+
+      if (sentinel && 'IntersectionObserver' in window) {
+        observer = new IntersectionObserver(
+          function (entries) {
+            entries.forEach(function (entry) {
+              if (!entry.isIntersecting) return;
+              appendChunk();
+            });
+          },
+          {
+            rootMargin: '240px 0px',
+            threshold: 0.01,
+          }
+        );
+        observer.observe(sentinel);
+      }
+
+      updateState();
+    });
+  }
+
   function initAboutPlayground() {
     if (!document.body.classList.contains('page-about')) {
       return;
@@ -921,6 +1134,7 @@
   registerServiceWorker();
   initThemeToggle();
   applyDailyLogoEmoji();
+  initProgressiveEmojiLists();
   initAboutPlayground();
   initAboutCreditsCrawl();
   initGlobalHeaderMenu();

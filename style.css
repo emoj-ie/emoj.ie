@@ -1093,6 +1093,16 @@ body.menu-open {
   margin-bottom: 0.7rem;
 }
 
+.progressive-emoji-root {
+  display: grid;
+  gap: 0.72rem;
+}
+
+.progressive-emoji-toolbar {
+  margin: 0;
+  padding-top: 0.1rem;
+}
+
 .results-count {
   font-weight: 600;
   color: var(--text-muted);

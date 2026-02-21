@@ -166,7 +166,7 @@ test('curated search pages are generated with canonical metadata', () => {
 
   assertMetaSet(searchPage, `${searchRoute}index.html`);
   assert.match(searchPage, /<h1\b[^>]*>[^<]+<\/h1>/);
-  assert.match(searchPage, /<ul class="emoji-list emoji-list-panel">/);
+  assert.match(searchPage, /<ul class="emoji-list emoji-list-panel"[^>]*>/);
   assert.ok(!searchPage.includes('collection-kicker'));
   assert.ok(!searchPage.includes('noindex,follow'));
 });

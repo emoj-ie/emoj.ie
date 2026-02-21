@@ -119,6 +119,28 @@ test('canonical category page is minimal and links directly to canonical subgrou
   assert.ok(fileSize < 1200000, `expected category page < 1.2MB, got ${fileSize} bytes`);
 });
 
+test('heavy collection pages defer emoji cards behind progressive list hydration', () => {
+  const subgroupPage = read('people-body/person-role/index.html');
+  const searchPage = read('search/fire/index.html');
+  const manifest = JSON.parse(read('build-manifest.json'));
+  const tagPages = manifest.files.filter(
+    (filePath) => filePath.startsWith('tag/') && filePath.endsWith('/index.html') && filePath !== 'tag/index.html'
+  );
+  assert.ok(tagPages.length > 0, 'expected generated tag pages');
+  const sampleTagPage = read(tagPages[0]);
+  const globalScript = read('generated-pages.js');
+
+  assert.match(subgroupPage, /data-progressive-emoji-list/);
+  assert.match(subgroupPage, /data-progressive-emoji-data/);
+  assert.match(searchPage, /data-progressive-emoji-list/);
+  assert.match(searchPage, /data-progressive-emoji-data/);
+  assert.match(sampleTagPage, /data-progressive-emoji-root/);
+  assert.match(globalScript, /initProgressiveEmojiLists/);
+
+  const subgroupCardCount = (subgroupPage.match(/panel-emoji-card/g) || []).length;
+  assert.ok(subgroupCardCount <= 130, `expected limited server-rendered cards, got ${subgroupCardCount}`);
+});
+
 test('home app includes search relevance helpers and favorites persistence', () => {
   const homeApp = read('home-app.mjs');
 

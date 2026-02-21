@@ -473,6 +473,68 @@ function renderEmojiPanelCard(entry, assetTemplate, options = {}) {
   </li>`;
 }
 
+function toInlineJson(value) {
+  return JSON.stringify(value).replace(/</g, '\\u003c');
+}
+
+function toProgressiveEmojiRow(entry, assetTemplate) {
+  const imageHex = formatHexForAsset(entry.hexLower);
+  const targetRoute =
+    entry.indexable && entry.canonicalRoute ? entry.canonicalRoute : entry.detailRoute;
+  const fallbackCdn = assetTemplate.replace('{HEX}', imageHex);
+
+  return {
+    label: humanizeSlug(entry.slug),
+    emoji: entry.emoji || '',
+    hex: entry.hexLower,
+    group: entry.group,
+    subgroup: entry.subgroup,
+    detailRoute: entry.detailRoute,
+    targetRoute,
+    useLocalAsset: Boolean(entry.useLocalAsset),
+    cdnAssetPath: entry.cdnAssetPath || fallbackCdn,
+  };
+}
+
+function renderProgressiveEmojiPanelList(entries, assetTemplate, options = {}) {
+  const initialCount = Math.max(1, Number(options.initialCount) || 96);
+  const chunkSize = Math.max(24, Number(options.chunkSize) || 120);
+  const initialEntries = entries.slice(0, initialCount);
+  const deferredRows = entries.slice(initialCount).map((entry) => toProgressiveEmojiRow(entry, assetTemplate));
+  const totalCount = entries.length;
+  const renderedCount = initialEntries.length;
+
+  const listMarkup = initialEntries.map((emoji) => renderEmojiPanelCard(emoji, assetTemplate)).join('');
+  const emptyMarkup = '<li class="emoji-empty">No emojis found.</li>';
+
+  const payload =
+    deferredRows.length > 0
+      ? `<script type="application/json" data-progressive-emoji-data>${toInlineJson(
+          deferredRows
+        )}</script>`
+      : '';
+
+  const controls =
+    deferredRows.length > 0
+      ? `<div class="results-toolbar progressive-emoji-toolbar" data-progressive-emoji-toolbar>
+        <p class="results-count" data-progressive-emoji-count>Showing ${renderedCount.toLocaleString()} of ${totalCount.toLocaleString()} emojis.</p>
+        <button type="button" class="copy-btn secondary" data-progressive-emoji-load>Load More</button>
+      </div>
+      <div class="results-sentinel" data-progressive-emoji-sentinel></div>`
+      : '';
+
+  const listAttributes =
+    deferredRows.length > 0
+      ? ` data-progressive-emoji-list data-progressive-chunk="${chunkSize}" data-progressive-total="${totalCount}" data-progressive-rendered="${renderedCount}"`
+      : '';
+
+  return `<div class="progressive-emoji-root" data-progressive-emoji-root>
+    <ul class="emoji-list emoji-list-panel"${listAttributes}>${listMarkup || emptyMarkup}</ul>
+    ${payload}
+    ${controls}
+  </div>`;
+}
+
 function pickPanelPreviewEntry(entries = []) {
   for (const entry of entries) {
     if (!entry) continue;
@@ -1285,14 +1347,15 @@ function renderTagIndexPage(tags, config) {
 }
 
 function renderTagPage(tag, config) {
-  const emojiList = tag.emojis
-    .slice(0, 360)
-    .map((emoji) => renderEmojiPanelCard(emoji, config.assets.emojiCdnTemplate))
-    .join('');
+  const emojiEntries = tag.emojis.slice(0, 360);
+  const emojiPanelList = renderProgressiveEmojiPanelList(emojiEntries, config.assets.emojiCdnTemplate, {
+    initialCount: 96,
+    chunkSize: 96,
+  });
 
   const body = `<section class="subgroup">
     <h1 class="visually-hidden">${escapeHtml(tag.title)} emojis</h1>
-    <ul class="emoji-list emoji-list-panel">${emojiList}</ul>
+    ${emojiPanelList}
   </section>`;
 
   const canonicalUrl = absoluteUrl(config.site.baseUrl, tag.route);
@@ -1390,14 +1453,19 @@ function renderSearchIndexPage(searchPages, config) {
 }
 
 function renderSearchPage(searchPage, config) {
-  const emojiList = searchPage.emojis
-    .slice(0, 360)
-    .map((emoji) => renderEmojiPanelCard(emoji, config.assets.emojiCdnTemplate))
-    .join('');
+  const emojiEntries = searchPage.emojis.slice(0, 360);
+  const emojiPanelList = renderProgressiveEmojiPanelList(
+    emojiEntries,
+    config.assets.emojiCdnTemplate,
+    {
+      initialCount: 96,
+      chunkSize: 96,
+    }
+  );
 
   const body = `<section class="subgroup">
     <h1 class="visually-hidden">${escapeHtml(searchPage.title)}</h1>
-    <ul class="emoji-list emoji-list-panel">${emojiList}</ul>
+    ${emojiPanelList}
   </section>`;
 
   const canonicalUrl = absoluteUrl(config.site.baseUrl, searchPage.route);
@@ -1503,9 +1571,14 @@ function renderGroupPage(group, config, options = {}) {
 }
 
 function renderSubgroupPage(group, subgroup, config, options = {}) {
-  const emojiList = subgroup.emojis
-    .map((emoji) => renderEmojiPanelCard(emoji, config.assets.emojiCdnTemplate))
-    .join('');
+  const emojiPanelList = renderProgressiveEmojiPanelList(
+    subgroup.emojis,
+    config.assets.emojiCdnTemplate,
+    {
+      initialCount: 120,
+      chunkSize: 120,
+    }
+  );
 
   const renderedRoute = ensureTrailingSlash(options.route || subgroup.route);
   const canonicalRoute = ensureTrailingSlash(options.canonicalRoute || subgroup.route);
@@ -1517,7 +1590,7 @@ function renderSubgroupPage(group, subgroup, config, options = {}) {
   const pageClass = options.pageClass || 'page-subgroup';
   const body = `<section class="subgroup">
     <h1 class="visually-hidden">${escapeHtml(subgroup.title)} Emojis</h1>
-    <ul class="emoji-list emoji-list-panel">${emojiList}</ul>
+    ${emojiPanelList}
   </section>`;
 
   const categoryRoute = group.route;
