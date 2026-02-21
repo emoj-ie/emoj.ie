@@ -442,8 +442,19 @@ function withinDistance(a, b, maxDistance = 1) {
     return false;
   }
 
+  function isNonCharacterCodepoint(codepoint) {
+    if (!Number.isFinite(codepoint)) return false;
+    if (codepoint >= 0xfdd0 && codepoint <= 0xfdef) return true;
+    if ((codepoint & 0xffff) === 0xfffe || (codepoint & 0xffff) === 0xffff) return true;
+    return false;
+  }
+
   function canUseTitleRepresentative(entry) {
     if (!entry || !entry.emoji) {
+      return false;
+    }
+
+    if (String(entry.emoji).includes('\ufffd')) {
       return false;
     }
 
@@ -453,7 +464,7 @@ function withinDistance(a, b, maxDistance = 1) {
         .split('-')
         .map((part) => Number.parseInt(part, 16))
         .filter((part) => Number.isFinite(part));
-      if (parts.some((part) => isPrivateUseCodepoint(part))) {
+      if (parts.some((part) => isPrivateUseCodepoint(part) || isNonCharacterCodepoint(part) || part < 0x20)) {
         return false;
       }
     }

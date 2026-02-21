@@ -266,6 +266,7 @@ function renderGlobalAdvancedMenu() {
         <a class="copy-btn secondary" href="/">Home</a>
         <a class="copy-btn secondary" href="/search/">Search Topics</a>
         <a class="copy-btn secondary" href="/tag/">Tags</a>
+        <a class="copy-btn secondary" href="/tofu/">Tofu Score</a>
         <a class="copy-btn secondary" href="/alternatives/">Compare Sites</a>
         <a class="copy-btn secondary" href="/about/">About</a>
       </div>`;
@@ -385,6 +386,7 @@ function renderLayout({
         <a href="/">Home</a>
         <a href="/search/">Search Topics</a>
         <a href="/tag/">Tags</a>
+        <a href="/tofu/">Tofu Score</a>
         <a href="/alternatives/">Compare Sites</a>
         <a href="/about/">About</a>
       </nav>
@@ -555,8 +557,19 @@ function isPrivateUseCodepoint(codepoint) {
   return false;
 }
 
+function isNonCharacterCodepoint(codepoint) {
+  if (!Number.isFinite(codepoint)) return false;
+  if (codepoint >= 0xfdd0 && codepoint <= 0xfdef) return true;
+  if ((codepoint & 0xffff) === 0xfffe || (codepoint & 0xffff) === 0xffff) return true;
+  return false;
+}
+
 function canUseTitleRepresentative(entry) {
   if (!entry?.emoji) {
+    return false;
+  }
+
+  if (String(entry.emoji).includes('\ufffd')) {
     return false;
   }
 
@@ -566,7 +579,7 @@ function canUseTitleRepresentative(entry) {
       .split('-')
       .map((part) => Number.parseInt(part, 16))
       .filter((part) => Number.isFinite(part));
-    if (parts.some((part) => isPrivateUseCodepoint(part))) {
+    if (parts.some((part) => isPrivateUseCodepoint(part) || isNonCharacterCodepoint(part) || part < 0x20)) {
       return false;
     }
   }
@@ -802,6 +815,7 @@ function renderHomePage(model, config) {
         <a class="copy-btn secondary" href="/">Home</a>
         <a class="copy-btn secondary" href="/search/">Search Topics</a>
         <a class="copy-btn secondary" href="/tag/">Tags</a>
+        <a class="copy-btn secondary" href="/tofu/">Tofu Score</a>
         <a class="copy-btn secondary" href="/alternatives/">Compare Sites</a>
         <a class="copy-btn secondary" href="/about/">About</a>
       </div>
