@@ -1420,6 +1420,7 @@ function withinDistance(a, b, maxDistance = 1) {
   }
 
   function initWithEntries(entries) {
+    window.__EMOJI_HOME_ROWS__ = Array.isArray(entries) ? entries : [];
     initializeData(entries);
     refreshFavoriteSet();
     populateGroups();

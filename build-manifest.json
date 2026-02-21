@@ -1,7 +1,7 @@
 {
   "version": 1,
-  "generatedAt": "2026-02-21T04:15:10.094Z",
-  "buildHash": "aae49ce4e4fbe602",
+  "generatedAt": "2026-02-21T04:18:23.565Z",
+  "buildHash": "27f76e790ac4e97e",
   "managedRoots": [
     "about",
     "activities",
@@ -29,11 +29,12 @@
     "groups": 12,
     "emojis": 4284,
     "redirects": 4193,
-    "files": 10936,
+    "files": 10938,
     "coreRoutes": 252,
     "emojiRoutes": 2062
   },
   "files": [
+    "about-data.json",
     "about/index.html",
     "activities/arts-crafts/artist-palette--1f3a8/index.html",
     "activities/arts-crafts/artist-palette/index.html",
@@ -10521,6 +10522,7 @@
     "tag/water/index.html",
     "tag/woman/index.html",
     "tag/zodiac/index.html",
+    "tofu-data.json",
     "tofu/index.html",
     "travel-places/hotel/bellhop-bell--1f6ce/index.html",
     "travel-places/hotel/bellhop-bell/index.html",

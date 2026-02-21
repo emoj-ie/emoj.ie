@@ -515,9 +515,9 @@
       });
     });
 
-    fetch('/home-data.json')
+    fetch('/about-data.json')
       .then(function (response) {
-        if (!response.ok) throw new Error('home data unavailable');
+        if (!response.ok) throw new Error('about data unavailable');
         return response.json();
       })
       .then(function (rows) {
@@ -528,9 +528,9 @@
         }
       })
       .catch(function () {
-        fetch('/daily-emoji.json')
+        fetch('/home-data.json')
           .then(function (response) {
-            if (!response.ok) throw new Error('daily emoji unavailable');
+            if (!response.ok) throw new Error('home data unavailable');
             return response.json();
           })
           .then(function (rows) {
@@ -541,7 +541,21 @@
             }
           })
           .catch(function () {
-            // Keep starter pool from static markup.
+            fetch('/daily-emoji.json')
+              .then(function (response) {
+                if (!response.ok) throw new Error('daily emoji unavailable');
+                return response.json();
+              })
+              .then(function (rows) {
+                var nextPool = buildPoolFromRows(rows);
+                if (nextPool.length >= 12) {
+                  pool = nextPool;
+                  renderWall();
+                }
+              })
+              .catch(function () {
+                // Keep starter pool from static markup.
+              });
           });
       });
   }

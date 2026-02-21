@@ -1850,6 +1850,63 @@ function buildHomeDataPayload(emojiEntries) {
   return `${JSON.stringify(rows)}\n`;
 }
 
+function buildTofuDataPayload(emojiEntries) {
+  const rows = [...emojiEntries]
+    .sort((a, b) => a.detailRoute.localeCompare(b.detailRoute, 'en', { sensitivity: 'base' }))
+    .map((entry) => ({
+      emoji: entry.emoji || '',
+      annotation: entry.annotation || '',
+      group: entry.group,
+      subgroup: entry.subgroup,
+      hexcode: entry.hexLower,
+      detailRoute: entry.indexable ? entry.canonicalRoute || entry.detailRoute : entry.detailRoute,
+      useLocalAsset: Boolean(entry.useLocalAsset),
+      cdnAssetPath: entry.cdnAssetPath || '',
+    }));
+
+  return `${JSON.stringify(rows)}\n`;
+}
+
+function buildAboutDataPayload(emojiEntries, maxRows = 720) {
+  const source = [...emojiEntries]
+    .filter((entry) => entry.indexable && !entry.isVariant && entry.group !== 'component')
+    .sort((a, b) => a.detailRoute.localeCompare(b.detailRoute, 'en', { sensitivity: 'base' }));
+
+  const groupBuckets = new Map();
+  for (const entry of source) {
+    if (!groupBuckets.has(entry.group)) {
+      groupBuckets.set(entry.group, []);
+    }
+    groupBuckets.get(entry.group).push(entry);
+  }
+
+  const groupKeys = [...groupBuckets.keys()].sort((a, b) => a.localeCompare(b));
+  const picked = [];
+  let hasRemaining = true;
+
+  while (picked.length < maxRows && hasRemaining) {
+    hasRemaining = false;
+    for (const groupKey of groupKeys) {
+      const bucket = groupBuckets.get(groupKey);
+      if (!bucket || bucket.length === 0) continue;
+      picked.push(bucket.shift());
+      hasRemaining = true;
+      if (picked.length >= maxRows) break;
+    }
+  }
+
+  const rows = picked.map((entry) => ({
+    emoji: entry.emoji || '',
+    annotation: entry.annotation || '',
+    group: entry.group,
+    subgroup: entry.subgroup,
+    hexcode: entry.hexLower,
+    detailRoute: entry.canonicalRoute || entry.detailRoute,
+  }));
+
+  return `${JSON.stringify(rows)}\n`;
+}
+
 function buildDailyEmojiPayload(emojiEntries) {
   const source = [...emojiEntries]
     .filter((entry) => entry.indexable && !entry.isVariant && entry.group !== 'component')
@@ -2083,6 +2140,18 @@ export async function renderSite({ model, legacyRedirects, config, tempRoot }) {
     tempRoot,
     'home-data.json',
     buildHomeDataPayload(model.emojiEntries),
+    generatedFiles
+  );
+  await writeGeneratedFile(
+    tempRoot,
+    'tofu-data.json',
+    buildTofuDataPayload(model.emojiEntries),
+    generatedFiles
+  );
+  await writeGeneratedFile(
+    tempRoot,
+    'about-data.json',
+    buildAboutDataPayload(model.emojiEntries),
     generatedFiles
   );
   await writeGeneratedFile(

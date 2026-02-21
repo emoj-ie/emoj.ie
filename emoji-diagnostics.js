@@ -424,10 +424,21 @@
   }
 
   function fetchPool() {
-    return fetch('/home-data.json')
-      .then(function (response) {
-        if (!response.ok) throw new Error('home-data unavailable');
+    var inMemory = parsePool(window.__EMOJI_HOME_ROWS__);
+    if (inMemory.length) {
+      return Promise.resolve(inMemory);
+    }
+
+    function fetchRows(url) {
+      return fetch(url).then(function (response) {
+        if (!response.ok) throw new Error(url + ' unavailable');
         return response.json();
+      });
+    }
+
+    return fetchRows('/tofu-data.json')
+      .catch(function () {
+        return fetchRows('/home-data.json');
       })
       .then(function (rows) {
         var pool = parsePool(rows);
