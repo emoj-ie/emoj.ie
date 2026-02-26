@@ -232,7 +232,7 @@ function buildPrefixedSet(tokens) {
 }
 
 function findPrefixToken(token, tokenSet) {
-  if (token.length <= 3) return false;
+  if (token.length <= 2) return false;
   for (const candidate of tokenSet) {
     if (candidate.startsWith(token)) {
       return true;

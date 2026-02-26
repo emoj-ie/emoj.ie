@@ -161,3 +161,27 @@ test('fuzzy misspelling still finds intended face', () => {
   const ranked = filterAndRankEntries(rows, 'cryng');
   assert.equal(ranked[0]?.annotation, 'crying face');
 });
+
+test('three-letter prefix queries can match longer annotation tokens', () => {
+  const rows = [
+    entry({
+      emoji: '❗',
+      annotation: 'red exclamation mark',
+      group: 'symbols',
+      subgroup: 'punctuation',
+      tags: 'exclamation, mark, punctuation',
+      hexcode: '2757',
+    }),
+    entry({
+      emoji: '❓',
+      annotation: 'red question mark',
+      group: 'symbols',
+      subgroup: 'punctuation',
+      tags: 'question, mark, punctuation',
+      hexcode: '2753',
+    }),
+  ];
+
+  const ranked = filterAndRankEntries(rows, 'exc');
+  assert.equal(ranked[0]?.annotation, 'red exclamation mark');
+});
