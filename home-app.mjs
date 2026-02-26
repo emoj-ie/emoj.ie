@@ -6,97 +6,7 @@ import {
   normalizeHex,
   parseUiState,
 } from './home-utils.mjs';
-
-const SEARCH_SYNONYMS = Object.freeze({
-  happy: ['smile', 'joy', 'grin', 'cheerful'],
-  sad: ['cry', 'tears', 'upset'],
-  laugh: ['lol', 'joy', 'funny', 'haha'],
-  love: ['heart', 'romance', 'affection'],
-  party: ['celebration', 'birthday', 'confetti'],
-  angry: ['mad', 'rage', 'annoyed'],
-  cat: ['kitty', 'feline'],
-  dog: ['puppy', 'canine'],
-  food: ['meal', 'eat', 'drink'],
-  weather: ['sun', 'rain', 'cloud', 'snow'],
-  work: ['office', 'job', 'business'],
-  money: ['cash', 'bank', 'dollar', 'coin'],
-});
-
-const TOKEN_SPLIT_RE = /[^a-z0-9]+/g;
-
-const SYNONYM_LOOKUP = (() => {
-  const lookup = new Map();
-
-  for (const [key, values] of Object.entries(SEARCH_SYNONYMS)) {
-    const bag = new Set([key, ...values]);
-    for (const token of bag) {
-      const existing = lookup.get(token) || new Set();
-      for (const value of bag) {
-        existing.add(value);
-      }
-      lookup.set(token, existing);
-    }
-  }
-
-  return lookup;
-})();
-
-function tokenizeSearch(value = '') {
-  return String(value)
-    .toLowerCase()
-    .split(TOKEN_SPLIT_RE)
-    .map((part) => part.trim())
-    .filter((part) => part.length > 1);
-}
-
-function expandQueryTokens(tokens = []) {
-  const expanded = new Set(tokens);
-
-  for (const token of tokens) {
-    const aliases = SYNONYM_LOOKUP.get(token);
-    if (!aliases) continue;
-    for (const alias of aliases) {
-      expanded.add(alias);
-    }
-  }
-
-  return [...expanded];
-}
-
-function withinDistance(a, b, maxDistance = 1) {
-  const source = String(a || '').toLowerCase();
-  const target = String(b || '').toLowerCase();
-
-  if (!source || !target) return false;
-  if (source === target) return true;
-  if (Math.abs(source.length - target.length) > maxDistance) return false;
-
-  const rows = source.length + 1;
-  const cols = target.length + 1;
-  const matrix = Array.from({ length: rows }, () => Array(cols).fill(0));
-
-  for (let row = 0; row < rows; row += 1) matrix[row][0] = row;
-  for (let col = 0; col < cols; col += 1) matrix[0][col] = col;
-
-  for (let row = 1; row < rows; row += 1) {
-    let rowMin = Number.POSITIVE_INFINITY;
-    for (let col = 1; col < cols; col += 1) {
-      const cost = source[row - 1] === target[col - 1] ? 0 : 1;
-      matrix[row][col] = Math.min(
-        matrix[row - 1][col] + 1,
-        matrix[row][col - 1] + 1,
-        matrix[row - 1][col - 1] + cost
-      );
-      rowMin = Math.min(rowMin, matrix[row][col]);
-    }
-
-    if (rowMin > maxDistance) {
-      return false;
-    }
-  }
-
-  return matrix[rows - 1][cols - 1] <= maxDistance;
-}
+import { buildEntrySearchIndex, filterAndRankEntries } from './home-search.mjs';
 
 (function () {
   const searchInput = document.getElementById('search');
@@ -224,20 +134,7 @@ function withinDistance(a, b, maxDistance = 1) {
       skintone,
     };
 
-    normalized.searchText = [
-      normalized.annotation,
-      normalized.tags,
-      normalized.group,
-      normalized.subgroup,
-      normalized.hexLower,
-      normalized.emoji,
-    ]
-      .filter(Boolean)
-      .join(' ')
-      .toLowerCase();
-
-    normalized.searchTokens = tokenizeSearch(normalized.searchText);
-    normalized.searchTokenSet = new Set(normalized.searchTokens);
+    normalized.searchIndex = buildEntrySearchIndex(normalized);
 
     return normalized;
   }
@@ -740,86 +637,15 @@ function withinDistance(a, b, maxDistance = 1) {
     updateLoadControls();
   }
 
-  function entryQueryScore(entry, query, expandedTokens) {
-    const searchText = entry.searchText || '';
-    const annotation = (entry.annotation || '').toLowerCase();
-    const tokenSet = entry.searchTokenSet || new Set();
-    const tokenList = entry.searchTokens || [];
-
-    let score = 0;
-
-    if (searchText.includes(query)) {
-      score += 90;
-    }
-
-    if (annotation.startsWith(query)) {
-      score += 24;
-    }
-
-    for (const token of expandedTokens) {
-      if (!token || token.length < 2) continue;
-
-      if (tokenSet.has(token)) {
-        score += 30;
-        continue;
-      }
-
-      if (tokenList.some((candidate) => candidate.startsWith(token))) {
-        score += 12;
-        continue;
-      }
-
-      if (token.length < 4) {
-        continue;
-      }
-
-      const maxDistance = token.length >= 7 ? 2 : 1;
-      const fuzzy = tokenList.some((candidate) => {
-        if (!candidate || Math.abs(candidate.length - token.length) > maxDistance) {
-          return false;
-        }
-        return withinDistance(candidate, token, maxDistance);
-      });
-
-      if (fuzzy) {
-        score += 6;
-      }
-    }
-
-    return score;
-  }
-
   function filterEmojiEntries() {
-    const query = state.q.toLowerCase();
+    const query = state.q;
     const scoped = baseEntries.filter((entry) => {
       if (state.g && entry.group !== state.g) return false;
       if (state.sg && entry.subgroup !== state.sg) return false;
       return true;
     });
 
-    if (!query) {
-      return scoped;
-    }
-
-    const queryTokens = tokenizeSearch(query).slice(0, 5);
-    const expandedTokens = expandQueryTokens(queryTokens).slice(0, 20);
-    const scored = [];
-
-    for (const entry of scoped) {
-      const score = entryQueryScore(entry, query, expandedTokens);
-      if (score > 0) {
-        scored.push({ entry, score });
-      }
-    }
-
-    scored.sort((a, b) => {
-      if (b.score !== a.score) {
-        return b.score - a.score;
-      }
-      return a.entry.annotation.localeCompare(b.entry.annotation, 'en', { sensitivity: 'base' });
-    });
-
-    return scored.map((item) => item.entry);
+    return filterAndRankEntries(scoped, query);
   }
 
   function renderEmojiPanel() {

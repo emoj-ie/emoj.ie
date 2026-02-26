@@ -90,6 +90,9 @@ test('build emits a full home-data index', () => {
   assert.ok(typeof sample.group === 'string' && sample.group.length > 0);
   assert.ok(typeof sample.subgroup === 'string' && sample.subgroup.length > 0);
   assert.ok(typeof sample.detailRoute === 'string' && sample.detailRoute.endsWith('/'));
+
+  const missingTags = rows.filter((row) => String(row.tags || '').trim().length === 0).length;
+  assert.equal(missingTags, 0, `expected every home-data row to include search tags, got ${missingTags} empty`);
 });
 
 test('daily emoji schedule exists for all days of year', () => {
@@ -143,10 +146,13 @@ test('heavy collection pages defer emoji cards behind progressive list hydration
 
 test('home app includes search relevance helpers and favorites persistence', () => {
   const homeApp = read('home-app.mjs');
+  const homeSearch = read('home-search.mjs');
 
-  assert.match(homeApp, /SEARCH_SYNONYMS/);
-  assert.match(homeApp, /expandQueryTokens/);
-  assert.match(homeApp, /withinDistance/);
+  assert.match(homeApp, /filterAndRankEntries/);
+  assert.match(homeApp, /buildEntrySearchIndex/);
+  assert.match(homeSearch, /QUERY_ALIASES/);
+  assert.match(homeSearch, /buildQueryContext/);
+  assert.match(homeSearch, /scoreEntryAgainstQuery/);
   assert.match(homeApp, /favoriteEmojisV1/);
   assert.match(homeApp, /emoji-favorite/);
 });
