@@ -24,6 +24,7 @@ test('home app uses progressive rendering and path-first navigation from home', 
   );
   assert.match(homeApp, /window\.location\.replace\(target\)/);
   assert.match(homeApp, /home:data-ready/);
+  assert.match(homeApp, /if \(state\.q && state\.q\.trim\(\)\) return 'emoji';/);
   assert.ok(!homeApp.includes('slice(0, 400)'), 'hard 400 result cap should be removed');
 });
 

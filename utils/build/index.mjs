@@ -238,8 +238,23 @@ async function main() {
     JSON.stringify(config.redirects || {}),
   ]);
 
+  const runtimeSourceHash = await buildFileContentHash(
+    ROOT_DIR,
+    [
+      'home-app.mjs',
+      'home-search.mjs',
+      'home-utils.mjs',
+      'detail-page.js',
+      'generated-pages.js',
+      'script.js',
+      'style.css',
+    ],
+    [groupedDataHash]
+  );
+
   const buildHashValue = buildHash([
     preSwHash,
+    runtimeSourceHash,
     ...managedRoots,
   ]);
 

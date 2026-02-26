@@ -265,6 +265,7 @@ import { buildEntrySearchIndex, filterAndRankEntries } from './home-search.mjs';
   }
 
   function currentLevel() {
+    if (state.q && state.q.trim()) return 'emoji';
     if (state.g && state.sg) return 'emoji';
     if (state.g) return 'subgroup';
     return 'group';
