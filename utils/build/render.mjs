@@ -1925,7 +1925,7 @@ function buildHomeDataPayload(emojiEntries) {
       group: entry.group,
       subgroup: entry.subgroup,
       hexcode: entry.hexLower,
-      tags: Array.isArray(entry.tags) ? entry.tags.join(' ') : String(entry.tags || ''),
+      tags: parseEntryTags(entry).join(' '),
       detailRoute: entry.indexable ? entry.canonicalRoute || entry.detailRoute : entry.detailRoute,
       useLocalAsset: Boolean(entry.useLocalAsset),
       baseHex: entry.baseHex || entry.hexLower,
