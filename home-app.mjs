@@ -686,8 +686,8 @@ import { buildEntrySearchIndex, filterAndRankEntries, tokenizeSearch } from './h
 
       const searchTopicsLink = document.createElement('a');
       searchTopicsLink.className = 'emoji-empty-link';
-      searchTopicsLink.href = '/search/';
-      searchTopicsLink.textContent = 'Browse Search Topics';
+      searchTopicsLink.href = '/tag/';
+      searchTopicsLink.textContent = 'Browse Tags';
 
       empty.appendChild(title);
       empty.appendChild(tip);

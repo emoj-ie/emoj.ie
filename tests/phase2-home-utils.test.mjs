@@ -56,9 +56,7 @@ test('generated homepage contains phase 2 controls and module script', () => {
   assert.match(indexHtml, /id="home-results"/);
   assert.match(indexHtml, /src="home-app\.mjs" type="module" defer/);
   assert.match(indexHtml, /src="emoji-diagnostics\.js" defer/);
-  assert.match(indexHtml, /href="\/search\/"/);
   assert.match(indexHtml, /href="\/tag\/"/);
-  assert.match(indexHtml, /href="\/alternatives\/"/);
   assert.match(indexHtml, /href="\/tofu\/"/);
   assert.match(indexHtml, /data-tofu-score-root/);
   assert.match(indexHtml, /<option value="5">Dark<\/option>/);
@@ -66,6 +64,7 @@ test('generated homepage contains phase 2 controls and module script', () => {
   assert.match(indexHtml, /<h2>Options<\/h2>/);
   assert.ok(!indexHtml.includes('Advanced Options'));
   assert.ok(!indexHtml.includes('Quick Options'));
+  assert.ok(!indexHtml.includes('<summary>More</summary>'));
   assert.ok(!indexHtml.includes('<option value="0">None</option>'));
   assert.ok(!indexHtml.includes('onclick='));
 });
@@ -85,6 +84,7 @@ test('generated about page uses shared shell and no inline handlers', () => {
   assert.match(aboutHtml, /data-credits-run="2"/);
   assert.match(aboutHtml, /data-credits-run="3"/);
   assert.ok(!aboutHtml.includes('Quick Options'));
+  assert.ok(!aboutHtml.includes('<summary>More</summary>'));
   assert.ok(!aboutHtml.includes('Credits Galaxy'));
   assert.ok(!aboutHtml.includes('Tap any tile to open. Use ⧉ to copy.'));
   assert.ok(!aboutHtml.includes('onclick='));

@@ -68,18 +68,37 @@
     <nav class="breadcrumbs" aria-label="Breadcrumb"><a href="/">Home</a> / <span>Tofu Score</span></nav>
     <main id="main-content" class="page-main">
       <article class="group tofu-page">
-    <h1 class="visually-hidden">Emoji Tofu Score</h1>
+    <h1>Emoji Compatibility Lab</h1>
     <section class="emoji-render-card tofu-page-score" data-tofu-score-root data-tofu-context="tofu">
-      <p class="emoji-render-kicker">System Tofu Score</p>
+      <div class="tofu-score-head tofu-score-head-page">
+        <p class="emoji-render-kicker">System Tofu Score</p>
+        <span class="tofu-score-badge" data-tofu-badge>Pending</span>
+      </div>
       <p class="emoji-render-indicator" data-tofu-indicator>Detecting system emoji support…</p>
-      <p class="emoji-render-note" data-tofu-note>Runs locally in your browser. Lower missing count is better.</p>
       <div class="emoji-render-progress-wrap">
         <progress class="emoji-render-progress" data-tofu-progress max="100" value="0"></progress>
         <span class="emoji-render-progress-label" data-tofu-progress-label>0%</span>
       </div>
-      <div class="tofu-page-actions">
-        <button type="button" class="copy-btn secondary" data-tofu-rerun>Run Again</button>
+      <div class="tofu-score-metrics tofu-score-metrics-page">
+        <article class="tofu-score-metric">
+          <p>Supported</p>
+          <strong data-tofu-supported>--%</strong>
+        </article>
+        <article class="tofu-score-metric">
+          <p>Missing</p>
+          <strong data-tofu-missing>--%</strong>
+        </article>
+        <article class="tofu-score-metric">
+          <p>Risk</p>
+          <strong data-tofu-risk>Pending</strong>
+        </article>
+        <article class="tofu-score-metric">
+          <p>Total Scanned</p>
+          <strong data-tofu-total>--</strong>
+        </article>
       </div>
+      <p class="emoji-render-note" data-tofu-note>Runs locally in your browser and caches the result for reuse.</p>
+      <p class="tofu-score-stamp" data-tofu-last-scanned>Not scanned yet.</p>
     </section>
     <section class="results-shell tofu-missing-shell" data-tofu-missing-shell hidden>
       <div class="results-toolbar">
@@ -88,9 +107,9 @@
       <ul class="emoji-list emoji-list-panel" data-tofu-missing-list></ul>
     </section>
     <section class="about-card tofu-page-info">
-      <h2>How it works</h2>
+      <h2>How the score works</h2>
       <p>The checker draws each emoji to canvas and compares it against the replacement glyph (<code>�</code>).</p>
-      <p>Score = missing glyphs / total scanned. Lower is better.</p>
+      <p>Score = missing glyphs / total scanned. Lower is better. This page always reuses cached results when available.</p>
       <p data-tofu-user-agent></p>
     </section>
   </article>
@@ -135,26 +154,19 @@
         </button>
       </div>
     </div>
-    <details class="advanced-disclosure">
-      <summary>More</summary>
-      <div class="advanced-link-list">
+    <div class="advanced-link-list">
         <a class="copy-btn secondary" href="/">Home</a>
-        <a class="copy-btn secondary" href="/search/">Search Topics</a>
         <a class="copy-btn secondary" href="/tag/">Tags</a>
         <a class="copy-btn secondary" href="/tofu/">Tofu Score</a>
-        <a class="copy-btn secondary" href="/alternatives/">Compare Sites</a>
         <a class="copy-btn secondary" href="/about/">About</a>
       </div>
-    </details>
   </aside>
   <button type="button" id="global-advanced-backdrop" class="advanced-backdrop" hidden tabindex="-1" aria-hidden="true"></button>
     <footer>
       <nav class="footer-links" aria-label="Footer">
         <a href="/">Home</a>
-        <a href="/search/">Search Topics</a>
         <a href="/tag/">Tags</a>
         <a href="/tofu/">Tofu Score</a>
-        <a href="/alternatives/">Compare Sites</a>
         <a href="/about/">About</a>
       </nav>
       <p>© 2026 emoj.ie</p>

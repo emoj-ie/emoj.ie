@@ -350,10 +350,8 @@ function renderAnalyticsScript(config) {
 function renderGlobalAdvancedMenu() {
   const linkList = `<div class="advanced-link-list">
         <a class="copy-btn secondary" href="/">Home</a>
-        <a class="copy-btn secondary" href="/search/">Search Topics</a>
         <a class="copy-btn secondary" href="/tag/">Tags</a>
         <a class="copy-btn secondary" href="/tofu/">Tofu Score</a>
-        <a class="copy-btn secondary" href="/alternatives/">Compare Sites</a>
         <a class="copy-btn secondary" href="/about/">About</a>
       </div>`;
 
@@ -397,10 +395,7 @@ function renderGlobalAdvancedMenu() {
         </button>
       </div>
     </div>
-    <details class="advanced-disclosure">
-      <summary>More</summary>
-      ${linkList}
-    </details>
+    ${linkList}
   </aside>
   <button type="button" id="global-advanced-backdrop" class="advanced-backdrop" hidden tabindex="-1" aria-hidden="true"></button>`;
 }
@@ -470,10 +465,8 @@ function renderLayout({
     <footer>
       <nav class="footer-links" aria-label="Footer">
         <a href="/">Home</a>
-        <a href="/search/">Search Topics</a>
         <a href="/tag/">Tags</a>
         <a href="/tofu/">Tofu Score</a>
-        <a href="/alternatives/">Compare Sites</a>
         <a href="/about/">About</a>
       </nav>
       <p>© 2026 emoj.ie</p>
@@ -958,17 +951,12 @@ function renderHomePage(model, config) {
         </button>
       </div>
     </div>
-    <details class="advanced-disclosure">
-      <summary>More</summary>
-      <div class="advanced-link-list">
-        <a class="copy-btn secondary" href="/">Home</a>
-        <a class="copy-btn secondary" href="/search/">Search Topics</a>
-        <a class="copy-btn secondary" href="/tag/">Tags</a>
-        <a class="copy-btn secondary" href="/tofu/">Tofu Score</a>
-        <a class="copy-btn secondary" href="/alternatives/">Compare Sites</a>
-        <a class="copy-btn secondary" href="/about/">About</a>
-      </div>
-    </details>
+    <div class="advanced-link-list">
+      <a class="copy-btn secondary" href="/">Home</a>
+      <a class="copy-btn secondary" href="/tag/">Tags</a>
+      <a class="copy-btn secondary" href="/tofu/">Tofu Score</a>
+      <a class="copy-btn secondary" href="/about/">About</a>
+    </div>
     <button type="button" id="clear-filters" class="copy-btn secondary advanced-clear">Reset Selection</button>
   </aside>
   <button type="button" id="advanced-backdrop" class="advanced-backdrop" hidden tabindex="-1" aria-hidden="true"></button>
@@ -988,14 +976,36 @@ function renderHomePage(model, config) {
   </section>
 
   <section id="tofu-score-home" class="recent-section tofu-score-home" data-tofu-score-root data-tofu-context="home">
-    <h2>System Emoji Support</h2>
+    <div class="tofu-score-head">
+      <h2>Emoji Compatibility Pulse</h2>
+      <span class="tofu-score-badge" data-tofu-badge>Pending</span>
+    </div>
     <p class="tofu-score-indicator" data-tofu-indicator>Detecting system emoji support…</p>
-    <p class="tofu-score-note" data-tofu-note>Runs locally after the page settles. Lower missing count is better.</p>
     <div class="tofu-score-progress-wrap">
       <progress class="tofu-score-progress" data-tofu-progress max="100" value="0"></progress>
       <span class="tofu-score-progress-label" data-tofu-progress-label>0%</span>
     </div>
-    <a class="copy-btn secondary tofu-score-link" href="/tofu/">View Score Details</a>
+    <div class="tofu-score-metrics">
+      <article class="tofu-score-metric">
+        <p>Supported</p>
+        <strong data-tofu-supported>--%</strong>
+      </article>
+      <article class="tofu-score-metric">
+        <p>Missing</p>
+        <strong data-tofu-missing>--%</strong>
+      </article>
+      <article class="tofu-score-metric">
+        <p>Risk</p>
+        <strong data-tofu-risk>Pending</strong>
+      </article>
+      <article class="tofu-score-metric">
+        <p>Scanned</p>
+        <strong data-tofu-total>--</strong>
+      </article>
+    </div>
+    <p class="tofu-score-note" data-tofu-note>Runs once per browser profile and reuses the cached result.</p>
+    <p class="tofu-score-stamp" data-tofu-last-scanned>Not scanned yet.</p>
+    <a class="copy-btn secondary tofu-score-link" href="/tofu/">Open Emoji Compatibility Lab</a>
   </section>`;
 
   const homeUrl = absoluteUrl(config.site.baseUrl, '');
@@ -1206,18 +1216,37 @@ function renderAboutPage(model, config) {
 
 function renderTofuPage(config) {
   const body = `<article class="group tofu-page">
-    <h1 class="visually-hidden">Emoji Tofu Score</h1>
+    <h1>Emoji Compatibility Lab</h1>
     <section class="emoji-render-card tofu-page-score" data-tofu-score-root data-tofu-context="tofu">
-      <p class="emoji-render-kicker">System Tofu Score</p>
+      <div class="tofu-score-head tofu-score-head-page">
+        <p class="emoji-render-kicker">System Tofu Score</p>
+        <span class="tofu-score-badge" data-tofu-badge>Pending</span>
+      </div>
       <p class="emoji-render-indicator" data-tofu-indicator>Detecting system emoji support…</p>
-      <p class="emoji-render-note" data-tofu-note>Runs locally in your browser. Lower missing count is better.</p>
       <div class="emoji-render-progress-wrap">
         <progress class="emoji-render-progress" data-tofu-progress max="100" value="0"></progress>
         <span class="emoji-render-progress-label" data-tofu-progress-label>0%</span>
       </div>
-      <div class="tofu-page-actions">
-        <button type="button" class="copy-btn secondary" data-tofu-rerun>Run Again</button>
+      <div class="tofu-score-metrics tofu-score-metrics-page">
+        <article class="tofu-score-metric">
+          <p>Supported</p>
+          <strong data-tofu-supported>--%</strong>
+        </article>
+        <article class="tofu-score-metric">
+          <p>Missing</p>
+          <strong data-tofu-missing>--%</strong>
+        </article>
+        <article class="tofu-score-metric">
+          <p>Risk</p>
+          <strong data-tofu-risk>Pending</strong>
+        </article>
+        <article class="tofu-score-metric">
+          <p>Total Scanned</p>
+          <strong data-tofu-total>--</strong>
+        </article>
       </div>
+      <p class="emoji-render-note" data-tofu-note>Runs locally in your browser and caches the result for reuse.</p>
+      <p class="tofu-score-stamp" data-tofu-last-scanned>Not scanned yet.</p>
     </section>
     <section class="results-shell tofu-missing-shell" data-tofu-missing-shell hidden>
       <div class="results-toolbar">
@@ -1226,9 +1255,9 @@ function renderTofuPage(config) {
       <ul class="emoji-list emoji-list-panel" data-tofu-missing-list></ul>
     </section>
     <section class="about-card tofu-page-info">
-      <h2>How it works</h2>
+      <h2>How the score works</h2>
       <p>The checker draws each emoji to canvas and compares it against the replacement glyph (<code>�</code>).</p>
-      <p>Score = missing glyphs / total scanned. Lower is better.</p>
+      <p>Score = missing glyphs / total scanned. Lower is better. This page always reuses cached results when available.</p>
       <p data-tofu-user-agent></p>
     </section>
   </article>`;
@@ -1858,7 +1887,8 @@ function renderCategoryIndexPage(categories, config) {
   });
 }
 
-function renderTagIndexPage(tags, config) {
+function renderTagIndexPage(tags, config, options = {}) {
+  const topicTagLinks = Array.isArray(options.topicTagLinks) ? options.topicTagLinks : [];
   const cards = tags
     .slice(0, 260)
     .map((tag) =>
@@ -1872,7 +1902,25 @@ function renderTagIndexPage(tags, config) {
     )
     .join('');
 
-  const body = `<section class="panel-shell home-emoji-shell">
+  const topicPills = topicTagLinks
+    .slice(0, 20)
+    .map(
+      (item) => `<a class="copy-btn secondary" href="/${escapeHtml(item.tagRoute)}">${escapeHtml(
+        item.topicTitle
+      )}</a>`
+    )
+    .join('');
+
+  const topicBridgeNote =
+    topicPills.length > 0
+      ? `<section class="about-card tag-topic-bridge">
+    <h2>Popular Topic Tags</h2>
+    <p>Search topics are now consolidated into tags. Use these high-intent shortcuts.</p>
+    <div class="advanced-link-list tag-topic-links">${topicPills}</div>
+  </section>`
+      : '';
+
+  const body = `${topicBridgeNote}<section class="panel-shell home-emoji-shell">
     <h1 class="visually-hidden">Emoji Tags</h1>
     <div class="panel-grid panel-grid-balanced">${cards}</div>
   </section>`;
@@ -2877,44 +2925,21 @@ export async function renderSite({ model, legacyRedirects, config, tempRoot }) {
   await writeRouteHtml(
     tempRoot,
     'alternatives/',
-    renderAlternativeIndexPage(config),
+    renderRedirectPage('alternatives/', 'tag/', config),
     generatedFiles
   );
-  coreRoutes.add('alternatives/');
-
-  for (const item of COMPETITOR_ALTERNATIVES) {
-    await writeRouteHtml(tempRoot, item.route, renderAlternativePage(item, config), generatedFiles);
-    coreRoutes.add(item.route);
-
-    const pluralRoute = ensureTrailingSlash(`alternatives/${item.key}-alternatives`);
-    await writeRouteHtml(
-      tempRoot,
-      pluralRoute,
-      renderAlternativePluralPage(item, config),
-      generatedFiles
-    );
-    coreRoutes.add(pluralRoute);
-
-    const vsRoute = ensureTrailingSlash(`vs/${item.key}`);
-    await writeRouteHtml(tempRoot, vsRoute, renderVsPage(item, config), generatedFiles);
-    coreRoutes.add(vsRoute);
-  }
-
-  const competitorByKey = new Map(COMPETITOR_ALTERNATIVES.map((item) => [item.key, item]));
-  for (const [primaryKey, secondaryKey] of COMPETITOR_COMPARE_PAIRS) {
-    const primary = competitorByKey.get(primaryKey);
-    const secondary = competitorByKey.get(secondaryKey);
-    if (!primary || !secondary) continue;
-
-    const compareRoute = ensureTrailingSlash(`compare/${primary.key}-vs-${secondary.key}`);
-    await writeRouteHtml(
-      tempRoot,
-      compareRoute,
-      renderCompetitorComparePage(primary, secondary, config),
-      generatedFiles
-    );
-    coreRoutes.add(compareRoute);
-  }
+  await writeRouteHtml(
+    tempRoot,
+    'compare/',
+    renderRedirectPage('compare/', 'tag/', config),
+    generatedFiles
+  );
+  await writeRouteHtml(
+    tempRoot,
+    'vs/',
+    renderRedirectPage('vs/', 'tag/', config),
+    generatedFiles
+  );
 
   const groupByKey = new Map((model.groups || []).map((group) => [group.key, group]));
 
@@ -2971,7 +2996,14 @@ export async function renderSite({ model, legacyRedirects, config, tempRoot }) {
   }
 
   if (Array.isArray(model.tags) && model.tags.length > 0) {
-    await writeRouteHtml(tempRoot, 'tag/', renderTagIndexPage(model.tags, config), generatedFiles);
+    await writeRouteHtml(
+      tempRoot,
+      'tag/',
+      renderTagIndexPage(model.tags, config, {
+        topicTagLinks: model.topicTagLinks || [],
+      }),
+      generatedFiles
+    );
     coreRoutes.add('tag/');
 
     for (const tag of model.tags) {
@@ -2980,19 +3012,14 @@ export async function renderSite({ model, legacyRedirects, config, tempRoot }) {
     }
   }
 
-  if (Array.isArray(model.searchPages) && model.searchPages.length > 0) {
+  await writeRouteHtml(tempRoot, 'search/', renderRedirectPage('search/', 'tag/', config), generatedFiles);
+  for (const link of model.topicTagLinks || []) {
     await writeRouteHtml(
       tempRoot,
-      'search/',
-      renderSearchIndexPage(model.searchPages, config),
+      link.searchRoute,
+      renderRedirectPage(link.searchRoute, link.tagRoute, config),
       generatedFiles
     );
-    coreRoutes.add('search/');
-
-    for (const searchPage of model.searchPages) {
-      await writeRouteHtml(tempRoot, searchPage.route, renderSearchPage(searchPage, config), generatedFiles);
-      coreRoutes.add(searchPage.route);
-    }
   }
 
   const tagRouteKeys = new Set((model.tags || []).map((tag) => tag.key));

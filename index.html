@@ -217,17 +217,12 @@
         </button>
       </div>
     </div>
-    <details class="advanced-disclosure">
-      <summary>More</summary>
-      <div class="advanced-link-list">
-        <a class="copy-btn secondary" href="/">Home</a>
-        <a class="copy-btn secondary" href="/search/">Search Topics</a>
-        <a class="copy-btn secondary" href="/tag/">Tags</a>
-        <a class="copy-btn secondary" href="/tofu/">Tofu Score</a>
-        <a class="copy-btn secondary" href="/alternatives/">Compare Sites</a>
-        <a class="copy-btn secondary" href="/about/">About</a>
-      </div>
-    </details>
+    <div class="advanced-link-list">
+      <a class="copy-btn secondary" href="/">Home</a>
+      <a class="copy-btn secondary" href="/tag/">Tags</a>
+      <a class="copy-btn secondary" href="/tofu/">Tofu Score</a>
+      <a class="copy-btn secondary" href="/about/">About</a>
+    </div>
     <button type="button" id="clear-filters" class="copy-btn secondary advanced-clear">Reset Selection</button>
   </aside>
   <button type="button" id="advanced-backdrop" class="advanced-backdrop" hidden tabindex="-1" aria-hidden="true"></button>
@@ -247,24 +242,44 @@
   </section>
 
   <section id="tofu-score-home" class="recent-section tofu-score-home" data-tofu-score-root data-tofu-context="home">
-    <h2>System Emoji Support</h2>
+    <div class="tofu-score-head">
+      <h2>Emoji Compatibility Pulse</h2>
+      <span class="tofu-score-badge" data-tofu-badge>Pending</span>
+    </div>
     <p class="tofu-score-indicator" data-tofu-indicator>Detecting system emoji support…</p>
-    <p class="tofu-score-note" data-tofu-note>Runs locally after the page settles. Lower missing count is better.</p>
     <div class="tofu-score-progress-wrap">
       <progress class="tofu-score-progress" data-tofu-progress max="100" value="0"></progress>
       <span class="tofu-score-progress-label" data-tofu-progress-label>0%</span>
     </div>
-    <a class="copy-btn secondary tofu-score-link" href="/tofu/">View Score Details</a>
+    <div class="tofu-score-metrics">
+      <article class="tofu-score-metric">
+        <p>Supported</p>
+        <strong data-tofu-supported>--%</strong>
+      </article>
+      <article class="tofu-score-metric">
+        <p>Missing</p>
+        <strong data-tofu-missing>--%</strong>
+      </article>
+      <article class="tofu-score-metric">
+        <p>Risk</p>
+        <strong data-tofu-risk>Pending</strong>
+      </article>
+      <article class="tofu-score-metric">
+        <p>Scanned</p>
+        <strong data-tofu-total>--</strong>
+      </article>
+    </div>
+    <p class="tofu-score-note" data-tofu-note>Runs once per browser profile and reuses the cached result.</p>
+    <p class="tofu-score-stamp" data-tofu-last-scanned>Not scanned yet.</p>
+    <a class="copy-btn secondary tofu-score-link" href="/tofu/">Open Emoji Compatibility Lab</a>
   </section>
     </main>
     
     <footer>
       <nav class="footer-links" aria-label="Footer">
         <a href="/">Home</a>
-        <a href="/search/">Search Topics</a>
         <a href="/tag/">Tags</a>
         <a href="/tofu/">Tofu Score</a>
-        <a href="/alternatives/">Compare Sites</a>
         <a href="/about/">About</a>
       </nav>
       <p>© 2026 emoj.ie</p>

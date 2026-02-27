@@ -15,7 +15,7 @@ Last updated: 2026-02-27
 ### 1) Search Intent Education (Searchable)
 - Goal: rank for practical "how do I find the right emoji" questions.
 - Formats:
-  - `/search/*` intent hubs (existing)
+  - `/tag/*` intent hubs (existing)
   - supporting blog posts under `/blog/*`
 - Topics:
   - slang-to-emoji mappings
@@ -60,7 +60,7 @@ Last updated: 2026-02-27
    - favorites/recents setup
    - typo-proof searching
 2. Expand alternatives IA brief (plural + vs templates).
-3. Add internal links from workflow posts to `/search/*`, `/tag/*`, `/emoji/*`.
+3. Add internal links from workflow posts to `/tag/*`, `/emoji/*`.
 
 ### Weeks 5-8: Expansion
 1. Publish 4 intent-led category guides:

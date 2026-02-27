@@ -948,23 +948,6 @@ a:hover {
   grid-template-columns: 1fr;
 }
 
-.advanced-disclosure {
-  border: 2px solid var(--border-soft);
-  border-radius: var(--radius-sm);
-  padding: 0.45rem 0.55rem;
-  background: color-mix(in oklab, var(--bg-elevated), var(--bg-soft) 18%);
-}
-
-.advanced-disclosure > summary {
-  cursor: pointer;
-  font-weight: 600;
-  color: var(--text-strong);
-}
-
-.advanced-disclosure[open] > summary {
-  margin-bottom: 0.5rem;
-}
-
 .advanced-link-list {
   display: grid;
   gap: 0.5rem;
@@ -972,6 +955,22 @@ a:hover {
 
 .advanced-link-list .copy-btn {
   justify-content: center;
+}
+
+.tag-topic-bridge {
+  margin: 0 1.2rem 0.9rem;
+}
+
+.tag-topic-bridge h2 {
+  margin: 0 0 0.35rem;
+}
+
+.tag-topic-bridge p {
+  margin: 0 0 0.65rem;
+}
+
+.tag-topic-links {
+  grid-template-columns: repeat(auto-fit, minmax(140px, 1fr));
 }
 
 .advanced-menu[hidden],
@@ -1648,11 +1647,43 @@ ol.story-list {
 
 .tofu-score-home {
   display: grid;
-  gap: 0.5rem;
+  gap: 0.64rem;
+  border-width: 2px;
+  border-style: solid;
+  border-color: color-mix(in oklab, var(--brand-primary), var(--border-soft) 58%);
+  background:
+    radial-gradient(circle at 82% 16%, color-mix(in oklab, var(--brand-secondary), transparent 75%) 0%, transparent 58%),
+    linear-gradient(
+      145deg,
+      color-mix(in oklab, var(--bg-elevated), var(--brand-primary) 9%),
+      color-mix(in oklab, var(--bg-elevated), var(--brand-secondary) 10%)
+    );
+}
+
+.tofu-score-head {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 0.6rem;
 }
 
 .tofu-score-home h2 {
   margin: 0;
+}
+
+.tofu-score-badge {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  border: 2px solid var(--border-soft);
+  border-radius: 999px;
+  padding: 0.24rem 0.6rem;
+  font-size: 0.72rem;
+  text-transform: uppercase;
+  letter-spacing: 0.06em;
+  font-weight: 800;
+  color: var(--text-strong);
+  background: color-mix(in oklab, var(--bg-elevated), var(--bg-soft) 22%);
 }
 
 .tofu-score-indicator,
@@ -1691,27 +1722,76 @@ ol.story-list {
   font-family: var(--font-mono);
 }
 
+.tofu-score-metrics {
+  display: grid;
+  grid-template-columns: repeat(4, minmax(0, 1fr));
+  gap: 0.5rem;
+}
+
+.tofu-score-metric {
+  border: 2px solid var(--border-soft);
+  border-radius: var(--radius-sm);
+  padding: 0.5rem 0.55rem;
+  background: color-mix(in oklab, var(--bg-elevated), var(--bg-soft) 20%);
+  display: grid;
+  gap: 0.2rem;
+}
+
+.tofu-score-metric p {
+  margin: 0;
+  font-size: 0.72rem;
+  color: var(--text-muted);
+  text-transform: uppercase;
+  letter-spacing: 0.06em;
+  font-weight: 700;
+}
+
+.tofu-score-metric strong {
+  font-family: var(--font-display);
+  font-size: 1.04rem;
+  color: var(--text-strong);
+  line-height: 1.1;
+}
+
 .tofu-score-link {
   justify-self: start;
 }
 
+.tofu-score-stamp {
+  margin: 0;
+  font-size: 0.78rem;
+  color: var(--text-muted);
+}
+
 .tofu-page {
   display: grid;
-  gap: 0.8rem;
+  gap: 0.9rem;
+}
+
+.tofu-page > h1 {
+  margin: 0;
+  font-size: clamp(1.4rem, 3.4vw, 2rem);
+  letter-spacing: -0.01em;
+}
+
+.tofu-score-head-page {
+  align-items: flex-start;
+}
+
+.tofu-score-metrics-page {
+  margin-top: 0.14rem;
 }
 
 .tofu-page-score {
-  max-width: 760px;
-}
-
-.tofu-page-actions {
-  display: flex;
-  flex-wrap: wrap;
-  gap: 0.5rem;
+  max-width: 920px;
+  border-color: color-mix(in oklab, var(--brand-secondary), var(--border-soft) 60%);
+  background:
+    radial-gradient(circle at 82% 14%, color-mix(in oklab, var(--brand-primary), transparent 73%) 0%, transparent 62%),
+    color-mix(in oklab, var(--bg-elevated), var(--bg-soft) 14%);
 }
 
 .tofu-page-info {
-  max-width: 760px;
+  max-width: 920px;
 }
 
 .tofu-page-info p {
@@ -1750,12 +1830,20 @@ ol.story-list {
 }
 
 @media (max-width: 860px) {
+  .tofu-score-metrics {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+  }
+
   .tofu-missing-shell .emoji-list-panel {
     grid-template-columns: repeat(2, minmax(0, 1fr));
   }
 }
 
 @media (max-width: 560px) {
+  .tofu-score-metrics {
+    grid-template-columns: 1fr;
+  }
+
   .tofu-missing-shell .emoji-list-panel {
     grid-template-columns: 1fr;
   }

@@ -1,7 +1,7 @@
 {
   "version": 1,
-  "generatedAt": "2026-02-27T05:37:53.159Z",
-  "buildHash": "a6c342cee9af5bbb",
+  "generatedAt": "2026-02-27T06:52:57.123Z",
+  "buildHash": "3b2108c97cc2d686",
   "managedRoots": [
     "about",
     "activities",
@@ -29,8 +29,8 @@
     "groups": 12,
     "emojis": 4284,
     "redirects": 4193,
-    "files": 11032,
-    "coreRoutes": 346,
+    "files": 11022,
+    "coreRoutes": 317,
     "emojiRoutes": 2062
   },
   "files": [
@@ -212,12 +212,6 @@
     "activities/sport/tennis/index.html",
     "activities/sport/volleyball--1f3d0/index.html",
     "activities/sport/volleyball/index.html",
-    "alternatives/emojipedia-alternatives/index.html",
-    "alternatives/emojipedia/index.html",
-    "alternatives/findemoji-alternatives/index.html",
-    "alternatives/findemoji/index.html",
-    "alternatives/getemoji-alternatives/index.html",
-    "alternatives/getemoji/index.html",
     "alternatives/index.html",
     "animals-nature/animal-amphibian/frog--1f438/index.html",
     "animals-nature/animal-amphibian/frog/index.html",
@@ -669,8 +663,7 @@
     "category/travel-places/transport-air/index.html",
     "category/travel-places/transport-ground/index.html",
     "category/travel-places/transport-water/index.html",
-    "compare/emojipedia-vs-getemoji/index.html",
-    "compare/getemoji-vs-findemoji/index.html",
+    "compare/index.html",
     "component/hair-style/bald--1f9b2/index.html",
     "component/hair-style/bald/index.html",
     "component/hair-style/curly-hair--1f9b1/index.html",
@@ -9612,7 +9605,6 @@
     "search/stars/index.html",
     "search/travel/index.html",
     "search/weather/index.html",
-    "search/work/index.html",
     "sitemap-core.xml",
     "sitemap-emoji.xml",
     "sitemap.xml",
@@ -11063,8 +11055,6 @@
     "travel-places/transport-water/ship/index.html",
     "travel-places/transport-water/speedboat--1f6a4/index.html",
     "travel-places/transport-water/speedboat/index.html",
-    "vs/emojipedia/index.html",
-    "vs/findemoji/index.html",
-    "vs/getemoji/index.html"
+    "vs/index.html"
   ]
 }

@@ -18,6 +18,20 @@ All notable project updates are tracked here in human-readable form.
   - generated `press-kit/screenshots/*`, `press-kit/clips/*`, `press-kit/logos/*`
 
 ### Changed
+- Navigation and IA simplification:
+  - removed visible `Search Topics` and `Compare Sites` hubs from header/footer/menus
+  - removed burger-menu `More` disclosure; menu links are now directly visible
+  - migrated legacy `/search/*` routes to noindex redirects into `/tag/*` where mapped
+- Topic/tag consolidation:
+  - removed fuzzy curated-topic matching that caused partial-token leakage (for example `dish`, `pet`, `zoo`, `fo`, `bi`, `wi*`)
+  - added explicit topic-to-tag bridge mappings and surfaced them as “Popular Topic Tags” on `/tag/`
+- Compare-surface removal:
+  - replaced `/alternatives/`, `/vs/`, and `/compare/` with compatibility redirects to `/tag/`
+  - removed compare routes from sitemap core inclusion
+- Tofu diagnostics overhaul:
+  - upgraded tofu cache payload to persist missing rows (`emojiTofuScoreV5`)
+  - switched diagnostics to cache-first single-run behavior (no forced rerun on `/tofu/`)
+  - redesigned home tofu card and `/tofu/` page into a richer “Emoji Compatibility Lab” UI with support/missing/risk metrics and scan timestamp
 - Home analytics and state handling:
   - preserved URL-shareable search state on home (`q`, non-default `copy`)
   - added dedicated `search_no_results` event

@@ -27,14 +27,8 @@ test('sample templates have complete meta tags and schema payloads', () => {
   const samples = [
     ['index.html', ['Organization', 'WebSite']],
     ['tofu/index.html', ['WebPage', 'BreadcrumbList']],
-    ['alternatives/index.html', ['CollectionPage', 'ItemList', 'BreadcrumbList']],
-    ['alternatives/emojipedia/index.html', ['WebPage', 'FAQPage', 'BreadcrumbList']],
-    ['alternatives/emojipedia-alternatives/index.html', ['CollectionPage', 'ItemList', 'FAQPage', 'BreadcrumbList']],
-    ['vs/emojipedia/index.html', ['WebPage', 'FAQPage', 'BreadcrumbList']],
-    ['compare/emojipedia-vs-getemoji/index.html', ['WebPage', 'ItemList', 'FAQPage', 'BreadcrumbList']],
     ['smileys-emotion/index.html', ['CollectionPage', 'ItemList', 'BreadcrumbList']],
     ['category/smileys-emotion/index.html', ['CollectionPage', 'ItemList', 'BreadcrumbList']],
-    ['search/index.html', ['CollectionPage', 'ItemList', 'BreadcrumbList']],
     ['tag/index.html', ['CollectionPage', 'ItemList', 'BreadcrumbList']],
     ['smileys-emotion/face-smiling/index.html', ['CollectionPage', 'ItemList', 'BreadcrumbList']],
     ['category/smileys-emotion/face-smiling/index.html', ['CollectionPage', 'ItemList', 'BreadcrumbList']],
@@ -80,31 +74,27 @@ test('sitemap excludes noindex component pages and variant emoji detail pages', 
   assert.ok(!emojiSitemap.includes(variantUrl));
 });
 
-test('emoji sitemap uses canonical short emoji routes and core sitemap includes primary group/search/tag routes', () => {
+test('emoji sitemap uses canonical short emoji routes and core sitemap includes primary group/tag routes', () => {
   const coreSitemap = read('sitemap-core.xml');
   const emojiSitemap = read('sitemap-emoji.xml');
-  const alternativesIndex = read('alternatives/index.html');
   const categoryAliasIndex = read('category/index.html');
   const searchIndex = read('search/index.html');
   const tagIndex = read('tag/index.html');
   const tofuIndex = read('tofu/index.html');
 
   assert.match(emojiSitemap, /https:\/\/emoj\.ie\/emoji\/[a-z0-9-]+--[a-f0-9-]+\//i);
-  assert.match(coreSitemap, /https:\/\/emoj\.ie\/alternatives\//);
-  assert.match(coreSitemap, /https:\/\/emoj\.ie\/alternatives\/emojipedia-alternatives\//);
-  assert.match(coreSitemap, /https:\/\/emoj\.ie\/vs\/emojipedia\//);
-  assert.match(coreSitemap, /https:\/\/emoj\.ie\/compare\/emojipedia-vs-getemoji\//);
   assert.match(coreSitemap, /https:\/\/emoj\.ie\/smileys-emotion\//);
-  assert.match(coreSitemap, /https:\/\/emoj\.ie\/search\//);
   assert.match(coreSitemap, /https:\/\/emoj\.ie\/tag\//);
   assert.match(coreSitemap, /https:\/\/emoj\.ie\/tofu\//);
-  assert.match(alternativesIndex, /<h1\b[^>]*>Emoji Site Alternatives<\/h1>/);
+  assert.ok(!coreSitemap.includes('https://emoj.ie/search/'));
+  assert.ok(!coreSitemap.includes('https://emoj.ie/alternatives/'));
+  assert.ok(!coreSitemap.includes('https://emoj.ie/vs/'));
+  assert.ok(!coreSitemap.includes('https://emoj.ie/compare/'));
   assert.match(categoryAliasIndex, /<meta http-equiv="refresh" content="0; url=https:\/\/emoj\.ie\/"/);
-  assert.match(searchIndex, /<h1\b[^>]*>Emoji Search Topics<\/h1>/);
+  assert.match(searchIndex, /<meta http-equiv="refresh" content="0; url=https:\/\/emoj\.ie\/tag\/"/);
+  assert.match(searchIndex, /<meta name="robots" content="noindex,follow"/);
   assert.match(tagIndex, /<h1\b[^>]*>Emoji Tags<\/h1>/);
-  assert.match(searchIndex, /class="panel-grid panel-grid-balanced"/);
   assert.match(tagIndex, /class="panel-grid panel-grid-balanced"/);
-  assert.ok(!searchIndex.includes('group-link-list'));
   assert.ok(!tagIndex.includes('group-link-list'));
   assert.match(tofuIndex, /data-tofu-score-root/);
   assert.match(tofuIndex, /data-tofu-missing-list/);
@@ -163,20 +153,16 @@ test('category-prefixed subgroup route is canonicalized to primary subgroup rout
   assert.ok(!canonicalSubgroupPage.includes('noindex,follow'));
 });
 
-test('curated search pages are generated with canonical metadata', () => {
+test('legacy search topic routes redirect to matching tag routes', () => {
   const searchIndex = read('search/index.html');
-  const match = searchIndex.match(/href="\/(search\/[a-z0-9-]+\/)"/i);
-  assert.ok(match, 'expected at least one curated search page');
+  const foodRedirect = read('search/food/index.html');
+  const animalsRedirect = read('search/animals/index.html');
 
-  const searchRoute = match[1];
-  const searchPage = read(`${searchRoute}index.html`);
-
-  assertMetaSet(searchPage, `${searchRoute}index.html`);
-  assert.match(searchPage, /<h1\b[^>]*>[^<]+<\/h1>/);
-  assert.match(searchPage, /<ul class="emoji-list emoji-list-panel"[^>]*>/);
-  assert.match(searchPage, /"@type":"ItemList"/);
-  assert.ok(!searchPage.includes('collection-kicker'));
-  assert.ok(!searchPage.includes('noindex,follow'));
+  assert.match(searchIndex, /url=https:\/\/emoj\.ie\/tag\//);
+  assert.match(foodRedirect, /url=https:\/\/emoj\.ie\/tag\/food\//);
+  assert.match(animalsRedirect, /url=https:\/\/emoj\.ie\/tag\/animal\//);
+  assert.match(foodRedirect, /<meta name="robots" content="noindex,follow"/);
+  assert.match(animalsRedirect, /<meta name="robots" content="noindex,follow"/);
 });
 
 test('tag pages include ItemList schema', () => {

@@ -132,7 +132,6 @@ test('canonical category page is minimal and links directly to canonical subgrou
 
 test('heavy collection pages defer emoji cards behind progressive list hydration', () => {
   const subgroupPage = read('people-body/person-role/index.html');
-  const searchPage = read('search/fire/index.html');
   const manifest = JSON.parse(read('build-manifest.json'));
   const tagPages = manifest.files.filter(
     (filePath) => filePath.startsWith('tag/') && filePath.endsWith('/index.html') && filePath !== 'tag/index.html'
@@ -143,8 +142,6 @@ test('heavy collection pages defer emoji cards behind progressive list hydration
 
   assert.match(subgroupPage, /data-progressive-emoji-list/);
   assert.match(subgroupPage, /data-progressive-emoji-data/);
-  assert.match(searchPage, /data-progressive-emoji-list/);
-  assert.match(searchPage, /data-progressive-emoji-data/);
   assert.match(sampleTagPage, /data-progressive-emoji-root/);
   assert.match(globalScript, /initProgressiveEmojiLists/);
 
@@ -164,7 +161,8 @@ test('home app includes search relevance helpers and favorites persistence', () 
   assert.match(homeApp, /favoriteEmojisV1/);
   assert.match(homeApp, /emoji-favorite/);
   assert.match(homeApp, /emoji-empty-link/);
-  assert.match(homeApp, /Browse Search Topics/);
+  assert.match(homeApp, /Browse Tags/);
+  assert.ok(!homeApp.includes('Browse Search Topics'));
 });
 
 test('emoji detail pages include context, code formats, and related links', () => {
@@ -184,14 +182,26 @@ test('emoji detail pages include context, code formats, and related links', () =
   assert.match(detail, /<section class="emoji-related">/);
 });
 
-test('tofu diagnostics page is generated with rerun controls', () => {
+test('tofu diagnostics page is generated with cache-first diagnostics controls', () => {
   const tofu = read('tofu/index.html');
+  const diagnostics = read('emoji-diagnostics.js');
 
   assert.match(tofu, /data-tofu-score-root/);
-  assert.match(tofu, /data-tofu-rerun/);
+  assert.match(tofu, /Emoji Compatibility Lab/);
+  assert.match(tofu, /data-tofu-badge/);
+  assert.match(tofu, /data-tofu-supported/);
+  assert.match(tofu, /data-tofu-missing/);
+  assert.match(tofu, /data-tofu-risk/);
+  assert.match(tofu, /data-tofu-total/);
+  assert.match(tofu, /data-tofu-last-scanned/);
   assert.match(tofu, /data-tofu-user-agent/);
   assert.match(tofu, /data-tofu-missing-shell/);
   assert.match(tofu, /data-tofu-missing-list/);
   assert.match(tofu, /data-tofu-missing-count/);
   assert.match(tofu, /emoji-diagnostics\.js/);
+  assert.ok(!tofu.includes('data-tofu-rerun'));
+
+  assert.match(diagnostics, /emojiTofuScoreV5/);
+  assert.match(diagnostics, /missingRows/);
+  assert.match(diagnostics, /force:\s*false/);
 });

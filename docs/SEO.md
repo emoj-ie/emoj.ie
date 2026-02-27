@@ -1,6 +1,6 @@
 # SEO Strategy And Programmatic Plan
 
-Last updated: 2026-02-21
+Last updated: 2026-02-27
 
 ## Objectives
 - Capture high-intent emoji search demand with useful, non-thin pages.
@@ -14,8 +14,8 @@ Last updated: 2026-02-21
 - [x] `/{group}/{subgroup}` canonical subgroup pages (card-first browse and copy)
 - [x] `/category/*` compatibility aliases with canonical + `noindex,follow`
 - [x] `/tag/{tag}` tag hubs with curated explanations
-- [x] `/search/{term}` pages only when quality threshold and uniqueness are met
-- [x] `/alternatives/{competitor}` pages for competitor-intent comparisons
+- [x] `/search/*` compatibility redirects into `/tag/*` where mapped
+- [x] `/alternatives/*`, `/vs/*`, `/compare/*` compatibility redirects into `/tag/`
 - [x] `/about` and lightweight help content for trust and query coverage
 
 ## Current Inventory Snapshot
@@ -29,8 +29,8 @@ Last updated: 2026-02-21
 | Legacy detail aliases | 2062+ | generated | canonical to `/emoji/*` | noindex | lightweight redirect stubs (not full duplicate detail pages) |
 | Legacy category aliases | 120+ | generated | canonical to flat browse routes | noindex | `/category/*` compatibility layer |
 | Tag routes | 97 (incl. index) | derived tags (`tags`, `openmoji_tags`, annotations) | self-canonical | index | expanded via enrichment baseline |
-| Search term routes | 17 (index + 16 curated terms) | curated keyword topics + tags + annotations | self-canonical | index | quality-threshold gated generation |
-| Competitor alternatives | 4 (index + 3 pages) | curated editorial comparisons | self-canonical | index | implemented |
+| Search compatibility routes | 17 (index + mapped redirects) | topic-to-tag bridge map | canonical to `/tag/*` | noindex | redirect compatibility layer |
+| Compare compatibility routes | 3 (index redirects) | static redirect map | canonical to `/tag/` | noindex | `/alternatives`, `/vs`, `/compare` |
 
 ## Technical SEO Checklist
 - [x] Validate canonical tags on all indexable pages
@@ -40,13 +40,13 @@ Last updated: 2026-02-21
 - [x] Add tests for metadata presence and sitemap validity
 - [x] Add validation for canonical `/emoji/{slug}` alias behavior and redirect health
 - [x] Add validation for canonical browse alias behavior (`/category/*` -> flat routes)
-- [x] Add validation for curated `/search/{term}` route generation and metadata
+- [x] Add validation for `/search/*` compatibility redirects to `/tag/*`
 - [x] Add internal link graph checks (home -> category -> subcategory -> detail -> related)
 
 ## Programmatic SEO Quality Gates
 - A generated page must answer a distinct user intent in under 5 seconds.
 - Each indexable route must have unique H1, description, and primary content block.
-- Tag/search pages are indexable only when they meet minimum content and engagement thresholds.
+- Tag pages are indexable only when they meet minimum content and engagement thresholds.
 - No pages generated only from keyword permutations without unique utility.
 
 ## Route Strategy (Draft)
@@ -55,8 +55,8 @@ Last updated: 2026-02-21
 - Keep canonical browse routes flat at `/{group}/` and `/{group}/{subgroup}/`.
 - Preserve `/category/*` URLs as compatibility aliases (`noindex,follow`, canonical to flat browse paths).
 - Generate tag pages from curated taxonomy (not raw every-token generation).
-- Generate curated search-topic pages under `/search/{term}` with minimum match/diversity thresholds.
-- Keep competitor alternatives index and comparison pages under `/alternatives/*` with fit-first guidance.
+- Keep `/search/*` as compatibility redirects to tag destinations.
+- Keep compare routes as compatibility redirects and keep discovery focused on tags.
 
 ## Indexing Policy
 - `robots.txt` allows crawling and points to `https://emoj.ie/sitemap.xml`.
@@ -69,14 +69,11 @@ Last updated: 2026-02-21
 - Category description: `Browse {Category Name} emojis with clear labels and fast copy actions.`
 - Tag title: `{Tag Name} Emojis To Copy And Use | emoj.ie`
 - Tag description: `Explore {Tag Name} emojis with context and related options.`
-- Alternatives title: `emoj.ie vs {Competitor}: Which Emoji Tool Fits Your Workflow?`
-- Alternatives description: `Compare strengths, tradeoffs, and migration steps for {Competitor}.`
 
 ## Template Utility Requirements (Current)
 - Home: emoji-first 12-card category grid with minimal chrome and fast path into subcategories.
-- Category/Tag/Search/Subcategory hubs: card-first browse and copy with progressive hydration for heavier collections.
+- Category/Tag/Subcategory hubs: card-first browse and copy with progressive hydration for heavier collections.
 - Emoji detail: copy actions, usage context, and related links.
-- Alternatives pages: switch signals, side-by-side strengths, fit guidance, and migration checklist.
 
 ## Content Quality Guardrails
 - No doorway pages

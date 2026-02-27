@@ -105,6 +105,9 @@ Launch notes:
 - 2026-02-27 04:40 UTC - Final completion gate rerun
   - Commands: `npm run build`, `npm test`, `npm run lint:links`, `npm run test:playwright-smoke`, `npm run test:playwright-baseline`, `npm run test:lighthouse-budget`, `ffprobe` clip duration checks
   - Result: all passed (`tests` 53/53, `lint` 11023 HTML files, Playwright smoke/baseline pass, Lighthouse budget pass, demo clips at 2.24s/4.48s/3.44s)
+- 2026-02-27 05:15 UTC - UX simplification + tags-only IA pass
+  - Commands: removed standalone search/compare surfaces, mapped legacy `/search/*` to `/tag/*`, improved tofu cache-first diagnostics/UI, then ran `npm run build`, `npm test`, `npm run lint:links`, `npm run test:playwright-smoke`, `npm run test:playwright-baseline`, `npm run test:lighthouse-budget`
+  - Result: all passed (`tests` 53/53, `lint` 11013 HTML files, Playwright smoke/baseline pass, Lighthouse budget pass)
 
 ## Final Signoff
 - [x] All 15 selected skills applied

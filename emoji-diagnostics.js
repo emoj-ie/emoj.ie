@@ -1,7 +1,7 @@
 (function () {
-  var CACHE_KEY = 'emojiTofuScoreV4';
+  var CACHE_KEY = 'emojiTofuScoreV5';
   var CACHE_MAX_AGE_MS = 1000 * 60 * 60 * 24 * 7;
-  var SCORE_VERSION = 4;
+  var SCORE_VERSION = 5;
 
   function track(eventName, props) {
     if (typeof window.plausible !== 'function') {
@@ -326,13 +326,31 @@
       if (!Number.isFinite(parsed.scannedAt)) return null;
       if (Date.now() - parsed.scannedAt > CACHE_MAX_AGE_MS) return null;
       if (!Number.isFinite(parsed.total) || !Number.isFinite(parsed.missing)) return null;
+      if (!Array.isArray(parsed.missingRows)) {
+        parsed.missingRows = [];
+      }
       return parsed;
     } catch (_error) {
       return null;
     }
   }
 
-  function writeCache(total, missing) {
+  function writeCache(total, missing, missingRows) {
+    var rows = Array.isArray(missingRows)
+      ? missingRows.map(function (row) {
+          return {
+            emoji: String(row.emoji || ''),
+            hex: String(row.hex || ''),
+            annotation: String(row.annotation || ''),
+            detailRoute: String(row.detailRoute || ''),
+            group: String(row.group || ''),
+            subgroup: String(row.subgroup || ''),
+            useLocalAsset: Boolean(row.useLocalAsset),
+            cdnAssetPath: String(row.cdnAssetPath || ''),
+          };
+        })
+      : [];
+
     try {
       localStorage.setItem(
         CACHE_KEY,
@@ -342,6 +360,7 @@
           scannedAt: Date.now(),
           total: total,
           missing: missing,
+          missingRows: rows,
         })
       );
     } catch (_error) {
@@ -395,17 +414,52 @@
     });
   }
 
+  function setMetric(roots, selector, value) {
+    applyToRoots(roots, function (root) {
+      var node = root.querySelector(selector);
+      if (node) node.textContent = value;
+    });
+  }
+
+  function formatScanTimestamp(scannedAt) {
+    if (!Number.isFinite(scannedAt)) {
+      return 'Not scanned yet.';
+    }
+    try {
+      var date = new Date(scannedAt);
+      return 'Last scanned: ' + date.toLocaleString();
+    } catch (_error) {
+      return 'Last scanned recently.';
+    }
+  }
+
+  function tofuRiskLabel(missingPercent) {
+    if (missingPercent <= 0.1) return 'Excellent';
+    if (missingPercent <= 1.5) return 'Low';
+    if (missingPercent <= 5) return 'Medium';
+    return 'High';
+  }
+
   function setUserAgent() {
     var node = document.querySelector('[data-tofu-user-agent]');
     if (!node) return;
     node.textContent = 'Detected platform: ' + navigator.userAgent;
   }
 
-  function renderSummary(roots, total, missing, fromCache) {
+  function renderSummary(roots, total, missing, fromCache, scannedAt) {
     var safeTotal = Math.max(1, Number(total) || 1);
     var safeMissing = Math.max(0, Number(missing) || 0);
     var supportedPercent = ((safeTotal - safeMissing) / safeTotal) * 100;
     var missingPercent = (safeMissing / safeTotal) * 100;
+    var riskLabel = tofuRiskLabel(missingPercent);
+    var badgeLabel =
+      riskLabel === 'Excellent'
+        ? 'Excellent'
+        : riskLabel === 'Low'
+        ? 'Low Risk'
+        : riskLabel === 'Medium'
+        ? 'Medium Risk'
+        : 'High Risk';
 
     setState(roots, safeMissing === 0 ? 'is-supported' : 'is-missing');
     setIndicator(
@@ -414,12 +468,18 @@
     );
     setNote(
       roots,
-      formatDecimal(supportedPercent) +
+        formatDecimal(supportedPercent) +
         '% supported · ' +
         formatDecimal(missingPercent) +
         '% tofu risk. Lower missing count is better.' +
         (fromCache ? ' (cached)' : '')
     );
+    setMetric(roots, '[data-tofu-supported]', formatDecimal(supportedPercent) + '%');
+    setMetric(roots, '[data-tofu-missing]', formatDecimal(missingPercent) + '%');
+    setMetric(roots, '[data-tofu-risk]', riskLabel);
+    setMetric(roots, '[data-tofu-total]', safeTotal.toLocaleString());
+    setMetric(roots, '[data-tofu-badge]', badgeLabel + (fromCache ? ' · Cached' : ''));
+    setMetric(roots, '[data-tofu-last-scanned]', formatScanTimestamp(scannedAt));
     setProgress(roots, 100);
   }
 
@@ -469,9 +529,9 @@
     if (!force) {
       var cached = readCache();
       if (cached) {
-        renderSummary(roots, cached.total, cached.missing, true);
+        renderSummary(roots, cached.total, cached.missing, true, cached.scannedAt);
         if (includeMissingList) {
-          renderMissingList([], cached.total);
+          renderMissingList(cached.missingRows || [], cached.total);
         }
         track('emoji_tofu_score_ready', {
           source: source,
@@ -494,7 +554,7 @@
           var total = pool.length;
           var missing = 0;
           var index = 0;
-          var missingRows = includeMissingList ? [] : null;
+          var missingRows = [];
 
           function step(deadline) {
             var processed = 0;
@@ -514,9 +574,7 @@
 
               if (!detector(row.emoji)) {
                 missing += 1;
-                if (missingRows) {
-                  missingRows.push(row);
-                }
+                missingRows.push(row);
               }
 
               if (processed >= 120) {
@@ -535,8 +593,8 @@
               return;
             }
 
-            writeCache(total, missing);
-            renderSummary(roots, total, missing, false);
+            writeCache(total, missing, missingRows);
+            renderSummary(roots, total, missing, false, Date.now());
             if (includeMissingList) {
               renderMissingList(missingRows, total);
             }
@@ -595,13 +653,6 @@
       });
     }
 
-    var rerunButton = document.querySelector('[data-tofu-rerun]');
-    if (rerunButton) {
-      rerunButton.addEventListener('click', function () {
-        safeRun({ force: true, source: window.location.pathname });
-      });
-    }
-
     var hasStarted = false;
     function scheduleInitialRun(source) {
       if (hasStarted) return;
@@ -609,7 +660,7 @@
       window.setTimeout(function () {
         idle(function () {
           safeRun({
-            force: includeMissingList ? true : false,
+            force: false,
             source: source || window.location.pathname,
           });
         }, 260);
