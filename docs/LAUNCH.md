@@ -1,6 +1,6 @@
 # Launch Plan
 
-Last updated: 2026-02-20
+Last updated: 2026-02-27
 
 ## Launch Goal
 - Position `emoj.ie` as the fastest and most distinctive emoji workflow site for search, copy, and reuse.
@@ -27,6 +27,7 @@ Last updated: 2026-02-20
 ## Conversion Events To Watch
 - `copy`
 - `search`
+- `search_no_results`
 - `filter`
 - `favorite_add` / `favorite_remove`
 - `recent_reuse`
@@ -36,8 +37,19 @@ Last updated: 2026-02-20
 ## Success Targets (First 14 Days)
 - Increase `copy` events per session by >= 15%.
 - Increase `favorite_add` rate by >= 20%.
+- Reduce `search_no_results` rate by >= 20%.
 - Keep baseline quality gates at 100% pass rate before every release.
 - Grow organic entrances to `/emoji/*`, `/category/*`, and `/alternatives/*`.
+
+## Feature Payload For This Launch
+- URL-shareable search state on home.
+- Dedicated `search_no_results` analytics event and privacy-safe query-shape properties.
+- Expanded schema coverage (`ItemList`, `FAQPage`, richer home `Organization` graph links).
+- Better homepage value-proposition copy and quick-path navigation.
+- Search relevance improvements:
+  - 2-character high-intent prefix support (`ex` -> exclamation results)
+  - transposition typo matching (`fier` -> fire)
+  - vowel-drop matching (`smly` -> smiley)
 
 ## Rollout Timeline
 1. T-7 days

@@ -5,8 +5,9 @@ import {
   humanize,
   normalizeHex,
   parseUiState,
+  toSearchParams,
 } from './home-utils.mjs';
-import { buildEntrySearchIndex, filterAndRankEntries } from './home-search.mjs';
+import { buildEntrySearchIndex, filterAndRankEntries, tokenizeSearch } from './home-search.mjs';
 
 (function () {
   const searchInput = document.getElementById('search');
@@ -259,8 +260,16 @@ import { buildEntrySearchIndex, filterAndRankEntries } from './home-search.mjs';
     localStorage.setItem(COPY_MODE_KEY, state.copy);
     localStorage.setItem(SKIN_TONE_KEY, defaultSkinTone);
 
-    if (window.location.search) {
-      window.history.replaceState({}, '', window.location.pathname);
+    const params = toSearchParams({
+      q: String(state.q || '').trim(),
+      g: '',
+      sg: '',
+      copy: state.copy,
+    });
+    const nextUrl = params ? `${window.location.pathname}?${params}` : window.location.pathname;
+    const currentUrl = `${window.location.pathname}${window.location.search}`;
+    if (nextUrl !== currentUrl) {
+      window.history.replaceState({}, '', nextUrl);
     }
   }
 
@@ -661,7 +670,28 @@ import { buildEntrySearchIndex, filterAndRankEntries } from './home-search.mjs';
     if (filteredEntries.length === 0) {
       const empty = document.createElement('li');
       empty.className = 'emoji-empty';
-      empty.textContent = 'No emojis found for this subcategory and search.';
+      const query = String(state.q || '').trim();
+
+      const title = document.createElement('p');
+      title.className = 'emoji-empty-title';
+      title.textContent = query
+        ? `No emoji matches "${query}".`
+        : 'No emojis match the current filters.';
+
+      const tip = document.createElement('p');
+      tip.className = 'emoji-empty-tip';
+      tip.textContent = query
+        ? 'Try a broader keyword, fewer words, or a codepoint like 1f602.'
+        : 'Try broad keywords like cat, heart, fire, or smile.';
+
+      const searchTopicsLink = document.createElement('a');
+      searchTopicsLink.className = 'emoji-empty-link';
+      searchTopicsLink.href = '/search/';
+      searchTopicsLink.textContent = 'Browse Search Topics';
+
+      empty.appendChild(title);
+      empty.appendChild(tip);
+      empty.appendChild(searchTopicsLink);
       resultsList.appendChild(empty);
       updateKeyboardCollection();
       updateResultStatus();
@@ -683,6 +713,10 @@ import { buildEntrySearchIndex, filterAndRankEntries } from './home-search.mjs';
     });
 
     if (state.q) {
+      const queryTokens = tokenizeSearch(state.q, { minLength: 2 }).slice(0, 8);
+      const queryShape =
+        queryTokens.length > 0 ? queryTokens.map((token) => String(Math.min(token.length, 8))).join('-') : '0';
+
       track('search', {
         source: window.location.pathname,
         hex: '',
@@ -690,8 +724,23 @@ import { buildEntrySearchIndex, filterAndRankEntries } from './home-search.mjs';
         subgroup: state.sg || 'all',
         format: state.copy,
         query_length: String(state.q.length),
+        query_token_count: String(queryTokens.length),
+        query_shape: queryShape,
         results: String(filteredEntries.length || 0),
       });
+
+      if (filteredEntries.length === 0) {
+        track('search_no_results', {
+          source: window.location.pathname,
+          hex: '',
+          group: state.g || 'all',
+          subgroup: state.sg || 'all',
+          format: state.copy,
+          query_length: String(state.q.length),
+          query_token_count: String(queryTokens.length),
+          query_shape: queryShape,
+        });
+      }
     }
   }
 

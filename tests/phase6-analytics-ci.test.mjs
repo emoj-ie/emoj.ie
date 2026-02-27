@@ -24,9 +24,12 @@ test('analytics events are wired for copy/search/filter/variant/share', () => {
   assert.match(generated, /track\('theme_toggle'/);
   assert.match(generated, /track\('variant_select'/);
   assert.match(homeApp, /track\('search'/);
+  assert.match(homeApp, /track\('search_no_results'/);
   assert.match(homeApp, /track\('filter'/);
   assert.match(homeApp, /favorite_add/);
   assert.match(homeApp, /favorite_remove/);
+  assert.match(homeApp, /query_token_count:/);
+  assert.match(homeApp, /query_shape:/);
   assert.match(generated, /source:/);
   assert.match(generated, /hex:/);
   assert.match(generated, /group:/);

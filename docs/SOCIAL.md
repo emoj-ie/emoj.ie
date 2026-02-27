@@ -1,6 +1,6 @@
 # Social Playbook
 
-Last updated: 2026-02-20
+Last updated: 2026-02-27
 
 ## Content Pillars
 - Speed workflow demos (search -> copy -> reuse)
@@ -18,6 +18,7 @@ Last updated: 2026-02-20
 - `From query to copied emoji in under 10 seconds.`
 - `We replaced generic emoji browsing with intent-first routes.`
 - `Most emoji tools stop at copy. We added confidence and reuse.`
+- `Now handles short intent searches and typo drift (ex, fier, smly).`
 
 ## X Templates
 1. Launch thread
@@ -31,11 +32,13 @@ Last updated: 2026-02-20
    - CTA: `Try it: https://emoj.ie`
 3. Quality proof post
    - `Static-first on GitHub Pages, full test gates on every release.`
+4. Search quality post
+   - `We track no-result patterns and ship relevance updates weekly.`
 
 ## LinkedIn Template
 - Hook: `We rebuilt emoj.ie to make emoji workflows genuinely faster.`
 - Body:
-  - `What changed: stronger relevance, local favorites/recents, richer detail pages, and quality SEO route architecture.`
+  - `What changed: stronger relevance, local favorites/recents, richer detail pages, and stronger schema coverage for list/comparison routes.`
   - `Why it matters: less search friction, faster copy loops, more confidence in usage.`
   - `How we shipped: static-first architecture plus full regression gates.`
 - CTA: `Would value feedback from people who use emojis every day: https://emoj.ie`
@@ -55,7 +58,7 @@ Last updated: 2026-02-20
 5. Day 8: Detail-page context spotlight
 6. Day 10: Alternatives page spotlight
 7. Day 12: Build quality and test-gate proof
-8. Day 14: Lessons learned + next improvements
+8. Day 14: Lessons learned + no-result query fixes shipped
 
 ## Creative Asset Ideas
 - 8-12 second vertical clips with cursor + keyboard overlays

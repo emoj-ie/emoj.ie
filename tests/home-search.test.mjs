@@ -185,3 +185,73 @@ test('three-letter prefix queries can match longer annotation tokens', () => {
   const ranked = filterAndRankEntries(rows, 'exc');
   assert.equal(ranked[0]?.annotation, 'red exclamation mark');
 });
+
+test('two-letter prefixes can still return high-intent matches', () => {
+  const rows = [
+    entry({
+      emoji: '❗',
+      annotation: 'red exclamation mark',
+      group: 'symbols',
+      subgroup: 'punctuation',
+      tags: 'exclamation, mark, punctuation',
+      hexcode: '2757',
+    }),
+    entry({
+      emoji: '❓',
+      annotation: 'red question mark',
+      group: 'symbols',
+      subgroup: 'punctuation',
+      tags: 'question, mark, punctuation',
+      hexcode: '2753',
+    }),
+  ];
+
+  const ranked = filterAndRankEntries(rows, 'ex');
+  assert.equal(ranked[0]?.annotation, 'red exclamation mark');
+});
+
+test('single-edit typos can still find intended emoji keywords', () => {
+  const rows = [
+    entry({
+      emoji: '🔥',
+      annotation: 'fire',
+      group: 'travel-places',
+      subgroup: 'sky-weather',
+      tags: 'flame, heat, hot',
+      hexcode: '1f525',
+    }),
+    entry({
+      emoji: '🐟',
+      annotation: 'fish',
+      group: 'animals-nature',
+      subgroup: 'animal-marine',
+      tags: 'animal, seafood',
+      hexcode: '1f41f',
+    }),
+  ];
+
+  const ranked = filterAndRankEntries(rows, 'fier');
+  assert.equal(ranked[0]?.annotation, 'fire');
+});
+
+test('vowel-dropped queries can match common emoji words', () => {
+  const rows = [
+    entry({
+      emoji: '😃',
+      annotation: 'smiley face',
+      tags: 'smile, happy, grin',
+      hexcode: '1f603',
+    }),
+    entry({
+      emoji: '🔹',
+      annotation: 'small blue diamond',
+      group: 'symbols',
+      subgroup: 'geometric',
+      tags: 'shape, blue',
+      hexcode: '1f539',
+    }),
+  ];
+
+  const ranked = filterAndRankEntries(rows, 'smly');
+  assert.equal(ranked[0]?.annotation, 'smiley face');
+});

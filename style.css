@@ -532,49 +532,6 @@ a:hover {
   color: var(--text-muted);
 }
 
-.panel-lede {
-  max-width: 68ch;
-  font-size: 1.04rem;
-}
-
-.home-kicker {
-  display: inline-flex;
-  align-items: center;
-  width: max-content;
-  min-height: 30px;
-  padding: 0.2rem 0.55rem;
-  border: 2px solid color-mix(in oklab, var(--border-soft), transparent 12%);
-  border-radius: 999px;
-  letter-spacing: 0.06em;
-  text-transform: uppercase;
-  font-size: 0.72rem;
-  font-weight: 700;
-  color: var(--text-muted);
-  background: color-mix(in oklab, var(--bg-elevated), transparent 15%);
-}
-
-.home-hero {
-  grid-template-columns: minmax(0, 1fr) minmax(300px, 420px);
-  gap: 1rem;
-}
-
-.home-copy-stack {
-  display: grid;
-  gap: 0.48rem;
-  align-content: start;
-}
-
-.home-headline {
-  font-size: clamp(2.15rem, 5.3vw, 4.45rem);
-  max-width: 15ch;
-  text-wrap: balance;
-}
-
-.panel-tip {
-  font-size: 0.9rem;
-  color: var(--text-muted);
-}
-
 .home-proof-panel {
   background: color-mix(in oklab, var(--bg-elevated), var(--bg-soft) 26%);
   border: 3px solid var(--border-soft);
@@ -1332,6 +1289,27 @@ body.menu-open {
   text-align: center;
   color: var(--text-muted);
   background: color-mix(in oklab, var(--bg-soft), transparent 25%);
+}
+
+.emoji-empty-title {
+  margin: 0 0 0.35rem;
+  font-weight: 700;
+  color: var(--text-strong);
+}
+
+.emoji-empty-tip {
+  margin: 0 0 0.6rem;
+  font-size: 0.92rem;
+}
+
+.emoji-empty-link {
+  color: var(--brand-primary);
+  font-weight: 700;
+}
+
+.emoji-empty-link:hover {
+  text-decoration: underline;
+  text-underline-offset: 2px;
 }
 
 .recent-section h2,
@@ -2320,10 +2298,6 @@ kbd {
 }
 
 @media (max-width: 1080px) {
-  .home-hero {
-    grid-template-columns: 1fr;
-  }
-
   .home-principle-grid {
     grid-template-columns: repeat(2, minmax(0, 1fr));
   }

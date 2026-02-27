@@ -6,6 +6,7 @@ const HEX_PART_RE = /^[0-9a-f]{4,6}$/;
 const HEX_SEQUENCE_RE = /(?:u\+|0x)?([0-9a-f]{4,6}(?:-[0-9a-f]{4,6})*)/gi;
 const EMOJI_QUERY_RE = /\p{Extended_Pictographic}/gu;
 const WORD_RE = /[a-z0-9]+/g;
+const VOWEL_RE = /[aeiou]/g;
 
 const QUERY_ALIASES = Object.freeze({
   lol: ['laugh', 'joy', 'tears', 'funny', 'rofl', 'lmao', 'haha'],
@@ -171,7 +172,7 @@ function buildWeightedQueryTokens(query, queryTokens) {
 
 function getEditDistanceThreshold(token) {
   if (token.length >= 8) return 2;
-  if (token.length >= 5) return 1;
+  if (token.length >= 4) return 1;
   return 0;
 }
 
@@ -182,6 +183,32 @@ function withinDistance(source, target, maxDistance = 1) {
   if (!a || !b) return false;
   if (a === b) return true;
   if (Math.abs(a.length - b.length) > maxDistance) return false;
+
+  if (maxDistance >= 1 && a.length === b.length && a.length >= 2) {
+    let mismatchIndex = -1;
+    let mismatchCount = 0;
+    for (let index = 0; index < a.length; index += 1) {
+      if (a[index] === b[index]) continue;
+      mismatchCount += 1;
+      if (mismatchIndex === -1) {
+        mismatchIndex = index;
+      } else if (mismatchCount > 2) {
+        break;
+      }
+    }
+    if (
+      mismatchCount === 2 &&
+      mismatchIndex >= 0 &&
+      mismatchIndex + 1 < a.length &&
+      a[mismatchIndex] === b[mismatchIndex + 1] &&
+      a[mismatchIndex + 1] === b[mismatchIndex]
+    ) {
+      const tailIndex = mismatchIndex + 2;
+      if (a.slice(tailIndex) === b.slice(tailIndex)) {
+        return true;
+      }
+    }
+  }
 
   const rows = a.length + 1;
   const cols = b.length + 1;
@@ -231,8 +258,8 @@ function buildPrefixedSet(tokens) {
   return set;
 }
 
-function findPrefixToken(token, tokenSet) {
-  if (token.length <= 2) return false;
+function findPrefixToken(token, tokenSet, minLength = 3) {
+  if (token.length < minLength) return false;
   for (const candidate of tokenSet) {
     if (candidate.startsWith(token)) {
       return true;
@@ -252,6 +279,26 @@ function findFuzzyToken(token, tokenSet) {
       return true;
     }
   }
+  return false;
+}
+
+function stripVowels(token = '') {
+  return String(token).replace(VOWEL_RE, '');
+}
+
+function findVowelDropToken(token, tokenSet) {
+  if (token.length < 4) return false;
+  const tokenSignature = stripVowels(token);
+  if (tokenSignature.length < 3) return false;
+
+  for (const candidate of tokenSet) {
+    if (!candidate || candidate[0] !== token[0]) continue;
+    if (Math.abs(candidate.length - token.length) > 3) continue;
+    if (stripVowels(candidate) === tokenSignature) {
+      return true;
+    }
+  }
+
   return false;
 }
 
@@ -330,6 +377,8 @@ export function scoreEntryAgainstQuery(entry, queryContext) {
   let score = 0;
   let directTokenMatches = 0;
   let fuzzyMatches = 0;
+  const allowTwoCharPrefix =
+    primaryTokens.length === 1 && primaryTokens[0].length === 2 && query.length === 2;
 
   if (emojiChars.length > 0) {
     if (emojiChars.includes(index.emoji)) {
@@ -386,14 +435,21 @@ export function scoreEntryAgainstQuery(entry, queryContext) {
     } else if (index.searchableTokens.has(token)) {
       score += 38 * weight;
       matched = true;
-    } else if (findPrefixToken(token, index.annotationTokens)) {
+    } else if (findPrefixToken(token, index.annotationTokens, allowTwoCharPrefix ? 2 : 3)) {
       score += 34 * weight;
       matched = true;
-    } else if (findPrefixToken(token, index.tagTokens)) {
+    } else if (findPrefixToken(token, index.tagTokens, allowTwoCharPrefix ? 2 : 3)) {
       score += 28 * weight;
       matched = true;
     } else if (findFuzzyToken(token, index.annotationTokens) || findFuzzyToken(token, index.tagTokens)) {
       score += 18 * weight;
+      matched = true;
+      fuzzyMatches += 1;
+    } else if (
+      findVowelDropToken(token, index.annotationTokens) ||
+      findVowelDropToken(token, index.tagTokens)
+    ) {
+      score += 14 * weight;
       matched = true;
       fuzzyMatches += 1;
     }

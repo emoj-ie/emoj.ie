@@ -180,6 +180,87 @@ function breadcrumbSchema(baseUrl, crumbs, canonicalUrl) {
   };
 }
 
+function toAbsoluteUrlFromRoute(baseUrl, route = '') {
+  const value = String(route || '').trim();
+  if (!value) return '';
+  if (/^https?:\/\//i.test(value)) return value;
+  return absoluteUrl(baseUrl, value.replace(/^\/+/, ''));
+}
+
+function itemListSchema(baseUrl, name, items = [], maxItems = 40) {
+  const normalized = (items || [])
+    .map((item) => ({
+      name: String(item?.name || '').trim(),
+      route: String(item?.route || '').trim(),
+    }))
+    .filter((item) => item.name && item.route)
+    .slice(0, maxItems);
+
+  if (normalized.length === 0) {
+    return null;
+  }
+
+  return {
+    '@context': 'https://schema.org',
+    '@type': 'ItemList',
+    name: String(name || 'Items'),
+    itemListOrder: 'https://schema.org/ItemListOrderAscending',
+    numberOfItems: normalized.length,
+    itemListElement: normalized.map((item, index) => ({
+      '@type': 'ListItem',
+      position: index + 1,
+      name: item.name,
+      item: toAbsoluteUrlFromRoute(baseUrl, item.route),
+    })),
+  };
+}
+
+function faqPageSchema(entries = []) {
+  const mainEntity = (entries || [])
+    .map((entry) => ({
+      question: String(entry?.question || '').trim(),
+      answer: String(entry?.answer || '').trim(),
+    }))
+    .filter((entry) => entry.question && entry.answer)
+    .map((entry) => ({
+      '@type': 'Question',
+      name: entry.question,
+      acceptedAnswer: {
+        '@type': 'Answer',
+        text: entry.answer,
+      },
+    }));
+
+  if (mainEntity.length === 0) {
+    return null;
+  }
+
+  return {
+    '@context': 'https://schema.org',
+    '@type': 'FAQPage',
+    mainEntity,
+  };
+}
+
+function emojiListItems(entries = [], maxItems = 80) {
+  return (entries || [])
+    .slice(0, maxItems)
+    .map((entry) => {
+      const route = String(entry?.canonicalRoute || entry?.detailRoute || '').trim();
+      const slug = String(entry?.slug || '').trim();
+      const label = slug ? humanizeSlug(slug) : '';
+      if (!route || !label) {
+        return null;
+      }
+      const glyph = String(entry?.emoji || '').trim();
+      return {
+        name: `${glyph ? `${glyph} ` : ''}${label}`.trim(),
+        route,
+      };
+    })
+    .filter(Boolean);
+}
+
 function renderHeader({
   prefix,
   showSearch,
@@ -850,19 +931,34 @@ function renderHomePage(model, config) {
   </section>`;
 
   const homeUrl = absoluteUrl(config.site.baseUrl, '');
+  const organizationSchema = {
+    '@context': 'https://schema.org',
+    '@type': 'Organization',
+    '@id': `${homeUrl}#organization`,
+    name: config.site.title,
+    url: homeUrl,
+    logo: absoluteUrl(config.site.baseUrl, 'logo.svg'),
+    description: config.site.defaultDescription,
+  };
+  const sameAs = Array.isArray(config.site.sameAs)
+    ? config.site.sameAs.filter((url) => typeof url === 'string' && /^https?:\/\//i.test(url))
+    : [];
+  if (sameAs.length > 0) {
+    organizationSchema.sameAs = sameAs;
+  }
+
   const homeJsonLd = [
-    {
-      '@context': 'https://schema.org',
-      '@type': 'Organization',
-      name: config.site.title,
-      url: homeUrl,
-      logo: absoluteUrl(config.site.baseUrl, 'logo.svg'),
-    },
+    organizationSchema,
     {
       '@context': 'https://schema.org',
       '@type': 'WebSite',
+      '@id': `${homeUrl}#website`,
       name: config.site.title,
       url: homeUrl,
+      inLanguage: 'en',
+      publisher: {
+        '@id': `${homeUrl}#organization`,
+      },
       potentialAction: {
         '@type': 'SearchAction',
         target: `${homeUrl}?q={search_term_string}`,
@@ -1132,6 +1228,15 @@ function renderAlternativeIndexPage(config) {
     { label: 'Home', href: '/' },
     { label: 'Alternatives' },
   ];
+  const alternativesItemList = itemListSchema(
+    config.site.baseUrl,
+    'Emoji Site Alternatives',
+    COMPETITOR_ALTERNATIVES.map((item) => ({
+      name: `${item.name} Alternative`,
+      route: item.route,
+    })),
+    20
+  );
 
   const jsonLd = [
     {
@@ -1146,6 +1251,7 @@ function renderAlternativeIndexPage(config) {
         url: absoluteUrl(config.site.baseUrl, ''),
       },
     },
+    ...(alternativesItemList ? [alternativesItemList] : []),
     breadcrumbSchema(config.site.baseUrl, crumbs, canonicalUrl),
   ];
 
@@ -1177,6 +1283,33 @@ function renderAlternativePage(item, config) {
   const migrationSteps = (item.migrationPlan || [])
     .map((point) => `<li>${escapeHtml(point)}</li>`)
     .join('');
+  const migrationPlanSummary = (item.migrationPlan || []).join(' ');
+  const faqEntries = [
+    {
+      question: `Why switch from ${item.name} to emoj.ie?`,
+      answer: item.whySwitch,
+    },
+    {
+      question: `When should I choose emoj.ie instead of ${item.name}?`,
+      answer: item.bestForEmojie,
+    },
+    {
+      question: `When is ${item.name} a better fit?`,
+      answer: item.bestForCompetitor,
+    },
+    {
+      question: `How can I migrate quickly from ${item.name}?`,
+      answer: migrationPlanSummary,
+    },
+  ];
+  const faqMarkup = faqEntries
+    .map(
+      (entry) => `<article class="about-faq-item">
+        <h3>${escapeHtml(entry.question)}</h3>
+        <p>${escapeHtml(entry.answer)}</p>
+      </article>`
+    )
+    .join('');
 
   const body = `<article class="about-page">
     <p class="collection-kicker">Comparison</p>
@@ -1205,6 +1338,10 @@ function renderAlternativePage(item, config) {
       <h2>Migration In 3 Steps</h2>
       <ol class="story-list ordered">${migrationSteps}</ol>
     </section>
+    <section class="about-card">
+      <h2>Frequently Asked Questions</h2>
+      <div class="about-faq-list">${faqMarkup}</div>
+    </section>
   </article>`;
 
   const canonicalUrl = absoluteUrl(config.site.baseUrl, item.route);
@@ -1213,6 +1350,7 @@ function renderAlternativePage(item, config) {
     { label: 'Alternatives', href: '/alternatives/' },
     { label: `${item.name} alternative` },
   ];
+  const faqSchema = faqPageSchema(faqEntries);
 
   const jsonLd = [
     {
@@ -1227,6 +1365,7 @@ function renderAlternativePage(item, config) {
         url: absoluteUrl(config.site.baseUrl, ''),
       },
     },
+    ...(faqSchema ? [faqSchema] : []),
     breadcrumbSchema(config.site.baseUrl, crumbs, canonicalUrl),
   ];
 
@@ -1272,6 +1411,15 @@ function renderCategoryIndexPage(categories, config) {
     { label: 'Home', href: '/' },
     { label: 'Categories' },
   ];
+  const categoryItemList = itemListSchema(
+    config.site.baseUrl,
+    'Emoji Categories',
+    categories.slice(0, 40).map((category) => ({
+      name: `${category.title} Emojis`,
+      route: category.route,
+    })),
+    40
+  );
 
   const jsonLd = [
     {
@@ -1286,6 +1434,7 @@ function renderCategoryIndexPage(categories, config) {
         url: absoluteUrl(config.site.baseUrl, ''),
       },
     },
+    ...(categoryItemList ? [categoryItemList] : []),
     breadcrumbSchema(config.site.baseUrl, crumbs, canonicalUrl),
   ];
 
@@ -1328,6 +1477,15 @@ function renderTagIndexPage(tags, config) {
     { label: 'Home', href: '/' },
     { label: 'Tags' },
   ];
+  const tagItemList = itemListSchema(
+    config.site.baseUrl,
+    'Emoji Tags',
+    tags.slice(0, 260).map((tag) => ({
+      name: `${tag.title} Emojis`,
+      route: tag.route,
+    })),
+    260
+  );
 
   const jsonLd = [
     {
@@ -1342,6 +1500,7 @@ function renderTagIndexPage(tags, config) {
         url: absoluteUrl(config.site.baseUrl, ''),
       },
     },
+    ...(tagItemList ? [tagItemList] : []),
     breadcrumbSchema(config.site.baseUrl, crumbs, canonicalUrl),
   ];
 
@@ -1378,6 +1537,12 @@ function renderTagPage(tag, config) {
     { label: 'Tags', href: '/tag/' },
     { label: tag.title },
   ];
+  const tagEmojiItemList = itemListSchema(
+    config.site.baseUrl,
+    `${tag.title} Emojis`,
+    emojiListItems(emojiEntries, 96),
+    96
+  );
 
   const jsonLd = [
     {
@@ -1392,6 +1557,7 @@ function renderTagPage(tag, config) {
         url: absoluteUrl(config.site.baseUrl, ''),
       },
     },
+    ...(tagEmojiItemList ? [tagEmojiItemList] : []),
     breadcrumbSchema(config.site.baseUrl, crumbs, canonicalUrl),
   ];
 
@@ -1434,6 +1600,15 @@ function renderSearchIndexPage(searchPages, config) {
     { label: 'Home', href: '/' },
     { label: 'Search Topics' },
   ];
+  const searchTopicItemList = itemListSchema(
+    config.site.baseUrl,
+    'Emoji Search Topics',
+    searchPages.slice(0, 80).map((searchPage) => ({
+      name: searchPage.title,
+      route: searchPage.route,
+    })),
+    80
+  );
 
   const jsonLd = [
     {
@@ -1448,6 +1623,7 @@ function renderSearchIndexPage(searchPages, config) {
         url: absoluteUrl(config.site.baseUrl, ''),
       },
     },
+    ...(searchTopicItemList ? [searchTopicItemList] : []),
     breadcrumbSchema(config.site.baseUrl, crumbs, canonicalUrl),
   ];
 
@@ -1488,6 +1664,12 @@ function renderSearchPage(searchPage, config) {
     { label: 'Search Topics', href: '/search/' },
     { label: searchPage.title },
   ];
+  const searchEmojiItemList = itemListSchema(
+    config.site.baseUrl,
+    searchPage.title,
+    emojiListItems(emojiEntries, 96),
+    96
+  );
 
   const jsonLd = [
     {
@@ -1502,6 +1684,7 @@ function renderSearchPage(searchPage, config) {
         url: absoluteUrl(config.site.baseUrl, ''),
       },
     },
+    ...(searchEmojiItemList ? [searchEmojiItemList] : []),
     breadcrumbSchema(config.site.baseUrl, crumbs, canonicalUrl),
   ];
 

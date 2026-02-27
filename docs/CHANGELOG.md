@@ -2,6 +2,37 @@
 
 All notable project updates are tracked here in human-readable form.
 
+## 2026-02-27
+### Added
+- Skill execution artifacts:
+  - `docs/SKILL_EXECUTION_PLAN.md`
+  - `docs/SKILL_EXECUTION_PROGRESS.md`
+  - `docs/SKILL_PHASE1_AUDIT.md`
+  - `docs/CONTENT_STRATEGY.md`
+  - `docs/COMPETITOR_ALTERNATIVES_PLAN.md`
+
+### Changed
+- Home analytics and state handling:
+  - preserved URL-shareable search state on home (`q`, non-default `copy`)
+  - added dedicated `search_no_results` event
+  - added privacy-safe search features (`query_token_count`, `query_shape`)
+- Search relevance:
+  - enabled 2-character high-intent prefix matching (`ex`)
+  - added adjacent transposition tolerance (`fier` -> `fire`)
+  - added vowel-drop matching (`smly` -> `smiley`)
+  - added focused regression coverage in `tests/home-search.test.mjs`
+- Schema and SEO modeling:
+  - added `ItemList` JSON-LD to collection/list pages (alternatives, category/tag/search indexes, tag/search detail lists)
+  - added visible FAQ sections + `FAQPage` schema on alternatives detail pages
+  - expanded home `Organization`/`WebSite` schema linkage with `@id`, `publisher`, and optional `sameAs` handling
+  - expanded schema test assertions in `tests/phase4-seo-schema.test.mjs`
+- Homepage and no-results CRO/copy pass:
+  - added visible value-proposition header with quick-path actions on home
+  - improved no-results guidance with actionable next-step link to search topics
+  - added supporting style and UX guardrail assertions
+- Launch and distribution docs refresh:
+  - updated `docs/LAUNCH.md` and `docs/SOCIAL.md` to match latest feature payload and metrics
+
 ## 2026-02-21
 ### Changed
 - Hardened build determinism and cache invalidation:

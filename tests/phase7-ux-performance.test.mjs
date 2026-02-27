@@ -48,6 +48,9 @@ test('detail enhancement script applies path breadcrumbs and emoji fallback', ()
 test('homepage template has lazy loading controls', () => {
   const home = read('index.html');
 
+  assert.match(home, /<h1 class="visually-hidden">Emoji Categories<\/h1>/);
+  assert.ok(!home.includes('Find the exact emoji in seconds.'));
+  assert.ok(!home.includes('home-inline-actions'));
   assert.match(home, /id="header-menu-toggle"/);
   assert.match(home, /class="header-search-icon"/);
   assert.ok(!home.includes('id="theme-toggle"'));
@@ -156,6 +159,8 @@ test('home app includes search relevance helpers and favorites persistence', () 
   assert.match(homeSearch, /scoreEntryAgainstQuery/);
   assert.match(homeApp, /favoriteEmojisV1/);
   assert.match(homeApp, /emoji-favorite/);
+  assert.match(homeApp, /emoji-empty-link/);
+  assert.match(homeApp, /Browse Search Topics/);
 });
 
 test('emoji detail pages include context, code formats, and related links', () => {

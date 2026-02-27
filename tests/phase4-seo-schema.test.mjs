@@ -27,11 +27,12 @@ test('sample templates have complete meta tags and schema payloads', () => {
   const samples = [
     ['index.html', ['Organization', 'WebSite']],
     ['tofu/index.html', ['WebPage', 'BreadcrumbList']],
-    ['alternatives/index.html', ['CollectionPage', 'BreadcrumbList']],
-    ['alternatives/emojipedia/index.html', ['WebPage', 'BreadcrumbList']],
+    ['alternatives/index.html', ['CollectionPage', 'ItemList', 'BreadcrumbList']],
+    ['alternatives/emojipedia/index.html', ['WebPage', 'FAQPage', 'BreadcrumbList']],
     ['smileys-emotion/index.html', ['CollectionPage', 'BreadcrumbList']],
     ['category/smileys-emotion/index.html', ['CollectionPage', 'BreadcrumbList']],
-    ['search/index.html', ['CollectionPage', 'BreadcrumbList']],
+    ['search/index.html', ['CollectionPage', 'ItemList', 'BreadcrumbList']],
+    ['tag/index.html', ['CollectionPage', 'ItemList', 'BreadcrumbList']],
     ['smileys-emotion/face-smiling/index.html', ['CollectionPage', 'BreadcrumbList']],
     ['category/smileys-emotion/face-smiling/index.html', ['CollectionPage', 'BreadcrumbList']],
     ['emoji/grinning-face--1f600/index.html', ['WebPage', 'DefinedTerm', 'BreadcrumbList']],
@@ -167,8 +168,24 @@ test('curated search pages are generated with canonical metadata', () => {
   assertMetaSet(searchPage, `${searchRoute}index.html`);
   assert.match(searchPage, /<h1\b[^>]*>[^<]+<\/h1>/);
   assert.match(searchPage, /<ul class="emoji-list emoji-list-panel"[^>]*>/);
+  assert.match(searchPage, /"@type":"ItemList"/);
   assert.ok(!searchPage.includes('collection-kicker'));
   assert.ok(!searchPage.includes('noindex,follow'));
+});
+
+test('tag pages include ItemList schema', () => {
+  const tagIndex = read('tag/index.html');
+  const match = tagIndex.match(/href="\/(tag\/[a-z0-9-]+\/)"/i);
+  assert.ok(match, 'expected at least one tag page');
+
+  const tagRoute = match[1];
+  const tagPage = read(`${tagRoute}index.html`);
+
+  assertMetaSet(tagPage, `${tagRoute}index.html`);
+  assert.match(tagPage, /<h1\b[^>]*>[^<]+<\/h1>/);
+  assert.match(tagPage, /<ul class="emoji-list emoji-list-panel"[^>]*>/);
+  assert.match(tagPage, /"@type":"ItemList"/);
+  assert.ok(!tagPage.includes('noindex,follow'));
 });
 
 test('robots policy is present and points crawlers to sitemap index', () => {
