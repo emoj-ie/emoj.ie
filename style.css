@@ -1137,7 +1137,7 @@ body.menu-open {
   min-height: 100%;
   text-decoration: none;
   color: inherit;
-  padding-right: 2rem;
+  padding-inline: 2rem;
 }
 
 .panel-emoji-open:hover {
@@ -1148,10 +1148,10 @@ body.menu-open {
   text-align: center;
 }
 
-.panel-emoji-copy {
+.panel-emoji-copy,
+.panel-emoji-favorite {
   position: absolute;
   top: 0.42rem;
-  right: 0.42rem;
   width: 30px;
   min-width: 30px;
   height: 30px;
@@ -1169,12 +1169,28 @@ body.menu-open {
   transition: transform 160ms ease, box-shadow 160ms ease, border-color 160ms ease, color 160ms ease;
 }
 
+.panel-emoji-copy {
+  right: 0.42rem;
+}
+
+.panel-emoji-favorite {
+  left: 0.42rem;
+  font-size: 1rem;
+}
+
 .panel-emoji-copy:hover,
-.panel-emoji-copy:focus-visible {
+.panel-emoji-copy:focus-visible,
+.panel-emoji-favorite:hover,
+.panel-emoji-favorite:focus-visible {
   transform: translateY(-1px);
   box-shadow: var(--shadow-sm);
   border-color: var(--border-strong);
   color: var(--text-strong);
+}
+
+.panel-emoji-favorite.is-active {
+  color: var(--accent);
+  border-color: color-mix(in oklab, var(--accent), var(--border-strong) 35%);
 }
 
 .about-page-min {

@@ -36,6 +36,9 @@ test('logo picker resolves daily emoji by month-day key', () => {
   assert.match(globalScript, /data-logo-emoji-image/);
   assert.match(globalScript, /DETAIL_TRAIL_STORAGE_KEY/);
   assert.match(globalScript, /captureDetailTrail/);
+  assert.match(globalScript, /favoriteEmojisV1/);
+  assert.match(globalScript, /initFavoriteButtons/);
+  assert.match(globalScript, /panel-emoji-favorite/);
 });
 
 test('detail enhancement script applies path breadcrumbs and emoji fallback', () => {
@@ -143,7 +146,9 @@ test('heavy collection pages defer emoji cards behind progressive list hydration
   assert.match(subgroupPage, /data-progressive-emoji-list/);
   assert.match(subgroupPage, /data-progressive-emoji-data/);
   assert.match(sampleTagPage, /data-progressive-emoji-root/);
+  assert.match(sampleTagPage, /panel-emoji-favorite/);
   assert.match(globalScript, /initProgressiveEmojiLists/);
+  assert.match(globalScript, /emoji:favorites-sync/);
 
   const subgroupCardCount = (subgroupPage.match(/panel-emoji-card/g) || []).length;
   assert.ok(subgroupCardCount <= 130, `expected limited server-rendered cards, got ${subgroupCardCount}`);
@@ -204,4 +209,6 @@ test('tofu diagnostics page is generated with cache-first diagnostics controls',
   assert.match(diagnostics, /emojiTofuScoreV5/);
   assert.match(diagnostics, /missingRows/);
   assert.match(diagnostics, /force:\s*false/);
+  assert.match(diagnostics, /panel-emoji-favorite/);
+  assert.match(diagnostics, /emoji:favorites-sync/);
 });

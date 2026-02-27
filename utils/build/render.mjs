@@ -505,6 +505,18 @@ function renderEmojiCard(entry, assetTemplate) {
     </button>
     <hr />
     <a class="emoji-label" href="${escapeHtml(detailHref)}" title="${escapeHtml(label)}"><small>${escapeHtml(label)}</small></a>
+    <button
+      type="button"
+      class="emoji-favorite"
+      data-route="${escapeHtml(entry.detailRoute)}"
+      data-hex="${escapeHtml(entry.hexLower)}"
+      data-group="${escapeHtml(entry.group)}"
+      data-subgroup="${escapeHtml(entry.subgroup)}"
+      data-emoji="${escapeHtml(entry.emoji)}"
+      data-copy-label="${escapeHtml(label)}"
+      aria-label="Save ${escapeHtml(label)} to favorites"
+      title="Save favorite"
+    >☆</button>
   </li>`;
 }
 
@@ -550,6 +562,18 @@ function renderEmojiPanelCard(entry, assetTemplate, options = {}) {
         <span aria-hidden="true">⧉</span>
         <span class="visually-hidden">Copy ${escapeHtml(label)}</span>
       </button>
+      <button
+        type="button"
+        class="panel-emoji-favorite"
+        data-route="${escapeHtml(entry.detailRoute)}"
+        data-hex="${escapeHtml(entry.hexLower)}"
+        data-group="${escapeHtml(entry.group)}"
+        data-subgroup="${escapeHtml(entry.subgroup)}"
+        data-emoji="${escapeHtml(entry.emoji)}"
+        data-copy-label="${escapeHtml(label)}"
+        aria-label="Save ${escapeHtml(label)} to favorites"
+        title="Save favorite"
+      >☆</button>
     </article>
   </li>`;
 }

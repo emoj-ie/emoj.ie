@@ -262,6 +262,19 @@
     copy.setAttribute('aria-label', 'Copy ' + label + ' emoji');
     copy.title = 'Copy ' + label;
 
+    var favorite = document.createElement('button');
+    favorite.type = 'button';
+    favorite.className = 'panel-emoji-favorite';
+    favorite.setAttribute('data-route', route);
+    favorite.setAttribute('data-hex', String(row.hex || ''));
+    favorite.setAttribute('data-group', String(row.group || ''));
+    favorite.setAttribute('data-subgroup', String(row.subgroup || ''));
+    favorite.setAttribute('data-emoji', String(row.emoji || ''));
+    favorite.setAttribute('data-copy-label', label);
+    favorite.setAttribute('aria-label', 'Save ' + label + ' to favorites');
+    favorite.title = 'Save favorite';
+    favorite.textContent = '☆';
+
     var copyGlyph = document.createElement('span');
     copyGlyph.setAttribute('aria-hidden', 'true');
     copyGlyph.textContent = '⧉';
@@ -277,6 +290,7 @@
     copy.appendChild(copyLabel);
     card.appendChild(link);
     card.appendChild(copy);
+    card.appendChild(favorite);
     li.appendChild(card);
 
     return li;
@@ -313,6 +327,13 @@
       fragment.appendChild(createMissingCardItem(row));
     });
     list.appendChild(fragment);
+    document.dispatchEvent(
+      new CustomEvent('emoji:favorites-sync', {
+        detail: {
+          root: list,
+        },
+      })
+    );
     shell.hidden = false;
   }
 

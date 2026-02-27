@@ -2,6 +2,155 @@
   const THEME_PREFERENCE_KEY = 'themePreference';
   const THEME_SEQUENCE = ['system', 'light', 'dark'];
   const DETAIL_TRAIL_STORAGE_KEY = 'emojiDetailTrailV1';
+  const FAVORITE_KEY = 'favoriteEmojisV1';
+  const FAVORITE_LIMIT = 40;
+  var favoriteRouteSet = new Set();
+
+  function readFavorites() {
+    try {
+      var parsed = JSON.parse(localStorage.getItem(FAVORITE_KEY) || '[]');
+      return Array.isArray(parsed) ? parsed : [];
+    } catch {
+      return [];
+    }
+  }
+
+  function writeFavorites(items) {
+    try {
+      localStorage.setItem(FAVORITE_KEY, JSON.stringify(items.slice(0, FAVORITE_LIMIT)));
+    } catch {
+      // Ignore localStorage failures.
+    }
+  }
+
+  function refreshFavoriteSet() {
+    favoriteRouteSet = new Set(
+      readFavorites()
+        .map(function (item) {
+          return normalizeRoute(item && item.detailRoute);
+        })
+        .filter(Boolean)
+    );
+  }
+
+  function applyFavoriteState(button) {
+    if (!button) return;
+
+    var route = normalizeRoute(button.getAttribute('data-route') || '');
+    var label = String(button.getAttribute('data-copy-label') || 'emoji').trim() || 'emoji';
+    var active = route ? favoriteRouteSet.has(route) : false;
+
+    button.textContent = active ? '★' : '☆';
+    button.classList.toggle('is-active', active);
+    button.setAttribute('aria-pressed', active ? 'true' : 'false');
+    button.setAttribute(
+      'aria-label',
+      active ? 'Remove ' + label + ' from favorites' : 'Save ' + label + ' to favorites'
+    );
+    button.title = active ? 'Remove favorite' : 'Save favorite';
+  }
+
+  function syncFavoriteButtons(root) {
+    var scope = root && typeof root.querySelectorAll === 'function' ? root : document;
+    var buttons = Array.from(scope.querySelectorAll('.emoji-favorite, .panel-emoji-favorite'));
+    buttons.forEach(function (button) {
+      applyFavoriteState(button);
+    });
+  }
+
+  function snapshotFavoriteFromButton(button) {
+    return {
+      emoji: String(button.getAttribute('data-emoji') || ''),
+      hexcode: String(button.getAttribute('data-hex') || ''),
+      annotation: String(button.getAttribute('data-copy-label') || 'emoji'),
+      group: String(button.getAttribute('data-group') || ''),
+      subgroup: String(button.getAttribute('data-subgroup') || ''),
+      detailRoute: normalizeRoute(button.getAttribute('data-route') || ''),
+      tags: '',
+      useLocalAsset: String(button.getAttribute('data-group') || '').toLowerCase() !== 'component',
+      baseHex: String(button.getAttribute('data-hex') || ''),
+      isVariant: false,
+      skintone: 0,
+      skintoneBaseHex: '',
+    };
+  }
+
+  function toggleFavoriteFromButton(button, source) {
+    var record = snapshotFavoriteFromButton(button);
+    if (!record.detailRoute) {
+      return;
+    }
+
+    var previous = readFavorites();
+    var existing = previous.find(function (item) {
+      return normalizeRoute(item && item.detailRoute) === record.detailRoute;
+    });
+    var next = [];
+    var eventName = '';
+    var toastMessage = '';
+
+    if (existing) {
+      next = previous.filter(function (item) {
+        return normalizeRoute(item && item.detailRoute) !== record.detailRoute;
+      });
+      eventName = 'favorite_remove';
+      toastMessage = 'Removed from favorites: ' + record.annotation;
+    } else {
+      next = [record].concat(
+        previous.filter(function (item) {
+          return normalizeRoute(item && item.detailRoute) !== record.detailRoute;
+        })
+      );
+      eventName = 'favorite_add';
+      toastMessage = 'Saved to favorites: ' + record.annotation;
+    }
+
+    writeFavorites(next);
+    refreshFavoriteSet();
+    syncFavoriteButtons(document);
+    showToast(toastMessage);
+
+    track(eventName, {
+      source: window.location.pathname,
+      hex: record.hexcode || '',
+      group: record.group || 'all',
+      subgroup: record.subgroup || 'all',
+      format: 'emoji',
+      trigger: source || 'button',
+    });
+
+    document.dispatchEvent(
+      new CustomEvent('emoji:favorites-updated', {
+        detail: {
+          route: record.detailRoute,
+          added: !existing,
+          source: source || 'button',
+        },
+      })
+    );
+  }
+
+  function initFavoriteButtons() {
+    if (document.body.classList.contains('page-home')) {
+      return;
+    }
+
+    refreshFavoriteSet();
+    syncFavoriteButtons(document);
+
+    document.addEventListener('emoji:favorites-sync', function (event) {
+      var root = event && event.detail ? event.detail.root : null;
+      syncFavoriteButtons(root || document);
+    });
+
+    window.addEventListener('storage', function (event) {
+      if (!event || event.key !== FAVORITE_KEY) {
+        return;
+      }
+      refreshFavoriteSet();
+      syncFavoriteButtons(document);
+    });
+  }
 
   function pickRandomSubset(items, limit) {
     var source = Array.isArray(items) ? items.slice() : [];
@@ -426,6 +575,19 @@
     copy.setAttribute('aria-label', 'Copy ' + label + ' emoji');
     copy.title = 'Copy ' + label;
 
+    var favorite = document.createElement('button');
+    favorite.type = 'button';
+    favorite.className = 'panel-emoji-favorite';
+    favorite.setAttribute('data-route', detailRoute || targetRoute);
+    favorite.setAttribute('data-hex', hex);
+    favorite.setAttribute('data-group', group);
+    favorite.setAttribute('data-subgroup', subgroup);
+    favorite.setAttribute('data-emoji', emojiValue);
+    favorite.setAttribute('data-copy-label', label);
+    favorite.setAttribute('aria-label', 'Save ' + label + ' to favorites');
+    favorite.title = 'Save favorite';
+    favorite.textContent = '☆';
+
     var copyGlyph = document.createElement('span');
     copyGlyph.setAttribute('aria-hidden', 'true');
     copyGlyph.textContent = '⧉';
@@ -441,6 +603,7 @@
     copy.appendChild(copyLabel);
     card.appendChild(link);
     card.appendChild(copy);
+    card.appendChild(favorite);
     li.appendChild(card);
 
     return li;
@@ -524,6 +687,13 @@
         if (appended > 0) {
           list.appendChild(fragment);
           rendered += appended;
+          document.dispatchEvent(
+            new CustomEvent('emoji:favorites-sync', {
+              detail: {
+                root: list,
+              },
+            })
+          );
         }
         updateState();
       }
@@ -697,6 +867,19 @@
         copy.setAttribute('aria-label', 'Copy ' + label + ' emoji');
         copy.title = 'Copy ' + label;
 
+        var favorite = document.createElement('button');
+        favorite.type = 'button';
+        favorite.className = 'panel-emoji-favorite';
+        favorite.setAttribute('data-route', route);
+        favorite.setAttribute('data-hex', item.hex || '');
+        favorite.setAttribute('data-group', item.group || '');
+        favorite.setAttribute('data-subgroup', item.subgroup || '');
+        favorite.setAttribute('data-emoji', item.emoji);
+        favorite.setAttribute('data-copy-label', label);
+        favorite.setAttribute('aria-label', 'Save ' + label + ' to favorites');
+        favorite.title = 'Save favorite';
+        favorite.textContent = '☆';
+
         var copyGlyph = document.createElement('span');
         copyGlyph.setAttribute('aria-hidden', 'true');
         copyGlyph.textContent = '⧉';
@@ -712,9 +895,18 @@
         copy.appendChild(copyLabel);
         card.appendChild(link);
         card.appendChild(copy);
+        card.appendChild(favorite);
         li.appendChild(card);
         wall.appendChild(li);
       });
+
+      document.dispatchEvent(
+        new CustomEvent('emoji:favorites-sync', {
+          detail: {
+            root: wall,
+          },
+        })
+      );
 
       wall.classList.remove('is-refreshing');
       void wall.offsetWidth;
@@ -1039,6 +1231,16 @@
       }
     }
 
+    const favoriteButton = event.target.closest('.emoji-favorite, .panel-emoji-favorite');
+    if (favoriteButton) {
+      if (!document.body.classList.contains('page-home')) {
+        event.preventDefault();
+        event.stopPropagation();
+        toggleFavoriteFromButton(favoriteButton, 'click');
+      }
+      return;
+    }
+
     const shareButton = event.target.closest('[data-share-url]');
     if (shareButton) {
       const shareUrl = shareButton.getAttribute('data-share-url');
@@ -1134,6 +1336,7 @@
   registerServiceWorker();
   initThemeToggle();
   applyDailyLogoEmoji();
+  initFavoriteButtons();
   initProgressiveEmojiLists();
   initAboutPlayground();
   initAboutCreditsCrawl();
