@@ -191,7 +191,7 @@ test('tofu diagnostics page is generated with cache-first diagnostics controls',
   assert.match(tofu, /data-tofu-badge/);
   assert.match(tofu, /data-tofu-supported/);
   assert.match(tofu, /data-tofu-missing/);
-  assert.match(tofu, /data-tofu-risk/);
+  assert.match(tofu, /data-tofu-status/);
   assert.match(tofu, /data-tofu-total/);
   assert.match(tofu, /data-tofu-last-scanned/);
   assert.match(tofu, /data-tofu-user-agent/);

@@ -852,6 +852,7 @@ a:hover {
   line-height: 1.15;
   font-size: 0.98rem;
   min-height: 2.3em;
+  text-align: center;
   display: -webkit-box;
   -webkit-line-clamp: 2;
   -webkit-box-orient: vertical;
@@ -861,6 +862,7 @@ a:hover {
 .panel-card-meta {
   color: var(--text-muted);
   font-size: 0.82rem;
+  text-align: center;
 }
 
 .panel-card-hero {
@@ -994,6 +996,20 @@ body.menu-open {
 .emoji-detail,
 .about-page {
   padding: 1.2rem;
+}
+
+.group > h1,
+.about-page > h1,
+.subgroup > h1,
+.panel-shell > h1,
+.emoji-detail-title,
+.collection-kicker {
+  text-align: center;
+}
+
+.about-lede,
+.about-one-liner {
+  text-align: center;
 }
 
 .recent-section {
@@ -1735,6 +1751,7 @@ ol.story-list {
   background: color-mix(in oklab, var(--bg-elevated), var(--bg-soft) 20%);
   display: grid;
   gap: 0.2rem;
+  text-align: center;
 }
 
 .tofu-score-metric p {
@@ -1783,7 +1800,8 @@ ol.story-list {
 }
 
 .tofu-page-score {
-  max-width: 920px;
+  width: 100%;
+  max-width: none;
   border-color: color-mix(in oklab, var(--brand-secondary), var(--border-soft) 60%);
   background:
     radial-gradient(circle at 82% 14%, color-mix(in oklab, var(--brand-primary), transparent 73%) 0%, transparent 62%),
@@ -1791,11 +1809,32 @@ ol.story-list {
 }
 
 .tofu-page-info {
-  max-width: 920px;
+  width: 100%;
+  max-width: none;
 }
 
 .tofu-page-info p {
   margin: 0;
+  text-align: center;
+}
+
+.tofu-score-indicator,
+.tofu-score-note,
+.tofu-score-stamp,
+.emoji-render-indicator,
+.emoji-render-note,
+.emoji-render-kicker,
+.tofu-page > h1 {
+  text-align: center;
+}
+
+.tofu-score-badge {
+  justify-self: end;
+}
+
+.tofu-score-head-page {
+  justify-content: center;
+  gap: 0.9rem;
 }
 
 .tofu-missing-shell {

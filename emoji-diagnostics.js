@@ -433,11 +433,12 @@
     }
   }
 
-  function tofuRiskLabel(missingPercent) {
-    if (missingPercent <= 0.1) return 'Excellent';
-    if (missingPercent <= 1.5) return 'Low';
-    if (missingPercent <= 5) return 'Medium';
-    return 'High';
+  function compatibilityStatusLabel(missingPercent) {
+    if (missingPercent <= 1) return 'Excellent';
+    if (missingPercent <= 5) return 'Great';
+    if (missingPercent <= 10) return 'Good';
+    if (missingPercent <= 20) return 'Mixed';
+    return 'Limited';
   }
 
   function setUserAgent() {
@@ -451,15 +452,8 @@
     var safeMissing = Math.max(0, Number(missing) || 0);
     var supportedPercent = ((safeTotal - safeMissing) / safeTotal) * 100;
     var missingPercent = (safeMissing / safeTotal) * 100;
-    var riskLabel = tofuRiskLabel(missingPercent);
-    var badgeLabel =
-      riskLabel === 'Excellent'
-        ? 'Excellent'
-        : riskLabel === 'Low'
-        ? 'Low Risk'
-        : riskLabel === 'Medium'
-        ? 'Medium Risk'
-        : 'High Risk';
+    var statusLabel = compatibilityStatusLabel(missingPercent);
+    var badgeLabel = statusLabel;
 
     setState(roots, safeMissing === 0 ? 'is-supported' : 'is-missing');
     setIndicator(
@@ -468,19 +462,19 @@
     );
     setNote(
       roots,
-        formatDecimal(supportedPercent) +
+      formatDecimal(supportedPercent) +
         '% supported · ' +
         formatDecimal(missingPercent) +
-        '% tofu risk. Lower missing count is better.' +
+        '% missing glyphs. Lower missing count is better.' +
         (fromCache ? ' (cached)' : '')
     );
     setMetric(roots, '[data-tofu-supported]', formatDecimal(supportedPercent) + '%');
     setMetric(roots, '[data-tofu-missing]', formatDecimal(missingPercent) + '%');
-    setMetric(roots, '[data-tofu-risk]', riskLabel);
+    setMetric(roots, '[data-tofu-status]', statusLabel);
     setMetric(roots, '[data-tofu-total]', safeTotal.toLocaleString());
     setMetric(roots, '[data-tofu-badge]', badgeLabel + (fromCache ? ' · Cached' : ''));
     setMetric(roots, '[data-tofu-last-scanned]', formatScanTimestamp(scannedAt));
-    setProgress(roots, 100);
+    setProgress(roots, supportedPercent);
   }
 
   function fetchPool() {

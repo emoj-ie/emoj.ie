@@ -995,15 +995,15 @@ function renderHomePage(model, config) {
         <strong data-tofu-missing>--%</strong>
       </article>
       <article class="tofu-score-metric">
-        <p>Risk</p>
-        <strong data-tofu-risk>Pending</strong>
+        <p>Status</p>
+        <strong data-tofu-status>Pending</strong>
       </article>
       <article class="tofu-score-metric">
         <p>Scanned</p>
         <strong data-tofu-total>--</strong>
       </article>
     </div>
-    <p class="tofu-score-note" data-tofu-note>Runs once per browser profile and reuses the cached result.</p>
+      <p class="tofu-score-note" data-tofu-note>Runs once per browser profile and reuses the cached result.</p>
     <p class="tofu-score-stamp" data-tofu-last-scanned>Not scanned yet.</p>
     <a class="copy-btn secondary tofu-score-link" href="/tofu/">Open Emoji Compatibility Lab</a>
   </section>`;
@@ -1219,7 +1219,7 @@ function renderTofuPage(config) {
     <h1>Emoji Compatibility Lab</h1>
     <section class="emoji-render-card tofu-page-score" data-tofu-score-root data-tofu-context="tofu">
       <div class="tofu-score-head tofu-score-head-page">
-        <p class="emoji-render-kicker">System Tofu Score</p>
+        <p class="emoji-render-kicker">Emoji Compatibility</p>
         <span class="tofu-score-badge" data-tofu-badge>Pending</span>
       </div>
       <p class="emoji-render-indicator" data-tofu-indicator>Detecting system emoji support…</p>
@@ -1237,8 +1237,8 @@ function renderTofuPage(config) {
           <strong data-tofu-missing>--%</strong>
         </article>
         <article class="tofu-score-metric">
-          <p>Risk</p>
-          <strong data-tofu-risk>Pending</strong>
+          <p>Status</p>
+          <strong data-tofu-status>Pending</strong>
         </article>
         <article class="tofu-score-metric">
           <p>Total Scanned</p>
