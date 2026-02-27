@@ -108,6 +108,11 @@ const COMPETITOR_ALTERNATIVES = [
   },
 ];
 
+const COMPETITOR_COMPARE_PAIRS = [
+  ['emojipedia', 'getemoji'],
+  ['getemoji', 'findemoji'],
+];
+
 function absoluteUrl(baseUrl, route = '') {
   const base = String(baseUrl).replace(/\/+$/, '');
   const cleanRoute = String(route).replace(/^\/+/, '');
@@ -748,6 +753,10 @@ function parseEntryTags(entry) {
     Array.isArray(entry.openmoji_tags)
       ? entry.openmoji_tags.join(',')
       : String(entry.openmoji_tags || ''),
+    Array.isArray(entry.cldrKeywords)
+      ? entry.cldrKeywords.join(',')
+      : String(entry.cldrKeywords || ''),
+    String(entry.cldrShortName || ''),
     String(entry.annotation || ''),
   ]
     .filter(Boolean)
@@ -806,6 +815,65 @@ function renderRelatedEntryList(relatedEntries = []) {
   });
 
   return items.join('');
+}
+
+function buildNonCommercialUseIdeas(entry, group, subgroup, topKeywords = []) {
+  const keyword = topKeywords[0] || subgroup.title || group.title || 'messages';
+  const keywordLabel = String(keyword).replace(/-/g, ' ');
+
+  const groupIdeas = {
+    'smileys-emotion': [
+      `Classroom reflection prompts to tag ${keywordLabel} responses in discussion threads.`,
+      'Community moderation notes to mark tone quickly without long explanations.',
+      'Personal journaling check-ins to track mood patterns over time.',
+    ],
+    'people-body': [
+      `Workshop notes where gestures help clarify ${keywordLabel} instructions.`,
+      'Volunteer coordination updates to communicate status quickly.',
+      'Accessibility-friendly study guides with visual hand/body references.',
+    ],
+    'animals-nature': [
+      `Nature club newsletters to highlight ${keywordLabel} observations.`,
+      'Classroom science boards and student projects.',
+      'Community garden or wildlife updates in local groups.',
+    ],
+    'food-drink': [
+      `Meal-planning groups and student cooking clubs around ${keywordLabel} topics.`,
+      'Nonprofit community event menus and logistics boards.',
+      'Recipe-sharing chats where quick visual context helps.',
+    ],
+    'travel-places': [
+      `School trip itineraries and route reminders for ${keywordLabel} stops.`,
+      'Community event location pins and wayfinding notes.',
+      'Volunteer travel coordination in non-commercial contexts.',
+    ],
+    activities: [
+      `Team practice schedules and non-commercial club announcements.`,
+      `School event recaps and ${keywordLabel} highlights.`,
+      'Community challenge boards and participation shout-outs.',
+    ],
+    objects: [
+      `Documentation callouts where ${keywordLabel} symbols speed up scanning.`,
+      'Open-source project notes and issue triage labels.',
+      'Study groups sharing tool/resource status quickly.',
+    ],
+    symbols: [
+      `Public information posts where ${keywordLabel} markers improve clarity.`,
+      'Checklist-heavy classroom or community workflows.',
+      'Accessibility-focused status legends in shared docs.',
+    ],
+    flags: [
+      'Language and geography study materials.',
+      'Community inclusion and cultural celebration posts.',
+      `Travel journaling and map references for ${keywordLabel} context.`,
+    ],
+  };
+
+  return groupIdeas[group.key] || [
+    `Community updates where ${keywordLabel} context is useful at a glance.`,
+    'Educational notes and study materials.',
+    'Personal journaling and non-commercial social sharing.',
+  ];
 }
 
 function renderHomePage(model, config) {
@@ -1384,6 +1452,343 @@ function renderAlternativePage(item, config) {
   });
 }
 
+function renderAlternativePluralPage(item, config) {
+  const route = ensureTrailingSlash(`alternatives/${item.key}-alternatives`);
+  const canonicalUrl = absoluteUrl(config.site.baseUrl, route);
+  const crumbs = [
+    { label: 'Home', href: '/' },
+    { label: 'Alternatives', href: '/alternatives/' },
+    { label: `${item.name} alternatives` },
+  ];
+
+  const options = [
+    {
+      name: 'emoj.ie',
+      route: '/',
+      summary: item.bestForEmojie,
+    },
+    {
+      name: item.name,
+      route: item.route,
+      summary: item.bestForCompetitor,
+    },
+    ...COMPETITOR_ALTERNATIVES.filter((candidate) => candidate.key !== item.key).map((candidate) => ({
+      name: candidate.name,
+      route: candidate.route,
+      summary: candidate.bestForCompetitor,
+    })),
+  ];
+
+  const optionMarkup = options
+    .map(
+      (option) => `<li>
+      <p><strong><a href="${escapeHtml(
+        option.route.startsWith('/') ? option.route : `/${option.route}`
+      )}">${escapeHtml(option.name)}</a></strong> — ${escapeHtml(option.summary)}</p>
+    </li>`
+    )
+    .join('');
+  const switchSignals = item.switchSignals.map((point) => `<li>${escapeHtml(point)}</li>`).join('');
+
+  const faqEntries = [
+    {
+      question: `What is the best alternative to ${item.name}?`,
+      answer: `If speed, repeat copy loops, and local-first memory matter most, emoj.ie is the strongest alternative to ${item.name}.`,
+    },
+    {
+      question: `Should I switch from ${item.name} right away?`,
+      answer:
+        'Switch when your current flow slows down daily work, then migrate your most-used emojis first and expand from there.',
+    },
+    {
+      question: 'How many tools should I compare before choosing?',
+      answer:
+        'Compare two or three realistic options, then commit to the one that best fits your highest-frequency workflow.',
+    },
+  ];
+  const faqSchema = faqPageSchema(faqEntries);
+  const faqMarkup = faqEntries
+    .map(
+      (entry) => `<article class="about-faq-item">
+      <h3>${escapeHtml(entry.question)}</h3>
+      <p>${escapeHtml(entry.answer)}</p>
+    </article>`
+    )
+    .join('');
+
+  const optionListSchema = itemListSchema(
+    config.site.baseUrl,
+    `${item.name} Alternatives`,
+    options.map((option) => ({
+      name: option.name,
+      route: option.route,
+    })),
+    10
+  );
+
+  const body = `<article class="about-page">
+    <p class="collection-kicker">Alternatives</p>
+    <h1>${escapeHtml(item.name)} Alternatives</h1>
+    <p class="about-lede">Comparing options to ${escapeHtml(
+      item.name
+    )}? Use this shortlist to pick the best emoji workflow for your real use case.</p>
+    <section class="about-card">
+      <h2>When people look for alternatives</h2>
+      <ul class="story-list">${switchSignals}</ul>
+    </section>
+    <section class="about-card">
+      <h2>Top Alternatives</h2>
+      <ol class="story-list ordered">${optionMarkup}</ol>
+    </section>
+    <section class="about-card">
+      <h2>Decision Shortcut</h2>
+      <p><strong>Choose emoj.ie:</strong> ${escapeHtml(item.bestForEmojie)}</p>
+      <p><strong>Choose ${escapeHtml(item.name)}:</strong> ${escapeHtml(item.bestForCompetitor)}</p>
+      <p><strong>Need direct comparison details?</strong> <a href="/vs/${escapeHtml(
+        item.key
+      )}/">See emoj.ie vs ${escapeHtml(item.name)}</a>.</p>
+    </section>
+    <section class="about-card">
+      <h2>Frequently Asked Questions</h2>
+      <div class="about-faq-list">${faqMarkup}</div>
+    </section>
+  </article>`;
+
+  const jsonLd = [
+    {
+      '@context': 'https://schema.org',
+      '@type': 'CollectionPage',
+      name: `${item.name} Alternatives`,
+      url: canonicalUrl,
+      description: `Compare the best alternatives to ${item.name} and choose the right emoji workflow.`,
+      isPartOf: {
+        '@type': 'WebSite',
+        name: config.site.title,
+        url: absoluteUrl(config.site.baseUrl, ''),
+      },
+    },
+    ...(optionListSchema ? [optionListSchema] : []),
+    ...(faqSchema ? [faqSchema] : []),
+    breadcrumbSchema(config.site.baseUrl, crumbs, canonicalUrl),
+  ];
+
+  return renderLayout({
+    route,
+    title: `${item.name} Alternatives`,
+    description: `Compare top alternatives to ${item.name} and pick the right fit.`,
+    canonicalUrl,
+    robots: '',
+    body,
+    breadcrumbs: renderBreadcrumbs(crumbs),
+    config,
+    showHeaderSearch: true,
+    jsonLd,
+    pageClass: 'page-alternative',
+  });
+}
+
+function renderVsPage(item, config) {
+  const route = ensureTrailingSlash(`vs/${item.key}`);
+  const canonicalUrl = absoluteUrl(config.site.baseUrl, route);
+  const crumbs = [
+    { label: 'Home', href: '/' },
+    { label: 'Alternatives', href: '/alternatives/' },
+    { label: `emoj.ie vs ${item.name}` },
+  ];
+
+  const switchSignals = item.switchSignals.map((point) => `<li>${escapeHtml(point)}</li>`).join('');
+  const migrationSteps = item.migrationPlan.map((point) => `<li>${escapeHtml(point)}</li>`).join('');
+  const migrationSummary = item.migrationPlan.join(' ');
+
+  const faqEntries = [
+    {
+      question: `Which is better for fast emoji copy: emoj.ie or ${item.name}?`,
+      answer: item.bestForEmojie,
+    },
+    {
+      question: `When should I stay with ${item.name}?`,
+      answer: item.bestForCompetitor,
+    },
+    {
+      question: `How do I migrate from ${item.name} to emoj.ie?`,
+      answer: migrationSummary,
+    },
+  ];
+  const faqSchema = faqPageSchema(faqEntries);
+  const faqMarkup = faqEntries
+    .map(
+      (entry) => `<article class="about-faq-item">
+      <h3>${escapeHtml(entry.question)}</h3>
+      <p>${escapeHtml(entry.answer)}</p>
+    </article>`
+    )
+    .join('');
+
+  const body = `<article class="about-page">
+    <p class="collection-kicker">Comparison</p>
+    <h1>emoj.ie vs ${escapeHtml(item.name)}</h1>
+    <p class="about-lede">${escapeHtml(item.whySwitch)}</p>
+    <section class="about-grid">
+      <section class="about-card">
+        <h2>Best for emoj.ie</h2>
+        <p>${escapeHtml(item.bestForEmojie)}</p>
+      </section>
+      <section class="about-card">
+        <h2>Best for ${escapeHtml(item.name)}</h2>
+        <p>${escapeHtml(item.bestForCompetitor)}</p>
+      </section>
+    </section>
+    <section class="about-card">
+      <h2>Switch Signals</h2>
+      <ul class="story-list">${switchSignals}</ul>
+    </section>
+    <section class="about-card">
+      <h2>Migration In 3 Steps</h2>
+      <ol class="story-list ordered">${migrationSteps}</ol>
+    </section>
+    <section class="about-card">
+      <h2>Frequently Asked Questions</h2>
+      <div class="about-faq-list">${faqMarkup}</div>
+    </section>
+  </article>`;
+
+  const jsonLd = [
+    {
+      '@context': 'https://schema.org',
+      '@type': 'WebPage',
+      name: `emoj.ie vs ${item.name}`,
+      url: canonicalUrl,
+      description: item.whySwitch,
+      isPartOf: {
+        '@type': 'WebSite',
+        name: config.site.title,
+        url: absoluteUrl(config.site.baseUrl, ''),
+      },
+    },
+    ...(faqSchema ? [faqSchema] : []),
+    breadcrumbSchema(config.site.baseUrl, crumbs, canonicalUrl),
+  ];
+
+  return renderLayout({
+    route,
+    title: `emoj.ie vs ${item.name}`,
+    description: item.whySwitch,
+    canonicalUrl,
+    robots: '',
+    body,
+    breadcrumbs: renderBreadcrumbs(crumbs),
+    config,
+    showHeaderSearch: true,
+    jsonLd,
+    pageClass: 'page-alternative',
+  });
+}
+
+function renderCompetitorComparePage(primary, secondary, config) {
+  const route = ensureTrailingSlash(`compare/${primary.key}-vs-${secondary.key}`);
+  const canonicalUrl = absoluteUrl(config.site.baseUrl, route);
+  const crumbs = [
+    { label: 'Home', href: '/' },
+    { label: 'Alternatives', href: '/alternatives/' },
+    { label: `${primary.name} vs ${secondary.name}` },
+  ];
+
+  const faqEntries = [
+    {
+      question: `How do ${primary.name} and ${secondary.name} differ?`,
+      answer: `${primary.name}: ${primary.bestForCompetitor} ${secondary.name}: ${secondary.bestForCompetitor}`,
+    },
+    {
+      question: 'Is there a third option focused on faster repeat copy workflows?',
+      answer:
+        'Yes. emoj.ie is designed for fast copy, local-first memory, and focused category/tag/search navigation.',
+    },
+  ];
+  const faqSchema = faqPageSchema(faqEntries);
+  const faqMarkup = faqEntries
+    .map(
+      (entry) => `<article class="about-faq-item">
+      <h3>${escapeHtml(entry.question)}</h3>
+      <p>${escapeHtml(entry.answer)}</p>
+    </article>`
+    )
+    .join('');
+
+  const optionListSchema = itemListSchema(
+    config.site.baseUrl,
+    `${primary.name} vs ${secondary.name} options`,
+    [
+      { name: primary.name, route: primary.route },
+      { name: secondary.name, route: secondary.route },
+      { name: 'emoj.ie', route: '/' },
+    ],
+    6
+  );
+
+  const body = `<article class="about-page">
+    <p class="collection-kicker">Head To Head</p>
+    <h1>${escapeHtml(primary.name)} vs ${escapeHtml(secondary.name)}</h1>
+    <p class="about-lede">Comparing ${escapeHtml(primary.name)} and ${escapeHtml(
+      secondary.name
+    )}? Use this side-by-side breakdown, then evaluate emoj.ie as a third option.</p>
+    <section class="about-grid">
+      <section class="about-card">
+        <h2>${escapeHtml(primary.name)} is best for</h2>
+        <p>${escapeHtml(primary.bestForCompetitor)}</p>
+      </section>
+      <section class="about-card">
+        <h2>${escapeHtml(secondary.name)} is best for</h2>
+        <p>${escapeHtml(secondary.bestForCompetitor)}</p>
+      </section>
+    </section>
+    <section class="about-card">
+      <h2>Third Option: emoj.ie</h2>
+      <p>Choose emoj.ie when speed, repeat copy loops, and route-level discovery are the highest priorities.</p>
+      <p><a href="/">Try emoj.ie now</a> or compare directly via <a href="/vs/${escapeHtml(
+        primary.key
+      )}/">emoj.ie vs ${escapeHtml(primary.name)}</a> and <a href="/vs/${escapeHtml(
+        secondary.key
+      )}/">emoj.ie vs ${escapeHtml(secondary.name)}</a>.</p>
+    </section>
+    <section class="about-card">
+      <h2>Frequently Asked Questions</h2>
+      <div class="about-faq-list">${faqMarkup}</div>
+    </section>
+  </article>`;
+
+  const jsonLd = [
+    {
+      '@context': 'https://schema.org',
+      '@type': 'WebPage',
+      name: `${primary.name} vs ${secondary.name}`,
+      url: canonicalUrl,
+      description: `Compare ${primary.name} and ${secondary.name}, then evaluate emoj.ie as a third option.`,
+      isPartOf: {
+        '@type': 'WebSite',
+        name: config.site.title,
+        url: absoluteUrl(config.site.baseUrl, ''),
+      },
+    },
+    ...(optionListSchema ? [optionListSchema] : []),
+    ...(faqSchema ? [faqSchema] : []),
+    breadcrumbSchema(config.site.baseUrl, crumbs, canonicalUrl),
+  ];
+
+  return renderLayout({
+    route,
+    title: `${primary.name} vs ${secondary.name}`,
+    description: `Compare ${primary.name} and ${secondary.name}, then evaluate emoj.ie as a third option.`,
+    canonicalUrl,
+    robots: '',
+    body,
+    breadcrumbs: renderBreadcrumbs(crumbs),
+    config,
+    showHeaderSearch: true,
+    jsonLd,
+    pageClass: 'page-alternative',
+  });
+}
+
 function renderCategoryIndexPage(categories, config) {
   const cards = categories
     .slice(0, 40)
@@ -1735,6 +2140,15 @@ function renderGroupPage(group, config, options = {}) {
 
   const robots =
     group.noindex || options.forceNoindex || !isCanonicalRoute ? 'noindex,follow' : '';
+  const subgroupItemList = itemListSchema(
+    config.site.baseUrl,
+    `${group.title} Emoji Subcategories`,
+    group.subgroups.map((row) => ({
+      name: `${row.title} Emojis`,
+      route: row.route,
+    })),
+    80
+  );
 
   const jsonLd = [
     {
@@ -1749,6 +2163,7 @@ function renderGroupPage(group, config, options = {}) {
         url: absoluteUrl(config.site.baseUrl, ''),
       },
     },
+    ...(subgroupItemList ? [subgroupItemList] : []),
     breadcrumbSchema(config.site.baseUrl, breadcrumbs, canonicalUrl),
   ];
 
@@ -1796,6 +2211,12 @@ function renderSubgroupPage(group, subgroup, config, options = {}) {
     { label: group.title, href: `/${categoryRoute}` },
     { label: subgroup.title },
   ];
+  const subgroupEmojiItemList = itemListSchema(
+    config.site.baseUrl,
+    `${subgroup.title} Emojis`,
+    emojiListItems(subgroup.emojis, 120),
+    120
+  );
 
   const jsonLd = [
     {
@@ -1810,6 +2231,7 @@ function renderSubgroupPage(group, subgroup, config, options = {}) {
         url: absoluteUrl(config.site.baseUrl, ''),
       },
     },
+    ...(subgroupEmojiItemList ? [subgroupEmojiItemList] : []),
     breadcrumbSchema(config.site.baseUrl, crumbs, canonicalUrl),
   ];
 
@@ -1900,6 +2322,10 @@ function renderEmojiPage(
     usagePrompts.length > 0
       ? usagePrompts.map((prompt) => `<li>${escapeHtml(prompt)}</li>`).join('')
       : '<li>General chat and status updates</li>';
+  const nonCommercialUseIdeas = buildNonCommercialUseIdeas(entry, group, subgroup, topKeywords);
+  const nonCommercialList = nonCommercialUseIdeas
+    .map((idea) => `<li>${escapeHtml(idea)}</li>`)
+    .join('');
 
   const body = `<article class="emoji-detail">
     <h1 class="visually-hidden">${escapeHtml(label)}</h1>
@@ -1988,6 +2414,10 @@ function renderEmojiPage(
           ? `<ul class="keyword-pills" aria-label="Emoji keywords">${keywordPills}</ul>`
           : '<p class="emoji-context-note">No curated keywords available for this emoji yet.</p>'
       }
+    </section>
+    <section class="emoji-context">
+      <h2>Non-Commercial Use Ideas</h2>
+      <ul class="story-list compact">${nonCommercialList}</ul>
     </section>
     <section class="emoji-code-grid" aria-label="Copy and code formats">
       <article class="emoji-code-card">
@@ -2455,6 +2885,35 @@ export async function renderSite({ model, legacyRedirects, config, tempRoot }) {
   for (const item of COMPETITOR_ALTERNATIVES) {
     await writeRouteHtml(tempRoot, item.route, renderAlternativePage(item, config), generatedFiles);
     coreRoutes.add(item.route);
+
+    const pluralRoute = ensureTrailingSlash(`alternatives/${item.key}-alternatives`);
+    await writeRouteHtml(
+      tempRoot,
+      pluralRoute,
+      renderAlternativePluralPage(item, config),
+      generatedFiles
+    );
+    coreRoutes.add(pluralRoute);
+
+    const vsRoute = ensureTrailingSlash(`vs/${item.key}`);
+    await writeRouteHtml(tempRoot, vsRoute, renderVsPage(item, config), generatedFiles);
+    coreRoutes.add(vsRoute);
+  }
+
+  const competitorByKey = new Map(COMPETITOR_ALTERNATIVES.map((item) => [item.key, item]));
+  for (const [primaryKey, secondaryKey] of COMPETITOR_COMPARE_PAIRS) {
+    const primary = competitorByKey.get(primaryKey);
+    const secondary = competitorByKey.get(secondaryKey);
+    if (!primary || !secondary) continue;
+
+    const compareRoute = ensureTrailingSlash(`compare/${primary.key}-vs-${secondary.key}`);
+    await writeRouteHtml(
+      tempRoot,
+      compareRoute,
+      renderCompetitorComparePage(primary, secondary, config),
+      generatedFiles
+    );
+    coreRoutes.add(compareRoute);
   }
 
   const groupByKey = new Map((model.groups || []).map((group) => [group.key, group]));

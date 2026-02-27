@@ -8,6 +8,8 @@ const grouped = JSON.parse(fs.readFileSync(path.join(root, 'grouped-openmoji.jso
 const manifest = JSON.parse(fs.readFileSync(path.join(root, 'build-manifest.json'), 'utf8'));
 const sitemapIndex = fs.readFileSync(path.join(root, 'sitemap.xml'), 'utf8');
 const buildRunner = fs.readFileSync(path.join(root, 'utils/build/index.mjs'), 'utf8');
+const enrichment = JSON.parse(fs.readFileSync(path.join(root, 'data/emoji-enrichment.json'), 'utf8'));
+const twemojiMap = JSON.parse(fs.readFileSync(path.join(root, 'data/twemoji-map.json'), 'utf8'));
 
 function countEmojiEntries(groupedData) {
   let count = 0;
@@ -74,4 +76,19 @@ test('legacy redirect sample exists and has redirect markup', () => {
 test('build runner exposes progress output for long build steps', () => {
   assert.match(buildRunner, /formatProgressBar/);
   assert.match(buildRunner, /Syncing generated files/);
+});
+
+test('emoji enrichment artifacts provide CLDR and Twemoji mapping coverage', () => {
+  assert.equal(enrichment.version, 1);
+  assert.equal(twemojiMap.version, 1);
+  assert.ok(enrichment.stats.openmojiHexes >= emojiCount);
+  assert.ok(enrichment.stats.cldrCoveragePct > 80);
+
+  const grinning = enrichment.entries['1f600'];
+  assert.ok(grinning, 'expected enrichment for grinning face');
+  assert.match(grinning.cldrShortName, /grinning/i);
+  assert.ok(Array.isArray(grinning.cldrKeywords) && grinning.cldrKeywords.length > 0);
+  assert.match(grinning.twemojiSvg, /\/1f600\.svg$/);
+
+  assert.equal(twemojiMap.entries['1f600'], grinning.twemojiSvg);
 });

@@ -165,6 +165,13 @@ function compareKeys(a, b) {
   return a.localeCompare(b, 'en', { sensitivity: 'base', numeric: true });
 }
 
+function removeVariationSelectorsHex(hex = '') {
+  return String(hex)
+    .split('-')
+    .filter((part) => part && part !== 'fe0f')
+    .join('-');
+}
+
 function toAnnotationLookupKey(group, subgroup, annotation) {
   return `${group}::${subgroup}::${toBaseAnnotationKey(annotation)}`;
 }
@@ -211,6 +218,10 @@ function normalizedTagList(entry) {
     Array.isArray(entry.openmoji_tags)
       ? entry.openmoji_tags.join(',')
       : String(entry.openmoji_tags || ''),
+    Array.isArray(entry.cldrKeywords)
+      ? entry.cldrKeywords.join(',')
+      : String(entry.cldrKeywords || ''),
+    String(entry.cldrShortName || ''),
     String(entry.annotation || ''),
   ]
     .filter(Boolean)
@@ -230,6 +241,14 @@ function normalizedTagList(entry) {
   }
 
   return [...normalized];
+}
+
+async function readJsonIfExists(filePath) {
+  try {
+    return JSON.parse(await fs.readFile(filePath, 'utf8'));
+  } catch {
+    return null;
+  }
 }
 
 function tokenizeSearchValue(value = '') {
@@ -351,6 +370,16 @@ function buildCuratedSearchPages(emojiEntries) {
 export async function loadEmojiModel({ rootDir, config }) {
   const groupedDataPath = path.join(rootDir, config.paths.groupedData);
   const grouped = JSON.parse(await fs.readFile(groupedDataPath, 'utf8'));
+  const enrichmentPath = config.paths?.enrichmentData
+    ? path.join(rootDir, config.paths.enrichmentData)
+    : '';
+  const twemojiMapPath = config.paths?.twemojiMap ? path.join(rootDir, config.paths.twemojiMap) : '';
+  const [enrichmentPayload, twemojiPayload] = await Promise.all([
+    enrichmentPath ? readJsonIfExists(enrichmentPath) : null,
+    twemojiMapPath ? readJsonIfExists(twemojiMapPath) : null,
+  ]);
+  const enrichmentEntries = enrichmentPayload?.entries || {};
+  const twemojiEntries = twemojiPayload?.entries || {};
 
   const groupEntries = Object.entries(grouped).sort(([a], [b]) => compareKeys(a, b));
 
@@ -364,6 +393,8 @@ export async function loadEmojiModel({ rootDir, config }) {
       for (const emoji of emojis) {
         const slug = slugify(emoji.annotation || emoji.hexcode);
         const hexLower = normalizeHex(emoji.hexcode);
+        const compactHex = removeVariationSelectorsHex(hexLower);
+        const enrichmentEntry = enrichmentEntries[hexLower] || enrichmentEntries[compactHex] || {};
         const detailSlug = `${slug}--${hexLower}`;
         const detailRoute = ensureTrailingSlash(`${groupKey}/${subgroupKey}/${detailSlug}`);
         const emojiRoute = ensureTrailingSlash(`emoji/${detailSlug}`);
@@ -397,6 +428,15 @@ export async function loadEmojiModel({ rootDir, config }) {
           localAssetPath: '',
           cdnAssetPath: '',
           useLocalAsset: false,
+          cldrShortName: String(enrichmentEntry.cldrShortName || '').trim(),
+          cldrKeywords: Array.isArray(enrichmentEntry.cldrKeywords)
+            ? enrichmentEntry.cldrKeywords
+                .map((keyword) => String(keyword || '').trim())
+                .filter(Boolean)
+            : [],
+          twemojiSvg: String(
+            enrichmentEntry.twemojiSvg || twemojiEntries[hexLower] || twemojiEntries[compactHex] || ''
+          ).trim(),
         };
 
         emojiEntries.push(entry);

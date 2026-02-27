@@ -29,12 +29,15 @@ test('sample templates have complete meta tags and schema payloads', () => {
     ['tofu/index.html', ['WebPage', 'BreadcrumbList']],
     ['alternatives/index.html', ['CollectionPage', 'ItemList', 'BreadcrumbList']],
     ['alternatives/emojipedia/index.html', ['WebPage', 'FAQPage', 'BreadcrumbList']],
-    ['smileys-emotion/index.html', ['CollectionPage', 'BreadcrumbList']],
-    ['category/smileys-emotion/index.html', ['CollectionPage', 'BreadcrumbList']],
+    ['alternatives/emojipedia-alternatives/index.html', ['CollectionPage', 'ItemList', 'FAQPage', 'BreadcrumbList']],
+    ['vs/emojipedia/index.html', ['WebPage', 'FAQPage', 'BreadcrumbList']],
+    ['compare/emojipedia-vs-getemoji/index.html', ['WebPage', 'ItemList', 'FAQPage', 'BreadcrumbList']],
+    ['smileys-emotion/index.html', ['CollectionPage', 'ItemList', 'BreadcrumbList']],
+    ['category/smileys-emotion/index.html', ['CollectionPage', 'ItemList', 'BreadcrumbList']],
     ['search/index.html', ['CollectionPage', 'ItemList', 'BreadcrumbList']],
     ['tag/index.html', ['CollectionPage', 'ItemList', 'BreadcrumbList']],
-    ['smileys-emotion/face-smiling/index.html', ['CollectionPage', 'BreadcrumbList']],
-    ['category/smileys-emotion/face-smiling/index.html', ['CollectionPage', 'BreadcrumbList']],
+    ['smileys-emotion/face-smiling/index.html', ['CollectionPage', 'ItemList', 'BreadcrumbList']],
+    ['category/smileys-emotion/face-smiling/index.html', ['CollectionPage', 'ItemList', 'BreadcrumbList']],
     ['emoji/grinning-face--1f600/index.html', ['WebPage', 'DefinedTerm', 'BreadcrumbList']],
   ];
 
@@ -88,6 +91,9 @@ test('emoji sitemap uses canonical short emoji routes and core sitemap includes 
 
   assert.match(emojiSitemap, /https:\/\/emoj\.ie\/emoji\/[a-z0-9-]+--[a-f0-9-]+\//i);
   assert.match(coreSitemap, /https:\/\/emoj\.ie\/alternatives\//);
+  assert.match(coreSitemap, /https:\/\/emoj\.ie\/alternatives\/emojipedia-alternatives\//);
+  assert.match(coreSitemap, /https:\/\/emoj\.ie\/vs\/emojipedia\//);
+  assert.match(coreSitemap, /https:\/\/emoj\.ie\/compare\/emojipedia-vs-getemoji\//);
   assert.match(coreSitemap, /https:\/\/emoj\.ie\/smileys-emotion\//);
   assert.match(coreSitemap, /https:\/\/emoj\.ie\/search\//);
   assert.match(coreSitemap, /https:\/\/emoj\.ie\/tag\//);

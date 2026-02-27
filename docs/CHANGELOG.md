@@ -10,6 +10,12 @@ All notable project updates are tracked here in human-readable form.
   - `docs/SKILL_PHASE1_AUDIT.md`
   - `docs/CONTENT_STRATEGY.md`
   - `docs/COMPETITOR_ALTERNATIVES_PLAN.md`
+- Launch asset automation and package files:
+  - `utils/qa/generate-launch-assets.mjs`
+  - `docs/launch/PRODUCT_SUMMARIES.md`
+  - `docs/launch/SOCIAL_COPY_PACK.md`
+  - `press-kit/README.md`
+  - generated `press-kit/screenshots/*`, `press-kit/clips/*`, `press-kit/logos/*`
 
 ### Changed
 - Home analytics and state handling:
@@ -32,6 +38,10 @@ All notable project updates are tracked here in human-readable form.
   - added supporting style and UX guardrail assertions
 - Launch and distribution docs refresh:
   - updated `docs/LAUNCH.md` and `docs/SOCIAL.md` to match latest feature payload and metrics
+  - completed launch asset checklist with concrete artifact paths
+- Project backlog and progress tracking:
+  - marked enrichment + non-commercial-use backlog items complete in `docs/PROJECT.md`
+  - added final evidence entry for the remaining TODO closure pass in `docs/SKILL_EXECUTION_PROGRESS.md`
 
 ## 2026-02-21
 ### Changed

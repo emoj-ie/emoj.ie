@@ -81,11 +81,19 @@ Last updated: 2026-02-27
   - Newsletter swaps with productivity/creator communities
 
 ## Asset Checklist
-- [ ] 6 updated screenshots (home, detail, categories, alternatives, light, dark)
-- [ ] 3 short demo clips (<= 20s)
-- [ ] 50-word and 150-word product summaries
-- [ ] Social copy pack for X/LinkedIn/Reddit
-- [ ] Press-kit folder with logo + screenshots + descriptors
+- [x] 6 updated screenshots (home, detail, categories, alternatives, light, dark)  
+  Location: `press-kit/screenshots/`
+- [x] 3 short demo clips (<= 20s)  
+  Location: `press-kit/clips/`
+- [x] 50-word and 150-word product summaries  
+  Location: `docs/launch/PRODUCT_SUMMARIES.md`
+- [x] Social copy pack for X/LinkedIn/Reddit  
+  Location: `docs/launch/SOCIAL_COPY_PACK.md`
+- [x] Press-kit folder with logo + screenshots + descriptors  
+  Location: `press-kit/README.md`, `press-kit/logos/`
+
+Generation command:
+- `npm run launch:assets`
 
 ## Release Runbook
 1. Preflight

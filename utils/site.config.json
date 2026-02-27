@@ -7,6 +7,8 @@
   },
   "paths": {
     "groupedData": "grouped-openmoji.json",
+    "enrichmentData": "data/emoji-enrichment.json",
+    "twemojiMap": "data/twemoji-map.json",
     "outputRoot": ".",
     "tempBuildDir": ".build-tmp"
   },

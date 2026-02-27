@@ -97,6 +97,10 @@ test('build emits a full home-data index', () => {
 
   const missingTags = rows.filter((row) => String(row.tags || '').trim().length === 0).length;
   assert.equal(missingTags, 0, `expected every home-data row to include search tags, got ${missingTags} empty`);
+
+  const grinning = rows.find((row) => row.hexcode === '1f600');
+  assert.ok(grinning, 'expected grinning face in home-data');
+  assert.match(String(grinning.tags || ''), /\bgrinning\b/i);
 });
 
 test('daily emoji schedule exists for all days of year', () => {
@@ -167,6 +171,7 @@ test('emoji detail pages include context, code formats, and related links', () =
   const detail = read('emoji/grinning-face--1f600/index.html');
 
   assert.match(detail, /<section class="emoji-context">/);
+  assert.match(detail, /Non-Commercial Use Ideas/);
   assert.ok(!detail.includes('data-emoji-render-status'));
   assert.ok(!detail.includes('data-system-tofu-score'));
   assert.ok(!detail.includes('emoji-diagnostics.js'));

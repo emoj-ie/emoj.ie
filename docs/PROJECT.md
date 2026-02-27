@@ -1,6 +1,6 @@
 # emoj.ie Project Plan
 
-Last updated: 2026-02-21
+Last updated: 2026-02-27
 
 ## Goals
 - Make `emoj.ie` the fastest and easiest place to find and copy emojis.
@@ -130,10 +130,10 @@ Last updated: 2026-02-21
 - [x] P1: Add `/emoji/{slug}` canonical route layer while preserving existing routes and redirects.
 - [x] P1: Add canonical `/category/{name}` and curated `/search/{term}` routes.
 - [x] P1: Add dataset enrichment baseline with additional open keyword sources (`tags`, `openmoji_tags`, annotations).
-- [ ] P2: Extend enrichment with dedicated CLDR annotations and optional Twemoji mapping artifacts.
+- [x] P2: Extend enrichment with dedicated CLDR annotations and optional Twemoji mapping artifacts.
 - [x] P2: Add launch docs (`docs/LAUNCH.md`, `docs/SOCIAL.md`) and distribution assets checklist.
-- [ ] P2: Add richer non-commercial use examples on high-traffic emoji detail pages.
-- [ ] P3: Introduce optional dataset enrichment for CLDR short names/keywords with attribution notes.
+- [x] P2: Add richer non-commercial use examples on high-traffic emoji detail pages.
+- [x] P3: Introduce optional dataset enrichment for CLDR short names/keywords with attribution notes.
 
 ## JTBD (Draft)
 - Primary: "When I need an emoji quickly, I want to find and copy the right one in seconds."
