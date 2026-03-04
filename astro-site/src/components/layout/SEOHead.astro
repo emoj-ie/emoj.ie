@@ -1,0 +1,19 @@
+---
+/**
+ * Renders JSON-LD structured data script tags.
+ *
+ * Props:
+ *   jsonLd - Array of JSON-LD schema objects to render.
+ *
+ * Usage: Place inside the <head> section of a layout or page.
+ */
+interface Props {
+  jsonLd?: object[];
+}
+
+const { jsonLd = [] } = Astro.props;
+---
+
+{jsonLd.map((schema) => (
+  <script type="application/ld+json" set:html={JSON.stringify(schema)} />
+))}

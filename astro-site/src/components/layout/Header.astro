@@ -1,0 +1,38 @@
+---
+/**
+ * Site header with logo badge, wordmark, and search placeholder.
+ * The search input renders as a static HTML shell here; Plan 03 replaces
+ * it with a hydrated Svelte island.
+ */
+---
+
+<a href="#main-content" class="skip-link">Skip To Main Content</a>
+
+<header class="header">
+  <div class="header-container">
+    <a href="/" class="logo" aria-label="emoj.ie home">
+      <span class="logo-badge">
+        <img
+          class="logo-emoji"
+          src="/assets/emoji/base/1F600.svg"
+          alt=""
+          width="26"
+          height="26"
+        />
+        <span class="logo-emoji-fallback" aria-hidden="true"></span>
+      </span>
+      <span class="logo-wordmark">emoj.ie</span>
+    </a>
+
+    <form class="header-search" role="search" action="/" method="get">
+      <input
+        type="search"
+        name="q"
+        placeholder="Search emojis..."
+        aria-label="Search emojis"
+        autocomplete="off"
+      />
+      <span class="header-search-icon" aria-hidden="true">&#x1F50D;</span>
+    </form>
+  </div>
+</header>

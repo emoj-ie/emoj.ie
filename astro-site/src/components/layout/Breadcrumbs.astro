@@ -1,0 +1,86 @@
+---
+/**
+ * Accessible breadcrumb navigation with JSON-LD BreadcrumbList schema.
+ *
+ * Props:
+ *   items - Array of breadcrumb entries. The last item is rendered as the
+ *           current page (no link, aria-current="page").
+ */
+import { breadcrumbSchema } from '../../lib/utils/seo';
+
+interface BreadcrumbItem {
+  label: string;
+  href?: string;
+}
+
+interface Props {
+  items: BreadcrumbItem[];
+}
+
+const { items } = Astro.props;
+
+const SITE_URL = 'https://emoj.ie';
+
+// Build JSON-LD items (all items with hrefs get absolute URLs)
+const schemaItems = items
+  .filter((item) => item.href)
+  .map((item) => ({
+    name: item.label,
+    url: item.href!.startsWith('http') ? item.href! : `${SITE_URL}${item.href}`,
+  }));
+
+const jsonLd = schemaItems.length > 0 ? breadcrumbSchema(schemaItems) : null;
+---
+
+<nav class="breadcrumbs" aria-label="Breadcrumb">
+  <ol>
+    {items.map((item, index) => (
+      <li>
+        {index === items.length - 1 ? (
+          <span aria-current="page">{item.label}</span>
+        ) : item.href ? (
+          <a href={item.href}>{item.label}</a>
+        ) : (
+          <span>{item.label}</span>
+        )}
+      </li>
+    ))}
+  </ol>
+</nav>
+
+{jsonLd && (
+  <script type="application/ld+json" set:html={JSON.stringify(jsonLd)} />
+)}
+
+<style>
+  ol {
+    list-style: none;
+    margin: 0;
+    padding: 0;
+    display: flex;
+    flex-wrap: wrap;
+    align-items: center;
+    gap: 0.25rem;
+  }
+
+  li:not(:last-child)::after {
+    content: '\203A';
+    margin-left: 0.25rem;
+    color: var(--text-muted, #999);
+  }
+
+  a {
+    color: inherit;
+    text-decoration: none;
+  }
+
+  a:hover {
+    text-decoration: underline;
+    text-underline-offset: 2px;
+  }
+
+  [aria-current='page'] {
+    font-weight: 600;
+    color: var(--text-strong, #333);
+  }
+</style>
