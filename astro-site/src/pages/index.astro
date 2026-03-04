@@ -1,17 +1,23 @@
 ---
-// Placeholder index page — will be replaced with full layout in Task 3
+import BaseLayout from '../layouts/BaseLayout.astro';
+import { organizationSchema, websiteSchema } from '../lib/utils/seo';
+
+const title = 'Search, Copy, And Explore Emojis | emoj.ie';
+const description = 'Search emojis by category, copy in multiple formats, and jump to detailed pages.';
+const canonicalUrl = 'https://emoj.ie/';
+
+const jsonLd = [organizationSchema(), websiteSchema()];
 ---
 
-<html lang="en">
-  <head>
-    <meta charset="UTF-8" />
-    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>emoj.ie</title>
-    <meta name="description" content="Find and copy emojis quickly from categories like smileys, animals, and flags." />
-    <link rel="icon" href="/favicon.ico" type="image/x-icon" />
-  </head>
-  <body>
+<BaseLayout
+  title={title}
+  description={description}
+  canonicalUrl={canonicalUrl}
+  jsonLd={jsonLd}
+  bodyClass="page-home"
+>
+  <main id="main-content" class="page-main">
     <h1>emoj.ie</h1>
-    <p>Emoji reference site - under construction.</p>
-  </body>
-</html>
+    <p>Emoji reference site — under construction.</p>
+  </main>
+</BaseLayout>
