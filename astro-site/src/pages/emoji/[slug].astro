@@ -1,0 +1,268 @@
+---
+import BaseLayout from '../../layouts/BaseLayout.astro';
+import Header from '../../components/layout/Header.astro';
+import Footer from '../../components/layout/Footer.astro';
+import Breadcrumbs from '../../components/layout/Breadcrumbs.astro';
+import EmojiImage from '../../components/layout/EmojiImage.astro';
+import { loadEmojiModel } from '../../lib/data/load-emoji';
+import {
+  organizationSchema,
+  emojiDetailSchema,
+} from '../../lib/utils/seo';
+import { formatCopyValue, COPY_MODES, humanize } from '../../lib/utils/copy-formats';
+
+import type { EmojiEntry } from '../../lib/data/types';
+
+interface Props {
+  emoji: EmojiEntry;
+  variants: EmojiEntry[];
+  breadcrumbData: {
+    categoryKey: string;
+    categoryTitle: string;
+    categoryRoute: string;
+    subgroupKey: string;
+    subgroupTitle: string;
+    subgroupRoute: string;
+  };
+}
+
+export async function getStaticPaths() {
+  const model = await loadEmojiModel();
+
+  // Only generate pages for base emojis (not variants)
+  const baseEmojis = model.emojiEntries.filter((e) => !e.isVariant);
+
+  return baseEmojis.map((emoji) => {
+    // ARCH-05: Pass only this emoji's data and its variants
+    const variants = model.emojiEntries.filter(
+      (v) => v.baseHex === emoji.hexLower && v.hexLower !== emoji.hexLower
+    );
+
+    // Find parent category and subgroup for breadcrumbs
+    const parentCategory = model.categories.find((c) => c.key === emoji.group);
+    const parentSubgroup = parentCategory?.subgroups.find(
+      (sg) => sg.key === emoji.subgroup
+    );
+
+    return {
+      params: { slug: emoji.pageSlug },
+      props: {
+        emoji,
+        variants,
+        breadcrumbData: {
+          categoryKey: emoji.group,
+          categoryTitle: parentCategory?.title || emoji.group,
+          categoryRoute: parentCategory?.route || `/${emoji.group}/`,
+          subgroupKey: emoji.subgroup,
+          subgroupTitle: parentSubgroup?.title || emoji.subgroup,
+          subgroupRoute: parentSubgroup
+            ? `/${emoji.group}/${parentSubgroup.key}/`
+            : `/${emoji.group}/${emoji.subgroup}/`,
+        },
+      },
+    };
+  });
+}
+
+const { emoji, variants, breadcrumbData } = Astro.props;
+
+const SITE_URL = 'https://emoj.ie';
+const categoryTitle = humanize(breadcrumbData.categoryKey);
+const subgroupTitle = humanize(breadcrumbData.subgroupKey);
+const title = `${emoji.annotation} Emoji | emoj.ie`;
+const description = `Copy the ${emoji.annotation} emoji (${emoji.emoji}). Browse ${subgroupTitle} emojis in ${categoryTitle}.`;
+const canonicalUrl = `${SITE_URL}${emoji.detailRoute}`;
+const ogImage = emoji.cdnAssetPath;
+
+const breadcrumbItems = [
+  { label: 'Home', href: '/' },
+  { label: categoryTitle, href: breadcrumbData.categoryRoute },
+  { label: subgroupTitle, href: breadcrumbData.subgroupRoute },
+  { label: emoji.annotation },
+];
+
+// Breadcrumb JSON-LD is rendered by the Breadcrumbs component
+const jsonLd = [
+  organizationSchema(),
+  emojiDetailSchema(emoji),
+];
+
+// Build copy format display values
+const copyFormats = COPY_MODES.map((mode) => ({
+  label: mode,
+  value: formatCopyValue(mode, emoji),
+}));
+
+// Metadata items
+const metaItems: { label: string; value: string; href?: string }[] = [
+  { label: 'Category', value: categoryTitle, href: breadcrumbData.categoryRoute },
+  { label: 'Subgroup', value: subgroupTitle, href: breadcrumbData.subgroupRoute },
+];
+
+if (emoji.unicode) {
+  metaItems.push({ label: 'Unicode', value: `${emoji.unicode}` });
+}
+
+if (emoji.cldrShortName) {
+  metaItems.push({ label: 'CLDR Name', value: emoji.cldrShortName });
+}
+
+metaItems.push({ label: 'Hex Code', value: emoji.hexLower });
+
+if (emoji.tags.length > 0) {
+  metaItems.push({ label: 'Tags', value: emoji.tags.join(', ') });
+}
+
+if (emoji.cldrKeywords.length > 0) {
+  metaItems.push({ label: 'Keywords', value: emoji.cldrKeywords.join(', ') });
+}
+
+// Separate skin tone variants from other variants
+const skinToneVariants = variants.filter((v) => v.isSkinToneVariant);
+const otherVariants = variants.filter((v) => !v.isSkinToneVariant);
+---
+
+<BaseLayout
+  title={title}
+  description={description}
+  canonicalUrl={canonicalUrl}
+  ogImage={ogImage}
+  noindex={emoji.noindex}
+  jsonLd={jsonLd}
+  bodyClass="page-detail"
+>
+  <Header />
+  <Breadcrumbs items={breadcrumbItems} />
+
+  <main id="main-content" class="page-main">
+    <article class="emoji-detail">
+      <h1 class="emoji-detail-title">{emoji.annotation}</h1>
+
+      <div class="emoji-hero-panel">
+        <div class="emoji-detail-hero">
+          <EmojiImage
+            hex={emoji.assetHex}
+            annotation={emoji.annotation}
+            size={96}
+            useLocal={emoji.useLocalAsset}
+            loading="eager"
+            emoji={emoji.emoji}
+          />
+        </div>
+
+        <div class="emoji-detail-art">
+          <span class="detail-native-emoji" aria-label={emoji.annotation}>
+            {emoji.emoji}
+          </span>
+        </div>
+
+        <div class="emoji-copy-formats">
+          {copyFormats.map((format) => (
+            <div class="emoji-source-copy" role="button" tabindex="0">
+              <span class="emoji-source-label">{format.label}</span>
+              <code>{format.value}</code>
+              <span class="emoji-source-hint">Click to copy</span>
+            </div>
+          ))}
+        </div>
+      </div>
+
+      <dl class="emoji-meta">
+        {metaItems.map((item) => (
+          <>
+            <dt>{item.label}</dt>
+            <dd>
+              {item.href ? (
+                <a href={item.href}>{item.value}</a>
+              ) : (
+                item.value
+              )}
+            </dd>
+          </>
+        ))}
+      </dl>
+
+      {skinToneVariants.length > 0 && (
+        <section class="variant-section">
+          <h2>Skin Tone Variants</h2>
+          <ul class="variant-list">
+            {skinToneVariants.map((variant) => (
+              <li>
+                <EmojiImage
+                  hex={variant.assetHex}
+                  annotation={variant.annotation}
+                  size={36}
+                  useLocal={variant.useLocalAsset}
+                  emoji={variant.emoji}
+                />
+                <span>{variant.annotation}</span>
+              </li>
+            ))}
+          </ul>
+        </section>
+      )}
+
+      {otherVariants.length > 0 && (
+        <section class="variant-section">
+          <h2>Variants</h2>
+          <ul class="variant-list">
+            {otherVariants.map((variant) => (
+              <li>
+                <EmojiImage
+                  hex={variant.assetHex}
+                  annotation={variant.annotation}
+                  size={36}
+                  useLocal={variant.useLocalAsset}
+                  emoji={variant.emoji}
+                />
+                <span>{variant.annotation}</span>
+              </li>
+            ))}
+          </ul>
+        </section>
+      )}
+    </article>
+  </main>
+
+  <Footer />
+</BaseLayout>
+
+<style>
+  .detail-native-emoji {
+    font-size: clamp(2.2rem, 4.5vw, 4rem);
+    line-height: 1;
+  }
+
+  .emoji-copy-formats {
+    display: grid;
+    gap: 0.5rem;
+    align-content: start;
+  }
+
+  .emoji-copy-formats code {
+    font-family: var(--font-mono, monospace);
+    font-size: 0.95rem;
+    word-break: break-all;
+  }
+
+  .variant-section {
+    display: grid;
+    gap: 0.5rem;
+  }
+
+  .variant-section h2 {
+    font-size: 1.15rem;
+    color: var(--text-strong);
+  }
+
+  .variant-list li {
+    display: flex;
+    align-items: center;
+    gap: 0.65rem;
+  }
+
+  .variant-list li span {
+    font-size: 0.9rem;
+    text-transform: capitalize;
+  }
+</style>

@@ -47,7 +47,10 @@ function toAnnotationLookupKey(group: string, subgroup: string, annotation: stri
 }
 
 function isSkinToneVariant(emoji: any): boolean {
-  if (emoji.skintone || emoji.skintone_combination) {
+  // An emoji is a skin tone variant only if it has an actual skin tone applied.
+  // skintone_combination indicates the emoji SUPPORTS skin tones, not that it IS one.
+  // The base emoji has skintone: "" (no tone) and skintone_combination: "single" (supports tones).
+  if (emoji.skintone && String(emoji.skintone).trim()) {
     return true;
   }
   if (emoji.skintone_base_hexcode) {
@@ -95,9 +98,9 @@ export async function loadEmojiModel(): Promise<EmojiModel> {
     return cachedModel;
   }
 
-  // Find repo root by going up from this file's location
-  // In astro-site/src/lib/data/ -> repo root is 4 levels up
-  const repoRoot = path.resolve(import.meta.dirname || path.dirname(new URL(import.meta.url).pathname), '..', '..', '..', '..');
+  // Find repo root: process.cwd() is the astro-site directory during both
+  // dev and build. The repo root is one level up from there.
+  const repoRoot = path.resolve(process.cwd(), '..');
 
   const groupedDataPath = path.join(repoRoot, 'grouped-openmoji.json');
   const enrichmentPath = path.join(repoRoot, 'data', 'emoji-enrichment.json');

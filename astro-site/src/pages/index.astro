@@ -1,9 +1,39 @@
 ---
 import BaseLayout from '../layouts/BaseLayout.astro';
+import Header from '../components/layout/Header.astro';
+import Footer from '../components/layout/Footer.astro';
+import EmojiImage from '../components/layout/EmojiImage.astro';
+import { loadEmojiModel } from '../lib/data/load-emoji';
 import { organizationSchema, websiteSchema } from '../lib/utils/seo';
+import { humanize } from '../lib/utils/copy-formats';
+
+const model = await loadEmojiModel();
+
+// Browsable categories exclude component, extras-openmoji, extras-unicode
+const EXCLUDED_HOME_GROUPS = new Set(['component', 'extras-openmoji', 'extras-unicode']);
+
+const browsableCategories = model.categories
+  .filter((cat) => !EXCLUDED_HOME_GROUPS.has(cat.key))
+  .map((cat) => {
+    // Pick a few representative emojis for the card preview
+    const allNonVariant = cat.subgroups
+      .flatMap((sg) => sg.emojis)
+      .filter((e) => !e.isVariant);
+    const previewEmojis = allNonVariant.slice(0, 6);
+
+    return {
+      key: cat.key,
+      title: cat.title,
+      description: cat.description,
+      route: cat.route,
+      previewEmojis,
+      totalCount: allNonVariant.length,
+    };
+  });
 
 const title = 'Search, Copy, And Explore Emojis | emoj.ie';
-const description = 'Search emojis by category, copy in multiple formats, and jump to detailed pages.';
+const description =
+  'Search emojis by category, copy in multiple formats, and jump to detailed pages.';
 const canonicalUrl = 'https://emoj.ie/';
 
 const jsonLd = [organizationSchema(), websiteSchema()];
@@ -16,8 +46,48 @@ const jsonLd = [organizationSchema(), websiteSchema()];
   jsonLd={jsonLd}
   bodyClass="page-home"
 >
+  <Header />
+
   <main id="main-content" class="page-main">
-    <h1>emoj.ie</h1>
-    <p>Emoji reference site — under construction.</p>
+    <section class="panel-shell">
+      <h1 class="emoji-detail-title">Find your emoji</h1>
+      <p class="home-lede">
+        Search, copy, and explore thousands of emojis. Find it, copy it, done.
+      </p>
+    </section>
+
+    <section class="group">
+      <h2 class="collection-kicker">Browse by category</h2>
+      <div class="panel-grid">
+        {browsableCategories.map((cat) => (
+          <a href={cat.route} class="panel-card">
+            <div class="panel-card-hero">
+              {cat.previewEmojis[0] && (
+                <EmojiImage
+                  hex={cat.previewEmojis[0].assetHex}
+                  annotation={cat.previewEmojis[0].annotation}
+                  size={72}
+                  useLocal={cat.previewEmojis[0].useLocalAsset}
+                  emoji={cat.previewEmojis[0].emoji}
+                />
+              )}
+            </div>
+            <span class="panel-card-title">{humanize(cat.key)}</span>
+            <span class="panel-card-meta">{cat.totalCount} emojis</span>
+          </a>
+        ))}
+      </div>
+    </section>
   </main>
+
+  <Footer />
 </BaseLayout>
+
+<style>
+  .home-lede {
+    text-align: center;
+    font-size: 1.1rem;
+    color: var(--text-body);
+    margin: 0;
+  }
+</style>

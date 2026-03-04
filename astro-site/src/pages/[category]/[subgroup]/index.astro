@@ -1,0 +1,128 @@
+---
+import BaseLayout from '../../../layouts/BaseLayout.astro';
+import Header from '../../../components/layout/Header.astro';
+import Footer from '../../../components/layout/Footer.astro';
+import Breadcrumbs from '../../../components/layout/Breadcrumbs.astro';
+import EmojiImage from '../../../components/layout/EmojiImage.astro';
+import { loadEmojiModel } from '../../../lib/data/load-emoji';
+import { organizationSchema } from '../../../lib/utils/seo';
+import { humanize } from '../../../lib/utils/copy-formats';
+
+import type { EmojiEntry } from '../../../lib/data/types';
+
+interface Props {
+  subgroup: {
+    key: string;
+    title: string;
+    route: string;
+    noindex: boolean;
+    description: string;
+    emojis: EmojiEntry[];
+  };
+  parentCategory: {
+    key: string;
+    title: string;
+    route: string;
+  };
+}
+
+export async function getStaticPaths() {
+  const model = await loadEmojiModel();
+
+  const paths: {
+    params: { category: string; subgroup: string };
+    props: Props;
+  }[] = [];
+
+  for (const category of model.categories) {
+    for (const sg of category.subgroups) {
+      // ARCH-05: Pass only non-variant emojis for this subgroup
+      const nonVariantEmojis = sg.emojis.filter((e) => !e.isVariant);
+
+      paths.push({
+        params: {
+          category: category.key,
+          subgroup: sg.key,
+        },
+        props: {
+          subgroup: {
+            key: sg.key,
+            title: sg.title,
+            route: `/${category.key}/${sg.key}/`,
+            noindex: sg.noindex,
+            description: sg.description,
+            emojis: nonVariantEmojis,
+          },
+          parentCategory: {
+            key: category.key,
+            title: category.title,
+            route: category.route,
+          },
+        },
+      });
+    }
+  }
+
+  return paths;
+}
+
+const { subgroup, parentCategory } = Astro.props;
+
+const SITE_URL = 'https://emoj.ie';
+const categoryTitle = humanize(parentCategory.key);
+const subgroupTitle = humanize(subgroup.key);
+const title = `${subgroupTitle} Emojis | ${categoryTitle} | emoj.ie`;
+const description = subgroup.description;
+const canonicalUrl = `${SITE_URL}${subgroup.route}`;
+
+const breadcrumbItems = [
+  { label: 'Home', href: '/' },
+  { label: categoryTitle, href: parentCategory.route },
+  { label: subgroupTitle },
+];
+
+// Breadcrumb JSON-LD is rendered by the Breadcrumbs component
+const jsonLd = [
+  organizationSchema(),
+];
+---
+
+<BaseLayout
+  title={title}
+  description={description}
+  canonicalUrl={canonicalUrl}
+  noindex={subgroup.noindex}
+  jsonLd={jsonLd}
+  bodyClass="page-subgroup"
+>
+  <Header />
+  <Breadcrumbs items={breadcrumbItems} />
+
+  <main id="main-content" class="page-main">
+    <section class="subgroup">
+      <h1>{subgroupTitle} Emojis</h1>
+      <p class="subgroup-meta">
+        {subgroup.emojis.length} emojis in <a href={parentCategory.route}>{categoryTitle}</a>
+      </p>
+
+      <div class="panel-grid">
+        {subgroup.emojis.map((emoji) => (
+          <a href={emoji.detailRoute} class="panel-card" title={emoji.annotation}>
+            <div class="panel-card-hero">
+              <EmojiImage
+                hex={emoji.assetHex}
+                annotation={emoji.annotation}
+                size={72}
+                useLocal={emoji.useLocalAsset}
+                emoji={emoji.emoji}
+              />
+            </div>
+            <span class="panel-card-title">{emoji.annotation}</span>
+          </a>
+        ))}
+      </div>
+    </section>
+  </main>
+
+  <Footer />
+</BaseLayout>
