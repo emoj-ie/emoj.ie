@@ -1,9 +1,9 @@
 ---
 /**
- * Site header with logo badge, wordmark, and search placeholder.
- * The search input renders as a static HTML shell here; Plan 03 replaces
- * it with a hydrated Svelte island.
+ * Site header with logo badge, wordmark, ThemeSwitcher, and search placeholder.
+ * The static search form is replaced by a Search Svelte island in Task 2b.
  */
+import ThemeSwitcher from '../islands/ThemeSwitcher.svelte';
 ---
 
 <a href="#main-content" class="skip-link">Skip To Main Content</a>
@@ -34,5 +34,7 @@
       />
       <span class="header-search-icon" aria-hidden="true">&#x1F50D;</span>
     </form>
+
+    <ThemeSwitcher client:load />
   </div>
 </header>
