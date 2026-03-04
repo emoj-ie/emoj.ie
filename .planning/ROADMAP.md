@@ -33,8 +33,8 @@ Decimal phases appear between their surrounding integers in numeric order.
 **Plans**: 3 plans
 
 Plans:
-- [ ] 01-01: Scaffold Astro project, port data pipeline and utilities, create BaseLayout
-- [ ] 01-02: Create all page routes with getStaticPaths and build-time data slicing
+- [x] 01-01: Scaffold Astro project, port data pipeline and utilities, create BaseLayout
+- [x] 01-02: Create all page routes with getStaticPaths and build-time data slicing
 - [ ] 01-03: Build Svelte island components, deploy workflow, and smoke tests
 
 ### Phase 2: Design System and Animation
@@ -107,7 +107,7 @@ Note: Phase 5 depends on Phase 3 (not Phase 4), so Phases 4 and 5 could theoreti
 
 | Phase | Plans Complete | Status | Completed |
 |-------|----------------|--------|-----------|
-| 1. Astro Migration | 0/3 | Planned | - |
+| 1. Astro Migration | 2/3 | In Progress | - |
 | 2. Design System and Animation | 0/2 | Not started | - |
 | 3. Interactive Core | 0/3 | Not started | - |
 | 4. Discovery | 0/2 | Not started | - |

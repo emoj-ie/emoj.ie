@@ -13,7 +13,7 @@ Requirements for the "personality update" — transforming emoj.ie from a functi
 - [ ] **ARCH-02**: Interactive UI elements built as Svelte island components with hydration strategies
 - [ ] **ARCH-03**: Page-to-page navigation uses View Transitions API for smooth animated transitions
 - [ ] **ARCH-04**: Shared state (favorites, recents, preferences) managed via Svelte stores with localStorage sync
-- [ ] **ARCH-05**: Build-time data slicing — detail pages inline their emoji, category pages load only their category data
+- [x] **ARCH-05**: Build-time data slicing — detail pages inline their emoji, category pages load only their category data
 
 ### Design & Animation
 
@@ -83,7 +83,7 @@ Which phases cover which requirements. Updated during roadmap creation.
 |-------------|-------|--------|
 | ARCH-01 | Phase 1: Astro Migration | Complete |
 | ARCH-02 | Phase 1: Astro Migration | Pending |
-| ARCH-05 | Phase 1: Astro Migration | Pending |
+| ARCH-05 | Phase 1: Astro Migration | Complete |
 | DSGN-01 | Phase 2: Design System and Animation | Pending |
 | DSGN-03 | Phase 2: Design System and Animation | Pending |
 | DSGN-04 | Phase 2: Design System and Animation | Pending |
