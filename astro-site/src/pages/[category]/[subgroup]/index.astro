@@ -3,7 +3,7 @@ import BaseLayout from '../../../layouts/BaseLayout.astro';
 import Header from '../../../components/layout/Header.astro';
 import Footer from '../../../components/layout/Footer.astro';
 import Breadcrumbs from '../../../components/layout/Breadcrumbs.astro';
-import EmojiImage from '../../../components/layout/EmojiImage.astro';
+import EmojiGrid from '../../../components/islands/EmojiGrid.svelte';
 import { loadEmojiModel } from '../../../lib/data/load-emoji';
 import { organizationSchema } from '../../../lib/utils/seo';
 import { humanize } from '../../../lib/utils/copy-formats';
@@ -85,6 +85,16 @@ const breadcrumbItems = [
 const jsonLd = [
   organizationSchema(),
 ];
+
+// Serialize emoji data for the Svelte island (only needed fields)
+const gridEmojis = subgroup.emojis.map((e) => ({
+  annotation: e.annotation,
+  emoji: e.emoji,
+  hexLower: e.hexLower,
+  assetHex: e.assetHex,
+  detailRoute: e.detailRoute,
+  useLocalAsset: e.useLocalAsset,
+}));
 ---
 
 <BaseLayout
@@ -105,22 +115,7 @@ const jsonLd = [
         {subgroup.emojis.length} emojis in <a href={parentCategory.route}>{categoryTitle}</a>
       </p>
 
-      <div class="panel-grid">
-        {subgroup.emojis.map((emoji) => (
-          <a href={emoji.detailRoute} class="panel-card" title={emoji.annotation}>
-            <div class="panel-card-hero">
-              <EmojiImage
-                hex={emoji.assetHex}
-                annotation={emoji.annotation}
-                size={72}
-                useLocal={emoji.useLocalAsset}
-                emoji={emoji.emoji}
-              />
-            </div>
-            <span class="panel-card-title">{emoji.annotation}</span>
-          </a>
-        ))}
-      </div>
+      <EmojiGrid client:visible emojis={gridEmojis} />
     </section>
   </main>
 

@@ -4,12 +4,15 @@ import Header from '../../components/layout/Header.astro';
 import Footer from '../../components/layout/Footer.astro';
 import Breadcrumbs from '../../components/layout/Breadcrumbs.astro';
 import EmojiImage from '../../components/layout/EmojiImage.astro';
+import CopyButton from '../../components/islands/CopyButton.svelte';
+import FavoriteButton from '../../components/islands/FavoriteButton.svelte';
+import SkinTonePicker from '../../components/islands/SkinTonePicker.svelte';
 import { loadEmojiModel } from '../../lib/data/load-emoji';
 import {
   organizationSchema,
   emojiDetailSchema,
 } from '../../lib/utils/seo';
-import { formatCopyValue, COPY_MODES, humanize } from '../../lib/utils/copy-formats';
+import { humanize } from '../../lib/utils/copy-formats';
 
 import type { EmojiEntry } from '../../lib/data/types';
 
@@ -87,12 +90,6 @@ const jsonLd = [
   emojiDetailSchema(emoji),
 ];
 
-// Build copy format display values
-const copyFormats = COPY_MODES.map((mode) => ({
-  label: mode,
-  value: formatCopyValue(mode, emoji),
-}));
-
 // Metadata items
 const metaItems: { label: string; value: string; href?: string }[] = [
   { label: 'Category', value: categoryTitle, href: breadcrumbData.categoryRoute },
@@ -120,6 +117,17 @@ if (emoji.cldrKeywords.length > 0) {
 // Separate skin tone variants from other variants
 const skinToneVariants = variants.filter((v) => v.isSkinToneVariant);
 const otherVariants = variants.filter((v) => !v.isSkinToneVariant);
+
+// Serializable skin tone variant data for the Svelte island
+const skinToneVariantData = skinToneVariants.map((v) => ({
+  emoji: v.emoji,
+  hexLower: v.hexLower,
+  annotation: v.annotation,
+  localAssetPath: v.localAssetPath,
+  cdnAssetPath: v.cdnAssetPath,
+  assetHex: v.assetHex,
+  useLocalAsset: v.useLocalAsset,
+}));
 ---
 
 <BaseLayout
@@ -156,14 +164,14 @@ const otherVariants = variants.filter((v) => !v.isSkinToneVariant);
           </span>
         </div>
 
-        <div class="emoji-copy-formats">
-          {copyFormats.map((format) => (
-            <div class="emoji-source-copy" role="button" tabindex="0">
-              <span class="emoji-source-label">{format.label}</span>
-              <code>{format.value}</code>
-              <span class="emoji-source-hint">Click to copy</span>
-            </div>
-          ))}
+        <div class="emoji-actions">
+          <CopyButton
+            client:load
+            emoji={emoji.emoji}
+            hex={emoji.hexLower}
+            annotation={emoji.annotation}
+          />
+          <FavoriteButton client:load hex={emoji.hexLower} />
         </div>
       </div>
 
@@ -185,20 +193,7 @@ const otherVariants = variants.filter((v) => !v.isSkinToneVariant);
       {skinToneVariants.length > 0 && (
         <section class="variant-section">
           <h2>Skin Tone Variants</h2>
-          <ul class="variant-list">
-            {skinToneVariants.map((variant) => (
-              <li>
-                <EmojiImage
-                  hex={variant.assetHex}
-                  annotation={variant.annotation}
-                  size={36}
-                  useLocal={variant.useLocalAsset}
-                  emoji={variant.emoji}
-                />
-                <span>{variant.annotation}</span>
-              </li>
-            ))}
-          </ul>
+          <SkinTonePicker client:load variants={skinToneVariantData} />
         </section>
       )}
 
@@ -233,16 +228,11 @@ const otherVariants = variants.filter((v) => !v.isSkinToneVariant);
     line-height: 1;
   }
 
-  .emoji-copy-formats {
-    display: grid;
-    gap: 0.5rem;
-    align-content: start;
-  }
-
-  .emoji-copy-formats code {
-    font-family: var(--font-mono, monospace);
-    font-size: 0.95rem;
-    word-break: break-all;
+  .emoji-actions {
+    display: flex;
+    flex-direction: column;
+    gap: 0.75rem;
+    align-items: stretch;
   }
 
   .variant-section {

@@ -1,8 +1,9 @@
 ---
 /**
- * Site header with logo badge, wordmark, ThemeSwitcher, and search placeholder.
- * The static search form is replaced by a Search Svelte island in Task 2b.
+ * Site header with logo badge, wordmark, Search island, and ThemeSwitcher.
+ * All interactive features are Svelte islands -- no vanilla JS.
  */
+import Search from '../islands/Search.svelte';
 import ThemeSwitcher from '../islands/ThemeSwitcher.svelte';
 ---
 
@@ -24,17 +25,7 @@ import ThemeSwitcher from '../islands/ThemeSwitcher.svelte';
       <span class="logo-wordmark">emoj.ie</span>
     </a>
 
-    <form class="header-search" role="search" action="/" method="get">
-      <input
-        type="search"
-        name="q"
-        placeholder="Search emojis..."
-        aria-label="Search emojis"
-        autocomplete="off"
-      />
-      <span class="header-search-icon" aria-hidden="true">&#x1F50D;</span>
-    </form>
-
+    <Search client:load />
     <ThemeSwitcher client:load />
   </div>
 </header>
