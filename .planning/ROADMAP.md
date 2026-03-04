@@ -12,7 +12,7 @@ Transform emoj.ie from a functional emoji utility into the best emoji site in th
 
 Decimal phases appear between their surrounding integers in numeric order.
 
-- [ ] **Phase 1: Astro Migration** - Migrate from custom SSG to Astro 5 with Svelte islands and build-time data pipeline
+- [x] **Phase 1: Astro Migration** - Migrate from custom SSG to Astro 5 with Svelte islands and build-time data pipeline
 - [ ] **Phase 2: Design System and Animation** - Establish playful visual identity, animation infrastructure, and kid-friendly interaction patterns
 - [ ] **Phase 3: Interactive Core** - Wire up stateful interactions, micro-animations, keyboard navigation, semantic search, and page transitions
 - [ ] **Phase 4: Discovery** - Add Emoji of the Day, random discovery, and curated collections that give the site personality
@@ -35,7 +35,7 @@ Decimal phases appear between their surrounding integers in numeric order.
 Plans:
 - [x] 01-01: Scaffold Astro project, port data pipeline and utilities, create BaseLayout
 - [x] 01-02: Create all page routes with getStaticPaths and build-time data slicing
-- [ ] 01-03: Build Svelte island components, deploy workflow, and smoke tests
+- [x] 01-03: Build Svelte island components, deploy workflow, and smoke tests
 
 ### Phase 2: Design System and Animation
 **Goal**: The site has a distinctive, playful visual identity with big emojis, bright colors, and an animation system that feels alive on any device
