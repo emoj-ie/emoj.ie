@@ -110,11 +110,7 @@ const gridEmojis = subgroup.emojis.map((e) => ({
 
   <main id="main-content" class="page-main">
     <section class="subgroup">
-      <h1>{subgroupTitle} Emojis</h1>
-      <p class="subgroup-meta">
-        {subgroup.emojis.length} emojis in <a href={parentCategory.route}>{categoryTitle}</a>
-      </p>
-
+      <h1 class="visually-hidden">{subgroupTitle} Emojis</h1>
       <EmojiGrid client:visible emojis={gridEmojis} />
     </section>
   </main>

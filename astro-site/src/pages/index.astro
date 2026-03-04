@@ -49,31 +49,23 @@ const jsonLd = [organizationSchema(), websiteSchema()];
   <Header />
 
   <main id="main-content" class="page-main">
-    <section class="panel-shell">
-      <h1 class="emoji-detail-title">Find your emoji</h1>
-      <p class="home-lede">
-        Search, copy, and explore thousands of emojis. Find it, copy it, done.
-      </p>
-    </section>
-
-    <section class="group">
-      <h2 class="collection-kicker">Browse by category</h2>
-      <div class="panel-grid">
+    <section class="panel-shell home-emoji-shell" aria-label="Emoji Explorer">
+      <h1 class="visually-hidden">Emoji Categories</h1>
+      <div class="panel-grid" data-level="group">
         {browsableCategories.map((cat) => (
-          <a href={cat.route} class="panel-card">
-            <div class="panel-card-hero">
+          <a class="panel-card panel-card-link" href={cat.route} aria-label={`Open ${humanize(cat.key)}`}>
+            <span class="panel-card-title">{cat.previewEmojis[0] ? cat.previewEmojis[0].emoji : ''} {humanize(cat.key)}</span>
+            <span class="panel-card-hero" aria-hidden="true">
               {cat.previewEmojis[0] && (
                 <EmojiImage
                   hex={cat.previewEmojis[0].assetHex}
                   annotation={cat.previewEmojis[0].annotation}
-                  size={72}
+                  size={56}
                   useLocal={cat.previewEmojis[0].useLocalAsset}
                   emoji={cat.previewEmojis[0].emoji}
                 />
               )}
-            </div>
-            <span class="panel-card-title">{humanize(cat.key)}</span>
-            <span class="panel-card-meta">{cat.totalCount} emojis</span>
+            </span>
           </a>
         ))}
       </div>
@@ -83,11 +75,3 @@ const jsonLd = [organizationSchema(), websiteSchema()];
   <Footer />
 </BaseLayout>
 
-<style>
-  .home-lede {
-    text-align: center;
-    font-size: 1.1rem;
-    color: var(--text-body);
-    margin: 0;
-  }
-</style>

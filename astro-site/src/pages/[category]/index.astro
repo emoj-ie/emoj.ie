@@ -100,54 +100,26 @@ const jsonLd = [
   <Breadcrumbs items={breadcrumbItems} />
 
   <main id="main-content" class="page-main">
-    <section class="group">
-      <h1>{categoryTitle} Emojis</h1>
-      <p class="subgroup-meta">{description}</p>
-
-      <ul class="group-link-list">
+    <section class="panel-shell home-emoji-shell">
+      <h1 class="visually-hidden">{categoryTitle}</h1>
+      <div class="panel-grid panel-grid-balanced">
         {subgroups.map((sg) => (
-          <li>
-            <a href={sg.route}>
-              <span>{humanize(sg.key)}</span>
-              <small>{sg.totalCount} emojis</small>
-            </a>
-          </li>
+          <a class="panel-card panel-card-link" href={sg.route} aria-label={`Open ${humanize(sg.key)}`}>
+            <span class="panel-card-title">{sg.previewEmojis[0] ? sg.previewEmojis[0].emoji : ''} {humanize(sg.key)}</span>
+            <span class="panel-card-hero" aria-hidden="true">
+              {sg.previewEmojis[0] && (
+                <EmojiImage
+                  hex={sg.previewEmojis[0].assetHex}
+                  annotation={sg.previewEmojis[0].annotation}
+                  size={56}
+                  useLocal={sg.previewEmojis[0].useLocalAsset}
+                  emoji={sg.previewEmojis[0].emoji}
+                />
+              )}
+            </span>
+          </a>
         ))}
-      </ul>
-
-      {subgroups.map((sg) => (
-        <section class="subgroup">
-          <h2>
-            <a href={sg.route}>{humanize(sg.key)}</a>
-          </h2>
-          <p class="subgroup-meta">
-            {sg.totalCount} emojis
-          </p>
-          <div class="panel-grid">
-            {sg.previewEmojis.map((emoji) => (
-              <a href={emoji.detailRoute} class="panel-card" title={emoji.annotation}>
-                <div class="panel-card-hero">
-                  <EmojiImage
-                    hex={emoji.assetHex}
-                    annotation={emoji.annotation}
-                    size={72}
-                    useLocal={emoji.useLocalAsset}
-                    emoji={emoji.emoji}
-                  />
-                </div>
-                <span class="panel-card-title">{emoji.annotation}</span>
-              </a>
-            ))}
-          </div>
-          {sg.totalCount > sg.previewEmojis.length && (
-            <p>
-              <a href={sg.route} class="emoji-empty-link">
-                View all {sg.totalCount} {humanize(sg.key)} emojis
-              </a>
-            </p>
-          )}
-        </section>
-      ))}
+      </div>
     </section>
   </main>
 
