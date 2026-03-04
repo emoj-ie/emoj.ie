@@ -35,6 +35,7 @@ Instant access to any emoji — find it, copy it, done. Everything else serves t
 - [ ] Emoji collections — curated themed groups (party time, nature walk, food fight)
 - [ ] Interactive/animated emoji hover and tap effects — feels like a toy
 - [ ] Multi-select emoji builder — tap multiple emojis to build a string, then copy (nice to have)
+- [ ] Minimal copy — UI is self-explanatory, plain human language where needed, detailed descriptions below-the-fold
 - [ ] Premium feel — "how is this free?" polish level
 - [ ] Personality in design — opinionated, memorable, not generic
 
@@ -73,6 +74,8 @@ Instant access to any emoji — find it, copy it, done. Everything else serves t
 |----------|-----------|---------|
 | OpenMoji as emoji source | Open source, high quality SVGs, consistent style | — Pending |
 | Static site on GitHub Pages | Zero hosting cost, fast CDN delivery, simple deployment | — Pending |
+| Fresh URL patterns | Site has no meaningful SEO history — start with optimal URL structure | — Pending |
+| Minimal copy | UI should speak for itself. Plain human language where text is needed, details below-the-fold | — Pending |
 | No ad networks | Preserves UX quality, aligns with "premium feel" goal | — Pending |
 | Open to framework adoption | Current vanilla JS has scaling concerns (monolithic files, no component model) | — Pending |
 | Kid-appeal in v1 | Discovery features (emoji of the day, random, collections) are differentiators, not afterthoughts | — Pending |

@@ -9,7 +9,7 @@ Requirements for the "personality update" — transforming emoj.ie from a functi
 
 ### Architecture
 
-- [ ] **ARCH-01**: Site migrated from custom Node.js SSG to Astro 5 with zero URL breakage
+- [ ] **ARCH-01**: Site migrated from custom Node.js SSG to Astro 5 with fresh SEO-optimized URL patterns
 - [ ] **ARCH-02**: Interactive UI elements built as Svelte island components with hydration strategies
 - [ ] **ARCH-03**: Page-to-page navigation uses View Transitions API for smooth animated transitions
 - [ ] **ARCH-04**: Shared state (favorites, recents, preferences) managed via Svelte stores with localStorage sync
@@ -18,6 +18,7 @@ Requirements for the "personality update" — transforming emoj.ie from a functi
 ### Design & Animation
 
 - [ ] **DSGN-01**: Visual redesign with big emojis, bright colors, warmth, and opinionated playful aesthetics
+- [ ] **DSGN-06**: Minimal copy throughout — UI is self-explanatory, plain human language where text is needed, detailed descriptions below-the-fold only
 - [ ] **DSGN-02**: Micro-interactions on copy (bounce/confetti feedback), hover/tap effects on emoji cards
 - [ ] **DSGN-03**: Touch targets sized 56px+ for kid-friendly interaction on all interactive elements
 - [ ] **DSGN-04**: Animation system using GPU-only properties (transform, opacity) with reduced-motion support
@@ -80,28 +81,29 @@ Which phases cover which requirements. Updated during roadmap creation.
 
 | Requirement | Phase | Status |
 |-------------|-------|--------|
-| ARCH-01 | — | Pending |
-| ARCH-02 | — | Pending |
-| ARCH-03 | — | Pending |
-| ARCH-04 | — | Pending |
-| ARCH-05 | — | Pending |
-| DSGN-01 | — | Pending |
-| DSGN-02 | — | Pending |
-| DSGN-03 | — | Pending |
-| DSGN-04 | — | Pending |
-| DSGN-05 | — | Pending |
-| DISC-01 | — | Pending |
-| DISC-02 | — | Pending |
-| DISC-03 | — | Pending |
-| NAV-01 | — | Pending |
-| NAV-02 | — | Pending |
-| BLDR-01 | — | Pending |
+| ARCH-01 | Phase 1: Astro Migration | Pending |
+| ARCH-02 | Phase 1: Astro Migration | Pending |
+| ARCH-05 | Phase 1: Astro Migration | Pending |
+| DSGN-01 | Phase 2: Design System and Animation | Pending |
+| DSGN-03 | Phase 2: Design System and Animation | Pending |
+| DSGN-04 | Phase 2: Design System and Animation | Pending |
+| DSGN-06 | Phase 2: Design System and Animation | Pending |
+| ARCH-03 | Phase 3: Interactive Core | Pending |
+| ARCH-04 | Phase 3: Interactive Core | Pending |
+| DSGN-02 | Phase 3: Interactive Core | Pending |
+| DSGN-05 | Phase 3: Interactive Core | Pending |
+| NAV-01 | Phase 3: Interactive Core | Pending |
+| NAV-02 | Phase 3: Interactive Core | Pending |
+| DISC-01 | Phase 4: Discovery | Pending |
+| DISC-02 | Phase 4: Discovery | Pending |
+| DISC-03 | Phase 4: Discovery | Pending |
+| BLDR-01 | Phase 5: Emoji Builder | Pending |
 
 **Coverage:**
-- v1 requirements: 16 total
-- Mapped to phases: 0
-- Unmapped: 16 ⚠️
+- v1 requirements: 17 total
+- Mapped to phases: 17
+- Unmapped: 0
 
 ---
 *Requirements defined: 2026-03-03*
-*Last updated: 2026-03-03 after initial definition*
+*Last updated: 2026-03-03 after roadmap creation*
