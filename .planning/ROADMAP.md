@@ -47,11 +47,12 @@ Plans:
   3. Hover and focus states animate smoothly using only GPU-composited properties (transform, opacity)
   4. Users with prefers-reduced-motion enabled see a gracefully degraded experience -- essential content accessible, decorative animation suppressed
   5. UI is self-explanatory with minimal copy -- plain human language where text is needed, detailed descriptions below-the-fold only
-**Plans**: TBD
+**Plans**: 3 plans
 
 Plans:
-- [ ] 02-01: TBD
-- [ ] 02-02: TBD
+- [ ] 02-01-PLAN.md -- Design tokens, spring animation infrastructure, touch target enforcement, and Playwright test scaffolds
+- [ ] 02-02-PLAN.md -- EmojiGrid toybox tiles, detail page hero-first layout, category page cleanup, minimal-copy tests
+- [ ] 02-03-PLAN.md -- CopyButton/FavoriteButton/ThemeSwitcher restyling, animation a11y tests, visual verification
 
 ### Phase 3: Interactive Core
 **Goal**: Users experience a responsive, stateful site with buttery animations, keyboard-driven navigation, smart search, and smooth page transitions
@@ -107,8 +108,8 @@ Note: Phase 5 depends on Phase 3 (not Phase 4), so Phases 4 and 5 could theoreti
 
 | Phase | Plans Complete | Status | Completed |
 |-------|----------------|--------|-----------|
-| 1. Astro Migration | 2/3 | In Progress | - |
-| 2. Design System and Animation | 0/2 | Not started | - |
+| 1. Astro Migration | 3/3 | Complete | 2026-03-04 |
+| 2. Design System and Animation | 0/3 | Not started | - |
 | 3. Interactive Core | 0/3 | Not started | - |
 | 4. Discovery | 0/2 | Not started | - |
 | 5. Emoji Builder | 0/1 | Not started | - |
