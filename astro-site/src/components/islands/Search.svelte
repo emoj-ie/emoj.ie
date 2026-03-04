@@ -79,12 +79,12 @@
 
   function getResultLink(entry: SearchEntry): string {
     if (entry.detailRoute) {
-      // Old format: "emoji/grinning-face--1f3a8/" -- leave as-is for now.
-      // The detail page uses pageSlug, but search data has the old route.
-      // We need to normalize to the new route format: /emoji/{pageSlug}/
-      const route = String(entry.detailRoute);
-      if (route.startsWith('/')) return route;
-      return `/${route}`;
+      // Search data has old format: "emoji/grinning-face--1f3a8/"
+      // Astro pages use: /emoji/grinning-face/ (no hex suffix)
+      // Strip the --hexcode suffix to match.
+      let route = String(entry.detailRoute);
+      if (!route.startsWith('/')) route = `/${route}`;
+      return route.replace(/--[0-9a-f][-0-9a-f]*\//i, '/');
     }
     return '/';
   }
