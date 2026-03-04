@@ -30,12 +30,12 @@ Decimal phases appear between their surrounding integers in numeric order.
   3. At least one interactive element (e.g., theme switcher or search) runs as a hydrated Svelte island component
   4. Detail pages load only their own emoji data; category pages load only their category data (no monolithic JSON bundle on page load)
   5. Site deploys to GitHub Pages and serves correctly
-**Plans**: TBD
+**Plans**: 3 plans
 
 Plans:
-- [ ] 01-01: TBD
-- [ ] 01-02: TBD
-- [ ] 01-03: TBD
+- [ ] 01-01: Scaffold Astro project, port data pipeline and utilities, create BaseLayout
+- [ ] 01-02: Create all page routes with getStaticPaths and build-time data slicing
+- [ ] 01-03: Build Svelte island components, deploy workflow, and smoke tests
 
 ### Phase 2: Design System and Animation
 **Goal**: The site has a distinctive, playful visual identity with big emojis, bright colors, and an animation system that feels alive on any device
@@ -107,7 +107,7 @@ Note: Phase 5 depends on Phase 3 (not Phase 4), so Phases 4 and 5 could theoreti
 
 | Phase | Plans Complete | Status | Completed |
 |-------|----------------|--------|-----------|
-| 1. Astro Migration | 0/3 | Not started | - |
+| 1. Astro Migration | 0/3 | Planned | - |
 | 2. Design System and Animation | 0/2 | Not started | - |
 | 3. Interactive Core | 0/3 | Not started | - |
 | 4. Discovery | 0/2 | Not started | - |
