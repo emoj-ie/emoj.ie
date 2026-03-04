@@ -9,7 +9,7 @@ Requirements for the "personality update" — transforming emoj.ie from a functi
 
 ### Architecture
 
-- [ ] **ARCH-01**: Site migrated from custom Node.js SSG to Astro 5 with fresh SEO-optimized URL patterns
+- [x] **ARCH-01**: Site migrated from custom Node.js SSG to Astro 5 with fresh SEO-optimized URL patterns
 - [ ] **ARCH-02**: Interactive UI elements built as Svelte island components with hydration strategies
 - [ ] **ARCH-03**: Page-to-page navigation uses View Transitions API for smooth animated transitions
 - [ ] **ARCH-04**: Shared state (favorites, recents, preferences) managed via Svelte stores with localStorage sync
@@ -81,7 +81,7 @@ Which phases cover which requirements. Updated during roadmap creation.
 
 | Requirement | Phase | Status |
 |-------------|-------|--------|
-| ARCH-01 | Phase 1: Astro Migration | Pending |
+| ARCH-01 | Phase 1: Astro Migration | Complete |
 | ARCH-02 | Phase 1: Astro Migration | Pending |
 | ARCH-05 | Phase 1: Astro Migration | Pending |
 | DSGN-01 | Phase 2: Design System and Animation | Pending |
