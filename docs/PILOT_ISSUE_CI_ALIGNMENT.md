@@ -29,6 +29,13 @@ so that green checks are evidence about what users actually receive.
 - Consequence: a PR can pass every quality check that runs while changing
   nothing production serves, or break production without any check going
   red.
+- Verified from the first PR run of `site-quality.yml` (run 30212560069,
+  2026-07-26): Playwright is not installed on the runner, so the smoke test
+  and runtime vitals budget **silently skip** ("Playwright not installed;
+  skipping…") while the job continues; and the byte-budget check currently
+  fails on `main` itself (`generated-pages.js`: 41,056 B > 40,000 B budget),
+  so the legacy quality gate is red on the base branch independent of any
+  PR's changes.
 
 ## Acceptance criteria
 
@@ -43,6 +50,9 @@ so that green checks are evidence about what users actually receive.
 3. **Vitest runs in CI** against `astro-site`.
 4. **Playwright runs against the built production output** — a static server
    or `astro preview` over `astro-site/dist`. Never against `astro dev`.
+   Browser installation is an explicit CI step, and the job **fails loudly**
+   if browsers are unavailable — the legacy workflow's silent
+   "Playwright not installed; skipping" behavior must not carry over.
 5. **Screenshots uploaded as workflow artifacts** from the Playwright run.
 6. **Branch protection verified, then re-pointed.** First, the CURRENT
    branch-protection configuration for `main` (which checks, if any, are
