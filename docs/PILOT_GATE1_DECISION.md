@@ -9,8 +9,10 @@ targeting the legacy root static site — on every push to `main` and every PR
 the quality signals PRs receive currently describe a different codebase from
 the one production serves.
 
-The following is the exact approval card to be posted to Discord (and, until
-the bot exists, the message the CEO answers wherever convenient).
+The following is the exact approval card, posted to Discord **through the
+bot** once it exists. Per the bootstrap sequence in `OPERATING_MODEL.md`
+§11, the Gate-1 answer is deliberately the bot's first recorded approval —
+the operating model itself is ratified first, manually, by merging its PR.
 
 ---
 

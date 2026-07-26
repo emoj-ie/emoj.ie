@@ -87,6 +87,44 @@ specifically check for weakened or skipped coverage.
 - Expected size: workflow YAML + possibly a shared composite step; no
   application code.
 
+## Execution (machine-readable)
+
+The prose above is the human contract; this block is the projection the
+dispatcher and deterministic verification consume. Changed files outside
+`allowed_paths` (or touching `forbidden_paths`) fail scope verification
+regardless of what the PR description claims.
+
+```yaml
+execution:
+  schema_version: 1
+  repository: emoj-ie/emoj.ie
+  base_branch: main
+
+  allowed_paths:
+    - .github/workflows/**
+    - .github/actions/**
+    - utils/ci/**
+
+  forbidden_paths:
+    - astro-site/src/**
+    - astro-site/public/**
+
+  budget:
+    max_turns: 30
+    timeout_minutes: 25
+    retries: 1
+
+  required_evidence:
+    - astro-build
+    - vitest
+    - playwright
+    - screenshots
+    - reviewer-check
+```
+
+The `required_evidence` identifiers map one-to-one onto the evidence bullets
+below.
+
 ## Required evidence
 
 - Draft PR whose changed files are limited to `.github/workflows/**` (plus

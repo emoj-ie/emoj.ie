@@ -91,6 +91,11 @@ Reviewer verdict schema:
 
 ```json
 {
+  "schema_version": 1,
+  "repository": "emoj-ie/emoj.ie",
+  "pr_number": 123,
+  "head_sha": "…",
+  "correlation_id": "…",
   "verdict": "approve | changes_required | blocked",
   "blockers": [],
   "non_blocking_findings": [],
@@ -102,7 +107,10 @@ Reviewer verdict schema:
 Reviewer credential boundary: Codex runs read-only on the Dell and returns the
 verdict JSON to the HP orchestration API. A dedicated HP-side GitHub App
 (check-publisher identity) posts the verdict as the required check run. Dell
-worker credentials never receive `checks:write`.
+worker credentials never receive `checks:write`. The check-publisher rejects
+any verdict whose `repository`, `pr_number`, `correlation_id`, or `head_sha`
+does not match the active job's ledger row — a stale or replayed verdict is
+never posted as a check.
 
 ## 5. Approval model
 
@@ -164,7 +172,9 @@ Do **not** build UI or n8n workflows per internal ledger state.
   (~25 min). Usage/turns/duration recorded to the ledger from the JSON result.
 - Retries: exactly one automatic retry with failure output appended; second
   failure → `blocked` + Discord digest. Never loop.
-- Kill switch: `/halt` sets a global pause flag checked before every claim.
+- Pause vs kill: `/pause` prevents new claims and lets the active run
+  finish. `/halt` prevents new claims, terminates the active process group,
+  marks the run `cancelled`, and preserves its worktree and logs.
 - Free-text CEO feedback ("make the header smaller") is stored verbatim as an
   issue/PR comment, state → `changes-requested`, new bounded builder run. No
   NL interpretation layer in the pilot.
@@ -176,7 +186,8 @@ Do **not** build UI or n8n workflows per internal ledger state.
 A run reaches `awaiting-ceo` only when deterministic verification (n8n via the
 GitHub API — never agent prose) confirms:
 
-- PR exists and changed files match the issue contract's scope
+- PR exists and changed files match the issue contract's machine-readable
+  `execution.allowed_paths` (see the execution block in each issue contract)
 - All required checks green **on the current head SHA**
 - Screenshots uploaded as workflow artifacts
 - Test/a11y/Lighthouse outputs present
@@ -207,8 +218,11 @@ GitHub API — never agent prose) confirms:
 - Secrets in `.env` files (mode 600) outside every repo and worktree.
 - Discord actions gated on the CEO's Discord user ID; all decisions ledgered
   with message ID, user ID, timestamp, decision, head SHA.
-- `--allowedTools` scoping on every headless run; builder runs have no
-  arbitrary network fetch (prompt-injection surface reduction).
+- `--allowedTools` scoping on every headless run — a tool-permission
+  boundary (which tools run without prompting), NOT a network boundary.
+  Network egress for builder runs is restricted at the container/firewall/
+  proxy layer, allowing only the model APIs and approved registries
+  (prompt-injection surface reduction).
 - Everything reachable only over Tailscale; the Discord gateway connection is
   outbound-only.
 - Agent logs are grepped for secret patterns before any excerpt reaches
@@ -225,9 +239,18 @@ following week):
 | 2 | PostgreSQL jobs/runs/approvals/events schema |
 | 3 | Dell worker claims a toy job and creates a worktree |
 | 4 | Claude performs one bounded change and opens a draft PR |
-| 5 | Deterministic tests run; Codex posts an independent review check |
+| 5 | Deterministic tests run; Codex returns a structured verdict; the HP check-publisher posts the review check |
 | 6 | Discord approval card includes PR, evidence, and screenshot |
 | 7 | CEO approves; merge via the controlled path; verify production |
+
+Bootstrap sequence (preserves Gate 1 as the first real test of the approval
+system rather than a decision taken before the system exists):
+
+1. Ratify and merge the operating-model PR manually.
+2. Build the Discord bot and approval ledger.
+3. Post Gate-1 Option A through the bot.
+4. Use that response as the bot's first recorded approval.
+5. File and queue the CI-alignment issue.
 
 **First Gate-1 decision:** which codebase is canonical for production —
 see `PILOT_GATE1_DECISION.md`.
