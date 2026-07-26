@@ -1,0 +1,98 @@
+# Pilot Issue Contract — Align required CI checks with the canonical production Astro application
+
+**Status:** Drafted 2026-07-26. Blocked on Gate-1 approval of Option A
+(see `PILOT_GATE1_DECISION.md`). On approval, file verbatim as a GitHub
+issue; the issue then becomes the binding contract.
+
+---
+
+## Title
+
+```text
+Align required CI checks with the canonical production Astro application
+```
+
+## Goal
+
+Every required PR check must build and test the same codebase, at the same
+path, with the same build step, as the production deployment publishes —
+so that green checks are evidence about what users actually receive.
+
+## Context
+
+- `deploy.yml` publishes `./astro-site` (Astro 5 + Svelte 5) to GitHub Pages
+  on push to `main`, via `withastro/action`.
+- `site-quality.yml` runs on every push to `main` and every PR, executing
+  root-site checks only (phased Node suites, root Playwright smoke,
+  Lighthouse budgets, link scan). Whether branch protection currently marks
+  any check as required is unverified — see acceptance criterion 6.
+- Consequence: a PR can pass every quality check that runs while changing
+  nothing production serves, or break production without any check going
+  red.
+
+## Acceptance criteria
+
+1. **Shared deterministic build step.** A single reusable step (composite
+   action or reusable workflow: pinned Node version, `npm ci` against
+   `astro-site`'s lockfile, `astro build`) is consumed by BOTH the quality
+   workflow and the deployment workflow, so tested output and deployed
+   output come from the same build definition by construction, not by
+   assertion. No hosting migration — GitHub Pages publishing is unchanged.
+2. **Astro build passes in CI.** `astro build` succeeds with dependencies
+   installed from `astro-site`'s lockfile.
+3. **Vitest runs in CI** against `astro-site`.
+4. **Playwright runs against the built production output** — a static server
+   or `astro preview` over `astro-site/dist`. Never against `astro dev`.
+5. **Screenshots uploaded as workflow artifacts** from the Playwright run.
+6. **Branch protection verified, then re-pointed.** First, the CURRENT
+   branch-protection configuration for `main` (which checks, if any, are
+   required today) is queried via the GitHub API and recorded in the PR as
+   evidence. Then the new Astro checks are made required. Alignment that is
+   not required is decorative.
+7. **Legacy checks demoted, not deleted.** Root suites renamed (e.g.
+   `legacy-site-quality`), moved to manual/scheduled trigger, non-required,
+   with a one-line stated purpose, or removed with explicit justification.
+8. **Production deployment unchanged** until the aligned checks pass on this
+   PR. `deploy.yml` behavior is modified only insofar as needed to share the
+   build step with the quality workflow.
+
+## Out of scope
+
+- Any change to site behavior, content, styling, or the Astro migration
+  itself.
+- Hosting migration (stays on GitHub Pages).
+- Auto-rollback or deployment smoke automation.
+- The legacy personal repository (`martinkilmartin/emoj-ie`) — handled as a
+  separate manual admin task.
+
+## Risk tier
+
+Low for the product (no runtime behavior change); medium for process (this
+change defines what "green" means for everything after it). Reviewer must
+specifically check for weakened or skipped coverage.
+
+## Budget
+
+- Builder: max 30 turns, 25 min wall clock, 1 automatic retry.
+- Expected size: workflow YAML + possibly a shared composite step; no
+  application code.
+
+## Required evidence
+
+- Draft PR whose changed files are limited to `.github/workflows/**` (plus
+  any shared build script it factors out).
+- Green runs of the new Astro checks on the PR head SHA.
+- Playwright screenshot artifacts from the built output.
+- A run of the demoted legacy workflow proving it still executes on manual
+  trigger.
+- Reviewer check run with verdict `approve` and no scope drift.
+- Branch-protection API output recorded BEFORE (current required checks, if
+  any) and AFTER (new Astro checks required). Flipping branch protection
+  itself is a CEO/admin action; the PR documents the exact check names to
+  require.
+
+## Definition of done
+
+Merged to `main` via the controlled path with SHA-bound CEO approval; next
+push to `main` deploys successfully; required checks on the *following* PR
+are the Astro checks.
