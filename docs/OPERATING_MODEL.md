@@ -195,6 +195,12 @@ GitHub API — never agent prose) confirms:
 - Evidence was generated from the codebase production actually serves
   (see `PILOT_ISSUE_CI_ALIGNMENT.md` — this property is the first workload)
 
+Issue contracts may split `required_evidence` into `pre_merge` (gates
+Gate 2) and `post_merge` (required before the run reaches `complete`).
+Evidence that cannot exist before merge — e.g. the first manual dispatch of
+a workflow whose trigger the PR itself introduces — is declared
+`post_merge`, never waived.
+
 ## 9. Cost and quota controls
 
 - All agent runs draw on existing Claude Code / Codex subscription quotas —

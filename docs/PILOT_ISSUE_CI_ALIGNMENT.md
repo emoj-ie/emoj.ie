@@ -115,32 +115,51 @@ execution:
     retries: 1
 
   required_evidence:
-    - astro-build
-    - vitest
-    - playwright
-    - screenshots
-    - reviewer-check
+    pre_merge:
+      - astro-build
+      - vitest
+      - playwright
+      - screenshots
+      - reviewer-check
+      - branch-protection-before
+      - branch-protection-after
+    post_merge:
+      - legacy-workflow-manual-run
+      - production-deploy
 ```
 
-The `required_evidence` identifiers map one-to-one onto the evidence bullets
-below.
+The identifiers map one-to-one onto the evidence bullets below. `pre_merge`
+evidence gates Gate 2. `post_merge` evidence is required before the run
+reaches `complete` — it cannot exist earlier: a `workflow_dispatch` trigger
+is only invocable once the workflow exists on the repository's default
+branch, so the first true manual dispatch of the demoted legacy workflow is
+only possible after this PR merges.
 
 ## Required evidence
 
+Pre-merge (gates Gate 2):
+
 - Draft PR whose changed files are limited to `.github/workflows/**` (plus
-  any shared build script it factors out).
+  any shared build step under `.github/actions/**` or `utils/ci/**`).
 - Green runs of the new Astro checks on the PR head SHA.
 - Playwright screenshot artifacts from the built output.
-- A run of the demoted legacy workflow proving it still executes on manual
-  trigger.
 - Reviewer check run with verdict `approve` and no scope drift.
 - Branch-protection API output recorded BEFORE (current required checks, if
   any) and AFTER (new Astro checks required). Flipping branch protection
   itself is a CEO/admin action; the PR documents the exact check names to
   require.
 
+Post-merge (gates `complete`, not Gate 2):
+
+- A manual (`workflow_dispatch`) run of the demoted legacy workflow proving
+  it still executes — only possible after merge, since the dispatch trigger
+  must exist on the default branch.
+- Successful production deploy from the resulting push to `main`.
+
 ## Definition of done
 
-Merged to `main` via the controlled path with SHA-bound CEO approval; next
-push to `main` deploys successfully; required checks on the *following* PR
-are the Astro checks.
+Merged to `main` via the controlled path with SHA-bound CEO approval; the
+resulting push to `main` deploys successfully; a manual dispatch of the
+demoted legacy workflow succeeds; required checks on the *following* PR are
+the Astro checks. The run reaches `complete` only once all `post_merge`
+evidence exists.
