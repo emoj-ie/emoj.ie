@@ -1,7 +1,8 @@
 # AI Company Operating Model — Pilot (v1.0)
 
-**Status:** Proposed 2026-07-26 — awaiting CEO ratification. Converged from two
-independent AI architecture reviews (Claude, ChatGPT) plus CEO direction.
+**Status:** Ratified 2026-07-26 by CEO approval recorded in PR #30. Converged
+from two independent AI architecture reviews (Claude, ChatGPT) plus CEO
+direction.
 **Pilot scope:** this repository (`emoj-ie/emoj.ie`) only.
 **Canonical success criterion:**
 
@@ -9,8 +10,8 @@ independent AI architecture reviews (Claude, ChatGPT) plus CEO direction.
 > codebase production actually serves, while requiring no more than one brief
 > specification decision and one brief release decision from the CEO.
 
-Once ratified, this document is the process contract for the pilot. Newer CEO
-decisions recorded in the Decision Log below override older text.
+This document is the process contract for the pilot. Newer CEO decisions
+recorded in the Decision Log below override older text.
 
 ---
 
@@ -215,8 +216,11 @@ a workflow whose trigger the PR itself introduces — is declared
 
 ## 10. Security controls
 
-- Branch protection on `main`: required status checks (including the reviewer
-  check run), restricted direct pushes, no worker token that can bypass it.
+- Branch protection on `main`, staged (baseline verified absent 2026-07-26):
+  baseline first — PR-based changes required, direct and force pushes
+  blocked — as a bootstrap prerequisite before any contents-write worker
+  credential exists; required status checks (Astro + reviewer check run)
+  added once those check names exist. No worker token may bypass it.
 - Workers use a fine-grained PAT scoped to this repo only (contents + PRs;
   no `checks:write`). Check runs are posted only by the HP-side
   check-publisher GitHub App.
@@ -258,6 +262,13 @@ system rather than a decision taken before the system exists):
 4. Use that response as the bot's first recorded approval.
 5. File and queue the CI-alignment issue.
 
+Bootstrap prerequisite (CEO-ratified, PR #30): baseline branch protection on
+`main` — require PR-based changes, block direct and force pushes — is
+enabled BEFORE any contents-write worker credential is issued and before the
+first worker job runs. The Astro and reviewer required checks are added
+later, once those check names exist (created by the alignment workload and
+the check-publisher respectively).
+
 **First Gate-1 decision:** which codebase is canonical for production —
 see `PILOT_GATE1_DECISION.md`.
 **First workload:** CI/deployment alignment — see
@@ -298,10 +309,12 @@ Recommendations are never recorded as CEO decisions.
 
 | Date | Decision | Status |
 | --- | --- | --- |
-| 2026-07-26 | This operating model (thin GitHub-centric orchestrator; no workflow framework for the pilot) | Proposed |
-| 2026-07-26 | Five roles only (Chief of Staff, Planner, Builder, Reviewer, Release controller); all other roles deferred | Proposed |
-| 2026-07-26 | PostgreSQL owns locking (SKIP LOCKED); labels are projection only | Proposed |
-| 2026-07-26 | Reviewer verdict posted as a required check run by the HP-side check-publisher App; approvals SHA-bound | Proposed |
+| 2026-07-26 | This operating model (thin GitHub-centric orchestrator; no workflow framework for the pilot) | Approved — CEO, PR #30 |
+| 2026-07-26 | Five roles only (Chief of Staff, Planner, Builder, Reviewer, Release controller); all other roles deferred | Approved — CEO, PR #30 |
+| 2026-07-26 | PostgreSQL owns locking (SKIP LOCKED); labels are projection only | Approved — CEO, PR #30 |
+| 2026-07-26 | Reviewer verdict posted as a required check run by the HP-side check-publisher App; approvals SHA-bound | Approved — CEO, PR #30 |
+| 2026-07-26 | Pre-merge/post-merge evidence model (§8): post-merge evidence gates `complete`, never waived | Approved — CEO, PR #30 |
+| 2026-07-26 | Byte-budget decision B: PR #30 stays red on the pre-existing `main` breach; no cap raise, no trim in this PR | Approved — CEO, PR #30 |
 | 2026-07-26 | Gate-1 Option A: `astro-site` is canonical for production | Proposed — pending Gate-1 answer |
-| 2026-07-26 | First pilot workload: align CI checks with the deployed Astro codebase | Proposed — pending Gate-1 answer |
+| 2026-07-26 | First pilot workload: file and queue the CI-alignment issue | Proposed — pending Gate-1 answer |
 | 2026-07-26 | Mark legacy personal repo `martinkilmartin/emoj-ie` as legacy; archive after Pages/CNAME/DNS dependency check | Proposed |
