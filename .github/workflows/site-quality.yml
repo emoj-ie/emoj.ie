@@ -1,15 +1,40 @@
-name: site-quality
+# LEGACY — manual-only. Retained for one purpose and one purpose only:
+# ad-hoc inspection of the pre-Astro root site (index.html, script.js, utils/qa)
+# on a machine that is not the Dell worker.
+#
+# It MUST NOT run automatically. Pull-request and push validation for this
+# repository is performed exclusively by the local dispatcher:
+#
+#   node utils/ci/run-local-ci.mjs --repository <owner/repo> --issue-number <n> \
+#     --head-sha <sha> --correlation-id <id> --evidence-dir <absolute-path>
+#
+# The HP control plane publishes the required `ai-company/local-ci` status from
+# the evidence manifest that command produces. Adding `pull_request` or `push`
+# triggers back to this file re-introduces GitHub-hosted CI and violates the
+# operating model (see docs/OPERATING_MODEL.md).
+
+name: legacy-site-quality (manual only)
 
 on:
-  push:
-    branches: [ main ]
-  pull_request:
+  workflow_dispatch:
+    inputs:
+      reason:
+        description: Why this legacy root-site check is being run manually
+        required: true
+        type: string
+
+permissions:
+  contents: read
 
 jobs:
-  quality:
+  legacy-root-site-quality:
+    # Not a required check. Never gates a pull request.
     runs-on: ubuntu-latest
 
     steps:
+      - name: Record reason
+        run: 'echo "Manual legacy run — reason: ${{ inputs.reason }}"'
+
       - name: Checkout
         uses: actions/checkout@v4
 

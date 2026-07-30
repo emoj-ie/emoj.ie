@@ -1,9 +1,29 @@
-name: Deploy to GitHub Pages
+# LEGACY — manual-only break-glass deploy. Retained for one purpose:
+# restoring production from GitHub if the local release controller is
+# unavailable and the CEO explicitly authorises a GitHub-hosted build.
+#
+# It MUST NOT run automatically. The normal path is:
+#   1. The Dell worker runs `node utils/ci/run-local-ci.mjs` against the exact
+#      approved SHA and produces an evidence manifest.
+#   2. The HP release controller publishes the locally built `astro-site/dist`
+#      contents (including `.nojekyll`) to the `gh-pages` branch and records the
+#      deployed source SHA.
+#   3. GitHub Pages serves the root of `gh-pages` and performs no build or test
+#      work.
+#
+# Per acceptance criterion 13 of issue #31 this file is removed once branch
+# publishing to `gh-pages` has been verified in production. Until then it stays
+# dispatch-only so that no push to `main` consumes GitHub-hosted build minutes.
+
+name: legacy-pages-build (manual break-glass only)
 
 on:
-  push:
-    branches: [main]
   workflow_dispatch:
+    inputs:
+      reason:
+        description: Why a GitHub-hosted build is being used instead of the local release controller
+        required: true
+        type: string
 
 permissions:
   contents: read
@@ -14,6 +34,8 @@ jobs:
   build:
     runs-on: ubuntu-latest
     steps:
+      - name: Record reason
+        run: 'echo "Manual break-glass build — reason: ${{ inputs.reason }}"'
       - name: Checkout
         uses: actions/checkout@v5
       - name: Install, build, and upload
