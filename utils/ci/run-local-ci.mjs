@@ -10,11 +10,14 @@
 //   node utils/ci/run-local-ci.mjs \
 //     --repository <owner/repo> \
 //     --issue-number <number> \
-//     --head-sha <sha> \
+//     --head-sha <40-char-sha> \
 //     --correlation-id <id> \
 //     --evidence-dir <absolute-path>
 //
 // Optional:
+//   --pr-number <number>   pull request whose head is being validated. Required
+//                          before the HP control plane may publish the
+//                          `ai-company/local-ci` status for a pull request.
 //   --repo-root <path>     source repository to archive from (default: this repo)
 //   --port <number>        preview server port (default: an ephemeral free port)
 //   --keep-workspace       never delete the staging workspace
@@ -31,7 +34,7 @@ import os from 'node:os';
 import path from 'node:path';
 import { fileURLToPath } from 'node:url';
 
-import { repairDanglingSymlinks } from './repair-symlinks.mjs';
+import { assertNoExternalSymlinks, neutraliseExternalSymlinks } from './repair-symlinks.mjs';
 
 const HERE = path.dirname(fileURLToPath(import.meta.url));
 const DEFAULT_REPO_ROOT = path.resolve(HERE, '..', '..');
@@ -93,6 +96,17 @@ function requireArg(args, key) {
   const value = args[key];
   if (!value || typeof value !== 'string') {
     throw new Error(`Missing required argument --${key}`);
+  }
+  return value;
+}
+
+function parsePositiveInteger(raw, key) {
+  if (!/^\d+$/.test(String(raw))) {
+    throw new Error(`--${key} must be a positive integer, got: ${raw}`);
+  }
+  const value = Number.parseInt(String(raw), 10);
+  if (!Number.isInteger(value) || value <= 0) {
+    throw new Error(`--${key} must be a positive integer, got: ${raw}`);
   }
   return value;
 }
@@ -405,20 +419,28 @@ async function main() {
 
   const repository = requireArg(args, 'repository');
   const issueNumberRaw = requireArg(args, 'issue-number');
-  const headSha = requireArg(args, 'head-sha');
+  const headShaRaw = requireArg(args, 'head-sha');
   const correlationId = requireArg(args, 'correlation-id');
   const evidenceDir = requireArg(args, 'evidence-dir');
 
   if (!/^[^/\s]+\/[^/\s]+$/.test(repository)) {
     throw new Error(`--repository must be "owner/repo", got: ${repository}`);
   }
-  const issueNumber = Number.parseInt(issueNumberRaw, 10);
-  if (!Number.isInteger(issueNumber) || issueNumber <= 0) {
-    throw new Error(`--issue-number must be a positive integer, got: ${issueNumberRaw}`);
+  const issueNumber = parsePositiveInteger(issueNumberRaw, 'issue-number');
+  // Abbreviated object ids are rejected: the contract binds evidence to the
+  // exact 40-character head commit, and a prefix is not that commit.
+  if (!/^[0-9a-f]{40}$/i.test(headShaRaw)) {
+    throw new Error(
+      `--head-sha must be a full 40-character commit SHA, got: ${headShaRaw} (${headShaRaw.length} chars)`,
+    );
   }
-  if (!/^[0-9a-f]{7,40}$/i.test(headSha)) {
-    throw new Error(`--head-sha must be a git object id, got: ${headSha}`);
-  }
+  const headSha = headShaRaw.toLowerCase();
+  // The pull-request number is optional so the script stays usable for
+  // branch/main validation, but the control plane must supply it before
+  // publishing a pull-request status; see `statusPublishable` in the manifest.
+  const prNumber = args['pr-number'] === undefined
+    ? null
+    : parsePositiveInteger(args['pr-number'], 'pr-number');
   if (!path.isAbsolute(evidenceDir)) {
     throw new Error(`--evidence-dir must be an absolute path, got: ${evidenceDir}`);
   }
@@ -434,7 +456,9 @@ async function main() {
   const workspace = await fsp.mkdtemp(path.join(os.tmpdir(), `local-ci-${headSha.slice(0, 12)}-`));
   let server = null;
   let workspaceNotes = { repairedSymlinks: [], workspace };
-  let resolvedSha = headSha;
+  // Stays null until a commit is actually archived, so a failed checkout can
+  // never report the requested SHA as validated.
+  let resolvedSha = null;
   let siteDir = null;
 
   const stopServer = async () => {
@@ -447,7 +471,9 @@ async function main() {
   process.on('SIGINT', onSignal);
   process.on('SIGTERM', onSignal);
 
-  log(`repository=${repository} issue=#${issueNumber} headSha=${headSha}`);
+  log(
+    `repository=${repository} issue=#${issueNumber} pr=${prNumber === null ? '<none>' : `#${prNumber}`} headSha=${headSha}`,
+  );
   log(`correlationId=${correlationId}`);
   log(`evidenceDir=${evidenceDir}`);
   log(`workspace=${workspace}`);
@@ -457,23 +483,42 @@ async function main() {
     const checkoutOk = await runCheck(evidence, 'clean-checkout', async ({ logFile }) => {
       const { resolved, treeDir } = await createCleanCheckout(repoRoot, headSha, workspace);
       resolvedSha = resolved;
+      // exact-head-sha: the archived tree must be the requested commit itself.
+      if (resolved.toLowerCase() !== headSha) {
+        throw fail(`--head-sha ${headSha} resolved to a different commit: ${resolved}`);
+      }
       siteDir = path.join(treeDir, 'astro-site');
       if (!fs.existsSync(path.join(siteDir, 'package.json'))) {
         throw fail(`astro-site/package.json missing in the checkout of ${resolved}`);
       }
-      const repaired = await repairDanglingSymlinks(siteDir);
-      workspaceNotes = { repairedSymlinks: repaired, workspace, treeDir };
+      // Applied to the whole tree, unconditionally: a symlink leaving the
+      // archived commit is neutralised whether or not its target exists on
+      // this host, so no machine-specific file can enter the build.
+      const repaired = await neutraliseExternalSymlinks(treeDir);
+      await assertNoExternalSymlinks(treeDir);
+      workspaceNotes = {
+        repairedSymlinks: repaired,
+        externalSymlinksFollowed: false,
+        note:
+          'Symlinks leaving the archived commit were replaced with empty directories ' +
+          'without being followed, so the build consumed only files contained in this SHA. ' +
+          'Assets behind those links are absent from the built output and from the screenshots.',
+        workspace,
+        treeDir,
+      };
       await fsp.appendFile(
         logFile,
         [
+          `requested sha: ${headSha}`,
           `resolved sha: ${resolved}`,
           `tree: ${treeDir}`,
-          `repaired dangling symlinks: ${JSON.stringify(repaired, null, 2)}`,
+          `neutralised external symlinks: ${JSON.stringify(repaired, null, 2)}`,
+          'verified: no symlink in the staging tree points outside it',
           '',
         ].join('\n'),
       );
       await copyPayloads(siteDir);
-      return { resolvedSha: resolved, repairedSymlinks: repaired.length };
+      return { resolvedSha: resolved, repairedSymlinks: repaired };
     });
 
     if (checkoutOk) {
@@ -697,15 +742,24 @@ async function main() {
     (rel) => !artifacts.some((a) => a.path === rel),
   );
 
+  // A verdict of `passed` additionally requires that the evidence really is
+  // bound to the requested commit.
+  const shaMatches = resolvedSha !== null && resolvedSha.toLowerCase() === headSha;
   const verdict =
-    requiredChecksPassed && allChecksPassed && missingArtifacts.length === 0 ? 'passed' : 'failed';
+    requiredChecksPassed && allChecksPassed && missingArtifacts.length === 0 && shaMatches
+      ? 'passed'
+      : 'failed';
 
   const manifest = {
-    schemaVersion: 1,
+    schemaVersion: 2,
     repository,
     issueNumber,
-    headSha: resolvedSha,
+    prNumber,
+    headSha: resolvedSha ?? headSha,
     requestedHeadSha: headSha,
+    // null when no commit was archived; never falls back to the requested SHA.
+    resolvedHeadSha: resolvedSha,
+    headShaMatchesRequested: shaMatches,
     correlationId,
     startedAt,
     completedAt: nowIso(),
@@ -719,6 +773,10 @@ async function main() {
     },
     requiredCheckIds: REQUIRED_CHECK_IDS,
     missingArtifacts,
+    // The control plane may publish `ai-company/local-ci` for a pull request
+    // only when this is true: a run without a pull-request number cannot be
+    // attributed to a pull-request head.
+    statusPublishable: verdict === 'passed' && shaMatches && prNumber !== null,
     workspace: workspaceNotes,
     evidenceDir,
     checks: evidence.checks,

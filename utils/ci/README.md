@@ -16,16 +16,27 @@ node utils/ci/run-local-ci.mjs \
   --evidence-dir /absolute/path/to/evidence
 ```
 
+`--head-sha` must be the full 40-character commit SHA; abbreviated object ids
+are rejected, and the run fails if the archived commit is not exactly that SHA.
+
 Optional flags:
 
-| Flag                | Meaning                                                    |
-| ------------------- | ---------------------------------------------------------- |
-| `--repo-root <path>`| Repository to archive the SHA from (default: this repo)     |
-| `--port <number>`   | Preview server port (default: an ephemeral free port)       |
-| `--keep-workspace`  | Keep the staging workspace even when the run passes         |
+| Flag                 | Meaning                                                                 |
+| -------------------- | ----------------------------------------------------------------------- |
+| `--pr-number <n>`    | Pull request whose head is under validation (recorded as `prNumber`)     |
+| `--repo-root <path>` | Repository to archive the SHA from (default: this repo)                  |
+| `--port <number>`    | Preview server port (default: an ephemeral free port)                    |
+| `--keep-workspace`   | Keep the staging workspace even when the run passes                      |
 
-Exit code is `0` only when every required check passed and every required
-artifact exists. A manifest is written on every run, including failures.
+`--pr-number` is optional so the same command can validate a plain branch or
+`main` SHA, but the manifest sets `statusPublishable: false` without it. The HP
+control plane must supply it, and must refuse to publish
+`ai-company/local-ci` for a pull request unless `statusPublishable` is `true`
+and `headSha` equals the current pull-request head.
+
+Exit code is `0` only when every required check passed, every required
+artifact exists, and the archived commit is the requested SHA. A manifest is
+written on every run, including failures.
 
 ## What it does
 
@@ -33,11 +44,21 @@ artifact exists. A manifest is written on every run, including failures.
    temporary staging workspace. The repository working tree is never touched, so
    uncommitted state cannot leak into a run.
 
-   The tracked path `astro-site/public/assets/emoji/base` is an absolute symlink
-   into a developer home directory. Any dangling symlink found in the staging
-   copy is replaced there with an empty directory so the build is portable on a
-   clean worker. The tracked symlink itself is never modified, and every repair
+   Every symlink in the staging copy whose target leaves the staging tree —
+   any absolute target, or a relative target resolving outside the tree — is
+   replaced with an empty directory. This is unconditional: the target is
+   classified lexically and is never followed, so a host that happens to have
+   the target produces the same tree as one that does not. The tracked path
+   `astro-site/public/assets/emoji/base` (an absolute symlink into
+   `/home/sionnach/...`) is asserted to have been neutralised, so no
+   machine-specific file outside the archived commit can enter the build. The
+   tracked symlink in the repository itself is never modified, and every repair
    is recorded in the manifest under `workspace.repairedSymlinks`.
+
+   Consequence: the emoji SVG assets behind that symlink are not part of the
+   commit, so the built output serves no `/assets/emoji/base/*.svg` files and
+   the evidence screenshots show those images as missing. That is a faithful
+   rendering of the commit under validation, not a defect in the run.
 
 2. **dependency-install** — `npm ci` in the staged `astro-site`, from
    `astro-site/package-lock.json`.
@@ -76,15 +97,18 @@ reaped (`SIGTERM`, then `SIGKILL`) on success, failure, or `SIGINT`/`SIGTERM`.
   screenshots/{home,category,detail}-{desktop,mobile}.png
 ```
 
-`manifest.json` contains `repository`, `issueNumber`, `headSha`,
+`manifest.json` contains `repository`, `issueNumber`, `prNumber`, `headSha`,
+`requestedHeadSha`, `resolvedHeadSha` (`null` when no commit was archived),
 `correlationId`, `startedAt`, `completedAt`, `verdict`, `checks` and
-`artifacts`. Each `checks` entry has `id`, `status` and `logPath`; each
-`artifacts` entry has `path` and `sha256`. Paths are relative to the evidence
-directory, with an absolute variant alongside.
+`artifacts`. Each `checks` entry has `id`, `status` and `logPath`;
+each `artifacts` entry has `path` and `sha256`. Paths are relative to the
+evidence directory, with an absolute variant alongside.
 
-`verdict` is `passed` only when every check passed and every required artifact
-exists. A required check that never ran is recorded with status `not-run`, so a
-missing check can never be mistaken for a pass.
+`verdict` is `passed` only when every check passed, every required artifact
+exists, and `headSha` equals `requestedHeadSha`. A required check that never
+ran is recorded with status `not-run`, so a missing check can never be mistaken
+for a pass. `statusPublishable` is `true` only when the verdict passed and the
+run is bound to a pull-request number.
 
 ## Boundaries
 
