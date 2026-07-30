@@ -1,8 +1,20 @@
-name: Deploy to GitHub Pages
+# GitHub-hosted Astro build/deploy — manual break-glass only.
+#
+# Purpose: emergency fallback for publishing the site if the local release
+# controller is unavailable. It is retained, deliberately dispatch-only, until
+# `gh-pages` branch publishing from the local release controller has been
+# verified in production; per the CI-alignment contract it is removed at that
+# point.
+#
+# Normal path: the release controller checks out the approved `main` SHA on
+# project-controlled hardware, re-runs `node utils/ci/run-local-ci.mjs`, and
+# publishes the resulting `astro-site/dist` contents (including `.nojekyll`)
+# to the `gh-pages` branch. GitHub performs no application build or test work.
+#
+# This workflow MUST NOT be given a `push` or `pull_request` trigger.
+name: Deploy to GitHub Pages (manual break-glass)
 
 on:
-  push:
-    branches: [main]
   workflow_dispatch:
 
 permissions:

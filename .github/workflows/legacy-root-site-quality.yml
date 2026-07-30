@@ -1,0 +1,51 @@
+# Legacy root-site quality suite — manual only.
+#
+# Purpose: the pre-Astro root site (index.html, script.js, utils/qa/**) still
+# ships from this repository. This workflow is retained solely so a maintainer
+# can run those legacy checks on demand while that code exists.
+#
+# It MUST NOT run on pull_request or push. All pull-request validation for the
+# canonical `astro-site` application runs on project-controlled machines via
+# `node utils/ci/run-local-ci.mjs`, and the required status
+# `ai-company/local-ci` is published by the HP control plane from that
+# evidence. See docs/OPERATING_MODEL.md.
+name: legacy-root-site-quality (manual)
+
+on:
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+jobs:
+  quality:
+    # Manual invocation only. No pull_request or push trigger exists above, so
+    # this consumes no GitHub-hosted minutes during normal operation.
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Setup Node
+        uses: actions/setup-node@v4
+        with:
+          node-version: '20'
+
+      - name: Build Check
+        run: npm run build:check
+
+      - name: Unit And Integration Tests
+        run: npm test
+
+      - name: Broken Link Scan
+        run: npm run lint:links
+
+      - name: Accessibility Smoke
+        run: npm run test:a11y-smoke
+
+      - name: Playwright Smoke
+        run: npm run test:playwright-smoke
+
+      - name: Lighthouse Budgets
+        run: npm run test:lighthouse-budget
