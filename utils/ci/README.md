@@ -11,18 +11,31 @@ two workflows that remain are `workflow_dispatch`-only legacy surfaces.
 node utils/ci/run-local-ci.mjs \
   --repository emoj-ie/emoj.ie \
   --issue-number 31 \
+  --pr-number 34 \
   --head-sha <40-char-sha> \
   --correlation-id <run-correlation-id> \
   --evidence-dir /absolute/path/to/evidence/<correlation-id>
 ```
 
+`--head-sha` must be the full 40-character SHA; abbreviated identifiers are
+rejected so evidence always names one unambiguous commit.
+
 Optional flags:
 
 | Flag | Default | Purpose |
 | --- | --- | --- |
+| `--pr-number <n>` | none | pull request the head SHA belongs to; recorded as `prNumber` |
 | `--repo-root <path>` | this repository | repository to export the head SHA from |
 | `--base-port <n>` | `43210` | first port tried for the preview server |
 | `--keep-staging` | off | keep the staging workspace even on success |
+| `--reset-evidence-dir` | off | clear a pre-existing, non-empty evidence directory |
+
+A non-empty `--evidence-dir` is refused unless `--reset-evidence-dir` is given,
+so stale logs, screenshots or manifests can never be reported as this run.
+
+`--pr-number` is optional for issue-scoped runs, but a manifest without it sets
+`controlPlane.eligibleForStatus: false`; the control plane must not publish
+`ai-company/local-ci` from such a run.
 
 Exit code is `0` only when the verdict is `passed`. Any failure exits nonzero,
 and the manifest is written either way.
@@ -30,16 +43,22 @@ and the manifest is written either way.
 ## What it does
 
 1. **clean-checkout** — `git archive` of the exact head SHA into a temporary
-   staging workspace (`astro-site`, `grouped-openmoji.json`, `data/`; the last
-   two are read by `astro-site/src/lib/data/load-emoji.ts` at build time). The
-   working copy's state cannot influence the run.
+   staging workspace (`astro-site`, `grouped-openmoji.json`, `data/`,
+   `assets/emoji/base`; the middle two are read by
+   `astro-site/src/lib/data/load-emoji.ts` at build time). The working copy's
+   state cannot influence the run.
 
-   `astro-site/public/assets/emoji/base` is tracked as an absolute symlink to a
-   path that exists on only one machine. The repository symlink is never
-   modified; only the staged copy is made buildable — the link is kept when its
-   target resolves, and replaced with an empty directory when it does not, so a
-   clean worker can build. Markup and tests are unaffected either way; the run
-   records which strategy was used.
+   `astro-site/public/assets/emoji/base` is tracked as a symlink to
+   `/home/sionnach/...`: mutable, unversioned, and present on one machine only.
+   Following it would let the same SHA build differently on different workers,
+   so the staged copy always discards it and puts the `assets/emoji/base` tree
+   exported from the requested commit in its place. Everything the build
+   consumes therefore comes from the commit.
+
+   If that path is absent from the commit, the run fails explicitly — an empty
+   asset tree is never substituted, and the machine-local path is never used.
+   The repository's own symlink is not touched; only the throwaway staging copy
+   is rewritten. The manifest records the asset tree OID and file count.
 
 2. **npm-ci** — `npm ci` from `astro-site/package-lock.json`. No dependency
    outside that lockfile is used.
@@ -68,10 +87,12 @@ on success, on failure, and on `SIGINT`/`SIGTERM`/`SIGHUP`.
 <evidence-dir>/screenshots/{home,category,detail}.png
 ```
 
-`manifest.json` contains `repository`, `issueNumber`, `headSha`,
+`manifest.json` contains `repository`, `issueNumber`, `prNumber`, `headSha`,
 `correlationId`, `startedAt`, `completedAt`, `verdict`, `checks` and
 `artifacts`. Each `checks` entry has `id`, `status` and `logPath`; each
-`artifacts` entry has `path` and `sha256`.
+`artifacts` entry has `path` and `sha256`. It also records `assets` (the
+SHA-exported emoji tree OID and file count) and `controlPlane`
+(`statusContext`, `eligibleForStatus`).
 
 `verdict` is `passed` only when every required check passed, every check log
 exists, and the required screenshots exist. Required check IDs:
@@ -87,8 +108,12 @@ This script produces evidence; it publishes nothing. The HP control plane:
 - records the run, head SHA, verdict, artifact locations and hashes in
   PostgreSQL;
 - publishes the required `ai-company/local-ci` commit status, `success` only
-  when `manifest.verdict == "passed"` and `manifest.headSha` equals the current
-  pull-request head SHA (a changed head SHA invalidates the earlier result);
+  when `manifest.controlPlane.eligibleForStatus` is `true` (verdict `passed`
+  and a `prNumber` present), `manifest.prNumber` is the pull request under
+  review, and `manifest.headSha` equals its current head SHA (a changed head
+  SHA invalidates the earlier result);
+- records the ruleset for `main` before and after adding `ai-company/local-ci`
+  as a required status check;
 - posts the SHA-bound summary to the pull request and Discord;
 - after merge, re-runs this same command against the approved `main` SHA and
   publishes the resulting `astro-site/dist` (which already includes

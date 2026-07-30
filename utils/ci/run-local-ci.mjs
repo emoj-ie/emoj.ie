@@ -13,18 +13,25 @@
  *   node utils/ci/run-local-ci.mjs \
  *     --repository <owner/repo> \
  *     --issue-number <number> \
- *     --head-sha <sha> \
+ *     --head-sha <40-char-sha> \
  *     --correlation-id <id> \
  *     --evidence-dir <absolute-path>
  *
  * Optional:
+ *   --pr-number <number>   pull request the head SHA belongs to; recorded as
+ *                          `prNumber`. The control plane may only publish
+ *                          `ai-company/local-ci` for a manifest that has it.
  *   --repo-root <path>     repository to export the head SHA from (default: this repo)
  *   --base-port <number>   first port tried for the preview server (default: 43210)
  *   --keep-staging         keep the temporary staging workspace even on success
+ *   --reset-evidence-dir   clear a pre-existing, non-empty evidence directory
  *
  * Behaviour contract:
  *   - Every required check runs. Nothing is skipped, softened or faked.
  *   - Any failure exits nonzero; the manifest is still written.
+ *   - Everything the build consumes comes from the requested SHA. No file from
+ *     outside that commit — in particular no machine-local emoji asset tree —
+ *     may enter the run, and no missing input is silently substituted.
  *   - Playwright runs against `astro preview` over the built `dist/` output,
  *     never `astro dev`.
  *   - Every process this script starts is stopped before it exits.
@@ -54,15 +61,23 @@ const REQUIRED_CHECKS = [
 /** Screenshots that must exist before the verdict can be `passed`. */
 const REQUIRED_SCREENSHOTS = ['home', 'category', 'detail'];
 
-const PUBLIC_ASSET_SYMLINK = path.join('public', 'assets', 'emoji', 'base');
+/**
+ * `astro-site/public/assets/emoji/base` is tracked as a symlink to an absolute
+ * path that exists on one developer machine only. The same emoji asset set is
+ * tracked in this repository at `assets/emoji/base`, so the staged copy is
+ * built from the commit instead of from that machine-local path.
+ */
+const PUBLIC_ASSET_PATH = path.join('public', 'assets', 'emoji', 'base');
+const REPO_ASSET_PATH = 'assets/emoji/base';
 
 /**
  * Paths exported into the staging workspace. `astro-site` is the canonical
  * application; `grouped-openmoji.json` and `data/` are the repository-root
  * data files that `astro-site/src/lib/data/load-emoji.ts` reads at build time
- * (via `path.resolve(process.cwd(), '..')`), so the build fails without them.
+ * (via `path.resolve(process.cwd(), '..')`), so the build fails without them;
+ * `assets/emoji/base` is the SHA-controlled emoji asset set.
  */
-const STAGED_PATHS = ['astro-site', 'grouped-openmoji.json', 'data'];
+const STAGED_PATHS = ['astro-site', 'grouped-openmoji.json', 'data', REPO_ASSET_PATH];
 
 // ---------------------------------------------------------------------------
 // argument parsing
@@ -71,13 +86,14 @@ const STAGED_PATHS = ['astro-site', 'grouped-openmoji.json', 'data'];
 const USAGE = `Usage: node utils/ci/run-local-ci.mjs \\
   --repository <owner/repo> \\
   --issue-number <number> \\
-  --head-sha <sha> \\
+  --head-sha <40-char-sha> \\
   --correlation-id <id> \\
   --evidence-dir <absolute-path> \\
-  [--repo-root <path>] [--base-port <number>] [--keep-staging]`;
+  [--pr-number <number>] [--repo-root <path>] [--base-port <number>] \\
+  [--keep-staging] [--reset-evidence-dir]`;
 
 function parseArgs(argv) {
-  const flags = new Set(['keep-staging', 'help']);
+  const flags = new Set(['keep-staging', 'reset-evidence-dir', 'help']);
   const out = {};
   for (let i = 0; i < argv.length; i += 1) {
     const token = argv[i];
@@ -105,6 +121,61 @@ function requireArg(args, name) {
     throw new Error(`missing required argument --${name}\n\n${USAGE}`);
   }
   return value.trim();
+}
+
+/** Parse a positive-integer argument. Returns null only when it was omitted. */
+export function parsePositiveInteger(raw, name, { required }) {
+  if (raw === undefined || raw === null || String(raw).trim() === '') {
+    if (required) throw new Error(`missing required argument --${name}\n\n${USAGE}`);
+    return null;
+  }
+  const value = Number(String(raw).trim());
+  if (!Number.isInteger(value) || value <= 0) {
+    throw new Error(`--${name} must be a positive integer, got: ${raw}`);
+  }
+  return value;
+}
+
+/**
+ * Refuse to write into a directory that already holds artifacts: stale logs,
+ * screenshots or a previous manifest must never be mistaken for this run's
+ * evidence. `--reset-evidence-dir` clears it instead, with guards so an
+ * obviously wrong path cannot be emptied by accident.
+ */
+export async function prepareEvidenceDir(evidenceDir, { reset }) {
+  if (!path.isAbsolute(evidenceDir)) {
+    throw new Error(`--evidence-dir must be an absolute path, got: ${evidenceDir}`);
+  }
+  const resolved = path.resolve(evidenceDir);
+  let existing = null;
+  try {
+    existing = await fsp.readdir(resolved);
+  } catch (error) {
+    if (error.code !== 'ENOENT') throw error;
+  }
+
+  if (existing === null) {
+    await fsp.mkdir(resolved, { recursive: true });
+    return { evidenceDir: resolved, state: 'created' };
+  }
+  if (existing.length === 0) return { evidenceDir: resolved, state: 'reused-empty' };
+  if (!reset) {
+    throw new Error(
+      `--evidence-dir ${resolved} already contains ${existing.length} entr` +
+        `${existing.length === 1 ? 'y' : 'ies'}; pass --reset-evidence-dir to clear it ` +
+        'or point at a fresh directory. Stale artifacts must never be reported as this run.',
+    );
+  }
+
+  const unsafe = [path.parse(resolved).root, os.homedir(), os.tmpdir()].map((p) => path.resolve(p));
+  const depth = resolved.split(path.sep).filter(Boolean).length;
+  if (unsafe.includes(resolved) || depth < 2) {
+    throw new Error(`refusing to clear ${resolved}: not a plausible evidence directory`);
+  }
+  for (const entry of existing) {
+    await fsp.rm(path.join(resolved, entry), { recursive: true, force: true });
+  }
+  return { evidenceDir: resolved, state: 'reset' };
 }
 
 // ---------------------------------------------------------------------------
@@ -185,7 +256,13 @@ function runCommand({ command, args, cwd, logFile, env = {}, timeoutMs = 20 * 60
       child.kill('SIGKILL');
     }, timeoutMs);
 
-    child.stdout.on('data', (chunk) => stream.write(chunk));
+    // Keep a bounded copy of stdout so callers can read short outputs such as
+    // a resolved SHA without re-parsing the log file.
+    let stdout = '';
+    child.stdout.on('data', (chunk) => {
+      stream.write(chunk);
+      if (stdout.length < 64 * 1024) stdout += chunk.toString('utf8');
+    });
     child.stderr.on('data', (chunk) => stream.write(chunk));
 
     const finish = (exitCode, signal, error) => {
@@ -195,7 +272,7 @@ function runCommand({ command, args, cwd, logFile, env = {}, timeoutMs = 20 * 60
         `\n(finished: ${nowIso()}) exitCode=${exitCode} signal=${signal ?? 'none'}` +
           `${error ? ` error=${error.message}` : ''}\n`,
       );
-      resolve({ exitCode, signal, timedOut, error: error ? error.message : null });
+      resolve({ exitCode, signal, timedOut, stdout, error: error ? error.message : null });
     };
 
     child.on('error', (error) => finish(null, null, error));
@@ -300,50 +377,67 @@ async function createStagingWorkspace({ repoRoot, headSha, logFile }) {
 }
 
 /**
- * `astro-site/public/assets/emoji/base` is tracked as an absolute symlink to a
- * path that only exists on one machine. The repository symlink is never
- * touched; only the staged copy is made buildable, so any worker can run this.
+ * Replace the staged `astro-site/public/assets/emoji/base` symlink with the
+ * emoji asset set exported from the requested SHA.
+ *
+ * The tracked symlink points at `/home/sionnach/...`: mutable, unversioned and
+ * present on one machine only. Following it would let the same SHA produce
+ * different builds on different workers, so it is always discarded — the run
+ * consumes `assets/emoji/base` from the commit instead. If that path is absent
+ * from the commit the run fails explicitly; an empty asset tree is never
+ * substituted. The repository's own symlink is not touched: this only rewrites
+ * the throwaway staging copy.
  */
-export async function materializeAssetSymlink(siteDir, logFile) {
-  const linkPath = path.join(siteDir, PUBLIC_ASSET_SYMLINK);
-  let stats;
+export async function stageEmojiAssets({ stagingDir, siteDir, assetTree, logFile }) {
+  const exported = path.join(stagingDir, REPO_ASSET_PATH);
+  let files = [];
   try {
-    stats = await fsp.lstat(linkPath);
-  } catch {
-    await fsp.mkdir(linkPath, { recursive: true });
-    return { strategy: 'created-empty-directory', target: null };
+    files = (await fsp.readdir(exported, { withFileTypes: true }))
+      .filter((entry) => entry.isFile())
+      .map((entry) => entry.name);
+  } catch (error) {
+    throw new Error(
+      `the SHA-controlled emoji asset set ${REPO_ASSET_PATH} was not exported from the ` +
+        `requested commit (${error.code || error.message}). Refusing to build against a ` +
+        'machine-local asset path or an empty asset tree.',
+    );
+  }
+  if (files.length === 0) {
+    throw new Error(
+      `${REPO_ASSET_PATH} is empty at the requested commit; refusing to run with no emoji assets.`,
+    );
   }
 
-  if (!stats.isSymbolicLink()) {
-    return { strategy: 'already-a-directory', target: null };
-  }
-
-  const rawTarget = await fsp.readlink(linkPath);
-  const target = path.isAbsolute(rawTarget)
-    ? rawTarget
-    : path.resolve(path.dirname(linkPath), rawTarget);
-
-  let targetIsDir = false;
+  const destination = path.join(siteDir, PUBLIC_ASSET_PATH);
+  // Whatever the export produced here (dangling absolute symlink, or a
+  // directory) is removed first, so nothing outside the commit survives.
+  await fsp.rm(destination, { recursive: true, force: true });
+  await fsp.mkdir(path.dirname(destination), { recursive: true });
   try {
-    targetIsDir = (await fsp.stat(target)).isDirectory();
-  } catch {
-    targetIsDir = false;
+    await fsp.rename(exported, destination);
+  } catch (error) {
+    if (error.code !== 'EXDEV') throw error;
+    await fsp.cp(exported, destination, { recursive: true });
+    await fsp.rm(exported, { recursive: true, force: true });
   }
 
-  if (targetIsDir) {
-    await fsp.appendFile(logFile, `asset symlink target resolved: ${target}\n`);
-    return { strategy: 'resolved-symlink', target };
+  const placed = await fsp.lstat(destination);
+  if (placed.isSymbolicLink() || !placed.isDirectory()) {
+    throw new Error(`${PUBLIC_ASSET_PATH} is not a real directory after staging`);
   }
 
-  await fsp.unlink(linkPath);
-  await fsp.mkdir(linkPath, { recursive: true });
   await fsp.appendFile(
     logFile,
-    `asset symlink target ${target} is unavailable on this worker; ` +
-      'staged an empty directory so the build is portable. ' +
-      'Emoji SVG assets are absent from this run; pages and markup are unaffected.\n',
+    `emoji assets staged from the requested commit: ${REPO_ASSET_PATH} ` +
+      `(tree ${assetTree}, ${files.length} files) -> astro-site/${PUBLIC_ASSET_PATH}\n` +
+      'the tracked absolute symlink was discarded in the staging copy and never followed.\n',
   );
-  return { strategy: 'staged-empty-directory', target };
+  return {
+    strategy: 'sha-exported-assets',
+    source: REPO_ASSET_PATH,
+    assetTree,
+    fileCount: files.length,
+  };
 }
 
 async function installCiTemplates(siteDir, { baseUrl, screenshotDir }) {
@@ -415,23 +509,24 @@ async function main() {
   }
 
   const repository = requireArg(args, 'repository');
-  const issueNumberRaw = requireArg(args, 'issue-number');
-  const headShaArg = requireArg(args, 'head-sha');
+  const headShaArg = requireArg(args, 'head-sha').toLowerCase();
   const correlationId = requireArg(args, 'correlation-id');
-  const evidenceDir = requireArg(args, 'evidence-dir');
+  const evidenceDirArg = requireArg(args, 'evidence-dir');
 
   if (!/^[^/\s]+\/[^/\s]+$/.test(repository)) {
     throw new Error(`--repository must look like owner/repo, got: ${repository}`);
   }
-  const issueNumber = Number(issueNumberRaw);
-  if (!Number.isInteger(issueNumber) || issueNumber <= 0) {
-    throw new Error(`--issue-number must be a positive integer, got: ${issueNumberRaw}`);
-  }
-  if (!/^[0-9a-f]{7,40}$/i.test(headShaArg)) {
-    throw new Error(`--head-sha must be a hex git SHA, got: ${headShaArg}`);
-  }
-  if (!path.isAbsolute(evidenceDir)) {
-    throw new Error(`--evidence-dir must be an absolute path, got: ${evidenceDir}`);
+  const issueNumber = parsePositiveInteger(requireArg(args, 'issue-number'), 'issue-number', {
+    required: true,
+  });
+  // Optional so the documented five-argument invocation keeps working, but
+  // validated when present, and the control plane may only publish
+  // `ai-company/local-ci` for a manifest that carries it.
+  const prNumber = parsePositiveInteger(args['pr-number'], 'pr-number', { required: false });
+  // Abbreviated identifiers are rejected: evidence must name one unambiguous
+  // commit.
+  if (!/^[0-9a-f]{40}$/.test(headShaArg)) {
+    throw new Error(`--head-sha must be a full 40-character hex git SHA, got: ${headShaArg}`);
   }
 
   const basePort = args['base-port'] ? Number(args['base-port']) : 43210;
@@ -440,6 +535,10 @@ async function main() {
   }
   const keepStaging = Boolean(args['keep-staging']);
   const repoRoot = path.resolve(args['repo-root'] || path.join(SCRIPT_DIR, '..', '..'));
+
+  const { evidenceDir, state: evidenceDirState } = await prepareEvidenceDir(evidenceDirArg, {
+    reset: Boolean(args['reset-evidence-dir']),
+  });
 
   const startedAt = nowIso();
   const logsDir = path.join(evidenceDir, 'logs');
@@ -510,7 +609,7 @@ async function main() {
       });
       throw new Error(`commit ${headShaArg} is not present in ${repoRoot}`);
     }
-    const resolvedSha = (await fsp.readFile(checkoutLog, 'utf8'))
+    const resolvedSha = (revParse.stdout || '')
       .split('\n')
       .map((line) => line.trim())
       .filter((line) => /^[0-9a-f]{40}$/.test(line))
@@ -518,18 +617,51 @@ async function main() {
     if (!resolvedSha) {
       throw new Error(`could not resolve ${headShaArg} to a full commit SHA`);
     }
-    if (headShaArg.length === 40 && resolvedSha.toLowerCase() !== headShaArg.toLowerCase()) {
+    if (resolvedSha !== headShaArg) {
       throw new Error(`resolved SHA ${resolvedSha} does not match requested ${headShaArg}`);
     }
 
+    // The emoji asset set must exist in the commit itself. Resolving its tree
+    // OID both proves that and gives the manifest a verifiable identifier for
+    // exactly which assets the build consumed.
+    const assetTreeResult = await runCommand({
+      command: 'git',
+      args: ['-C', repoRoot, 'rev-parse', `${resolvedSha}:${REPO_ASSET_PATH}`],
+      cwd: repoRoot,
+      logFile: checkoutLog,
+      timeoutMs: 60_000,
+    });
+    const assetTree = (assetTreeResult.stdout || '')
+      .split('\n')
+      .map((line) => line.trim())
+      .find((line) => /^[0-9a-f]{40}$/.test(line));
+    if (assetTreeResult.exitCode !== 0 || !assetTree) {
+      record('clean-checkout', 'failed', {
+        description: 'export astro-site at the exact head SHA into a staging workspace',
+        startedAt: checkoutStartedAt,
+        completedAt: nowIso(),
+      });
+      throw new Error(
+        `commit ${resolvedSha} does not contain ${REPO_ASSET_PATH}; the run needs a ` +
+          'SHA-controlled emoji asset set and will not fall back to a machine-local path.',
+      );
+    }
+
     staging = await createStagingWorkspace({ repoRoot, headSha: resolvedSha, logFile: checkoutLog });
-    const assets = await materializeAssetSymlink(staging.siteDir, checkoutLog);
-    notes.push(`public asset symlink handling: ${assets.strategy}`);
+    const assets = await stageEmojiAssets({
+      stagingDir: staging.stagingDir,
+      siteDir: staging.siteDir,
+      assetTree,
+      logFile: checkoutLog,
+    });
+    notes.push(
+      `emoji assets: ${assets.strategy} (tree ${assets.assetTree}, ${assets.fileCount} files)`,
+    );
     record('clean-checkout', 'passed', {
       description: 'export astro-site at the exact head SHA into a staging workspace',
       resolvedSha,
       stagingDir: staging.stagingDir,
-      assetSymlink: assets,
+      assets,
       startedAt: checkoutStartedAt,
       completedAt: nowIso(),
     });
@@ -700,10 +832,18 @@ async function main() {
   }
   if (missingLogs.length > 0) notes.push(`check logs missing: ${missingLogs.join(', ')}`);
 
+  if (prNumber === null) {
+    notes.push(
+      'no --pr-number was supplied: this manifest carries no pull-request identity, ' +
+        'so the control plane must not publish ai-company/local-ci from it',
+    );
+  }
+
   const manifest = {
-    schemaVersion: 1,
+    schemaVersion: 2,
     repository,
     issueNumber,
+    prNumber,
     headSha: checkById.get('clean-checkout')?.resolvedSha || headShaArg,
     requestedHeadSha: headShaArg,
     correlationId,
@@ -713,10 +853,18 @@ async function main() {
     checks,
     artifacts,
     evidenceDir,
+    evidenceDirState,
+    assets: checkById.get('clean-checkout')?.assets ?? null,
     requiredChecks: REQUIRED_CHECKS,
     requiredScreenshots: REQUIRED_SCREENSHOTS,
     failureReason,
     notes,
+    // Gate for the HP control plane: a status may only be published for a
+    // passing run that names the pull request it belongs to.
+    controlPlane: {
+      statusContext: 'ai-company/local-ci',
+      eligibleForStatus: passed && prNumber !== null,
+    },
     runner: {
       host: os.hostname(),
       platform: `${os.platform()} ${os.release()}`,
