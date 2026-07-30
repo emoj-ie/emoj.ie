@@ -1,0 +1,55 @@
+# Legacy root-site quality suite - MANUAL DISPATCH ONLY.
+#
+# Purpose: the pre-Astro root site (index.html, script.js, utils/build/**,
+# utils/qa/**) is still tracked in this repository. This workflow is the only
+# way to exercise those legacy root-site checks, and it exists solely for
+# occasional manual inspection of that legacy surface.
+#
+# It must never run on `pull_request` or `push`, and it is never a required
+# status check. All validation of the canonical production application
+# (`astro-site`) runs on project-controlled hardware via
+# `utils/ci/run-local-ci.mjs`; the required status `ai-company/local-ci` is
+# published by the HP control plane from that run's evidence manifest.
+#
+# Known caveats inherited from the previous `site-quality` workflow (recorded
+# here rather than fixed, since this suite is out of scope): the Playwright
+# smoke step skips when Playwright is unavailable, and the byte-budget check
+# fails on `main` itself. Neither may ever gate a pull request again.
+name: legacy-site-quality (manual only)
+
+on:
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+jobs:
+  legacy-quality:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Setup Node
+        uses: actions/setup-node@v4
+        with:
+          node-version: '20'
+
+      - name: Build Check
+        run: npm run build:check
+
+      - name: Unit And Integration Tests
+        run: npm test
+
+      - name: Broken Link Scan
+        run: npm run lint:links
+
+      - name: Accessibility Smoke
+        run: npm run test:a11y-smoke
+
+      - name: Playwright Smoke
+        run: npm run test:playwright-smoke
+
+      - name: Lighthouse Budgets
+        run: npm run test:lighthouse-budget

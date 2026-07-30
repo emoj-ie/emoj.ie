@@ -1,8 +1,21 @@
-name: Deploy to GitHub Pages
+# Legacy GitHub-hosted Astro build for Pages - MANUAL DISPATCH ONLY.
+#
+# Purpose: break-glass fallback for publishing the site from GitHub while the
+# local release path is brought up. It is retained, not used.
+#
+# The supported publication path is: the HP release controller checks out the
+# approved `main` SHA, repeats the local validation via
+# `utils/ci/run-local-ci.mjs`, and publishes the resulting static
+# `astro-site/dist` contents (including `.nojekyll`) to the `gh-pages` branch,
+# with GitHub Pages configured to serve the root of that branch. GitHub then
+# performs no application build or test work.
+#
+# This workflow no longer runs on `push`, so a merge to `main` no longer
+# triggers a GitHub-hosted build. Delete this file once `gh-pages` branch
+# publishing has been verified in production (acceptance criterion 13).
+name: legacy-pages-build (manual only)
 
 on:
-  push:
-    branches: [main]
   workflow_dispatch:
 
 permissions:
