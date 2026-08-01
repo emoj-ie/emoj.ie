@@ -816,6 +816,19 @@ async function main() {
     artifacts,
     verdict,
     failureReason: failure ? String(failure.message || failure) : null,
+    // The worker cannot approve its own run. A `pass` verdict here means the
+    // local checks passed, nothing more; the control plane still has to produce
+    // the evidence below before the change is approvable. Naming it in the
+    // manifest keeps an aggregate report from reading a green worker verdict as
+    // an approval.
+    requiresControlPlaneEvidence: [
+      'postgres-record',
+      'branch-protection-before',
+      'branch-protection-after',
+      'pull-request-summary',
+      'discord-summary',
+      'local-ci-status',
+    ],
   };
   await fsp.writeFile(manifestPath, `${JSON.stringify(manifest, null, 2)}\n`);
 

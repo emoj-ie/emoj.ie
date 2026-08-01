@@ -13,23 +13,25 @@
  *   - the pull request's CURRENT head SHA still equals the manifest head SHA
  *     (a new push invalidates the earlier result).
  *
- * In order, a run:
+ * The success status is published LAST, so it can never describe a run whose
+ * required evidence was never produced. In order, a run:
  *   1. verifies the manifest and its artifacts,
  *   2. confirms the live pull-request head SHA,
  *   3. records the `main` ruleset BEFORE any modification,
  *   4. records the run, head SHA, verdict, artifact locations and hashes in
  *      PostgreSQL,
- *   5. publishes the `ai-company/local-ci` commit status,
- *   6. adds `ai-company/local-ci` to the `main` ruleset's required status
- *      checks (only with --require-status-check, only after a passing result)
- *      and records the ruleset AFTER,
- *   7. posts a SHA-bound summary to the pull request and to Discord — no
+ *   5. adds `ai-company/local-ci` to the `main` ruleset's required status checks
+ *      (mandatory after a passing result) and records the ruleset AFTER,
+ *   6. posts a SHA-bound summary to the pull request and to Discord — no
  *      GitHub Actions artifact storage is involved,
- *   8. writes its own control-plane evidence, hashed, next to the run evidence.
+ *   7. verifies that every required piece of control-plane evidence exists,
+ *   8. only then publishes the `ai-company/local-ci` commit status, and
+ *   9. writes its own control-plane manifest, hashed, next to the run evidence.
+ *      If anything after step 8 fails, the status is reverted to `failure`.
  *
  * Usage:
  *   node utils/ci/publish-local-ci.mjs --manifest <evidence-dir>/manifest.json \
- *     [--require-status-check] [--branch main] [--dry-run]
+ *     [--branch main] [--dry-run]
  *
  * Environment:
  *   GITHUB_TOKEN | GH_TOKEN                 repo:status + rulesets write
@@ -63,8 +65,21 @@ const REQUIRED_CHECKS = [
   'evidence-manifest',
 ];
 
+/**
+ * Control-plane evidence that must exist — and be readable JSON — before the
+ * required status may be published as `success`. The list mirrors the contract's
+ * pre-merge evidence: durable record, ruleset before and after, PR + Discord
+ * summary.
+ */
+const REQUIRED_CONTROL_PLANE_EVIDENCE = [
+  'ruleset-before.json',
+  'postgres-record.json',
+  'ruleset-after.json',
+  'summary.json',
+];
+
 function parseArgs(argv) {
-  const flags = new Set(['--require-status-check', '--dry-run']);
+  const flags = new Set(['--dry-run']);
   const out = {};
   for (let i = 0; i < argv.length; i += 1) {
     const arg = argv[i];
@@ -265,8 +280,21 @@ async function main() {
   const evidenceDir = path.dirname(manifestPath);
 
   // 1 — the evidence must be internally sound and PR-bound ------------------
-  const repository = args.repository || manifest.repository;
+  //
+  // The repository is taken from the manifest, never from the command line: a
+  // `--repository` override would let evidence produced for one repository
+  // publish a status against another. The flag survives only as an assertion.
+  const repository = manifest.repository;
   if (!repository) refuse('manifest has no repository');
+  if (!/^[^/\s]+\/[^/\s]+$/.test(repository)) {
+    refuse(`manifest repository "${repository}" is not in owner/repo form`);
+  }
+  if (args.repository && args.repository !== repository) {
+    refuse(
+      `--repository ${args.repository} does not match the manifest repository ${repository}. ` +
+        'Evidence is bound to the repository it was produced for; it cannot be republished elsewhere.',
+    );
+  }
   if (!/^[0-9a-f]{40}$/.test(manifest.headSha || '')) refuse('manifest has no full head SHA');
   if (manifest.pullRequestNumber === null || manifest.pullRequestNumber === undefined) {
     refuse(
@@ -316,6 +344,45 @@ async function main() {
     return file;
   };
 
+  const targetUrl = process.env.AI_COMPANY_EVIDENCE_BASE_URL
+    ? `${process.env.AI_COMPANY_EVIDENCE_BASE_URL.replace(/\/$/, '')}/${manifest.correlationId}/`
+    : undefined;
+  const publishStatus = async (state, description) => {
+    const body = {
+      state,
+      context: REQUIRED_STATUS,
+      description: description.slice(0, 140),
+      ...(targetUrl ? { target_url: targetUrl } : {}),
+    };
+    const response = dryRun
+      ? { skipped: 'dry-run', request: body }
+      : await github('POST', `/repos/${repository}/statuses/${manifest.headSha}`, body);
+    log(`status ${REQUIRED_STATUS} = ${state} on ${manifest.headSha}`);
+    return { body, response };
+  };
+
+  // A failed local run needs none of the pre-merge control-plane apparatus: it
+  // publishes `failure` immediately and stops. Branch protection is only ever
+  // aligned off the back of a passing result.
+  if (!verdictPass) {
+    const failed = await publishStatus(
+      'failure',
+      `local validation failed: ${manifest.failureReason ?? missing.join(', ') ?? 'see evidence'}`,
+    );
+    await writeEvidence('local-ci-status.json', {
+      publishedAt: nowIso(),
+      repository,
+      pullRequestNumber: manifest.pullRequestNumber,
+      headSha: manifest.headSha,
+      context: REQUIRED_STATUS,
+      request: failed.body,
+      response: failed.response,
+    });
+    refuse(
+      `manifest verdict is "${manifest.verdict}" — published ${REQUIRED_STATUS}=failure on ${manifest.headSha}`,
+    );
+  }
+
   // 3 — ruleset before any modification --------------------------------------
   const rulesetBefore = await readRulesets(repository, branch);
   await writeEvidence('ruleset-before.json', rulesetBefore);
@@ -323,7 +390,7 @@ async function main() {
   // 4 — durable record --------------------------------------------------------
   const postgres = dryRun
     ? { skipped: 'dry-run' }
-    : await recordInPostgres({ ...manifest, repository }, manifestSha256);
+    : await recordInPostgres(manifest, manifestSha256);
   await writeEvidence('postgres-record.json', {
     correlationId: manifest.correlationId,
     headSha: manifest.headSha,
@@ -332,44 +399,20 @@ async function main() {
     ...postgres,
   });
 
-  // 5 — the required commit status -------------------------------------------
-  const targetUrl = process.env.AI_COMPANY_EVIDENCE_BASE_URL
-    ? `${process.env.AI_COMPANY_EVIDENCE_BASE_URL.replace(/\/$/, '')}/${manifest.correlationId}/`
-    : undefined;
-  const statusBody = {
-    state: verdictPass ? 'success' : 'failure',
-    context: REQUIRED_STATUS,
-    description: verdictPass
-      ? `local validation passed on ${manifest.headSha.slice(0, 7)} (${os.hostname()})`.slice(0, 140)
-      : `local validation failed: ${manifest.failureReason ?? missing.join(', ') ?? 'see evidence'}`.slice(0, 140),
-    ...(targetUrl ? { target_url: targetUrl } : {}),
-  };
-  const status = dryRun
-    ? { skipped: 'dry-run', request: statusBody }
-    : await github('POST', `/repos/${repository}/statuses/${manifest.headSha}`, statusBody);
-  await writeEvidence('local-ci-status.json', {
-    publishedAt: nowIso(),
-    repository,
-    pullRequestNumber: manifest.pullRequestNumber,
-    headSha: manifest.headSha,
-    context: REQUIRED_STATUS,
-    request: statusBody,
-    response: status,
-  });
-  log(`status ${REQUIRED_STATUS} = ${statusBody.state} on ${manifest.headSha}`);
-
-  // 6 — branch protection, only after a passing local result -------------------
-  let rulesetAfter = { ...rulesetBefore, note: 'unchanged — no ruleset modification requested' };
-  if (args['require-status-check'] && verdictPass && !dryRun) {
-    rulesetAfter = await requireStatusCheck(repository, branch, rulesetBefore);
-  } else if (args['require-status-check'] && !verdictPass) {
-    log('not requiring the status check: this run did not pass');
-  }
+  // 5 — branch protection: mandatory once a valid passing result exists --------
+  //
+  // The contract requires `ai-company/local-ci` to be a required status check
+  // for `main` from the first valid local result onwards. Alignment is therefore
+  // not opt-in: a passing run that cannot protect the branch does not get to
+  // publish a green status.
+  const rulesetAfter = dryRun
+    ? { ...rulesetBefore, note: 'dry-run — ruleset not modified' }
+    : await requireStatusCheck(repository, branch, rulesetBefore);
   await writeEvidence('ruleset-after.json', rulesetAfter);
 
-  // 7 — pull request + Discord summary ---------------------------------------
+  // 6 — pull request + Discord summary ---------------------------------------
   const summary = [
-    `**${REQUIRED_STATUS}: ${verdictPass ? 'success ✅' : 'failure ❌'}**`,
+    `**${REQUIRED_STATUS}: success ✅**`,
     '',
     `- repository: \`${repository}\``,
     `- pull request: #${manifest.pullRequestNumber}`,
@@ -378,12 +421,10 @@ async function main() {
     `- worker: \`${manifest.runner?.hostname ?? 'unknown'}\` · control plane: \`${os.hostname()}\``,
     `- checks: ${(manifest.checks ?? []).map((check) => `${check.name}=${check.status}`).join(', ')}`,
     `- evidence: \`${evidenceDir}\` (${manifest.artifacts?.length ?? 0} artifacts, manifest sha256 \`${manifestSha256}\`)`,
-    verdictPass ? '' : `- failure: ${manifest.failureReason ?? missing.join(', ')}`,
+    `- branch protection: \`${branch}\` requires ${(rulesetAfter.requiredStatusChecks ?? []).join(', ') || 'no change (dry run)'}`,
     '',
     'Built, tested and screenshotted on project-controlled hardware. No GitHub-hosted job ran.',
-  ]
-    .filter((line) => line !== '')
-    .join('\n');
+  ].join('\n');
 
   const comment = dryRun
     ? { skipped: 'dry-run' }
@@ -401,35 +442,88 @@ async function main() {
     discord,
   });
 
-  // 8 — hash the control-plane evidence itself --------------------------------
-  const artifacts = [];
-  for (const file of written) {
-    artifacts.push({
-      path: file,
-      relativePath: path.relative(evidenceDir, file),
-      bytes: (await fsp.stat(file)).size,
-      sha256: await sha256File(file),
-    });
+  // 7 — every required piece of control-plane evidence must exist first --------
+  const evidenceGaps = [];
+  for (const name of REQUIRED_CONTROL_PLANE_EVIDENCE) {
+    const file = path.join(controlPlaneDir, name);
+    if (!fs.existsSync(file)) {
+      evidenceGaps.push(`${name}: not written`);
+      continue;
+    }
+    try {
+      JSON.parse(await fsp.readFile(file, 'utf8'));
+    } catch (error) {
+      evidenceGaps.push(`${name}: unreadable (${error.message})`);
+    }
   }
-  const controlManifest = {
-    schemaVersion: 1,
-    requiredStatus: REQUIRED_STATUS,
-    repository,
-    pullRequestNumber: manifest.pullRequestNumber,
-    headSha: manifest.headSha,
-    correlationId: manifest.correlationId,
-    controlPlane: { hostname: os.hostname(), node: process.version },
-    runManifest: { path: manifestPath, sha256: manifestSha256, verdict: manifest.verdict },
-    statusPublished: statusBody.state,
-    dryRun,
-    completedAt: nowIso(),
-    artifacts,
-  };
-  const controlManifestPath = path.join(controlPlaneDir, 'control-plane-manifest.json');
-  await fsp.writeFile(controlManifestPath, `${JSON.stringify(controlManifest, null, 2)}\n`);
-  log(`control-plane manifest → ${controlManifestPath}`);
+  if (!dryRun && !(rulesetAfter.requiredStatusChecks ?? []).includes(REQUIRED_STATUS)) {
+    evidenceGaps.push(`ruleset-after.json: ${branch} does not require ${REQUIRED_STATUS}`);
+  }
+  if (evidenceGaps.length > 0) {
+    refuse(
+      `refusing to publish success — required control-plane evidence is incomplete:\n${evidenceGaps.join('\n')}`,
+    );
+  }
+  log(`control-plane evidence complete: ${REQUIRED_CONTROL_PLANE_EVIDENCE.join(', ')}`);
 
-  process.exit(verdictPass ? 0 : 1);
+  // 8 — the required commit status, last --------------------------------------
+  const published = await publishStatus(
+    'success',
+    `local validation passed on ${manifest.headSha.slice(0, 7)} (${os.hostname()})`,
+  );
+  // 9 — record the status and hash the control-plane evidence itself ----------
+  //
+  // The status is already green at this point, so a failure here would leave a
+  // success without a complete manifest: revert it before exiting non-zero.
+  try {
+    await writeEvidence('local-ci-status.json', {
+      publishedAt: nowIso(),
+      repository,
+      pullRequestNumber: manifest.pullRequestNumber,
+      headSha: manifest.headSha,
+      context: REQUIRED_STATUS,
+      request: published.body,
+      response: published.response,
+    });
+
+    const artifacts = [];
+    for (const file of written) {
+      artifacts.push({
+        path: file,
+        relativePath: path.relative(evidenceDir, file),
+        bytes: (await fsp.stat(file)).size,
+        sha256: await sha256File(file),
+      });
+    }
+    const controlManifest = {
+      schemaVersion: 1,
+      requiredStatus: REQUIRED_STATUS,
+      repository,
+      pullRequestNumber: manifest.pullRequestNumber,
+      headSha: manifest.headSha,
+      correlationId: manifest.correlationId,
+      controlPlane: { hostname: os.hostname(), node: process.version },
+      runManifest: { path: manifestPath, sha256: manifestSha256, verdict: manifest.verdict },
+      requiredEvidence: REQUIRED_CONTROL_PLANE_EVIDENCE,
+      branchProtection: {
+        branch,
+        requiredStatusChecks: rulesetAfter.requiredStatusChecks ?? null,
+        modifiedRulesetId: rulesetAfter.modifiedRulesetId ?? null,
+      },
+      statusPublished: published.body.state,
+      dryRun,
+      completedAt: nowIso(),
+      artifacts,
+    };
+    const controlManifestPath = path.join(controlPlaneDir, 'control-plane-manifest.json');
+    await fsp.writeFile(controlManifestPath, `${JSON.stringify(controlManifest, null, 2)}\n`);
+    log(`control-plane manifest → ${controlManifestPath}`);
+  } catch (error) {
+    await publishStatus('failure', `control-plane manifest incomplete: ${error.message}`).catch(() => {});
+    throw error;
+  }
+
+  process.exit(0);
 }
 
 /** Add `ai-company/local-ci` to the branch's required status checks. */

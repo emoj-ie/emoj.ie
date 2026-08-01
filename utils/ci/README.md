@@ -78,7 +78,10 @@ a pull-request run), `headSha`, `correlationId`, `startedAt`, `completedAt`,
 `durationMs`, `runner`, `workspace`, `evidenceDir`, `checks[]` (each with
 `name`, `status` — `pass` / `fail` / `not_run` —, timestamps, `details`, and
 `error` when failed), `artifacts[]` (each with `path`, `relativePath`, `kind`,
-`bytes`, `sha256`), `verdict` (`pass` / `fail`) and `failureReason`.
+`bytes`, `sha256`), `verdict` (`pass` / `fail`), `failureReason`, and
+`requiresControlPlaneEvidence[]` — the pre-merge evidence the worker cannot
+produce itself. A `pass` verdict is a local result, not an approval: the change
+is approvable only once the control-plane evidence below exists too.
 
 ## Publishing the required status (HP control plane)
 
@@ -88,8 +91,12 @@ refusable step run on the control plane:
 ```bash
 node utils/ci/publish-local-ci.mjs \
   --manifest "$AI_COMPANY_EVIDENCE_DIR/manifest.json" \
-  [--require-status-check] [--branch main] [--dry-run]
+  [--branch main] [--dry-run]
 ```
+
+The repository is taken from the manifest. `--repository` is accepted only as an
+assertion: a value that differs from `manifest.repository` is a refusal, so
+evidence produced for one repository can never publish a status against another.
 
 Required environment: `GITHUB_TOKEN` (or `GH_TOKEN`),
 `AI_COMPANY_DATABASE_URL` (or `DATABASE_URL`),
@@ -109,16 +116,25 @@ In order it:
 4. records the run, head SHA, verdict, artifact paths and SHA-256 hashes in
    PostgreSQL (`local_ci_runs`, `local_ci_artifacts`, created if absent) via
    `psql`;
-5. publishes the `ai-company/local-ci` commit status — `success` only for a
-   fully passing, hash-verified, SHA-current run;
-6. with `--require-status-check`, adds `ai-company/local-ci` to the active
-   `main` branch ruleset's required status checks and records the resulting
-   ruleset (`control-plane/ruleset-after.json`), verifying the check is present
-   afterwards;
-7. posts the SHA-bound summary to the pull request and to Discord — no GitHub
+5. adds `ai-company/local-ci` to the active `main` branch ruleset's required
+   status checks and records the resulting ruleset
+   (`control-plane/ruleset-after.json`), verifying the check is present
+   afterwards. This is **mandatory**, not a flag: a passing run that cannot
+   protect the branch does not get to publish a green status;
+6. posts the SHA-bound summary to the pull request and to Discord — no GitHub
    Actions artifact storage is used anywhere;
-8. writes `control-plane/control-plane-manifest.json` with SHA-256 hashes of its
-   own evidence.
+7. verifies that `ruleset-before.json`, `postgres-record.json`,
+   `ruleset-after.json` and `summary.json` all exist and parse, and that the
+   resulting ruleset really requires `ai-company/local-ci`;
+8. **only then** publishes the `ai-company/local-ci` commit status as `success`
+   (`control-plane/local-ci-status.json`);
+9. writes `control-plane/control-plane-manifest.json` with SHA-256 hashes of its
+   own evidence — and reverts the status to `failure` if that last step fails.
+
+Because the status is published last, a green `ai-company/local-ci` cannot exist
+without the complete control-plane evidence behind it. A manifest whose verdict
+is not `pass` short-circuits at step 2: it publishes `failure` immediately, never
+touches branch protection, and exits non-zero.
 
 Control-plane evidence lands next to the run evidence:
 
@@ -128,12 +144,39 @@ $AI_COMPANY_EVIDENCE_DIR/control-plane/
   ruleset-after.json   summary.json          control-plane-manifest.json
 ```
 
-## After merge
+## After merge — the release controller
 
-The release controller re-runs `run-local-ci.mjs --post-merge --sha <merged main
-SHA>`, publishes the resulting `astro-site/dist` (including `.nojekyll`) to the
-`gh-pages` branch, verifies the production URL, and records the deployed source
-SHA. GitHub Pages serves the root of `gh-pages` and performs no build: the
-hosted `deploy.yml` workflow is deleted, not retained as a fallback.
+```bash
+node utils/ci/release-main.mjs --sha <merged main SHA> [--dry-run]
+```
+
+Same environment as the publisher (`GITHUB_TOKEN`, `AI_COMPANY_DATABASE_URL`,
+`AI_COMPANY_DISCORD_WEBHOOK_URL`); a missing one is a failure, not a warning.
+Useful options: `--pages-branch` (default `gh-pages`), `--production-url`
+(default: `dist/CNAME`, else the `github.io` project URL), `--smoke-attempts`,
+`--smoke-interval`, `--evidence-dir`.
+
+| Step | What it proves |
+| --- | --- |
+| `exact-main-sha` | The requested SHA is the **current** tip of `main`. Anything else refuses to publish. |
+| `repeated-local-validation` | `run-local-ci.mjs --post-merge` passes again on that SHA, on this hardware, and its manifest is bound to it. |
+| `gh-pages-publication` | The `gh-pages` tree is byte-for-byte the built `astro-site/dist` plus `.nojekyll` — no extra files, none missing — committed with a `Source-SHA:` trailer and confirmed at the remote tip. |
+| `production-smoke` | `https://emoj.ie/` returns 200 and its body hashes to the exact `index.html` just published; it retries until it does, then fails loudly. |
+| `production-source-sha` | The remote `gh-pages` tip is the published commit and records `Source-SHA: <merged main SHA>`. |
+
+The run reaches `complete` only when all five steps pass **and** the release is
+recorded in PostgreSQL (`local_ci_releases`) with a Discord summary; otherwise
+`release-manifest.json` records `failed`, the workspace is kept for triage, and
+the exit code is `1`. A `--dry-run` rehearsal publishes nothing and records
+`complete-dry-run`, never `complete`.
+
+```
+$AI_COMPANY_EVIDENCE_DIR/release/
+  release-manifest.json    postgres-record.json  discord-summary.json
+  logs/<step>.log          post-merge-validation/   # a full run-local-ci evidence tree
+```
+
+GitHub Pages serves the root of `gh-pages` and performs no build: the hosted
+`deploy.yml` workflow is deleted, not retained as a fallback.
 
 Neither machine is registered as a GitHub Actions self-hosted runner.
