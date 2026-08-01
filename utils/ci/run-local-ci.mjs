@@ -26,13 +26,15 @@
  *
  * Options (environment fallbacks in brackets):
  *   --sha <sha>              Exact head SHA to validate      [LOCAL_CI_HEAD_SHA]
- *   --pr <number>            Pull request number             [LOCAL_CI_PR_NUMBER]
+ *   --pr <number>            Pull request number (required)  [LOCAL_CI_PR_NUMBER]
+ *   --post-merge             Validate a merged `main` SHA instead of a pull request
  *   --repository <o/r>       owner/repo                      [LOCAL_CI_REPOSITORY]
  *   --correlation-id <id>    Run correlation id     [AI_COMPANY_CORRELATION_ID]
  *   --source <path>          Git repository to clone from (default: this repo)
  *   --remote <url>           Fetch the SHA from here if it is not in --source
  *   --workspace <path>       Where to place the clean checkout
  *   --evidence-dir <path>    Evidence root             [AI_COMPANY_EVIDENCE_DIR]
+ *   --browsers-path <path>   Playwright browser cache   [LOCAL_CI_BROWSERS_PATH]
  *   --keep-workspace         Do not delete the checkout when the run passes
  *
  * Exit codes: 0 = pass, 1 = fail (any required check failed or was unavailable).
@@ -55,18 +57,28 @@ const MINUTE = 60_000;
 const TIMEOUTS = {
   git: 10 * MINUTE,
   npmCi: 20 * MINUTE,
+  browserInstall: 30 * MINUTE,
+  browserLaunch: 2 * MINUTE,
   build: 40 * MINUTE,
   vitest: 15 * MINUTE,
   playwright: 20 * MINUTE,
   browserEvidence: 15 * MINUTE,
 };
 
+/**
+ * Playwright browsers live in a project-controlled cache, never in whatever
+ * happens to be in the invoking user's `~/.cache/ms-playwright`. The run
+ * installs into it itself, so a worker with no prior Playwright installation
+ * validates exactly like one that has run before.
+ */
+const DEFAULT_BROWSERS_PATH = path.join(os.homedir(), '.cache', 'ai-company', 'ms-playwright');
+
 // ---------------------------------------------------------------------------
 // argument parsing
 // ---------------------------------------------------------------------------
 
 function parseArgs(argv) {
-  const flags = new Set(['--keep-workspace']);
+  const flags = new Set(['--keep-workspace', '--post-merge']);
   const out = { _: [] };
   for (let i = 0; i < argv.length; i += 1) {
     const arg = argv[i];
@@ -254,6 +266,7 @@ const REQUIRED_CHECKS = [
   'exact-head-sha',
   'no-hosted-ci',
   'dependency-install',
+  'playwright-browsers',
   'astro-build',
   'vitest',
   'playwright-built-output',
@@ -277,11 +290,26 @@ async function main() {
     );
   }
 
+  // Evidence must be bound to the pull request as well as to the SHA. A
+  // pre-merge run without --pr is rejected outright rather than silently
+  // producing a manifest with `pullRequestNumber: null`, which no control plane
+  // could attach to a pull request head.
+  const postMerge = args['post-merge'] === true;
   const prRaw = args.pr ?? process.env.LOCAL_CI_PR_NUMBER ?? '';
   const pullRequestNumber = String(prRaw).trim() === '' ? null : Number(prRaw);
-  if (pullRequestNumber !== null && !Number.isInteger(pullRequestNumber)) {
-    fail(`--pr must be an integer (received "${prRaw}")`);
+  if (pullRequestNumber !== null && (!Number.isInteger(pullRequestNumber) || pullRequestNumber <= 0)) {
+    fail(`--pr must be a positive integer (received "${prRaw}")`);
   }
+  if (pullRequestNumber === null && !postMerge) {
+    fail(
+      'a pull request number is required: --pr <number> (or LOCAL_CI_PR_NUMBER). ' +
+        'Pass --post-merge instead when validating a merged `main` SHA.',
+    );
+  }
+  if (pullRequestNumber !== null && postMerge) {
+    fail('--pr and --post-merge are mutually exclusive');
+  }
+  const runContext = postMerge ? 'post_merge' : 'pull_request';
 
   const correlationId =
     args['correlation-id'] ||
@@ -305,6 +333,13 @@ async function main() {
     args.workspace || path.join(os.tmpdir(), 'ai-company-local-ci', correlationId, 'checkout'),
   );
 
+  const browsersPath = path.resolve(
+    args['browsers-path'] || process.env.LOCAL_CI_BROWSERS_PATH || DEFAULT_BROWSERS_PATH,
+  );
+  // Every browser-using child process — and this process's own launch probe —
+  // resolves browsers from the same project-controlled cache.
+  process.env.PLAYWRIGHT_BROWSERS_PATH = browsersPath;
+
   const repository =
     args.repository || process.env.LOCAL_CI_REPOSITORY || (await detectRepository(source)) || null;
 
@@ -316,11 +351,13 @@ async function main() {
   };
 
   log(`repository        ${repository ?? '(unknown)'}`);
-  log(`pull request      ${pullRequestNumber ?? '(none)'}`);
+  log(`context           ${runContext}`);
+  log(`pull request      ${pullRequestNumber ?? '(post-merge main run)'}`);
   log(`head sha          ${headSha}`);
   log(`correlation id    ${correlationId}`);
   log(`evidence dir      ${evidenceDir}`);
   log(`workspace         ${workspace}`);
+  log(`browsers path     ${browsersPath}`);
 
   const runState = new Run({ repository, pullRequestNumber, headSha, correlationId });
   const logFileFor = (name) => path.join(logsDir, `${name}.log`);
@@ -397,23 +434,30 @@ async function main() {
       return { requested: headSha, actual };
     });
 
-    // 3 — no GitHub-hosted CI may gate this commit --------------------------
+    // 3 — no GitHub-hosted CI may exist for this commit ----------------------
+    //
+    // The permitted hosted-job budget is zero, so a manual (`workflow_dispatch`)
+    // build/test job is a violation too: it still runs application work on a
+    // hosted runner, outside the evidence chain.
     await runState.check('no-hosted-ci', async () => {
       const workflowsDir = path.join(workspace, '.github', 'workflows');
       const files = (await walkFiles(workflowsDir)).filter((file) => /\.ya?ml$/.test(file));
       const offenders = [];
       for (const file of files) {
-        const triggers = automaticTriggers(await fsp.readFile(file, 'utf8'));
-        if (triggers.length > 0) {
-          offenders.push(`${path.relative(workspace, file)}: ${triggers.join(', ')}`);
-        }
+        const relative = path.relative(workspace, file);
+        const yaml = await fsp.readFile(file, 'utf8');
+        const triggers = automaticTriggers(yaml);
+        if (triggers.length > 0) offenders.push(`${relative}: automatic trigger(s) ${triggers.join(', ')}`);
+        const hosted = hostedRunsOnLabels(yaml);
+        if (hosted.length > 0) offenders.push(`${relative}: GitHub-hosted job(s) runs-on ${hosted.join(', ')}`);
       }
       if (offenders.length > 0) {
         throw new Error(
-          `GitHub-hosted workflows still run automatically — build, test and review work must be local:\n${offenders.join('\n')}`,
+          'GitHub-hosted CI is not permitted — build, test, browser, accessibility, ' +
+            `screenshot and review work must run locally:\n${offenders.join('\n')}`,
         );
       }
-      return { workflows: files.map((file) => path.relative(workspace, file)), automaticTriggers: 0 };
+      return { workflowFiles: files.map((file) => path.relative(workspace, file)), hostedJobs: 0 };
     });
 
     // 4 — dependency install from astro-site's lockfile ---------------------
@@ -431,7 +475,88 @@ async function main() {
       return { command: 'npm ci', cwd: 'astro-site', durationMs: result.durationMs };
     });
 
-    // 4 — canonical production build ----------------------------------------
+    // 5 — pinned browser install, into project-controlled storage ------------
+    //
+    // The run installs the browser itself instead of trusting whatever is in
+    // the invoking user's cache, so a clean worker completes validation. The
+    // version is whatever astro-site's lockfile pinned: `playwright install`
+    // downloads the revision that the installed @playwright/test requires.
+    await runState.check('playwright-browsers', async () => {
+      const bin = path.join(astroDir, 'node_modules', '.bin', 'playwright');
+      if (!fs.existsSync(bin)) {
+        throw new Error('playwright is not installed in astro-site/node_modules — required check unavailable');
+      }
+      const logFile = logFileFor('playwright-browsers');
+      await fsp.mkdir(browsersPath, { recursive: true });
+
+      const version = await run(bin, ['--version'], {
+        cwd: astroDir,
+        timeout: TIMEOUTS.git,
+        logFile,
+        label: 'playwright',
+      });
+      if (version.code !== 0) throw new Error('`playwright --version` failed');
+
+      // System libraries need root. Install them when we have it (or when the
+      // operator opted in); otherwise the launch probe below is what proves
+      // they are present, and its failure names the command to run.
+      const canInstallDeps =
+        typeof process.getuid === 'function'
+          ? process.getuid() === 0 || process.env.LOCAL_CI_INSTALL_DEPS === '1'
+          : false;
+      const installArgs = canInstallDeps
+        ? ['install', '--with-deps', 'chromium']
+        : ['install', 'chromium'];
+      const install = await run(bin, installArgs, {
+        cwd: astroDir,
+        env: { CI: '1', PLAYWRIGHT_BROWSERS_PATH: browsersPath },
+        timeout: TIMEOUTS.browserInstall,
+        logFile,
+        label: 'playwright-install',
+      });
+      if (install.code !== 0) {
+        throw new Error(
+          `\`playwright ${installArgs.join(' ')}\` failed (exit ${install.code}${install.timedOut ? ', timed out' : ''}) — ` +
+            `browsers could not be installed into ${browsersPath}`,
+        );
+      }
+
+      const browser = await resolveChromium(astroDir);
+      if (!browser.installed) {
+        throw new Error(
+          `chromium is still missing after install (${browser.reason}); browsers path ${browsersPath}`,
+        );
+      }
+
+      // Launch probe: proves the binary AND its system dependencies work here.
+      // Without it a missing shared library would only surface as a confusing
+      // failure inside the test run.
+      const probe = await probeChromiumLaunch(astroDir);
+      await fsp.appendFile(
+        logFile,
+        `$ chromium launch probe\n${probe.ok ? `ok — ${probe.version}` : `FAILED — ${probe.reason}`}\n\n`,
+      );
+      if (!probe.ok) {
+        throw new Error(
+          `chromium is installed at ${browser.executablePath} but will not launch: ${probe.reason}\n` +
+            'Install its system dependencies on this worker, e.g.\n' +
+            `  sudo PLAYWRIGHT_BROWSERS_PATH=${browsersPath} npx playwright install-deps chromium\n` +
+            '(or re-run this command as root, or with LOCAL_CI_INSTALL_DEPS=1 and passwordless sudo). ' +
+            'Browser checks must never be skipped.',
+        );
+      }
+
+      return {
+        playwrightVersion: version.output.trim().split('\n').pop().trim(),
+        browsersPath,
+        executablePath: browser.executablePath,
+        installCommand: `playwright ${installArgs.join(' ')}`,
+        systemDependencies: canInstallDeps ? 'installed by this run' : 'verified by launch probe',
+        launchProbe: probe.version,
+      };
+    });
+
+    // 6 — canonical production build ----------------------------------------
     await runState.check('astro-build', async () => {
       const result = await run('npm', ['run', 'build'], {
         cwd: astroDir,
@@ -529,9 +654,8 @@ async function main() {
       const browser = await resolveChromium(astroDir);
       if (!browser.installed) {
         throw new Error(
-          `Playwright chromium is not installed (${browser.reason}). ` +
-            'Run `npx playwright install --with-deps chromium` in astro-site. ' +
-            'Browser checks must never be skipped.',
+          `Playwright chromium is not installed (${browser.reason}) even though the ` +
+            'playwright-browsers check installed it. Browser checks must never be skipped.',
         );
       }
 
@@ -540,6 +664,7 @@ async function main() {
         cwd: astroDir,
         env: {
           CI: '1',
+          PLAYWRIGHT_BROWSERS_PATH: browsersPath,
           PLAYWRIGHT_JSON_OUTPUT_NAME: resultsFile,
           PLAYWRIGHT_HTML_OPEN: 'never',
         },
@@ -591,7 +716,7 @@ async function main() {
         ],
         {
           cwd: workspace,
-          env: { CI: '1' },
+          env: { CI: '1', PLAYWRIGHT_BROWSERS_PATH: browsersPath },
           timeout: TIMEOUTS.browserEvidence,
           logFile: logFileFor('accessibility'),
           label: 'a11y',
@@ -676,6 +801,7 @@ async function main() {
     schemaVersion: MANIFEST_SCHEMA_VERSION,
     requiredStatus: REQUIRED_STATUS,
     repository,
+    context: runContext,
     pullRequestNumber,
     headSha,
     correlationId,
@@ -685,6 +811,7 @@ async function main() {
     runner,
     workspace,
     evidenceDir,
+    browsersPath,
     checks: runState.checks,
     artifacts,
     verdict,
@@ -742,6 +869,52 @@ function automaticTriggers(yaml) {
   }
   const block = scope.join('\n');
   return forbidden.filter((trigger) => new RegExp(`(^|[\\s\\[,])${trigger}\\b`, 'm').test(block));
+}
+
+/**
+ * GitHub-hosted `runs-on:` labels declared by a workflow file. Self-hosted
+ * labels are not matched — but this project registers no self-hosted runner
+ * either, so in practice any job here is a violation.
+ */
+function hostedRunsOnLabels(yaml) {
+  const labels = new Set();
+  for (const line of yaml.split('\n')) {
+    const match = line.split('#')[0].match(/^\s*runs-on:\s*(.+?)\s*$/);
+    if (!match) continue;
+    for (const label of match[1].replace(/[[\]'"]/g, ' ').split(/[\s,]+/)) {
+      if (/^(ubuntu|macos|windows)-/.test(label)) labels.add(label);
+    }
+  }
+  return [...labels];
+}
+
+/**
+ * Launch the installed chromium once. This is the only way to prove the
+ * browser's system dependencies are present on this worker before the browser
+ * checks depend on them.
+ */
+async function probeChromiumLaunch(astroDir) {
+  let browser = null;
+  try {
+    const { createRequire } = await import('node:module');
+    const require = createRequire(path.join(astroDir, 'package.json'));
+    const { chromium } = require('@playwright/test');
+    browser = await Promise.race([
+      chromium.launch({ headless: true }),
+      new Promise((_, reject) =>
+        setTimeout(() => reject(new Error('launch timed out')), TIMEOUTS.browserLaunch).unref?.(),
+      ),
+    ]);
+    const version = browser.version();
+    const page = await browser.newPage();
+    await page.setContent('<title>probe</title><h1>probe</h1>');
+    await page.close();
+    return { ok: true, version };
+  } catch (error) {
+    return { ok: false, reason: String(error && error.message ? error.message : error) };
+  } finally {
+    if (browser) await browser.close().catch(() => {});
+  }
 }
 
 async function resolveChromium(astroDir) {
