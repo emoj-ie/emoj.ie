@@ -1,0 +1,51 @@
+# Legacy root-site quality suite (formerly `site-quality`).
+#
+# Purpose: keep the pre-Astro root-site checks invocable on demand while the
+# canonical production application (`astro-site`) is validated by the local
+# dispatcher.
+#
+# It is manual-only and NOT a required check. All build, test, browser,
+# accessibility, screenshot, and review work for pull requests now runs on
+# project-controlled hardware via `utils/ci/run-local-ci.mjs`, which publishes
+# the required `ai-company/local-ci` status. No GitHub-hosted job may gate a
+# pull request.
+#
+# Known state of this suite on `main` (verified 2026-07-26, run 30212560069):
+# Playwright is not installed on hosted runners, so its smoke test skips
+# silently, and the Lighthouse byte budget fails on `main` itself. Both are
+# reasons this suite is not a gate; the local run fails loudly instead.
+name: legacy-site-quality
+
+on:
+  workflow_dispatch:
+
+jobs:
+  quality:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Setup Node
+        uses: actions/setup-node@v4
+        with:
+          node-version: '20'
+
+      - name: Build Check
+        run: npm run build:check
+
+      - name: Unit And Integration Tests
+        run: npm test
+
+      - name: Broken Link Scan
+        run: npm run lint:links
+
+      - name: Accessibility Smoke
+        run: npm run test:a11y-smoke
+
+      - name: Playwright Smoke
+        run: npm run test:playwright-smoke
+
+      - name: Lighthouse Budgets
+        run: npm run test:lighthouse-budget

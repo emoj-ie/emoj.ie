@@ -1,8 +1,18 @@
-name: Deploy to GitHub Pages
+# Legacy hosted Astro build/deploy — manual fallback only, pending removal.
+#
+# Production is published by the local release controller: it checks out the
+# approved `main` SHA, repeats the local build and validation with
+# `utils/ci/run-local-ci.mjs`, and publishes the resulting static `dist`
+# (including `.nojekyll`) to the `gh-pages` branch. GitHub performs no
+# application build or test work.
+#
+# The `push: main` trigger is removed so merging never spends GitHub-hosted
+# build minutes. This file is retained ONLY as a rollback path until GitHub
+# Pages is switched to publish the root of `gh-pages` and branch publishing is
+# verified; per the issue contract it is deleted at that point.
+name: Deploy to GitHub Pages (legacy fallback)
 
 on:
-  push:
-    branches: [main]
   workflow_dispatch:
 
 permissions:
