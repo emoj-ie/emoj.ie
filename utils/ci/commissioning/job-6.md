@@ -1,0 +1,10 @@
+# AI Company resumability commissioning record
+
+job: 6
+correlation: commissioning-6
+repository: emoj-ie/emoj.ie
+cycle: 0
+state: initial
+expected-review: simulated changes requested: advance to revision one
+
+This synthetic file exists only to verify one persistent branch and pull request across multiple commits, review rounds, retries, and worker restarts.
