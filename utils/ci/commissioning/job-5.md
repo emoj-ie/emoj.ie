@@ -3,8 +3,8 @@
 job: 5
 correlation: commissioning-5
 repository: emoj-ie/emoj.ie
-cycle: 1
-state: revision-one
-expected-review: simulated changes requested: advance to final
+cycle: 2
+state: final
+expected-review: real Codex review followed by CEO approval
 
 This synthetic file exists only to verify one persistent branch and pull request across multiple commits, review rounds, retries, and worker restarts.
