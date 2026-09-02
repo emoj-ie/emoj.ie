@@ -265,12 +265,18 @@ async function loadChromium(appDir) {
 
 async function main() {
   const args = parseArgs(process.argv.slice(2));
-  // The canonical application is `site/` since #2. The flag is `--app-dir`;
-  // `--astro-site` is still accepted so an older caller does not silently fall
-  // back to a directory that no longer builds.
-  const appDir = path.resolve(
-    args['app-dir'] || args['astro-site'] || path.join(REPO_ROOT, 'site'),
-  );
+  // The canonical application is `site/` since #2, and the flag is `--app-dir`.
+  //
+  // `--astro-site` was kept for one revision "for compatibility", which was
+  // wrong: combined with the build/ default below it resolved to
+  // `astro-site/build`, a path that has never existed under either framework.
+  // A compatibility shim that points at nothing is worse than no shim, so it
+  // is refused by name instead - loudly, rather than failing later with a
+  // confusing "no built output".
+  if (args['astro-site']) {
+    die('--astro-site is gone; the canonical application is site/. Use --app-dir.');
+  }
+  const appDir = path.resolve(args['app-dir'] || path.join(REPO_ROOT, 'site'));
   // `build`, not `dist`. adapter-static writes there. run-local-ci always
   // passes --dist so the pipeline was unaffected, which is exactly why this
   // was easy to miss: only someone running this script BY HAND would have hit

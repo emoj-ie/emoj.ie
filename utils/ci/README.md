@@ -46,9 +46,9 @@ on it, failing with the exact `install-deps` command when they are not.
 | `clean-checkout` | Fresh clone with no working-tree modifications. |
 | `exact-head-sha` | `HEAD` equals the requested SHA — evidence is SHA-bound. |
 | `no-hosted-ci` | No workflow at that SHA declares an automatic trigger (`pull_request`, `pull_request_target`, `push`, `schedule`, `merge_group`) **or** a GitHub-hosted `runs-on:` job — including manual ones, because the permitted hosted-job budget is zero. |
-| `dependency-install` | `npm ci` in `astro-site`, from its lockfile. |
+| `dependency-install` | `npm ci` in `site`, from its lockfile. |
 | `playwright-browsers` | The lockfile-pinned chromium is installed into the project-controlled browser cache by this run, and actually launches here — no dependence on a pre-existing user cache. |
-| `astro-build` | `npm run build` succeeds and produces HTML in `astro-site/dist`. |
+| `astro-build` | `npm run build` succeeds and produces HTML in `site/build`. The check name is historical: `hp-controller` requires it by this name, so renaming it would fail every release. |
 | `vitest` | The Astro app's unit suite passes, with >0 tests and 0 skips. Playwright specs (`tests/*.spec.ts`) are excluded here; they run below. |
 | `playwright-built-output` | `playwright.config.ts` is asserted to serve the built output (never `astro dev`), chromium is asserted to be installed, and the suite passes with >0 tests and 0 skips. |
 | `accessibility` | `utils/ci/browser-evidence.mjs` loads pages from a static server over `dist` and asserts the rules listed below. |
@@ -160,7 +160,7 @@ Useful options: `--pages-branch` (default `gh-pages`), `--production-url`
 | --- | --- |
 | `exact-main-sha` | The requested SHA is the **current** tip of `main`. Anything else refuses to publish. |
 | `repeated-local-validation` | `run-local-ci.mjs --post-merge` passes again on that SHA, on this hardware, and its manifest is bound to it. |
-| `gh-pages-publication` | The `gh-pages` tree is byte-for-byte the built `astro-site/dist` plus `.nojekyll` — no extra files, none missing — committed with a `Source-SHA:` trailer and confirmed at the remote tip. |
+| `gh-pages-publication` | The `gh-pages` tree is byte-for-byte the built `site/build` plus `.nojekyll` — no extra files, none missing — committed with a `Source-SHA:` trailer and confirmed at the remote tip. |
 | `production-smoke` | `https://emoj.ie/` returns 200 and its body hashes to the exact `index.html` just published; it retries until it does, then fails loudly. |
 | `production-source-sha` | The remote `gh-pages` tip is the published commit and records `Source-SHA: <merged main SHA>`. |
 

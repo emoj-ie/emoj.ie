@@ -11,7 +11,7 @@
  *   2. installs site/ dependencies from its lockfile,
  *   3. builds the canonical production application (site/),
  *   4. runs the Vitest suite,
- *   5. runs Playwright against the built dist output (never `astro dev`),
+ *   5. runs Playwright against the built output (never a dev server),
  *   6. captures accessibility results and screenshots from the built output,
  *   7. writes a SHA-bound, machine-readable evidence manifest with SHA-256
  *      hashes of every log and screenshot.
@@ -578,14 +578,14 @@ async function main() {
         label: 'astro-build',
       });
       if (result.code !== 0) {
-        throw new Error(`astro build failed (exit ${result.code}${result.timedOut ? ', timed out' : ''})`);
+        throw new Error(`site build failed (exit ${result.code}${result.timedOut ? ', timed out' : ''})`);
       }
       if (!fs.existsSync(path.join(distDir, 'index.html'))) {
-        throw new Error('astro build produced no dist/index.html');
+        throw new Error(`site build produced no ${path.relative(workspace, distDir)}/index.html`);
       }
       const files = await walkFiles(distDir);
       const htmlPages = files.filter((file) => file.endsWith('.html')).length;
-      if (htmlPages === 0) throw new Error('astro build produced no HTML pages');
+      if (htmlPages === 0) throw new Error('site build produced no HTML pages');
       return { distDir, htmlPages, distFiles: files.length, durationMs: result.durationMs };
     });
 
@@ -600,7 +600,11 @@ async function main() {
       // executed by the playwright check below, not here.
       //
       // `--exclude` REPLACES Vitest's default exclude list, so node_modules,
-      // the build output and generated types have to be restated here — this
+      // the build output and generated types have to be restated here. BOTH
+      // frameworks' artefacts are listed: site/ writes build/ and .svelte-kit/,
+      // and astro-site/ (dist/, .astro/) is still in the tree until #4 removes
+      // it. Missing one means collecting a generated copy of a test and
+      // reporting a result that depends on the tree, not on this commit — this
       // check runs after the build, and collecting a dependency's own tests
       // would make the result depend on the tree rather than on this commit.
       const result = await run(
@@ -613,6 +617,10 @@ async function main() {
           '**/dist/**',
           '--exclude',
           '**/.astro/**',
+          '--exclude',
+          '**/build/**',
+          '--exclude',
+          '**/.svelte-kit/**',
           '--exclude',
           '**/*.spec.ts',
           '--reporter=default',
