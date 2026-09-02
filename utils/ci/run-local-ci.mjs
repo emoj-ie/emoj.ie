@@ -8,10 +8,10 @@
  *
  * Every run:
  *   1. makes a clean checkout of the exact requested commit SHA,
- *   2. installs astro-site dependencies from its lockfile,
- *   3. builds the canonical production application (astro-site),
+ *   2. installs site/ dependencies from its lockfile,
+ *   3. builds the canonical production application (site/),
  *   4. runs the Vitest suite,
- *   5. runs Playwright against the built dist output (never `astro dev`),
+ *   5. runs Playwright against the built output (never a dev server),
  *   6. captures accessibility results and screenshots from the built output,
  *   7. writes a SHA-bound, machine-readable evidence manifest with SHA-256
  *      hashes of every log and screenshot.
@@ -362,8 +362,20 @@ async function main() {
   const runState = new Run({ repository, pullRequestNumber, headSha, correlationId });
   const logFileFor = (name) => path.join(logsDir, `${name}.log`);
 
-  const astroDir = path.join(workspace, 'astro-site');
-  const distDir = path.join(astroDir, 'dist');
+  // The canonical production application is `site/` (SvelteKit 2 +
+  // adapter-static) since #2 landed. It was `astro-site/` before that, and the
+  // CHECK NAMES below still say "astro" - deliberately. `astroBuild` and the
+  // rest are a cross-repo contract: hp-controller's REQUIRED_CHECKS lists them
+  // by name and refuses a release that is missing one. Renaming them here
+  // without changing that list, and every stored config that overrides it,
+  // would fail every release with "required check missing" - a worse outcome
+  // than a name that has outlived its framework.
+  //
+  // adapter-static writes to `build/`, not `dist/`. That is not cosmetic: the
+  // release controller publishes this directory to gh-pages, so pointing at a
+  // path the build never creates publishes nothing and reports success.
+  const appDir = path.join(workspace, 'site');
+  const distDir = path.join(appDir, 'build');
 
   let failure = null;
   try {
@@ -428,8 +440,8 @@ async function main() {
       if (actual !== headSha) {
         throw new Error(`checkout HEAD is ${actual}, expected ${headSha}`);
       }
-      if (!fs.existsSync(path.join(astroDir, 'package-lock.json'))) {
-        throw new Error(`astro-site/package-lock.json missing at ${headSha}`);
+      if (!fs.existsSync(path.join(appDir, 'package-lock.json'))) {
+        throw new Error(`site/package-lock.json missing at ${headSha}`);
       }
       return { requested: headSha, actual };
     });
@@ -460,37 +472,37 @@ async function main() {
       return { workflowFiles: files.map((file) => path.relative(workspace, file)), hostedJobs: 0 };
     });
 
-    // 4 — dependency install from astro-site's lockfile ---------------------
+    // 4 — dependency install from site/'s lockfile ---------------------
     await runState.check('dependency-install', async () => {
       const result = await run('npm', ['ci'], {
-        cwd: astroDir,
+        cwd: appDir,
         env: { CI: '1', npm_config_fund: 'false', npm_config_audit: 'false' },
         timeout: TIMEOUTS.npmCi,
         logFile: logFileFor('dependency-install'),
         label: 'npm-ci',
       });
       if (result.code !== 0) {
-        throw new Error(`npm ci failed in astro-site (exit ${result.code}${result.timedOut ? ', timed out' : ''})`);
+        throw new Error(`npm ci failed in site (exit ${result.code}${result.timedOut ? ', timed out' : ''})`);
       }
-      return { command: 'npm ci', cwd: 'astro-site', durationMs: result.durationMs };
+      return { command: 'npm ci', cwd: 'site', durationMs: result.durationMs };
     });
 
     // 5 — pinned browser install, into project-controlled storage ------------
     //
     // The run installs the browser itself instead of trusting whatever is in
     // the invoking user's cache, so a clean worker completes validation. The
-    // version is whatever astro-site's lockfile pinned: `playwright install`
+    // version is whatever site/'s lockfile pinned: `playwright install`
     // downloads the revision that the installed @playwright/test requires.
     await runState.check('playwright-browsers', async () => {
-      const bin = path.join(astroDir, 'node_modules', '.bin', 'playwright');
+      const bin = path.join(appDir, 'node_modules', '.bin', 'playwright');
       if (!fs.existsSync(bin)) {
-        throw new Error('playwright is not installed in astro-site/node_modules — required check unavailable');
+        throw new Error('playwright is not installed in site/node_modules — required check unavailable');
       }
       const logFile = logFileFor('playwright-browsers');
       await fsp.mkdir(browsersPath, { recursive: true });
 
       const version = await run(bin, ['--version'], {
-        cwd: astroDir,
+        cwd: appDir,
         timeout: TIMEOUTS.git,
         logFile,
         label: 'playwright',
@@ -508,7 +520,7 @@ async function main() {
         ? ['install', '--with-deps', 'chromium']
         : ['install', 'chromium'];
       const install = await run(bin, installArgs, {
-        cwd: astroDir,
+        cwd: appDir,
         env: { CI: '1', PLAYWRIGHT_BROWSERS_PATH: browsersPath },
         timeout: TIMEOUTS.browserInstall,
         logFile,
@@ -521,7 +533,7 @@ async function main() {
         );
       }
 
-      const browser = await resolveChromium(astroDir);
+      const browser = await resolveChromium(appDir);
       if (!browser.installed) {
         throw new Error(
           `chromium is still missing after install (${browser.reason}); browsers path ${browsersPath}`,
@@ -531,7 +543,7 @@ async function main() {
       // Launch probe: proves the binary AND its system dependencies work here.
       // Without it a missing shared library would only surface as a confusing
       // failure inside the test run.
-      const probe = await probeChromiumLaunch(astroDir);
+      const probe = await probeChromiumLaunch(appDir);
       await fsp.appendFile(
         logFile,
         `$ chromium launch probe\n${probe.ok ? `ok — ${probe.version}` : `FAILED — ${probe.reason}`}\n\n`,
@@ -559,36 +571,40 @@ async function main() {
     // 6 — canonical production build ----------------------------------------
     await runState.check('astro-build', async () => {
       const result = await run('npm', ['run', 'build'], {
-        cwd: astroDir,
+        cwd: appDir,
         env: { CI: '1' },
         timeout: TIMEOUTS.build,
         logFile: logFileFor('astro-build'),
         label: 'astro-build',
       });
       if (result.code !== 0) {
-        throw new Error(`astro build failed (exit ${result.code}${result.timedOut ? ', timed out' : ''})`);
+        throw new Error(`site build failed (exit ${result.code}${result.timedOut ? ', timed out' : ''})`);
       }
       if (!fs.existsSync(path.join(distDir, 'index.html'))) {
-        throw new Error('astro build produced no dist/index.html');
+        throw new Error(`site build produced no ${path.relative(workspace, distDir)}/index.html`);
       }
       const files = await walkFiles(distDir);
       const htmlPages = files.filter((file) => file.endsWith('.html')).length;
-      if (htmlPages === 0) throw new Error('astro build produced no HTML pages');
+      if (htmlPages === 0) throw new Error('site build produced no HTML pages');
       return { distDir, htmlPages, distFiles: files.length, durationMs: result.durationMs };
     });
 
     // 5 — Vitest -------------------------------------------------------------
     await runState.check('vitest', async () => {
-      const bin = path.join(astroDir, 'node_modules', '.bin', 'vitest');
+      const bin = path.join(appDir, 'node_modules', '.bin', 'vitest');
       if (!fs.existsSync(bin)) {
-        throw new Error('vitest is not installed in astro-site/node_modules — required check unavailable');
+        throw new Error('vitest is not installed in site/node_modules — required check unavailable');
       }
       const resultsFile = path.join(evidenceDir, 'vitest-results.json');
       // Vitest owns `*.test.ts`; `tests/*.spec.ts` are Playwright specs and are
       // executed by the playwright check below, not here.
       //
       // `--exclude` REPLACES Vitest's default exclude list, so node_modules,
-      // the build output and generated types have to be restated here — this
+      // the build output and generated types have to be restated here. BOTH
+      // frameworks' artefacts are listed: site/ writes build/ and .svelte-kit/,
+      // and astro-site/ (dist/, .astro/) is still in the tree until #4 removes
+      // it. Missing one means collecting a generated copy of a test and
+      // reporting a result that depends on the tree, not on this commit — this
       // check runs after the build, and collecting a dependency's own tests
       // would make the result depend on the tree rather than on this commit.
       const result = await run(
@@ -602,13 +618,17 @@ async function main() {
           '--exclude',
           '**/.astro/**',
           '--exclude',
+          '**/build/**',
+          '--exclude',
+          '**/.svelte-kit/**',
+          '--exclude',
           '**/*.spec.ts',
           '--reporter=default',
           '--reporter=json',
           `--outputFile.json=${resultsFile}`,
         ],
         {
-          cwd: astroDir,
+          cwd: appDir,
           env: { CI: '1' },
           timeout: TIMEOUTS.vitest,
           logFile: logFileFor('vitest'),
@@ -632,9 +652,9 @@ async function main() {
 
     // 6 — Playwright against the built dist output ---------------------------
     await runState.check('playwright-built-output', async () => {
-      const configPath = path.join(astroDir, 'playwright.config.ts');
+      const configPath = path.join(appDir, 'playwright.config.ts');
       if (!fs.existsSync(configPath)) {
-        throw new Error('astro-site/playwright.config.ts missing — required check unavailable');
+        throw new Error('site/playwright.config.ts missing — required check unavailable');
       }
       const config = await fsp.readFile(configPath, 'utf8');
       if (/astro\s+dev|run\s+dev/.test(config)) {
@@ -644,14 +664,14 @@ async function main() {
         throw new Error('playwright.config.ts does not serve the built output via `preview`');
       }
       if (!fs.existsSync(path.join(distDir, 'index.html'))) {
-        throw new Error('dist/index.html missing — Playwright would not test production output');
+        throw new Error(`${path.relative(workspace, distDir)}/index.html missing — Playwright would not test production output`);
       }
 
-      const bin = path.join(astroDir, 'node_modules', '.bin', 'playwright');
+      const bin = path.join(appDir, 'node_modules', '.bin', 'playwright');
       if (!fs.existsSync(bin)) {
-        throw new Error('playwright is not installed in astro-site/node_modules — required check unavailable');
+        throw new Error('playwright is not installed in site/node_modules — required check unavailable');
       }
-      const browser = await resolveChromium(astroDir);
+      const browser = await resolveChromium(appDir);
       if (!browser.installed) {
         throw new Error(
           `Playwright chromium is not installed (${browser.reason}) even though the ` +
@@ -661,7 +681,7 @@ async function main() {
 
       const resultsFile = path.join(evidenceDir, 'playwright-results.json');
       const result = await run(bin, ['test', '--reporter=list,json'], {
-        cwd: astroDir,
+        cwd: appDir,
         env: {
           CI: '1',
           PLAYWRIGHT_BROWSERS_PATH: browsersPath,
@@ -690,7 +710,7 @@ async function main() {
         browserExecutable: browser.executablePath,
         passed: stats.expected,
         skipped: stats.skipped ?? 0,
-        servedFrom: 'astro-site/dist (astro preview)',
+        servedFrom: 'site/build (vite preview)',
         resultsFile,
         durationMs: result.durationMs,
       };
@@ -906,11 +926,11 @@ function hostedRunsOnLabels(yaml) {
  * browser's system dependencies are present on this worker before the browser
  * checks depend on them.
  */
-async function probeChromiumLaunch(astroDir) {
+async function probeChromiumLaunch(appDir) {
   let browser = null;
   try {
     const { createRequire } = await import('node:module');
-    const require = createRequire(path.join(astroDir, 'package.json'));
+    const require = createRequire(path.join(appDir, 'package.json'));
     const { chromium } = require('@playwright/test');
     browser = await Promise.race([
       chromium.launch({ headless: true }),
@@ -930,10 +950,10 @@ async function probeChromiumLaunch(astroDir) {
   }
 }
 
-async function resolveChromium(astroDir) {
+async function resolveChromium(appDir) {
   try {
     const { createRequire } = await import('node:module');
-    const require = createRequire(path.join(astroDir, 'package.json'));
+    const require = createRequire(path.join(appDir, 'package.json'));
     const { chromium } = require('@playwright/test');
     if (!chromium) return { installed: false, reason: '@playwright/test exports no chromium browser type' };
     const executablePath = chromium.executablePath();

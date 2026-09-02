@@ -10,7 +10,7 @@
  *   1. confirms the requested SHA is the current tip of `main` (exact-main-sha),
  *   2. repeats the full local validation on that SHA with
  *      `utils/ci/run-local-ci.mjs --post-merge` (repeated-local-validation),
- *   3. publishes ONLY the resulting `astro-site/dist` contents — plus
+ *   3. publishes ONLY the resulting `site/build` contents — plus
  *      `.nojekyll` — to the `gh-pages` branch (gh-pages-publication),
  *   4. verifies the production URL serves exactly the bytes just published
  *      (production-smoke),
@@ -379,7 +379,10 @@ async function main() {
 
   const workspace = path.join(os.tmpdir(), 'ai-company-release', correlationId, 'checkout');
   const pagesWorktree = path.join(os.tmpdir(), 'ai-company-release', correlationId, 'gh-pages');
-  const distDir = path.join(workspace, 'astro-site', 'dist');
+  // site/build, not astro-site/dist. This is the directory published to
+  // gh-pages: pointing it at a path the build no longer creates would publish
+  // an empty tree and report success.
+  const distDir = path.join(workspace, 'site', 'build');
   const logFileFor = (name) => path.join(logsDir, `${name}.log`);
 
   const repository =

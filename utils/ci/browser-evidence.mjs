@@ -1,7 +1,7 @@
 #!/usr/bin/env node
 /**
  * Accessibility smoke checks and screenshots, taken from the BUILT production
- * output (`astro-site/dist`) served by a local static file server.
+ * output (`site/build`) served by a local static file server.
  *
  * There is no dev server here and no network access: the bytes under test are
  * exactly the bytes that get published. A missing browser, a missing page, or a
@@ -9,10 +9,10 @@
  *
  * Usage:
  *   node utils/ci/browser-evidence.mjs \
- *     --dist astro-site/dist \
+ *     --dist site/build \
  *     --screenshots <dir> \
  *     --report <file.json> \
- *     [--astro-site astro-site]
+ *     [--app-dir site]
  */
 
 import fs from 'node:fs';
@@ -244,20 +244,20 @@ function collectViolations() {
 
 // ---------------------------------------------------------------------------
 
-async function loadChromium(astroSiteDir) {
-  const require = createRequire(path.join(astroSiteDir, 'package.json'));
+async function loadChromium(appDir) {
+  const require = createRequire(path.join(appDir, 'package.json'));
   let chromium;
   try {
     ({ chromium } = require('@playwright/test'));
   } catch (error) {
-    die(`@playwright/test is not installed in ${astroSiteDir} (${error.message}) — browser evidence cannot be produced`);
+    die(`@playwright/test is not installed in ${appDir} (${error.message}) — browser evidence cannot be produced`);
   }
   if (!chromium) die('@playwright/test exports no chromium browser type — browser evidence cannot be produced');
   const executablePath = chromium.executablePath();
   if (!executablePath || !fs.existsSync(executablePath)) {
     die(
       `Playwright chromium binary is missing (expected at ${executablePath}). ` +
-        'Run `npx playwright install --with-deps chromium` in astro-site. Browser checks must not be skipped.',
+        'Run `npx playwright install --with-deps chromium` in site/. Browser checks must not be skipped.',
     );
   }
   return { chromium, executablePath };
@@ -265,18 +265,34 @@ async function loadChromium(astroSiteDir) {
 
 async function main() {
   const args = parseArgs(process.argv.slice(2));
-  const astroSiteDir = path.resolve(args['astro-site'] || path.join(REPO_ROOT, 'astro-site'));
-  const distDir = path.resolve(args.dist || path.join(astroSiteDir, 'dist'));
+  // The canonical application is `site/` since #2, and the flag is `--app-dir`.
+  //
+  // `--astro-site` was kept for one revision "for compatibility", which was
+  // wrong: combined with the build/ default below it resolved to
+  // `astro-site/build`, a path that has never existed under either framework.
+  // A compatibility shim that points at nothing is worse than no shim, so it
+  // is refused by name instead - loudly, rather than failing later with a
+  // confusing "no built output".
+  if (args['astro-site']) {
+    die('--astro-site is gone; the canonical application is site/. Use --app-dir.');
+  }
+  const appDir = path.resolve(args['app-dir'] || path.join(REPO_ROOT, 'site'));
+  // `build`, not `dist`. adapter-static writes there. run-local-ci always
+  // passes --dist so the pipeline was unaffected, which is exactly why this
+  // was easy to miss: only someone running this script BY HAND would have hit
+  // it, and they would have got "no built output" pointing at a directory the
+  // build never creates.
+  const distDir = path.resolve(args.dist || path.join(appDir, 'build'));
   const screenshotsDir = path.resolve(args.screenshots || path.join(REPO_ROOT, '.local-ci', 'screenshots'));
   const reportFile = path.resolve(args.report || path.join(REPO_ROOT, '.local-ci', 'accessibility-report.json'));
 
   if (!fs.existsSync(path.join(distDir, 'index.html'))) {
-    die(`no built output at ${distDir} — run the Astro build before collecting browser evidence`);
+    die(`no built output at ${distDir} — run "npm run build" in site/ before collecting browser evidence`);
   }
   await fsp.mkdir(screenshotsDir, { recursive: true });
   await fsp.mkdir(path.dirname(reportFile), { recursive: true });
 
-  const { chromium, executablePath } = await loadChromium(astroSiteDir);
+  const { chromium, executablePath } = await loadChromium(appDir);
   const { server, baseUrl } = await startStaticServer(distDir);
   process.stdout.write(`browser-evidence: serving ${distDir} at ${baseUrl}\n`);
 
