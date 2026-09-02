@@ -656,7 +656,7 @@ async function main() {
         throw new Error('playwright.config.ts does not serve the built output via `preview`');
       }
       if (!fs.existsSync(path.join(distDir, 'index.html'))) {
-        throw new Error('dist/index.html missing — Playwright would not test production output');
+        throw new Error(`${path.relative(workspace, distDir)}/index.html missing — Playwright would not test production output`);
       }
 
       const bin = path.join(appDir, 'node_modules', '.bin', 'playwright');

@@ -271,12 +271,17 @@ async function main() {
   const appDir = path.resolve(
     args['app-dir'] || args['astro-site'] || path.join(REPO_ROOT, 'site'),
   );
-  const distDir = path.resolve(args.dist || path.join(appDir, 'dist'));
+  // `build`, not `dist`. adapter-static writes there. run-local-ci always
+  // passes --dist so the pipeline was unaffected, which is exactly why this
+  // was easy to miss: only someone running this script BY HAND would have hit
+  // it, and they would have got "no built output" pointing at a directory the
+  // build never creates.
+  const distDir = path.resolve(args.dist || path.join(appDir, 'build'));
   const screenshotsDir = path.resolve(args.screenshots || path.join(REPO_ROOT, '.local-ci', 'screenshots'));
   const reportFile = path.resolve(args.report || path.join(REPO_ROOT, '.local-ci', 'accessibility-report.json'));
 
   if (!fs.existsSync(path.join(distDir, 'index.html'))) {
-    die(`no built output at ${distDir} — run the Astro build before collecting browser evidence`);
+    die(`no built output at ${distDir} — run "npm run build" in site/ before collecting browser evidence`);
   }
   await fsp.mkdir(screenshotsDir, { recursive: true });
   await fsp.mkdir(path.dirname(reportFile), { recursive: true });
