@@ -46,7 +46,9 @@ on it, failing with the exact `install-deps` command when they are not.
 | `clean-checkout` | Fresh clone with no working-tree modifications. |
 | `exact-head-sha` | `HEAD` equals the requested SHA — evidence is SHA-bound. |
 | `no-hosted-ci` | No workflow at that SHA declares an automatic trigger (`pull_request`, `pull_request_target`, `push`, `schedule`, `merge_group`) **or** a GitHub-hosted `runs-on:` job — including manual ones, because the permitted hosted-job budget is zero. |
+| `node-version-pin` | `site/package.json`'s `engines.node` allows Node 22+, the repo's `.nvmrc` pins a major version that satisfies it, and this worker's own Node satisfies it too — a fresh `nvm use && npm ci` produces no engines warning. A missing or unparseable value fails the check; it is never read as "no constraint". |
 | `dependency-install` | `npm ci` in `site`, from its lockfile. |
+| `dependency-audit` | `npm audit --audit-level=high` in `site`. Any `critical`/`high` severity advisory fails the run; `moderate` and below only log a warning. An unparseable report, a registry error, or an unexplained non-zero exit with zero critical/high advisories counted all fail the check — none of those states is read as "no advisories". |
 | `playwright-browsers` | The lockfile-pinned chromium is installed into the project-controlled browser cache by this run, and actually launches here — no dependence on a pre-existing user cache. |
 | `astro-build` | `npm run build` succeeds and produces HTML in `site/build`. The check name is historical: `hp-controller` requires it by this name, so renaming it would fail every release. |
 | `vitest` | The Astro app's unit suite passes, with >0 tests and 0 skips. Playwright specs (`tests/*.spec.ts`) are excluded here; they run below. |
@@ -65,6 +67,7 @@ detail): `html-has-lang`, `document-title`, `single-h1`, `heading-order`,
 ```
 $AI_COMPANY_EVIDENCE_DIR/
   manifest.json                 # SHA-bound run manifest (see below)
+  npm-audit.json
   vitest-results.json
   playwright-results.json
   accessibility-report.json
