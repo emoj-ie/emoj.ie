@@ -510,9 +510,19 @@ async function main() {
       if (typeof engineRange !== 'string' || engineRange.trim() === '') {
         throw new Error('site/package.json declares no engines.node — a Node version pin is required');
       }
-      if (!nodeVersionSatisfies(`${MINIMUM_NODE_MAJOR}.0.0`, engineRange)) {
+      // ">=22" is asserted as all three of its parts, not just the floor: the
+      // range must admit 22.0.0, admit later 22.x releases, and exclude
+      // everything below 22. An exact pin like "22" admits 22.0.0 but not
+      // 22.1.0, so it would still warn on any 22.x upgrade — it is not a
+      // >=22 policy and is rejected here.
+      const admitsFloor = nodeVersionSatisfies(`${MINIMUM_NODE_MAJOR}.0.0`, engineRange);
+      const admitsLater = nodeVersionSatisfies(`${MINIMUM_NODE_MAJOR}.999.999`, engineRange);
+      const excludesOlder = !nodeVersionSatisfies(`${MINIMUM_NODE_MAJOR - 1}.999.999`, engineRange);
+      if (!admitsFloor || !admitsLater || !excludesOlder) {
         throw new Error(
-          `site/package.json engines.node "${engineRange}" does not allow Node ${MINIMUM_NODE_MAJOR} — policy requires >=${MINIMUM_NODE_MAJOR}`,
+          `site/package.json engines.node "${engineRange}" does not express the required policy ` +
+            `>=${MINIMUM_NODE_MAJOR} (admits ${MINIMUM_NODE_MAJOR}.0.0: ${admitsFloor}, ` +
+            `admits ${MINIMUM_NODE_MAJOR}.x: ${admitsLater}, excludes <${MINIMUM_NODE_MAJOR}: ${excludesOlder})`,
         );
       }
 
@@ -521,9 +531,16 @@ async function main() {
         throw new Error(`.nvmrc missing at repo root at ${headSha} — a Node version pin is required`);
       }
       const nvmrcRaw = (await fsp.readFile(nvmrcPath, 'utf8')).trim();
-      const nvmrcMatch = nvmrcRaw.match(/^v?(\d+)/);
+      // The whole trimmed value must be a numeric pin. A prefix match would
+      // accept "22garbage" or an alias such as "lts/*" and read it as Node 22,
+      // even though this check cannot verify what version nvm would actually
+      // resolve either to — an unresolvable pin is a failure, not a Node 22.
+      const nvmrcMatch = nvmrcRaw.match(/^v?(\d+)(?:\.\d+)?(?:\.\d+)?$/);
       if (!nvmrcMatch) {
-        throw new Error(`.nvmrc content "${nvmrcRaw}" is not a recognizable Node version`);
+        throw new Error(
+          `.nvmrc content "${nvmrcRaw}" is not a numeric Node version pin (expected "22", "22.11" or "v22.11.0") — ` +
+            'aliases and trailing text are rejected because this check cannot verify the version they would resolve to',
+        );
       }
       if (!nodeVersionSatisfies(`${nvmrcMatch[1]}.0.0`, engineRange)) {
         throw new Error(
@@ -595,9 +612,20 @@ async function main() {
       if (!severities) {
         throw new Error('npm audit report has no metadata.vulnerabilities — the audit result could not be established');
       }
-      const critical = severities.critical ?? 0;
-      const high = severities.high ?? 0;
-      const moderate = severities.moderate ?? 0;
+      // A missing count is "could not establish", not zero: an incomplete
+      // report must not be read as an absence of advisories.
+      const severityCount = (name) => {
+        const value = severities[name];
+        if (typeof value !== 'number' || !Number.isFinite(value)) {
+          throw new Error(
+            `npm audit report has no numeric metadata.vulnerabilities.${name} — the audit result could not be established`,
+          );
+        }
+        return value;
+      };
+      const critical = severityCount('critical');
+      const high = severityCount('high');
+      const moderate = severityCount('moderate');
       if (critical > 0 || high > 0) {
         throw new Error(
           `npm audit found ${critical} critical and ${high} high severity advisor(y/ies) in site/ — ` +
@@ -619,8 +647,8 @@ async function main() {
         critical,
         high,
         moderate,
-        low: severities.low ?? 0,
-        info: severities.info ?? 0,
+        low: severityCount('low'),
+        info: severityCount('info'),
         resultsFile,
       };
     });

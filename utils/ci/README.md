@@ -46,9 +46,9 @@ on it, failing with the exact `install-deps` command when they are not.
 | `clean-checkout` | Fresh clone with no working-tree modifications. |
 | `exact-head-sha` | `HEAD` equals the requested SHA — evidence is SHA-bound. |
 | `no-hosted-ci` | No workflow at that SHA declares an automatic trigger (`pull_request`, `pull_request_target`, `push`, `schedule`, `merge_group`) **or** a GitHub-hosted `runs-on:` job — including manual ones, because the permitted hosted-job budget is zero. |
-| `node-version-pin` | `site/package.json`'s `engines.node` allows Node 22+, the repo's `.nvmrc` pins a major version that satisfies it, and this worker's own Node satisfies it too — a fresh `nvm use && npm ci` produces no engines warning. A missing or unparseable value fails the check; it is never read as "no constraint". |
+| `node-version-pin` | `site/package.json`'s `engines.node` actually expresses `>=22` — it admits `22.0.0`, admits later `22.x` releases, and excludes everything below 22, so an exact pin like `"22"` is rejected. The repo's `.nvmrc` must be a wholly numeric pin (`22`, `22.11`, `v22.11.0`; aliases and trailing text are rejected) that satisfies that range, and this worker's own Node must satisfy it too — a fresh `nvm use && npm ci` produces no engines warning. A missing or unparseable value fails the check; it is never read as "no constraint". |
 | `dependency-install` | `npm ci` in `site`, from its lockfile. |
-| `dependency-audit` | `npm audit --audit-level=high` in `site`. Any `critical`/`high` severity advisory fails the run; `moderate` and below only log a warning. An unparseable report, a registry error, or an unexplained non-zero exit with zero critical/high advisories counted all fail the check — none of those states is read as "no advisories". |
+| `dependency-audit` | `npm audit --audit-level=high` in `site`. Any `critical`/`high` severity advisory fails the run; `moderate` and below only log a warning. An unparseable report, a registry error, missing or non-numeric severity counts, or an unexplained non-zero exit with zero critical/high advisories counted all fail the check — none of those states is read as "no advisories". |
 | `playwright-browsers` | The lockfile-pinned chromium is installed into the project-controlled browser cache by this run, and actually launches here — no dependence on a pre-existing user cache. |
 | `astro-build` | `npm run build` succeeds and produces HTML in `site/build`. The check name is historical: `hp-controller` requires it by this name, so renaming it would fail every release. |
 | `vitest` | The Astro app's unit suite passes, with >0 tests and 0 skips. Playwright specs (`tests/*.spec.ts`) are excluded here; they run below. |
@@ -56,6 +56,23 @@ on it, failing with the exact `install-deps` command when they are not.
 | `accessibility` | `utils/ci/browser-evidence.mjs` loads pages from a static server over `dist` and asserts the rules listed below. |
 | `screenshots` | Desktop and mobile PNGs captured from that same built output. |
 | `evidence-manifest` | `manifest.json` written with SHA-256 hashes of every artifact. |
+
+### Dependency hygiene
+
+`dependency-audit` is where the `npm audit --audit-level=high` gate lives.
+Issue #5 asked for that gate as a step in `.github/workflows/ci.yml`; this
+repository's permitted GitHub-hosted job budget is zero and `no-hosted-ci`
+fails the run if any workflow file appears, so the gate runs here instead —
+same command, same threshold, on the exact validated SHA. Automated updates
+still come from GitHub: `.github/dependabot.yml` is configuration, not a job,
+and is unaffected by that policy.
+
+Advisories below `high` do not fail the run but are recorded in
+`npm-audit.json`. Currently accepted: **GHSA-pxg6-pf52-xh8x** (`cookie` <0.7.0,
+*low*), reached only through `@sveltejs/kit`, whose latest release still
+depends on `cookie@^0.6.0`. No non-breaking fix exists upstream; `npm audit
+fix --force` would "resolve" it by downgrading `@sveltejs/kit` to `0.0.30`.
+Revisit when SvelteKit ships a release on `cookie` >=0.7.0.
 
 Accessibility rules asserted on every sampled route (home, category, subgroup,
 detail): `html-has-lang`, `document-title`, `single-h1`, `heading-order`,
