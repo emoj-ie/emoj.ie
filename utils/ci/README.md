@@ -24,8 +24,19 @@ node utils/ci/run-local-ci.mjs --sha <40-character head SHA> --pr <number>
 | `--evidence-dir` | `AI_COMPANY_EVIDENCE_DIR` | Evidence root. Defaults to a temp directory, which is printed. |
 | `--source` | — | Git repository to clone from (default: this checkout). |
 | `--remote` | `LOCAL_CI_REMOTE` | Fetch the SHA from here when `--source` does not have it yet. |
-| `--workspace` | — | Where the clean checkout is created. |
+| `--workspace` | — | Where the clean checkout is created. Defaults to a temp directory named after the correlation id. |
 | `--keep-workspace` | — | Keep the checkout on success (it is always kept on failure). |
+
+Neither the workspace nor the evidence directory may contain `#` or `?`, and a
+path that does is rejected before any check runs. Vite and Rollup resolve module
+ids as URLs, so either character in the project root truncates every id: the
+Svelte plugin stops matching `+layout.svelte`, Rollup parses the component as
+JavaScript, and the build dies with `Expression expected` pointing at valid
+source. Vite only warns and continues, so nothing downstream names the cause.
+The default workspace path is derived from the correlation id, which routinely
+carries an issue reference (`.../emoj.ie#5-job-7`), so that id is slugified —
+with a digest appended when any character was replaced, so two ids cannot land
+on one workspace and delete each other's checkout.
 
 Exit code `0` means every required check passed; `1` means the run failed.
 A run also fails when a required check cannot execute at all — missing

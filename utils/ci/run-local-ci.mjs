@@ -35,7 +35,7 @@
  *   --correlation-id <id>    Run correlation id     [AI_COMPANY_CORRELATION_ID]
  *   --source <path>          Git repository to clone from (default: this repo)
  *   --remote <url>           Fetch the SHA from here if it is not in --source
- *   --workspace <path>       Where to place the clean checkout
+ *   --workspace <path>       Where to place the clean checkout (no `#` or `?`)
  *   --evidence-dir <path>    Evidence root             [AI_COMPANY_EVIDENCE_DIR]
  *   --browsers-path <path>   Playwright browser cache   [LOCAL_CI_BROWSERS_PATH]
  *   --keep-workspace         Do not delete the checkout when the run passes
@@ -152,8 +152,12 @@ async function walkFiles(root) {
     let entries;
     try {
       entries = await fsp.readdir(dir, { withFileTypes: true });
-    } catch {
-      return;
+    } catch (error) {
+      // A directory that is absent really does hold no files. A directory that
+      // exists but could not be read is a third answer, and returning [] for it
+      // would let `no-hosted-ci` conclude "no workflow files" from a failure.
+      if (error && error.code === 'ENOENT') return;
+      throw error;
     }
     for (const entry of entries) {
       const full = path.join(dir, entry.name);
@@ -163,6 +167,31 @@ async function walkFiles(root) {
   }
   await walk(root);
   return found.sort();
+}
+
+/**
+ * Directory-name form of a correlation id.
+ *
+ * Correlation ids carry the issue reference verbatim (`.../emoj.ie#5-job-7`),
+ * and Vite and Rollup resolve module ids as URLs: a `#` anywhere in the project
+ * root truncates every id at the fragment marker, so `+layout.svelte` stops
+ * matching the Svelte plugin's filter and Rollup parses the component as
+ * JavaScript. The build then dies on `<script lang="ts">` with "Expression
+ * expected", pointing at valid source. Vite only warns about the character and
+ * carries on, so nothing downstream names the real cause.
+ *
+ * Sanitising alone is not enough: two ids differing only in the characters
+ * being replaced would map to one workspace, and `clean-checkout` deletes the
+ * workspace before it clones — a concurrent run would lose its checkout
+ * underneath it. A digest of the raw id is appended whenever any character was
+ * replaced, so distinct ids keep distinct directories. The raw id is what the
+ * manifest still reports.
+ */
+function correlationDirName(correlationId) {
+  const sanitised = correlationId.replace(/[^A-Za-z0-9._-]/g, '-').replace(/^\.+/, '');
+  if (sanitised !== '' && sanitised === correlationId) return correlationId;
+  const digest = crypto.createHash('sha256').update(correlationId).digest('hex').slice(0, 8);
+  return `${sanitised || 'run'}-${digest}`;
 }
 
 async function readJsonIfPresent(filePath) {
@@ -342,19 +371,38 @@ async function main() {
   const source = path.resolve(args.source || DEFAULT_SOURCE);
   const remote = args.remote || process.env.LOCAL_CI_REMOTE || '';
 
+  const runDirName = correlationDirName(correlationId);
+
   const evidenceDir = path.resolve(
     args['evidence-dir'] ||
       process.env.AI_COMPANY_EVIDENCE_DIR ||
-      path.join(os.tmpdir(), 'ai-company-local-ci', correlationId),
+      path.join(os.tmpdir(), 'ai-company-local-ci', runDirName),
   );
+  const workspace = path.resolve(
+    args.workspace || path.join(os.tmpdir(), 'ai-company-local-ci', runDirName, 'checkout'),
+  );
+
+  // An operator-supplied --workspace or --evidence-dir is used exactly as
+  // given, so the URL-significant characters are rejected up front instead of
+  // resurfacing several checks later as a syntax error in valid Svelte source.
+  for (const [label, value] of [
+    ['workspace', workspace],
+    ['evidence dir', evidenceDir],
+  ]) {
+    const offending = ['#', '?'].filter((character) => value.includes(character));
+    if (offending.length > 0) {
+      fail(
+        `${label} path contains ${offending.join(' and ')}: ${value}\n` +
+          'Vite and Rollup resolve module ids as URLs, so these characters truncate every ' +
+          'module id and the site build fails with an unrelated syntax error. Choose a path without them.',
+      );
+    }
+  }
+
   const logsDir = path.join(evidenceDir, 'logs');
   const screenshotsDir = path.join(evidenceDir, 'screenshots');
   await fsp.mkdir(logsDir, { recursive: true });
   await fsp.mkdir(screenshotsDir, { recursive: true });
-
-  const workspace = path.resolve(
-    args.workspace || path.join(os.tmpdir(), 'ai-company-local-ci', correlationId, 'checkout'),
-  );
 
   const browsersPath = path.resolve(
     args['browsers-path'] || process.env.LOCAL_CI_BROWSERS_PATH || DEFAULT_BROWSERS_PATH,
