@@ -8,12 +8,15 @@
  *
  * Every run:
  *   1. makes a clean checkout of the exact requested commit SHA,
- *   2. installs site/ dependencies from its lockfile,
- *   3. builds the canonical production application (site/),
- *   4. runs the Vitest suite,
- *   5. runs Playwright against the built output (never a dev server),
- *   6. captures accessibility results and screenshots from the built output,
- *   7. writes a SHA-bound, machine-readable evidence manifest with SHA-256
+ *   2. asserts site/'s engines.node and the repo's .nvmrc agree and allow the
+ *      Node this worker is running,
+ *   3. installs site/ dependencies from its lockfile,
+ *   4. runs `npm audit` and fails on any high/critical severity advisory,
+ *   5. builds the canonical production application (site/),
+ *   6. runs the Vitest suite,
+ *   7. runs Playwright against the built output (never a dev server),
+ *   8. captures accessibility results and screenshots from the built output,
+ *   9. writes a SHA-bound, machine-readable evidence manifest with SHA-256
  *      hashes of every log and screenshot.
  *
  * Any required check that fails — or that cannot run at all (missing binary,
@@ -32,7 +35,7 @@
  *   --correlation-id <id>    Run correlation id     [AI_COMPANY_CORRELATION_ID]
  *   --source <path>          Git repository to clone from (default: this repo)
  *   --remote <url>           Fetch the SHA from here if it is not in --source
- *   --workspace <path>       Where to place the clean checkout
+ *   --workspace <path>       Where to place the clean checkout (no `#` or `?`)
  *   --evidence-dir <path>    Evidence root             [AI_COMPANY_EVIDENCE_DIR]
  *   --browsers-path <path>   Playwright browser cache   [LOCAL_CI_BROWSERS_PATH]
  *   --keep-workspace         Do not delete the checkout when the run passes
@@ -57,6 +60,7 @@ const MINUTE = 60_000;
 const TIMEOUTS = {
   git: 10 * MINUTE,
   npmCi: 20 * MINUTE,
+  npmAudit: 5 * MINUTE,
   browserInstall: 30 * MINUTE,
   browserLaunch: 2 * MINUTE,
   build: 40 * MINUTE,
@@ -64,6 +68,16 @@ const TIMEOUTS = {
   playwright: 20 * MINUTE,
   browserEvidence: 15 * MINUTE,
 };
+
+/**
+ * The repo-wide Node version pin. `site/package.json`'s `engines.node` must
+ * allow it and `.nvmrc` must pin a major version that satisfies it — a fresh
+ * `nvm use && npm ci` must produce no engines warning.
+ */
+const MINIMUM_NODE_MAJOR = 22;
+
+/** `npm audit` severities at or above this level fail the run; below it, warn only. */
+const AUDIT_FAIL_LEVEL = 'high';
 
 /**
  * Playwright browsers live in a project-controlled cache, never in whatever
@@ -138,8 +152,12 @@ async function walkFiles(root) {
     let entries;
     try {
       entries = await fsp.readdir(dir, { withFileTypes: true });
-    } catch {
-      return;
+    } catch (error) {
+      // A directory that is absent really does hold no files. A directory that
+      // exists but could not be read is a third answer, and returning [] for it
+      // would let `no-hosted-ci` conclude "no workflow files" from a failure.
+      if (error && error.code === 'ENOENT') return;
+      throw error;
     }
     for (const entry of entries) {
       const full = path.join(dir, entry.name);
@@ -149,6 +167,31 @@ async function walkFiles(root) {
   }
   await walk(root);
   return found.sort();
+}
+
+/**
+ * Directory-name form of a correlation id.
+ *
+ * Correlation ids carry the issue reference verbatim (`.../emoj.ie#5-job-7`),
+ * and Vite and Rollup resolve module ids as URLs: a `#` anywhere in the project
+ * root truncates every id at the fragment marker, so `+layout.svelte` stops
+ * matching the Svelte plugin's filter and Rollup parses the component as
+ * JavaScript. The build then dies on `<script lang="ts">` with "Expression
+ * expected", pointing at valid source. Vite only warns about the character and
+ * carries on, so nothing downstream names the real cause.
+ *
+ * Sanitising alone is not enough: two ids differing only in the characters
+ * being replaced would map to one workspace, and `clean-checkout` deletes the
+ * workspace before it clones — a concurrent run would lose its checkout
+ * underneath it. A digest of the raw id is appended whenever any character was
+ * replaced, so distinct ids keep distinct directories. The raw id is what the
+ * manifest still reports.
+ */
+function correlationDirName(correlationId) {
+  const sanitised = correlationId.replace(/[^A-Za-z0-9._-]/g, '-').replace(/^\.+/, '');
+  if (sanitised !== '' && sanitised === correlationId) return correlationId;
+  const digest = crypto.createHash('sha256').update(correlationId).digest('hex').slice(0, 8);
+  return `${sanitised || 'run'}-${digest}`;
 }
 
 async function readJsonIfPresent(filePath) {
@@ -163,10 +206,14 @@ async function readJsonIfPresent(filePath) {
  * Run a command, streaming a prefixed copy to the console and appending the
  * full combined output to a log file. Never uses a shell.
  */
-function run(command, args, { cwd, env, timeout, logFile, label }) {
+function run(command, args, { cwd, env, timeout, logFile, label, captureStdout }) {
   return new Promise((resolve) => {
     const started = Date.now();
     const chunks = [];
+    // Only allocated for callers that opt in (currently just `dependency-audit`,
+    // which needs stdout free of any stderr line that would corrupt its JSON
+    // parse) — every other call site only reads the combined `output`.
+    const stdoutChunks = captureStdout ? [] : null;
     const header = `$ ${command} ${args.join(' ')}\n(cwd: ${cwd})\n\n`;
     process.stdout.write(`[local-ci:${label}] ${command} ${args.join(' ')}\n`);
 
@@ -182,18 +229,20 @@ function run(command, args, { cwd, env, timeout, logFile, label }) {
       child.kill('SIGKILL');
     }, timeout);
 
-    const collect = (stream, sink) => {
+    const collect = (stream, sink, extra) => {
       stream.on('data', (chunk) => {
         chunks.push(chunk);
+        if (extra) extra.push(chunk);
         sink.write(chunk);
       });
     };
-    collect(child.stdout, process.stdout);
+    collect(child.stdout, process.stdout, stdoutChunks);
     collect(child.stderr, process.stderr);
 
     const finish = async (code, signal, spawnError) => {
       clearTimeout(timer);
       const output = Buffer.concat(chunks).toString('utf8');
+      const stdout = stdoutChunks ? Buffer.concat(stdoutChunks).toString('utf8') : null;
       if (logFile) {
         await fsp.mkdir(path.dirname(logFile), { recursive: true });
         await fsp.appendFile(logFile, `${header}${output}\n`);
@@ -205,6 +254,7 @@ function run(command, args, { cwd, env, timeout, logFile, label }) {
         spawnError: spawnError ? String(spawnError.message || spawnError) : null,
         durationMs: Date.now() - started,
         output,
+        stdout,
       });
     };
 
@@ -265,7 +315,9 @@ const REQUIRED_CHECKS = [
   'clean-checkout',
   'exact-head-sha',
   'no-hosted-ci',
+  'node-version-pin',
   'dependency-install',
+  'dependency-audit',
   'playwright-browsers',
   'astro-build',
   'vitest',
@@ -319,19 +371,38 @@ async function main() {
   const source = path.resolve(args.source || DEFAULT_SOURCE);
   const remote = args.remote || process.env.LOCAL_CI_REMOTE || '';
 
+  const runDirName = correlationDirName(correlationId);
+
   const evidenceDir = path.resolve(
     args['evidence-dir'] ||
       process.env.AI_COMPANY_EVIDENCE_DIR ||
-      path.join(os.tmpdir(), 'ai-company-local-ci', correlationId),
+      path.join(os.tmpdir(), 'ai-company-local-ci', runDirName),
   );
+  const workspace = path.resolve(
+    args.workspace || path.join(os.tmpdir(), 'ai-company-local-ci', runDirName, 'checkout'),
+  );
+
+  // An operator-supplied --workspace or --evidence-dir is used exactly as
+  // given, so the URL-significant characters are rejected up front instead of
+  // resurfacing several checks later as a syntax error in valid Svelte source.
+  for (const [label, value] of [
+    ['workspace', workspace],
+    ['evidence dir', evidenceDir],
+  ]) {
+    const offending = ['#', '?'].filter((character) => value.includes(character));
+    if (offending.length > 0) {
+      fail(
+        `${label} path contains ${offending.join(' and ')}: ${value}\n` +
+          'Vite and Rollup resolve module ids as URLs, so these characters truncate every ' +
+          'module id and the site build fails with an unrelated syntax error. Choose a path without them.',
+      );
+    }
+  }
+
   const logsDir = path.join(evidenceDir, 'logs');
   const screenshotsDir = path.join(evidenceDir, 'screenshots');
   await fsp.mkdir(logsDir, { recursive: true });
   await fsp.mkdir(screenshotsDir, { recursive: true });
-
-  const workspace = path.resolve(
-    args.workspace || path.join(os.tmpdir(), 'ai-company-local-ci', correlationId, 'checkout'),
-  );
 
   const browsersPath = path.resolve(
     args['browsers-path'] || process.env.LOCAL_CI_BROWSERS_PATH || DEFAULT_BROWSERS_PATH,
@@ -472,7 +543,71 @@ async function main() {
       return { workflowFiles: files.map((file) => path.relative(workspace, file)), hostedJobs: 0 };
     });
 
-    // 4 — dependency install from site/'s lockfile ---------------------
+    // 4 — Node version pin: engines.node and .nvmrc must agree, and must
+    // actually allow the Node this worker is running -------------------------
+    //
+    // A missing or unreadable value here is not "no constraint" — it is a
+    // failed check. A fresh clone that runs `nvm use && npm ci` with no
+    // engines warning is an acceptance criterion, so this is asserted from the
+    // exact files at the requested SHA, not assumed from repo convention.
+    await runState.check('node-version-pin', async () => {
+      const pkgPath = path.join(appDir, 'package.json');
+      const pkg = await readJsonIfPresent(pkgPath);
+      if (!pkg) throw new Error(`site/package.json missing or unparseable at ${headSha}`);
+      const engineRange = pkg.engines && pkg.engines.node;
+      if (typeof engineRange !== 'string' || engineRange.trim() === '') {
+        throw new Error('site/package.json declares no engines.node — a Node version pin is required');
+      }
+      // ">=22" is asserted as all three of its parts, not just the floor: the
+      // range must admit 22.0.0, admit later 22.x releases, and exclude
+      // everything below 22. An exact pin like "22" admits 22.0.0 but not
+      // 22.1.0, so it would still warn on any 22.x upgrade — it is not a
+      // >=22 policy and is rejected here.
+      const admitsFloor = nodeVersionSatisfies(`${MINIMUM_NODE_MAJOR}.0.0`, engineRange);
+      const admitsLater = nodeVersionSatisfies(`${MINIMUM_NODE_MAJOR}.999.999`, engineRange);
+      const excludesOlder = !nodeVersionSatisfies(`${MINIMUM_NODE_MAJOR - 1}.999.999`, engineRange);
+      if (!admitsFloor || !admitsLater || !excludesOlder) {
+        throw new Error(
+          `site/package.json engines.node "${engineRange}" does not express the required policy ` +
+            `>=${MINIMUM_NODE_MAJOR} (admits ${MINIMUM_NODE_MAJOR}.0.0: ${admitsFloor}, ` +
+            `admits ${MINIMUM_NODE_MAJOR}.x: ${admitsLater}, excludes <${MINIMUM_NODE_MAJOR}: ${excludesOlder})`,
+        );
+      }
+
+      const nvmrcPath = path.join(workspace, '.nvmrc');
+      if (!fs.existsSync(nvmrcPath)) {
+        throw new Error(`.nvmrc missing at repo root at ${headSha} — a Node version pin is required`);
+      }
+      const nvmrcRaw = (await fsp.readFile(nvmrcPath, 'utf8')).trim();
+      // The whole trimmed value must be a numeric pin. A prefix match would
+      // accept "22garbage" or an alias such as "lts/*" and read it as Node 22,
+      // even though this check cannot verify what version nvm would actually
+      // resolve either to — an unresolvable pin is a failure, not a Node 22.
+      const nvmrcMatch = nvmrcRaw.match(/^v?(\d+)(?:\.\d+)?(?:\.\d+)?$/);
+      if (!nvmrcMatch) {
+        throw new Error(
+          `.nvmrc content "${nvmrcRaw}" is not a numeric Node version pin (expected "22", "22.11" or "v22.11.0") — ` +
+            'aliases and trailing text are rejected because this check cannot verify the version they would resolve to',
+        );
+      }
+      if (!nodeVersionSatisfies(`${nvmrcMatch[1]}.0.0`, engineRange)) {
+        throw new Error(
+          `.nvmrc pins Node ${nvmrcRaw}, which does not satisfy site/package.json engines.node "${engineRange}" — ` +
+            'a fresh `nvm use && npm ci` would emit an engines warning',
+        );
+      }
+
+      const workerVersion = process.version.replace(/^v/, '');
+      if (!nodeVersionSatisfies(workerVersion, engineRange)) {
+        throw new Error(
+          `this worker is running Node ${process.version}, which does not satisfy site/package.json engines.node "${engineRange}"`,
+        );
+      }
+
+      return { engines: engineRange, nvmrc: nvmrcRaw, workerNode: process.version };
+    });
+
+    // 5 — dependency install from site/'s lockfile ---------------------
     await runState.check('dependency-install', async () => {
       const result = await run('npm', ['ci'], {
         cwd: appDir,
@@ -487,7 +622,86 @@ async function main() {
       return { command: 'npm ci', cwd: 'site', durationMs: result.durationMs };
     });
 
-    // 5 — pinned browser install, into project-controlled storage ------------
+    // 6 — npm audit gate: fail on high/critical, warn on moderate ------------
+    //
+    // A run that cannot determine the audit result is not a pass: an
+    // unparseable report, a registry error, or an unexplained non-zero exit
+    // with no vulnerabilities counted all fail the check rather than being
+    // read as "no advisories".
+    await runState.check('dependency-audit', async () => {
+      const resultsFile = path.join(evidenceDir, 'npm-audit.json');
+      const result = await run('npm', ['audit', `--audit-level=${AUDIT_FAIL_LEVEL}`, '--json'], {
+        cwd: appDir,
+        env: { CI: '1' },
+        timeout: TIMEOUTS.npmAudit,
+        logFile: logFileFor('dependency-audit'),
+        label: 'npm-audit',
+        captureStdout: true,
+      });
+      // Parsed from stdout only: stdout and stderr are combined (in event-arrival
+      // order) into `result.output` for the log file, and an unrelated `npm warn`
+      // line on stderr must never corrupt the JSON report this check depends on.
+      await fsp.writeFile(resultsFile, result.stdout);
+
+      let report;
+      try {
+        report = JSON.parse(result.stdout);
+      } catch {
+        throw new Error(
+          `npm audit produced no parseable JSON report (exit ${result.code}${result.timedOut ? ', timed out' : ''}) — ` +
+            'the audit result could not be established, so it is not treated as a pass',
+        );
+      }
+      if (report.error) {
+        throw new Error(`npm audit reported an error: ${report.error.summary || JSON.stringify(report.error)}`);
+      }
+
+      const severities = (report.metadata && report.metadata.vulnerabilities) || null;
+      if (!severities) {
+        throw new Error('npm audit report has no metadata.vulnerabilities — the audit result could not be established');
+      }
+      // A missing count is "could not establish", not zero: an incomplete
+      // report must not be read as an absence of advisories.
+      const severityCount = (name) => {
+        const value = severities[name];
+        if (typeof value !== 'number' || !Number.isFinite(value)) {
+          throw new Error(
+            `npm audit report has no numeric metadata.vulnerabilities.${name} — the audit result could not be established`,
+          );
+        }
+        return value;
+      };
+      const critical = severityCount('critical');
+      const high = severityCount('high');
+      const moderate = severityCount('moderate');
+      if (critical > 0 || high > 0) {
+        throw new Error(
+          `npm audit found ${critical} critical and ${high} high severity advisor(y/ies) in site/ — ` +
+            'fix them or document a justification in the pull request before merge',
+        );
+      }
+      if (result.code !== 0) {
+        throw new Error(
+          `npm audit exited ${result.code}${result.timedOut ? ' (timed out)' : ''} without reporting any critical/high ` +
+            'severity advisories — an unexplained non-zero exit is not treated as a pass',
+        );
+      }
+      if (moderate > 0) {
+        log(`dependency-audit: ${moderate} moderate-severity advisor(y/ies) in site/ (non-blocking warning)`);
+      }
+
+      return {
+        auditLevel: AUDIT_FAIL_LEVEL,
+        critical,
+        high,
+        moderate,
+        low: severityCount('low'),
+        info: severityCount('info'),
+        resultsFile,
+      };
+    });
+
+    // 7 — pinned browser install, into project-controlled storage ------------
     //
     // The run installs the browser itself instead of trusting whatever is in
     // the invoking user's cache, so a clean worker completes validation. The
@@ -568,7 +782,7 @@ async function main() {
       };
     });
 
-    // 6 — canonical production build ----------------------------------------
+    // 8 — canonical production build ----------------------------------------
     await runState.check('astro-build', async () => {
       const result = await run('npm', ['run', 'build'], {
         cwd: appDir,
@@ -589,7 +803,7 @@ async function main() {
       return { distDir, htmlPages, distFiles: files.length, durationMs: result.durationMs };
     });
 
-    // 5 — Vitest -------------------------------------------------------------
+    // 9 — Vitest -------------------------------------------------------------
     await runState.check('vitest', async () => {
       const bin = path.join(appDir, 'node_modules', '.bin', 'vitest');
       if (!fs.existsSync(bin)) {
@@ -650,7 +864,7 @@ async function main() {
       return { totalTests: total, passedTests: passed, suites: report.numTotalTestSuites ?? null, resultsFile };
     });
 
-    // 6 — Playwright against the built dist output ---------------------------
+    // 10 — Playwright against the built dist output ---------------------------
     await runState.check('playwright-built-output', async () => {
       const configPath = path.join(appDir, 'playwright.config.ts');
       if (!fs.existsSync(configPath)) {
@@ -716,7 +930,7 @@ async function main() {
       };
     });
 
-    // 7 + 8 — accessibility and screenshots from the built output ------------
+    // 11 + 12 — accessibility and screenshots from the built output ------------
     const evidenceScript = path.join(workspace, 'utils', 'ci', 'browser-evidence.mjs');
     const a11yReportFile = path.join(evidenceDir, 'accessibility-report.json');
     await runState.check('accessibility', async () => {
@@ -778,7 +992,7 @@ async function main() {
     failure = error;
   }
 
-  // 9 — SHA-bound evidence manifest ------------------------------------------
+  // 13 — SHA-bound evidence manifest ------------------------------------------
   const manifestPath = path.join(evidenceDir, 'manifest.json');
   let manifestError = null;
   let artifacts = [];
@@ -871,6 +1085,59 @@ async function main() {
 // ---------------------------------------------------------------------------
 // support
 // ---------------------------------------------------------------------------
+
+/**
+ * Minimal semver-range check, just enough for `engines.node`-style ranges
+ * (`>=22`, `>=22 <23`, `22`, `>=18 || >=20`, ...). Deliberately dependency-free:
+ * this script runs with nothing but Node's own standard library. Ranges are
+ * `||`-separated OR-groups of space/comma-separated AND-comparators, same as
+ * npm's `engines` field.
+ */
+export function parseVersionTuple(version) {
+  const match = String(version).trim().match(/^v?(\d+)(?:\.(\d+))?(?:\.(\d+))?$/);
+  if (!match) return null;
+  return [Number(match[1]), Number(match[2] || 0), Number(match[3] || 0)];
+}
+
+function compareVersionTuples(a, b) {
+  for (let i = 0; i < 3; i += 1) {
+    if (a[i] !== b[i]) return a[i] - b[i];
+  }
+  return 0;
+}
+
+export function nodeVersionSatisfies(version, range) {
+  const actual = parseVersionTuple(version);
+  if (!actual) return false;
+  const orGroups = String(range)
+    .trim()
+    .split(/\s*\|\|\s*/)
+    .filter(Boolean);
+  if (orGroups.length === 0) return false;
+  return orGroups.some((group) => {
+    const comparators = group.split(/\s*,\s*|\s+/).filter(Boolean);
+    if (comparators.length === 0) return false;
+    return comparators.every((comparator) => {
+      const match = comparator.match(/^(>=|<=|>|<|=)?\s*(v?\d.*)$/);
+      if (!match) return false;
+      const target = parseVersionTuple(match[2]);
+      if (!target) return false;
+      const cmp = compareVersionTuples(actual, target);
+      switch (match[1] || '=') {
+        case '>=':
+          return cmp >= 0;
+        case '<=':
+          return cmp <= 0;
+        case '>':
+          return cmp > 0;
+        case '<':
+          return cmp < 0;
+        default:
+          return cmp === 0;
+      }
+    });
+  });
+}
 
 function classifyArtifact(relativePath) {
   if (relativePath.startsWith('screenshots/')) return 'screenshot';
@@ -983,4 +1250,7 @@ async function detectRemoteUrl(source) {
   return result.output.trim() || null;
 }
 
-main().catch((error) => fail(error && error.stack ? error.stack : String(error)));
+const IS_MAIN = process.argv[1] && path.resolve(process.argv[1]) === fileURLToPath(import.meta.url);
+if (IS_MAIN) {
+  main().catch((error) => fail(error && error.stack ? error.stack : String(error)));
+}
