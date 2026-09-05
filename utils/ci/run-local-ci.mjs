@@ -1093,8 +1093,8 @@ async function main() {
  * `||`-separated OR-groups of space/comma-separated AND-comparators, same as
  * npm's `engines` field.
  */
-function parseVersionTuple(version) {
-  const match = String(version).trim().match(/^v?(\d+)(?:\.(\d+))?(?:\.(\d+))?/);
+export function parseVersionTuple(version) {
+  const match = String(version).trim().match(/^v?(\d+)(?:\.(\d+))?(?:\.(\d+))?$/);
   if (!match) return null;
   return [Number(match[1]), Number(match[2] || 0), Number(match[3] || 0)];
 }
@@ -1106,7 +1106,7 @@ function compareVersionTuples(a, b) {
   return 0;
 }
 
-function nodeVersionSatisfies(version, range) {
+export function nodeVersionSatisfies(version, range) {
   const actual = parseVersionTuple(version);
   if (!actual) return false;
   const orGroups = String(range)
@@ -1250,4 +1250,7 @@ async function detectRemoteUrl(source) {
   return result.output.trim() || null;
 }
 
-main().catch((error) => fail(error && error.stack ? error.stack : String(error)));
+const IS_MAIN = process.argv[1] && path.resolve(process.argv[1]) === fileURLToPath(import.meta.url);
+if (IS_MAIN) {
+  main().catch((error) => fail(error && error.stack ? error.stack : String(error)));
+}
